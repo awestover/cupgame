@@ -1,0 +1,209 @@
+\documentclass{article}[11pt]
+% \usepackage[subtle]{savetrees}
+\usepackage[left=1in, right=1in, top=1in, bottom=1in]{geometry}
+
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{Alek Westover}
+\rhead{}
+\usepackage{hyperref}
+
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{\text{Var}}
+\DeclareMathOperator{\img}{Im}
+\DeclareMathOperator{\polylog}{\text{polylog}}
+\DeclareMathOperator{\st}{\text{ such that }}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\interior}[1]{%
+  {\kern0pt#1}^{\mathrm{o}}%
+}
+
+%** VECTOR NOTATION
+\newcommand{\mb}{\mathbf}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\y}{\mathbf{y}}
+\newcommand{\z}{\mathbf{z}}
+\newcommand{\f}{\mathbf{f}}
+\newcommand{\n}{\mathbf{n}}
+\newcommand{\p}{\mathbf{p}}
+\renewcommand{\k}{\mathbf{k}}
+\renewcommand{\d}{\mathrm{d}} %straight d for integrals
+\newcommand{\De}{\Delta}
+\renewcommand{\Re}{\mathrm{Re}}
+\renewcommand{\Im}{\mathrm{Im}}
+\newcommand{\ran}{\mathrm{ran}}
+
+%** SETS
+\newcommand{\set}[1]{\mathbb{#1}}
+\newcommand{\curly}[1]{\mathcal{#1}}
+\newcommand{\goth}[1]{\mathfrak{#1}}
+\newcommand{\setof}[2]{\left\{ #1\; : \;#2 \right\}}
+\newcommand{\cc}{\subseteq\subseteq}
+\newcommand{\R}{\set{R}}
+\newcommand{\C}{\set{C}}
+\newcommand{\Z}{\set{Z}}
+\newcommand{\D}{\curly{D}}
+\renewcommand{\S}{\set{S}}
+\newcommand{\T}{\set{T}}
+
+
+\newcommand{\contr}[0]{\[ \Rightarrow\!\Leftarrow \]}
+\newcommand{\defeq}{\vcentcolon=}
+\newcommand{\eqdef}{=\vcentcolon}
+
+\newtheorem{fact}{Fact}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{theorem}{Theorem}
+
+\usepackage{mdframed}
+\newmdtheoremenv{q}{Question}
+
+
+\author{Alek Westover}
+\title{ A filling strategy that achieves backlog $\Omega(\log n)$ in the $p$-processor cup game on $n$ cups against an arbitrary emptier}
+
+\begin{document}
+% \begin{center}
+% \begin{Large}
+%   Alek Westover \\
+%   \vspace{2mm}
+%   A filling strategy that achieves backlog $\Omega(\log n)$ in the $p$-processor cup game on $n$ cups.
+% \end{Large}
+% \end{center}
+% \thispagestyle{empty}
+\maketitle
+
+The cup game is a classic problem in computer science that models work scheduling.
+In the cup game on $n$ cups, a \textbf{filler} and an \textbf{emptier} take turns adding and
+removing water from the cups. On each round the filler will distribute some new
+amount of water among the cups, and the emptier will remove some amount of water
+from some of the cups. The filler can distribute the water however it wants (as
+long as it places at most $1$ water in each cup), but the emptier has an added
+``discretization constraint": it can only remove water from some cups. The
+problem is to analyze how well each player can do, that is, how much water can
+the filler force to be in the fullest cup, and what is the upper bound on this
+fill that an appropriate emptying strategy can guarantee?
+
+Kuszmaul previously studied a variant of this problem called the ``vanilla
+multiprocessor cup-game" in which the filler distributes $p$ units of water
+among the cups (with at most $1$ going to any particular cup on any particular
+round), and the emptier choses $p$ cups to remove at most $1$ unit of water
+from. Note that there is no resource augmentation in this variant of the game.
+Kuszmaul showed that in the $p$-processor cup game on $n$ cups, a greedy
+emptying strategy achieves backlog bounded above by $O(\log n)$. He also
+provided a construction by which the filler could achieve backlog $\Omega(\log
+(n-p))$. For $p \le n/2$ the upper-bound and lower-bound have no gap between
+them (asymptotically). However, for $p > n/2$ these could potentially be
+different. It was widely thought that the $O(\log n)$ upper-bound could be
+reduced to $O(\log(n-p))$ for $p>n/2$. We will prove the following lemma, which
+asserts that (surprisingly!) this is not the case!
+
+\begin{lemma}
+  There exists a filling strategy for the $p$-processor cup game on $n$ cups
+  that achieves backlog $\Omega(\log n)$ against any emptier.
+\end{lemma}
+\begin{proof}
+Kuszmaul's construction shows that there is a filling strategy that achieves
+backlog $\Omega(\log (n-p))$.  If $p \le n - \sqrt{n}$, $n-p \ge \sqrt{n}$, so $\log
+(n-p) \ge \frac{1}{2}\log (n)$, hence $\Omega(\log(n-p)) = \Omega(\log(n))$.
+Thus the result holds for $p \le n - \sqrt{n}$; we proceed to consider the case
+where $p > n-\sqrt{n}$
+
+Let $H_n = 1/1+1/2+\cdots +1/n$ denote the $n$-th harmonic number.  We will
+show that there is a filling strategy such that if $S_t(1) < \frac{1}{2} (H_n -
+H_{n-p+1})$, then $\text{tot}(S_{t+n}) \ge \text{tot}(S_t) + \frac{1}{2}$.
+Leveraging this result, the filler can repeatedly increase the total fill by a
+constant amount. The filer can achieve backlog greater than $\frac{1}{2}(H_n -
+H_{n-p+1})$ by repeating this strategy $n\cdot (H_n-H_{n-p+1})$ times, with the
+added strategy that if the backlog ever becomes greater than
+$\frac{1}{2}(H_n-H_{n-p+1})$ in this process the filler stops, and proceeds
+to repeatedly put $1$ unit of water in the fullest cup, thus guaranteeing
+backlog $\Omega(\log n)$ \footnote{ Note that $\frac{1}{2} (H_n - H_{n-p+1}) \ge
+\Omega(\log n)$ because $n - p < \sqrt{n}$ so $H_{n-p+1} <
+H_{\lceil\sqrt{n}\rceil + 1} < \frac{1}{2} H_n + 100$, hence $H_n - H_{n-p+1} > H_n -
+\frac{1}{2}H_n- 100 = \frac{1}{2} H_n - 100 \ge \Omega(\log n)$.  } forever
+after. If the backlog is less than $\frac{1}{2} (H_n-H_{n-p+1})$ at every step of
+this process, then the total fill must have increased by at least $\frac{1}{2}
+$ per each repetition of the strategy, for a total of $\frac{1}{2}n \cdot
+(H_{n} - H_{n-p+1})$ increase. This however implies that at the end (denoted
+$t_f$) $\text{av}(S_{t_f}) \ge \frac{1}{2} (H_n-H_{n-p+1})$, so $S_{t_f}(1) \ge
+\frac{1}{2} (H_n - H_{n-p+1})$, and again we will have achieved backlog
+$\Omega(\log n)$ by the end of the process. 
+
+We proceed to outline the filling strategy that is able to increase the total
+fill by at least $1/2$ in less than $n$ rounds (if the backlog starts out below
+$\frac{1}{2}(H_n - H_{n-p+1})$.
+
+Let $S$ denote the set of cups. The filler will maintain a set $U \subset S$
+throughout the algorithm. The algorithm's procedure will ensure that once a cup
+enters $U$ its fill never decreases for the rest of the process (the filler will
+maintain the fill of these cups by placing $1$ unit of water in them each time). 
+Furthermore, $|U|$ will increase by $n-p$ at each itteration of the process.
+$U$ is initialized to $\emptyset$. For each of $\lfloor(n-2) / (n-p)\rfloor$ steps the filler will
+\begin{itemize}
+  \item Distribute $p - |U|$ water equally among the cups in $S\setminus U$ (thus, each such cup recieves $\frac{p-|U|}{n-|U|}$ fill)
+  \item Distribute $|U|$ water equally among the cups in $U$ (thus, each such cup receives $1$ fill)
+\end{itemize}
+
+Then the emptier must chose $p$ cups to empty from, and hence $n-p$ cups to \textbf{neglect}.
+Let $N$ be the set of neglected cups on a given step ($|N| = n-p$).
+The emptier appends all cups in $N \setminus U$ to $U$, and then appends the
+$(n-p) - |N\setminus U |$ fullest cups in $S \setminus U$ to $U$.  Thus the
+number of elements in $U$ at the start of step $i$ (using $0$-indexing) is 
+$(n-p)\cdot i$.
+
+Now, note that the fill of any cup in $S \setminus U$ at the end of round $i$
+has increased by $\frac{p-(n-p)\cdot i}{n-(n-p)\cdot i}$, and then decreased by
+$1$ on this round. This is a net change of $-\frac{n-p}{n-(n-p)\cdot i}$.
+
+At the end of these $\lfloor (n-2) / (n-p) \rfloor$ rounds $|U| \le n-2$, so
+there are at least 2 cups in $S \setminus U$.
+\textbf{We claim that the cups finally in $S\setminus U$ now have $0$ fill.}
+On the $i$-th round of the filler's process the fill of these cups in $S
+\setminus U$ has a net decrease of $\frac{n-p}{n-|U|} = \frac{n-p}{n-(n-p)\cdot i}$. 
+Now consider the total amount that the fill of a cup that is in $S\setminus U$ at the end
+have decreased since the start of this process:
+$$\sum_{i=0}^{\lfloor(n-2) / (n-p)\rfloor - 1} \frac{n-p}{n-(n-p)\cdot i}.$$
+
+For $p = n-1$ this sum is easily reckognizable as a difference of harmonic
+numbers: $$\sum_{i=0}^{n-3}\frac{1}{n-i} = \frac{1}{n} + \frac{1}{n-1} + \cdots
++ \frac{1}{3} =  H_{n} - H_{n-p+1}.$$
+
+We can achieve this as a lower bound for other values of $p$ too by lower
+bounding a difference of ``strided harmonic numbers" with a difference of
+harmonic numbers.
+In particular, we can lower-bound the $i$-th term in the sum by:
+$$\frac{n-p}{n-i(n-p)} = \sum_{j=0}^{n-p-1} \frac{1}{n-i(n-p)} \ge \sum_{j=n-i(n-p)}^{n-(i-1)(n-p)-1}\frac{1}{j}.$$
+Adding these up we get a lower bound on the amount that the fill decreases in these cups:
+$$\sum_{i=0}^{\lfloor(n-2) / (n-p)\rfloor - 1} \sum_{j=n-(i-1)(n-p)-1}^{n-i(n-p)}\frac{1}{j}.$$
+This is now a difference of harmonic numbers. In particular, when $i=0,
+j=n-(i-1)(n-p)-1$ we get the smallest term in the sum $1/(n+(n-p-1))$,
+and when $i = \lfloor(n-2) / (n-p)\rfloor - 1, j=n-i(n-p)$ we get the largest
+term in the sum. This largest term is greater than or equal to $n - ((n-2) /
+(n-p)-1) (n-p) = n - (n-2 -(n-p)) = n-p+2$
+Thus, the loss is lower bounded by $H_{n+(n-p-1)} - H_{n-p+1} \ge H_{n} - H_{n-p+1}$.
+
+Because the backlog started less than $\frac{1}{2} (H_n - H_{n-p+1})$ by assumption, these cups must
+now have $0$ fill.  Hence we have 2 cups with $0$ fill, so the final step of
+the filler's procedure is to add $1/2$ fill to these 2 cups, then the total
+fill increases by $1/2$ by necessity, as the emptier must ``waste" a unit of
+fill on emptying one of these. That is, the amount of fill removed by the
+emptier is at most $p-1/2$, which is less than the $p$ fill that the filler added this round. 
+Note that total fill is monotonically increasing, a simple
+consequence of the discretization constraint ($p$ fill is added to the system
+each round, and no more than $p$ is emptier), so the fact that total fill
+increases on this round implies that it increased over the whole process by at least $\frac{1}{2}$, as desired.
+\end{proof}
+
+
+\end{document}
+
