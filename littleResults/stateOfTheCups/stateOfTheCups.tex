@@ -1,0 +1,110 @@
+\documentclass{article}[11pt]
+\usepackage[subtle]{savetrees}
+\usepackage[left=1in, right=1in, top=1in, bottom=1in]{geometry}
+
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{Alek Westover}
+\rhead{}
+\usepackage{hyperref}
+
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{\text{Var}}
+\DeclareMathOperator{\img}{Im}
+\DeclareMathOperator{\polylog}{\text{polylog}}
+\DeclareMathOperator{\st}{\text{ such that }}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\interior}[1]{%
+  {\kern0pt#1}^{\mathrm{o}}%
+}
+
+%** VECTOR NOTATION
+\newcommand{\mb}{\mathbf}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\y}{\mathbf{y}}
+\newcommand{\z}{\mathbf{z}}
+\newcommand{\f}{\mathbf{f}}
+\newcommand{\n}{\mathbf{n}}
+\newcommand{\p}{\mathbf{p}}
+\renewcommand{\k}{\mathbf{k}}
+\renewcommand{\d}{\mathrm{d}} %straight d for integrals
+\newcommand{\De}{\Delta}
+\renewcommand{\Re}{\mathrm{Re}}
+\renewcommand{\Im}{\mathrm{Im}}
+\newcommand{\ran}{\mathrm{ran}}
+
+%** SETS
+\newcommand{\set}[1]{\mathbb{#1}}
+\newcommand{\curly}[1]{\mathcal{#1}}
+\newcommand{\goth}[1]{\mathfrak{#1}}
+\newcommand{\setof}[2]{\left\{ #1\; : \;#2 \right\}}
+\newcommand{\cc}{\subseteq\subseteq}
+\newcommand{\R}{\set{R}}
+\newcommand{\C}{\set{C}}
+\newcommand{\Z}{\set{Z}}
+\newcommand{\D}{\curly{D}}
+\renewcommand{\S}{\set{S}}
+\newcommand{\T}{\set{T}}
+
+
+\newcommand{\contr}[0]{\[ \Rightarrow\!\Leftarrow \]}
+\newcommand{\defeq}{\vcentcolon=}
+\newcommand{\eqdef}{=\vcentcolon}
+
+\newtheorem{fact}{Fact}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{theorem}{Theorem}
+
+\usepackage{mdframed}
+\newmdtheoremenv{q}{Question}
+
+
+\begin{document}
+\begin{center}
+\begin{Large}
+  State of the Cups\\
+	\vspace{2mm}
+\end{Large}
+	Alek Westover \\
+\end{center}
+
+\begin{itemize}
+  \item \textbf{Single Processor, online filler (i.e. deterministic): } \\
+    Filler: $\Omega(\log n)$ (ignore the touched cup each time, equal water to all others, $\frac{1}{n}+\frac{1}{n-1}  + \cdots + \frac{1}{1}$)\\
+    Emptier: $O(\log n)$ (inductive proof)
+  \item \textbf{Single Processor, offline filler (i.e. randomized): } \\
+    Filler: $\Omega(\log\log n)$ (anchoring???) \\
+    Emptier: $O(\log\log n)$ (??)
+  \item \textbf{Multiprocessor, online filler (i.e. deterministic): } \\
+    Filler: $\Omega(\log n)$ (For $p < n-\sqrt{n}$ see Bills paper that gets $\Omega(\log (n-p))$ which is tight for these small values of $p$ by playing a single processor cup game on $n-p+1$ cups and anchoring the other $p-1$ cups. For $p>n-\sqrt{n}$ you build the anchor set, adding $n-p$ cups to it each time, to get $\log n - \log (n-p)$ backlog)\\
+    Emptier: $O(\log n)$ (Bill's complicated paper, generalizes the inductive proof for single processor case using skewed averages)
+  \item \textbf{MultiProcessor, offline filler (i.e. randomized): } \\
+    Filler: $\Omega(\log\log n)$ (anchoring???, HYPOTHESIS: this is not tight! we should be able to get $\Omega(\log p + \log \log n)$ $Pr[\text{Hypothesis is correct}] \approx 0.5$ ) \\
+    Emptier: $O(\log\log n + \log p)$  
+  \item \textbf{MultiProcessor, online filler with $\Delta p$ power: } \\
+    Filler: $\Omega(\log p + \log \log n)$ (using the superpower you can get $\Theta(p)$ cups with known constant fill in them. Recursing on these $\log p$ times gives $\log p$ backlog, and we already knew $\Omega(\log\log n)$)\\
+    Emptier: $O(\log n)$ (inductive proof)
+  \item \textbf{MultiProcessor, offline filler with $\Delta p$ power: } \\
+    Filler: $\Omega(p)$ (Recursive thing $f'(p) = 0.9\cdot(f(p/2) + f(p/4) + \ldots)$, HYPOTHESIS: its actually unbounded) \\
+    Emptier:  ?? (HYPOTHESIS: unbounded!)
+  
+\end{itemize}
+
+\textbf{Current goals:}
+\begin{itemize}
+  \item Make upper bound and lower bound agree for Multiprocessor cup game with offline opponent (i.e. randomized)
+  \item Discover the bounds on the $\Delta p$ augmented filler in the offline and online multiprocessor cup games
+\end{itemize}
+
+
+\end{document}
+
