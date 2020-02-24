@@ -181,15 +181,12 @@ We get the following as a corollary of the Amplication Lemma:
     \text{for } k > (2^9)^{m+1}, f_{m+1}(k) &= \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9) + \cdots)\\
   &\geq \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9))\\
   &\geq \frac{1}{2}2^m(\log_2 (k/2) + \log_2(k/4) + \cdots + \log_2(k/2^9))\\
-  &\geq \frac{1}{2}2^m(9\log_2 (k) - \frac{9 \cdot 10}{2})\\
-  &\geq 2^{m+1} \log_2(k) 
+  &\geq \frac{1}{2}2^m(9\log_2 (k) - \frac{9 \cdot 10}{2}) \label{step:readydrop}\\
+  &\geq 2^{m+1} \log_2(k) \label{step:dropped}
   \end{align}
   as desired. Hence the inductive claim holds, which establishes that $f_{\log_2
   n^{1/9}}$ satisfies the desried condition, which proves that backlog can be
   made $\tilde{\Omega}(n^{1/9})$.
-
-  {\color{red} HMMMM, (4) to (5) seems kinda wasteful, we could keep more of
-  the $\log_2$, also (1) to (2) is a bit wasteful.}
 
   Generalizing this approach we can achieve a slightly better polynomial
   lowerbound on backlog.  In our construction the point after which we had a
@@ -201,7 +198,37 @@ We get the following as a corollary of the Amplication Lemma:
   upon going from $f_m$ to $f_{m+1}$. For $\alpha = 9$ this was $2$. In general
   it turns out to be $\frac{\alpha -1}{4}$.  Hence, we can achieve backlog
   $\Omega\left(\left(\frac{\alpha -1}{4}\right)^{\log_2 n^{1/\alpha}}\log_2
-  n\right)$. This optimizes at $\alpha = 13$, to backlog $\Omega(n^{\frac{\log_2 3}{13}}\log_2 n)$. 
+  n\right)$. This optimizes at $\alpha = 13$, to backlog
+  $\Omega(n^{\frac{\log_2 3}{13}}\log n) \approx \Omega(n^{0.122}\log n)$. 
+  We can actually even improve over this slightly. Note that in the proof that
+  $f_{m+1}$ gains a factor of $2$ over $f_m$ given above, the transition from
+  (\ref{step:readydrop}) to (\ref{step:dropped}) is usually very loose: for small
+  $m$ a significant portion of the $\log_2 k$ is annihlated by the constant
+  $1+2+\cdots+9$ (or in general $1+2+\cdots + \alpha$), but for larger values
+  of $m$ because $k$ must be large we can get larger factors between steps, in
+  theory factors arbitrarily close to $\alpha /2$. If we could gain a factor of
+  $\alpha/2$ at each step, then the backlog achievable would be
+  $\Omega((\alpha/2)^{\log_2{n^{1/\alpha}}}\log n)=
+  \Omega(n^{(\log_2{\alpha/2})/2} \log n)$ which optimizes (over the naturals)
+  at $\alpha = 5$ to $n^{(\log_2 5/2)/5} \approx n^{0.264}$.  However, we can't
+  actually gain a factor of $\alpha/2$ each time because of the subtracted
+  constant. But, for any $\epsilon >0$ we can achieve a $\alpha/2 - \epsilon$
+  factor increase each time (for sufficiently large $m$).  Of course $\epsilon$
+  can't be made arbitrarily small becasue $m$ can't be made arbitrarily large,
+  and the "cut off" $m$ where we start achieving the $\alpha/2 - \epsilon$
+  factor increase must be a constant (not dependent on $n$).  When the cutoff
+  $m$, or equivalently $\epsilon$, is constant then we can achieve backlog
+  $\Omega((\alpha/2 - \epsilon)^{\log_2{n^{1/\alpha}}}\log n)=
+  \Omega(n^{(\log_2{\alpha/2 - \epsilon})/2} \log n)$.  For instance, with this
+  method we can get backlog $\tilde{\Omega}(n^{1/4})$ for appropriate $\epsilon, \alpha$
+  choice, or $\tilde{\Omega}(n^{(\log_2 5/2 - \epsilon)/5})$ for any constant $\epsilon >0$.
+  We could potentially aim to achieve even higher backlog by using more than
+  the first $\alpha$ terms of the sum. The terms after $f_m(k/2^\alpha)$ in the sum
+  are evaluated at points where they are potentially positive, but will not
+  have the full strength of the $2^m \log_2 k$. This makes them difficult to
+  deal with, and as it is not likely that we will get anything besides a modest
+  increase in the exponent of our polynomial we do not pursue this. 
+
 
 
 \end{proof}
