@@ -18,10 +18,6 @@
 \DeclareMathOperator{\poly}{\text{poly}}
 \DeclareMathOperator{\st}{\text{ such that }}
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
-\newcommand{\interior}[1]{%
-  {\kern0pt#1}^{\mathrm{o}}%
-}
-
 
 \newcommand{\contr}[0]{\[ \Rightarrow\!\Leftarrow \]}
 \newcommand{\defeq}{\vcentcolon=}
@@ -93,29 +89,32 @@ proposition concerning a subroutine that the filler will use in the Lemma, and
 a later result.
 \begin{proposition}
   \label{prop:tail}
-  The filler can force $(p-1)/(21! \cdot 2)$ (i.e. $\Theta(p)$) cups to have
-  fill at least $\ln 21$ (i.e. large consant) with probability at least
-  $1-e^{-p/(12\cdot 21!)}$ (i.e. failure probability exponentially small in $p$).
+  There exists a filling strategy that guarantees--against a smoothed-greedy
+  opponent-- that $\Theta(p)$ cups will have fill at least $\ln 21$ (i.e.
+  large consant fill) with failure probability at most $O(e^{-p})$.
 \end{proposition}
 \begin{proof}
-  {\color{red} TODO: make this rigorous, in particular the part about it being dumb
-  for the emptier to neglect the anchor set a lot, and also aghhh im neglecting
-negative fill I think}
+  The filler anchors $p-1$ cups and repeats the following algorithm for each
+  anchored cup $i$: At every step the filler adds one unit of fill to each
+  anchored cup. For $p^c$ (for some constant $c > 2$) rounds the filler plays a
+  single processor cup game on $21$ non-anchored cups that lasts for 20 steps.
+  The filler choses a new set of $20$ cups for each of these single processor
+  cup games to guarantee that the cups do not have ``negative fill" (fill below
+  the average fill) to start The filler's strategy will strongly disincentivise
+  the emptier from not emptying from each of the $p-1$ anchor cups most time;
+  for simplicities sake we first analyze the case in which the emptier does
+  empty from multiple cups outside the anchor set ever. Over the $20$ steps the
+  emptier will remove from $20$ cups. In the worst case these are all distinct
+  members of the $21$ cups. We can predict this sequence with constant
+  probability, specifically probability $1/21!$. Hence with probability at
+  least $1/21!$ we can achieve fill at least $\frac{1}{21} + \frac{1}{19} +
+  \cdots + \frac{1}{1} > \ln 21$ in this cup.
 
-  The filler anchors $p-1$ cups and repeats the following algorithm for each anchored cup $i$:
-  At every step the filler adds one unit of fill to each anchored cup. For $p^c$
-  rounds the filler plays a single processor cup game on $21$ non-anchored cups
-  that lasts for 19 steps. The filler's strategy will strongly disincentivise
-  the emptier from not emptying from each of the $p-1$ anchor cups every time,
-  so for simplicity we initially will neglect the possibility that the emptier
-  removes from multiple cups in the $21$ cups. Over the $19$ steps the emptier
-  will remove from $19$ cups. In the worst case these are all distinct members
-  of the $21$ cups. We can predict this sequence with constant probability,
-  specifically probability $1/21!$. At the end of each of these single
-  processor cupgames the filler with probability $p^{c-1}$
-  swaps the cup that has received $\frac{1}{21} + \frac{1}{19} + \cdots +
-  \frac{1}{1} > \ln 21$ fill with constant probability with a random cup in the
-  anchor set.  At the end of this process each cup in the anchor set has at
+  For each for each of the anchor cups the filler choses a round uniformly at
+  random from the $p^c$ rounds to swap the cup that has constant probability of
+  having at least constant fill with the anchor cup being focussed on at that point.
+
+  Thus, at the end of this process each cup in the anchor set has at
   least a $1/21!$ chance of having fill at least $\ln 21.$ The expectation of
   the number of cups that have fill at least $\ln 21$ is at least $(p-1)/21!$. 
   Using a Chernoff bound we can show that with high probability in $p$ the actual
@@ -124,7 +123,24 @@ negative fill I think}
   least $\ln 21$ in the anchor set, and let $m_E$ be the expected number (i.e.
   $m_E = (p-1)/21!$) of such cups in the anchor set. Then $$\Pr[m_A < m_E /2 ]
   \le e^{-p / (12\cdot 21!)}.$$
-  
+
+  Now we consider the case where the emptier choses some rounds to empty from
+  multiple non-anchor cups. This is problematic since it could mean that we
+  are not genuinely playing a single processor cup game on the selected $21$ cups.
+  However, neglecting an anchor cups is dangerous for the emptier, as it will
+  substantially increase the fill in the anchor set. If the emptier neglects
+  the anchor set in $d$ of the $p^c$ rounds, then the probability of the
+  emptier interfering with the single processor cup game on the $1$ round that
+  the filler has selected to swap the cup into the anchor set is $d/p^c$. If
+  this is small, e.g. less than $1/2$, then we can simply accept a small
+  constant reductive factor on the number of cups that we are guaranteeing have
+  the desired constant fill. On the other hand, if $d/p^c > 1/2$, then $d \ge \Omega(p^c)$. 
+  This means that the average fill in the anchor set has increased dramatically, by $\poly(p)$.
+  Thus at least one of the anchor cups must have fill $\Omega(\poly(p))$. This
+  guarantees fill $\Omega(\poly p)$ for $\Omega(\poly(p))$ rounds. But this
+  could never happen against smoothed-greedy! 
+  %% this part still needs to be made a bit more rigorous
+
 \end{proof}
 
 
@@ -218,7 +234,11 @@ Next we establish the Amplification Lemma:
   formed the anchor set. By recursing with an identical method the filler can
   get backlog $\frac{1}{2}(f(n/2) + f(n/4) + f(n/8) + \cdots)$.
 
-  % Note that the ability to increase $p$ is needed in the recursive calling of $f$.
+  Note that the ability to increase the number of processors is needed in the
+  recursive calling of $f$, as $f$ might require using lower values of $p$, but
+  at the end of performing $f$ we must restore the number of processors back up
+  to the number that we started with so that the filler can continue with the
+  same value of $p$ that it started with.
 \end{proof}
 
 We now use the Amplication Lemma to achieve the following:
@@ -297,14 +317,18 @@ We now use the Amplication Lemma to achieve the following:
 \end{proof}
 
 \begin{remark}
-  The recursive construction requires quite a lot of steps, in particular a
-  superlinear number of steps. If we consider the tree that represents
-  computation of $f_{\log n}(n)$ we see that each node will have at most $\log n$
-  children (the children of $f_k(c)$ are $f_{k-1}(c/2), f_{k-1}(c/4), \ldots$),
-  and the depth of the tree is $\log n$. Hence the number of elements in the
-  tree is at most $O((\log n)^{\log n}) = O(2^{\log \log n \log n})$.
+  The recursive construction requires quite a lot of steps, in fact a
+  superpolynomial number of steps. If we consider the tree that represents
+  computation of $f_{\log n}(n)$ we see that each node will have at most
+  $\alpha$ (some constant, e.g. $\alpha = 9$, $\alpha$ is the number of terms
+  that we keep in the sum) children (the children of $f_k(c)$ are
+  $f_{k-1}(c/2), f_{k-1}(c/4), \ldots f_{k-1}(c/2^\alpha)$), and the depth of
+  the tree is $\log n^{1/\alpha}$. Say that the running time at the node $f_{\log n}(n)$ is
+  $T(n)$. Then because $f_{k}(n)$ must call each of $f_{k-1}(n/2^i)$ $n/2^i$
+  times for $1\le i \le \alpha$, we have that $ T(n) \le \frac{\alpha
+  n}{2}T(n/2)$. This recurrence yeilds $T(n) \le \poly(n)^{\log n} =
+  O(2^{\log^2 n})$ for the running time.
 \end{remark}
-
 
 Becasue of the large backlog achievable by the on-line filler in the
 variable-processor cup game, and the fact that the off-line filler can 
@@ -316,9 +340,45 @@ Lemma \ref{lem:dprand} can be improved to the following:
   $\Omega(2^{\sqrt{\log n}/2})$ with decent probability in time $O(n)$.
 \end{lemma}
 \begin{proof}
-  {\color{red} TODO: do it}
-  We use Proposition \ref{prop:tail}. A lot.
-  
+  {\color{red} TODO: do it, in particular, find XXX,YYY,ZZZ, and make this like legit}
+  {\color{green} 
+    We use Proposition \ref{prop:tail}. A lot.
+    The basic idea is to basically use the Amplification Lemma for an oblivious
+    filler. The only thing that changes is that we achieve the amplification a certain probability.
+    In particular, it would be a bad idea to actually do the sum from the Amplification Lemma all the way down, becasue that kind of kills the probability that we get. Instead we opt to doing it like $9$ times. So we have something like 
+    \begin{center}
+      If you can achieve backlog $f(k)$ with failure probability $g(k)$ then you can achieve backlog 
+      $$f'(k) = \frac{1}{2}(f(k/2) + f(k/4) + \cdots + f(k/2^9)$$
+      with failure probability 
+      $$g'(k) \le g(k/2) + g(k/4) + \cdots + g(k/2^9) $$
+    \end{center} 
+    where the probability bound is due to a union bound.
+    Let's call this the \defn{oblivious amplification lemma}. Now we can proceed
+    somewhat similarly as in the proof corollary of the amplification lemma in
+    which we establised $\Omega(\poly(n))$ backog was possible.
+
+    A major difference however is that we cannot continue the recursive
+    construction of these $f_m$'s all the way up to $f_{\log n^{1/9}}$, as this would
+    require too much running time (superlinear). 
+    Also, we don't want the probability to decay too much, so we can't ever really go below $\sqrt{n}$ as the arg.
+    Instead we recurse down from XXX all the way to ZZZ. 
+    Doing so we achieve backlog $2^{XXX}$.
+    With what probability?
+    Well, the failure probability $g_{XXX}(k) \ge g_{XXX-1}(k/2) + g(k/4) + \cdots + g(k/2^9) $
+    Expanding the tree thing, and noting the upper limit on depth imposed by running time, and the lower limit on how much you can cut stuff imposed by the need for high probability, we get YYY leaves and stuff, and this is fine, because the failure probability was literally exponentially small in $p$ so its hard to make it sad.
+    Anyways, as desried, we have pretty decent backlog with pretty decent probabiliity.
+  }
+
+  {\color{blue}
+    OK, so wait a second. Let's say we use cutoff parameter $\alpha$, and recursion depth $\beta$. Then the backlog is 
+    $(\alpha/2)^\beta$, and the running time is $n^\beta$. To get $\poly(n)$ run
+    time we need $\beta \le O(1)$, but to get $\Omega(2^{\sqrt{\log n}})$ backlog we
+    neeed $\beta \ge \Omega(\sqrt{\log n})$. These are incompatible, so I don't
+    think this is going to work out very well.
+  }
+
+  A much simpler solution: just lower $n$ to $\sqrt{n}$ or whatever. 
+
 \end{proof}
 
 \end{document}
