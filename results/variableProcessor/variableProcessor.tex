@@ -2,6 +2,25 @@
 \usepackage[subtle]{savetrees}
 \usepackage[left=1in, right=1in, top=1in, bottom=1in]{geometry}
 
+% TODO:
+% make sure everything that is written right now is good
+%   especially pay attention to negative fill
+%   we might need to talk about op cups, or a smoothing step
+% extend to broader class of algorithms
+%   should be easy to get "greedy-like"
+%   memoryless monotone?
+%   smoothable? (if you pour in water the cups even out eventually)
+%   arbitrary
+
+
+
+% I GUESS I wanna add the op buisness ...
+% if more than 1/log log n of the op damage is done by a single cup we win
+% else:
+% either our alg works
+% or hoeffding says we do good at containing the op cups
+
+
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -32,97 +51,157 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{conjecture}{Conjecture}
 
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
 \title{An investigation of variable-processor cup games}
 \author{Alek Westover}
 
 \begin{document}
 \maketitle
 
-In the \defn{variable-processor cup game} the filler is allowed to change
-$p$, the amount of water that the filler can add and the number of cups from
-which the emptier can remove water.  Apriori this offers neither the filler nor the emptier a clear
-advantage: lower values of $p$ mean that the emptier is at more of a
-discretization advantage but also mean that the filler can anchor fewer cups.
-We hoped that the variable-processor cup game could be simulated in the vanilla
-multiprocessor cup game, because the extra ability given to the filler does not
-seem very strong. The new version of the cup game arose as we tried to get a bound 
-of $\Omega(\log p)$ backlog in the multiprocessor game against an off-line filler, 
-which would combine with previous results to give us a lower bound that matches
-out upper bound: $O(\log\log n + \log p)$. This new version seemed promising in
-this respect because of the following Lemma:
+In the \defn{variable-processor cup game} the filler is allowed to change $p$,
+the amount of water that the filler can add and the number of cups from which
+the emptier can remove water. This is a natural extention of the
+multi-processor cup game. Note that although the restriction that the filler
+and emptier's resources vary together may seem artificial, this is the only way
+to conduct the analysis; the rationale behind giving the emptier and filler
+equal resources in the classical vanilla multi-processor cup game is that 
+this is the only way to achieve upper and lower bounds. The equivalent rational holds
+for the motivation of the variable-processor cup game. Analysis of this game
+does provide information about how real-world systems will behave.
 
-\begin{lemma}
-  \label{lem:dprand}
-  In the variable-processor cup game on $n$ cups against an 
-  off-line filler, the filler can force backlog to be $\Omega(\log p)$.
-\end{lemma}
+Apriori the fact that the number of processors can vary offers neither the
+filler nor the emptier a clear advantage: lower values of $p$ mean that the
+emptier is at more of a discretization disadvantage but also mean that the
+filler can anchor fewer cups.  We hoped that the variable-processor cup game
+could be simulated in the vanilla multiprocessor cup game, because the extra
+ability given to the filler does not seem very strong. The new version of the
+cup game arose as we tried to get a bound of $\Omega(\log p)$ backlog in the
+multiprocessor game against an off-line filler, which would combine with
+previous results to give us a lower bound that matches our upper bound:
+$O(\log\log n + \log p)$. This new version seemed promising in this respect
+because of the following Proposition:
 
-However, attempts at simulating the variable-processor cup game are futile
-because of the following Lemmas, which shows that the variable-processor cup
-game is, surprisingly, fundamentally different than the multiprocessor cup game,
-and thus impossible to simulate:
+\begin{proposition}
+  \label{prop:dprand}
+  In the variable-processor cup game on $n$ cups with an off-line filler
+  attacking a smoothed-greedy opponent, the filler can force backlog to be
+  $\Omega(\log n)$.
+\footnote{Note that we have $\Omega(\log n)$ in this proposition instead of $\Omega(\log
+p)$ because the filler can increase the number of processors, so it increases
+the number of processors to $n-1$ to start. A nearly ientical construction
+could be used to show that backlog $\Omega(\log p_{\max})$ can be achieved,
+where the number of processors starts at $p_{\max}$ and the filler does not
+ever increase the number of processors. However, using $p_{\max} = n$ is 
+natural in the variable-processor cup game, so we do not consider the game with 
+the restriction that the filler can not increase the number of processors above
+some $p_{\max} < n$.}
+\end{proposition}
 
-\begin{lemma}
-  \label{lem:dpdet}
-  In the variable-processor cup game on $n$ cups against an online filler, the
-  filler can force backlog to be $\Omega(\log^2 p)$.
-\end{lemma}
-
-In fact Lemma \ref{lem:dpdet} gives a fairly weak lowerbound on backlog; the
-filler can achieve much higher fill, as high as $\poly(n)$, which follows as a
-corollary of the \defn{Amplification Lemma:}
+However, we show that attempts at simulating the variable-processor cup game
+are futile because the variable-processor cup game
+is--surprisingly--fundamentally different from the multiprocessor cup game, and
+thus impossible to simulate. Formally this is a corollary of the
+\defn{Amplification Lemma}:
 
 \begin{lemma}
   \label{lem:amplification}
-  Given a filling algorithm for achieving $f(k)$ backlog on $k$ cups (this
-  backlog is relative to a baseline of the average of the cups, with ``negative
-  fill"--fill below the average--allowed even in the initial state), there
-  exists a filling algorithm for achieving ``amplified" backlog of
-  $$f'(k) = \frac{1}{2}(f(k/2) + f(k/4) + \cdots )$$
-  on $k$ cups.
+  Given a filling algorithm for achieving $f(k)$ backlog on $k$ cups relative
+  to a baseline of the average fill of the cups, with \defn{negative
+  fill}--fill below the average fill--allowed, there exists a filling algorithm for
+  achieving ``amplified" backlog of $$f'(k) = \frac{1}{2}(f(k/2) + f(k/4) +
+  \cdots )$$ on $k$ cups.
 \end{lemma}
 
-We proceed to prove the Lemmas. 
+We proceed to prove these claims. 
 
-Before proving Lemma \ref{lem:dprand}, we prove the following useful
-proposition concerning a subroutine that the filler will use in the Lemma, and
-a later result.
+Before proving Proposition \ref{prop:dprand}, we prove the following useful
+proposition concerning an important subroutine that the filler will use.
 \begin{proposition}
   \label{prop:tail}
-  There exists a filling strategy that guarantees--against a smoothed-greedy
-  opponent-- that $\Theta(p)$ cups will have fill at least $\ln 21$ (i.e.
-  large consant fill) with failure probability at most $O(e^{-p})$.
+  In the variable-processor cup game on $n$ cups against an offline filler
+  where the filler does not increase the number of processors above $n$,
+  there exists a filling strategy that guarantees--with probability at least
+  $1-e^{O(-n)}$--either to result in $\Theta(n)$ cups with fill
+  $\Omega(1)$, or to result in some cup with fill $\tilde{\Omega}(n)$, where
+  fill is relative to average fill, with negative fill allowed.
+
+  {\color{red} there is another case: gets a good number of anchor cups. Q: how do we USE this other case in prop2?}
 \end{proposition}
 \begin{proof}
-  The filler anchors $p-1$ cups and repeats the following algorithm for each
-  anchored cup $i$: At every step the filler adds one unit of fill to each
-  anchored cup. For $p^c$ (for some constant $c > 2$) rounds the filler plays a
-  single processor cup game on $21$ non-anchored cups that lasts for 20 steps.
-  The filler choses a new set of $20$ cups for each of these single processor
+  A problem that arises in trying to prove that we can achieve $\Theta(n)$ cups
+  with fill $\Omega(1)$ is that many cups, in the most extreme case all but a
+  single cup, could have negative fill (fill below the average relative to
+  which fill is measured). However, if the fill is so unevenly distributed then
+  this means that the backlog is already very high, so the filler does to
+  achieve $\Theta(n)$ cups with fill $\Omega(1)$ in the context to which this
+  proposition must be applied. Furthermore, there do exist emptying algorithms
+  that can act in such a way as to disrupt our strategy for achieving
+  $\Theta(n)$ cups with backlog $\Omega(1)$, but we shall show that such emptiers 
+  incur enormous backlog; in particular backlog $\tilde{\Omega}(n)$.
+
+  Let $h \ge \Omega(1)$ be the backlog we aim to achieve in $\Theta(n)$ cups.
+  If there exists a $k<n$ such that the $k$ fullest cups have fill
+  that sums to more than $h\cdot n$, then consider the least $k$, $k_{\min}$,
+  such that this is true. We call the $k_{\min}$ fullest cups
+  \defn{overpowered}, because they are pushing the average fill of the other
+  cups down significantly. Note that overpowered cups must have
+  positive fill; otherwise an overpowered cup could be removed while
+  maintaining the requirement for the sum of their fills, which contradicts the
+  minimality of $k_{\min}$.
+
+  If there is a cup with fill at least $h\cdot n / \log\log n \ge
+  \tilde{\Omega}(n)$, then we don't need to worry about attaining $\Theta(n)$
+  cups with fill at least $h$; the proposition guarantees that we either attain
+  those cups, or attain one cup with enormous fill.
+  Otherwise, the number of overpowered cups cannot be in $\{1, 2, \ldots, \log \log n\}$.
+
+  Now we consider the case where there are at least $\log\log n$ overpowered
+  cups, but no one cup has fill larger than $h\cdot n / \log\log n$.
+  The algorithm we will describe forms a set of $n/2$ \defn{anchor} cups, of which $k\cdot
+  n$, for some appropriate $k <\frac{1}{2}$ ($k$ is determined by $h$, the
+  larger $h$ is desired the smaller $k$ will be) will have fill at least $h$,
+  and the algorithm will have success probability at least $1-e^{-nk/10}$.
+  The algorithm is completely symmetric; every cup has the same probability of
+  being part of the $n/2$ anchor cups: $1/2$. By a Chernoff Bound the
+  probability that less than $(\log\log n)/4$ overpowered cups end up in the anchor set
+  is less than $1/\log n$.
+
+  Now we consider the case in which there are no overpowered cups.
+  The filler anchors $n/2$ cups and repeats the following algorithm for each
+  anchored cup $i$: \\At every step the filler adds one unit of fill to each
+  anchored cup. For $(n/2)^c$ (for some constant $c > 2$, e.g. $c=3$) rounds the filler plays a
+  single processor cup game on $s\ge e^h$ non-anchored cups (e.g. $s=21$) that lasts for $s-1$ steps.
+  The filler choses a new set of $s-1$ cups for each of these single processor
   cup games to guarantee that the cups do not have ``negative fill" (fill below
   the average fill) to start The filler's strategy will strongly disincentivise
-  the emptier from not emptying from each of the $p-1$ anchor cups most time;
+  the emptier from not emptying from each of the $n/2$ anchor cups most time;
   for simplicities sake we first analyze the case in which the emptier does
-  empty from multiple cups outside the anchor set ever. Over the $20$ steps the
-  emptier will remove from $20$ cups. In the worst case these are all distinct
-  members of the $21$ cups. We can predict this sequence with constant
-  probability, specifically probability $1/21!$. Hence with probability at
-  least $1/21!$ we can achieve fill at least $\frac{1}{21} + \frac{1}{19} +
-  \cdots + \frac{1}{1} > \ln 21$ in this cup.
+  empty from multiple cups outside the anchor set ever. Over the $s-1$ steps the
+  emptier will remove from $s-1$ cups. In the worst case these are all distinct
+  members of the $s-1$ cups. We can predict this sequence with constant
+  probability, specifically probability $1/s!$. Hence with probability at
+  least $1/s!$ we can achieve fill at least $\frac{1}{s} + \frac{1}{s-1} +
+  \cdots + \frac{1}{1} > \ln s \ge h$ in this cup.
 
   For each for each of the anchor cups the filler choses a round uniformly at
-  random from the $p^c$ rounds to swap the cup that has constant probability of
+  random from the $(n/2)^c$ rounds to swap the cup that has constant probability of
   having at least constant fill with the anchor cup being focussed on at that point.
 
   Thus, at the end of this process each cup in the anchor set has at
-  least a $1/21!$ chance of having fill at least $\ln 21.$ The expectation of
-  the number of cups that have fill at least $\ln 21$ is at least $(p-1)/21!$. 
-  Using a Chernoff bound we can show that with high probability in $p$ the actual
+  least a $1/s!$ chance of having fill at least $h$. The expectation of
+  the number of cups that have fill at least $h$ is at least $(n/2)/s!$. 
+  Using a Chernoff bound we can show that with exponentially high probability in $n$ the actual
   number of such cups does not deviate from this mean by more than a constant
   factor. In particular, let $m_A$ be the actual number of cups with fill at
-  least $\ln 21$ in the anchor set, and let $m_E$ be the expected number (i.e.
-  $m_E = (p-1)/21!$) of such cups in the anchor set. Then $$\Pr[m_A < m_E /2 ]
-  \le e^{-p / (12\cdot 21!)}.$$
+  least $h$ in the anchor set, and let $m_E$ be the expected number (i.e.
+  $m_E = (n/2)/s!$) of such cups in the anchor set. Then $$\Pr[m_A < m_E /2 ]
+  \le e^{-n / (40\cdot s!)}.$$
 
   Now we consider the case where the emptier choses some rounds to empty from
   multiple non-anchor cups. This is problematic since it could mean that we
@@ -137,73 +216,141 @@ a later result.
   the desired constant fill. On the other hand, if $d/p^c > 1/2$, then $d \ge \Omega(p^c)$. 
   This means that the average fill in the anchor set has increased dramatically, by $\poly(p)$.
   Thus at least one of the anchor cups must have fill $\Omega(\poly(p))$. This
-  guarantees fill $\Omega(\poly p)$ for $\Omega(\poly(p))$ rounds. But this
-  could never happen against smoothed-greedy! 
-  %% this part still needs to be made a bit more rigorous
+  guarantees fill $\Omega(\poly p)$ for $\Omega(\poly(p))$ rounds, which is
+  sufficient to satisfy the proposition.
 
 \end{proof}
 
 
-\begin{proof}[Proof of Lemma \ref{lem:dprand}.]
+\begin{proof}[Proof of Proposition \ref{prop:dprand}.]
   The filler follows the following algorithm:
   \begin{enumerate}
-    \item Get $(p-1)/(21! \cdot 2)$ cups with fill at least $\ln 21$ with probability at
-      least $1-e^{-p/(12\cdot 21!)}$ (possible by Proposition \ref{prop:tail})
-    \item Decrease the number of processors from $p$ to $p' = (p-1)/(21!\cdot 2)$.
-      Over the next $\lfloor ((\ln 21)-1)/2 \rfloor = 1$ steps the filler places $1$
-      water in each of $p'$ cups. Assuming that the emptier is using smoothed-greedy then this
-      will result in having fill $\lfloor ((\ln 21)-1) /2 \rfloor = 1$ in these \emph{known} cups.
-    \item Recurse on those known cups. 
+    \item Apply the subroutine described in Proposition \ref{prop:tail} to
+      attain either a cup with incredibly large fill ($\Omega(\poly(n))$), or
+      $n\cdot g = \Theta(n)$ cups with fill $h \ge \Omega(1)$ (with probability
+      at least $1-e^{O(-n)}$).
+    \item Decrease the number of processors to $p' = n\cdot g$. 
+    \item Over the next $\lfloor h/2 \rfloor - 1$ steps the filler places $1$
+      water in each of $p'$ cups. Assuming that the emptier is using the
+      smoothed-greedy algorithm, then this will result in the $p'$
+      chosen--\emph{known}--cups having fill at least $\lfloor h/2 \rfloor -1$.
+    \item Recurse on the known cups. 
   \end{enumerate}
-  By recursing $\Theta(\log p)$ times, increasing backlog by at least $1$ at
-  each recursion level, we get backlog of $\Omega(\log p)$ as desired.
+  If at any point in the process backlog $\Omega(\poly(n))$ was achieved then
+  the emptier succeeds by definition, having achieved very high backlog.
+
+  Otherwise, Proposition \ref{prop:tail} guaratnees that at each recursive step
+  the backlog will increase by at least $\lfloor h/2\rfloor-1$. We can chose
+  $h$ such that this is e.g. $1$.
+
+  By recursing $\Theta(\log n)$ times, increasing backlog by at least $1$ at
+  each recursion level, we get backlog of $\Omega(\log n)$ as desired.
   In order for this guarantee to hold with good probability we do not recurse
   until the number of processors has been reduced to $1$; Rather we cut off at 
   halfway through the recursion, i.e. when the number of processors has been
-  reduced to $\Theta(\sqrt{p})$. This gives us the same backlog (asymptotically), 
-  while also making the probability of failure to achieve this backlog
-  $\tilde{O}(e^{-p})$ by a union bound on the exponentially small failure
-  probability that we achieved via a Chernoff bound.
+  reduced to $\Theta(\sqrt{n})$. This gives us the same backlog (asymptotically), 
+  while also making the probability of failure to achieve this backlog less than
+  $e^{O(-\sqrt{n})}\log n$ by a union bound on the exponentially small failure
+  probability at each recursive step.
 \end{proof}
 
-\begin{proof}[Proof of Lemma \ref{lem:dpdet}.]
-  An important subroutine is again the ability to achive a ``tail" of size
-  $\Theta(p)$ with a specified fill. The filler anchors $p-1$ cups, and then
-  repeats the following algorithm for each anchored cup: At every step the
-  filler adds one water to the anchored cups. For $p\log^2 p + 1$ rounds the
-  filler plays a single processor cup game on $p$ cups with ``negative"
-  fill (i.e. fill below the average fill) allowed (it is strictly easier if
-  negative fill is not allowed; we develop the more restrictive version because
-  we will need to recursively apply the procedure). If among these games
-  the emptier always neglects at least 1 anchor cup at least once, then the average 
-  fill of the anchor cups will have increased by $\Omega(\log^2 p)$, hence
-  we have the desired backlog in an anchor cup. If on the other hand there exists a game
-  where the emptier always empties a unit of water from each of the $p-1$ anchor cups, 
-  then the emptier and the filler are genuinely engaged in a single processor cup game on the remaining cups,
-  in which by a well known construction the filler can achieve backlog at least $\log p$.
-  Upon achieving such backlog the filler will swap this cup into the anchor set.
-  At the conclusion of this process each anchor cup will have fill at least
-  $\log p$ greater than the average fill of the non-anchor cups. However, this
-  does not quite imply that the anchor cups have increased in fill by $\log p$
-  from the start of the process, as the average fill in the non-anchor cups has
-  been depleted as water is siphoned off into the anchor cups. In particular,
-  if the average fill of the non-anchor cups ends up as $\mu'$, started as
-  $\mu$, and the average fill has increased by $\epsilon \ge 0$ from $\mu$
-  ($\epsilon >0$ could occur if cups zero out, which as remarked upon makes it
-  strictly easier to achieve high fill), then we have $\mu' + (\log p)/ 2 \le
-  \mu +\epsilon$. If $\mu'$ is at least $(\log p )/2$ below the new average,
-  then the average fill among anchor cups must be at least $(\log p)/2$ above
-  this new average fill, which is at least the average fill. Hence by the end
-  of this process all anchor cups are at least $(\log p)/2$ above the average
-  fill at the beginning of the process.
+% \begin{proof}[Proof of Proposition \ref{prop:dpdet}.]
+%   If at any point in the process that will be described backlog is greater than
+%   $\frac{1}{8}\log^2 n$ then the filler instantly stops whatever it is doing,
+%   and just maintains this backlog. Henceforth we do not consider this case
+%   where the filler finishes achieving the backlog before the end of our procedure.
 
-  After applying this process the filler cuts the number of processors in half and
-  recurses on the anchor cups. Note that in recursion backlog is relative to
-  the new average fill of the set that we recurse on. The recursion depth is
-  $\log p$, so this strategy gives backlog at least $\frac{1}{2}(\log p + \log p/2 + \log
-  p/2^2 + \cdots) \ge \Omega(\log^2 p)$ as desired.
+%   The main idea of this analysis is to use a subroutine for achieving fill
+%   $\frac{1}{2}\log n/2^l$ on half of the \defn{active} cups (of which there are $n/2^l$),
+%   and then halving the number of processors, and the number of cups that we
+%   focus on, and recursing on this set. By recursing $\log n$ times we achieve
+%   backlog $\frac{1}{2}(\log n/2 + \log n/4 + \log n/8 + \cdots) \ge
+%   \Omega(\log^2 n)$.
 
-\end{proof}
+%   The key technical challenge is how to achieve fill at least $\frac{1}{2}\log n/2^l$ at
+%   each level of recursion, becasue \defn{negative fill}--fill below the average
+%   fill of the active cups--is allowed.  Note that it is strictly easier for the
+%   filler to achieve large fill if negative fill is not allowed (i.e. cups can
+%   zero out); we need to allow for negative fill because we are recursing. 
+
+%   % If there is a set of cups of size less than $n/\log n$ that contains at
+%   % least fill $n \log n$, then some cup has fill at least $log^2$. but dang,
+%   % this isn't quite big enough a size.
+
+%   % IT LOOKS LIKE I either have to invoke the ability to smooth, which is sad
+%   % or go for backlog only $\log^2 n  / \log \log n$
+%   % WAIT, maybe not
+%   %% THOUGHT: lots of bad cups, very few good cups, => skip levels of recursion, cut p by a lot more
+
+%   Let $h_l = \frac{1}{2}\log n/2^l$; we will achieve fill at least $h_l/4$
+%   in $n_l = n/2^{l}$ cups at the $l$-th level of recursion. Let a cup be designated
+%   \defn{bad} if it has fill less than $-h_l$, \defn{good} if it has
+%   fill at least $\frac{1}{4}h_l$ and \defn{fine} if it has fill in
+%   $(-\frac{1}{4}h_l, \frac{1}{4}h_l)$. Let $b$ be the number of bad cups, $g$
+%   the number of good cups, and $f$ the number of fine cups.
+
+%   If $g \ge n_l/4$ then we simply recurse on the good cups.
+
+%   If $f \ge n_l/4$. Which is fine. So we do the following, with the assurance that the cups
+%   are pretty much fine basically.
+
+%   We now outline the filler's strategy to achieve $n_l/2$ cups with fill $h_l$. 
+
+%   To accomplish this, the filler anchors the $n_l/2$ fullest cups, sets the number of
+%   processors to be $n_l/2+1$ and then repeats the following algorithm for each
+%   anchored cup $i$: \\
+%   If the fill in anchor cup $i$ is alreday at least $h_l$, then we do nothing.
+
+%   At every step the filler places $1$ fill in each anchored cup. For $n_l\log^2 n
+%   + 1$ rounds the filler plays a single processor cup game on the $n_l/2$
+%   non-anchored cups. If among these games the emptier always neglects at least
+%   1 anchor cup at least once, then the average fill of the anchor cups will
+%   have increased by $\Omega(\log^2 n)$, hence we have the desired backlog in an
+%   anchor cup. 
+
+%   If on the other hand there exists a game where the emptier always empties a
+%   unit of water from each of the $n_l/2$ anchor cups, then the emptier and the
+%   filler are genuinely engaged in a single processor cup game on the remaining
+%   cups. By a well known construction the filler can achieve backlog at least
+%   $\log n_l/2$ in the single processor cup game on $n_l/2$ cups. 
+
+%   Upon achieving such backlog the filler will swap this cup into the anchor
+%   set. At the conclusion of this process each anchor cup will have fill at
+%   least $\log n_l/2$ greater than the average fill of the non-anchor cups.
+
+%   However, this does not quite imply that the anchor cups have increased in
+%   fill by $\log n_l/2$ from the start of the process, as the average fill in the
+%   non-anchor cups has been depleted as water is siphoned off into the anchor
+%   cups. In particular, if the average fill of the non-anchor cups ends up as
+%   $\mu'$, started as $\mu$, and the average fill has increased by $\epsilon \ge
+%   0$ from $\mu$ ($\epsilon >0$ could occur if cups zero out, which as remarked
+%   upon makes it strictly easier to achieve high fill), then we have $\mu' +
+%   (\log n_l/2)/ 2 \le \mu +\epsilon$. If $\mu'$ is at least $(\log n_l/2 )/2$ below
+%   the new average, then the average fill among anchor cups must be at least
+%   $(\log n_l/2)/2$ above this new average fill, which is at least the average
+%   fill. Hence by the end of this process all anchor cups are at least $(\log
+%   n_l/2)/2$ above the average fill at the beginning of the process.
+
+%   After applying this process the filler cuts the number of processors in half
+%   and recurses on the anchor cups. Note that in recursion fill is relative to
+%   the new average fill of the set that we recurse on. The recursion depth
+%   possible is $\log n$, so this strategy gives backlog at least
+%   $\frac{1}{2}(\log n/2 + \log n/4 + \log n/8 + \cdots) \ge \Omega(\log^2 n)$
+%   as desired.
+  
+%   {\color{red}
+%   And finally, if $g<n_l/4$ and $f<n_l/4$, then as $g+b+f = n_l$, we have $b >
+%   n_l/2$ then the negative fill of the bad cups is at least $\frac{1}{4}b h_l$;
+%   this must be offset by some set of cups with positive fill.  If there are
+%   less than $b/\log n_l$ cups that have positive fill, then the average fill in
+%   these cups is $\Omega(\log^2 n)$, so the filler would instantly win.
+%   Unfortunately, if say, $n/\sqrt{\log n}$ of the cups hae fill $\log^{3/2} n$
+%   or something then like we're kind of screwed. There are pretty much 2 options
+%   at this point. You can recurse on a set of things that have fill at least
+%   $\log^{3/2} n$, and there are $n/\sqrt{\log n}$ of them, so you can get like
+%   $\log n / \log \log n$ levels of recursion ish, or you can like do smoothing.
+% }
+% \end{proof}
 
 Next we establish the Amplification Lemma:
 \begin{proof}[Proof of Lemma \ref{lem:amplification}]
@@ -243,6 +390,7 @@ Next we establish the Amplification Lemma:
 
 We now use the Amplication Lemma to achieve the following:
 \begin{corollary}
+  \label{cor:poly}
   The filler can achieve backlog $\Omega(\poly(n))$
 \end{corollary}
 \begin{proof}
@@ -317,6 +465,7 @@ We now use the Amplication Lemma to achieve the following:
 \end{proof}
 
 \begin{remark}
+  \label{rmk:runtime}
   The recursive construction requires quite a lot of steps, in fact a
   superpolynomial number of steps. If we consider the tree that represents
   computation of $f_{\log n}(n)$ we see that each node will have at most
@@ -334,52 +483,57 @@ Becasue of the large backlog achievable by the on-line filler in the
 variable-processor cup game, and the fact that the off-line filler can 
 achieve a set of cups with known constant fill with failure probability
 exponentially small in the variable-processor cup game, we conjectured that 
-Lemma \ref{lem:dprand} can be improved to the following:
+Proposition \ref{prop:dprand} can be improved in a manner similar to how the
+on-line filling strategy was improved. We adapt the Amplification Lemma to the
+case of an oblivious filler, and achieve as a corollary the desired higher backlog.
+The \defn{Oblivious Amplification Lemma:}
 \begin{lemma}
-  There exists an off-line filling strategy that achieves backlog
-  $\Omega(2^{\sqrt{\log n}/2})$ with decent probability in time $O(n)$.
+  \label{lem:obliviousamplification}
+  Given a filling algorithm for achieving $f(k)$ backlog on $k$ cups (this
+  backlog is relative to a baseline of the average of the cups, with ``negative
+  fill"--fill below the average--allowed even in the initial state) that
+  succeeds with probability at least $1/2$, there exists a filling algorithm
+  for achieving ``amplified" backlog of $$f'(k) = \frac{1}{2}(f(k/2) + f(k/4) +
+  \cdots + f(k/2^9))$$ on $k/4$ cups with probability at least $1/2$.
 \end{lemma}
 \begin{proof}
-  {\color{red} TODO: do it, in particular, find XXX,YYY,ZZZ, and make this like legit}
-  {\color{green} 
-    We use Proposition \ref{prop:tail}. A lot.
-    The basic idea is to basically use the Amplification Lemma for an oblivious
-    filler. The only thing that changes is that we achieve the amplification a certain probability.
-    In particular, it would be a bad idea to actually do the sum from the Amplification Lemma all the way down, becasue that kind of kills the probability that we get. Instead we opt to doing it like $9$ times. So we have something like 
-    \begin{center}
-      If you can achieve backlog $f(k)$ with failure probability $g(k)$ then you can achieve backlog 
-      $$f'(k) = \frac{1}{2}(f(k/2) + f(k/4) + \cdots + f(k/2^9)$$
-      with failure probability 
-      $$g'(k) \le g(k/2) + g(k/4) + \cdots + g(k/2^9) $$
-    \end{center} 
-    where the probability bound is due to a union bound.
-    Let's call this the \defn{oblivious amplification lemma}. Now we can proceed
-    somewhat similarly as in the proof corollary of the amplification lemma in
-    which we establised $\Omega(\poly(n))$ backog was possible.
+  This is a simple application of a Chernoff bound.
+  The filler partitions the cups into 2 groups of size $k/2$ and then anchors
+  half of them and repeatedly applies $f(k)$ on the non-anchored cups.  The
+  filler has to apply $f(k)$ a lot of times, $\poly(k)$, and say ``psych" all
+  but one of these times, this time being chosen at random, and in that time it
+  swaps the cup into the anchor set. This guarantees that it is a bad idea for
+  the emptier to not be focussing on the anchor cups. Thus at the end of this process each
+  cup in the anchor set will have at least a $1/2$ chance of hainvg fill $f(k/2)/2$ fill in it.
+  At this point, assuming that the opponent is smoothed greedy, the filler can
+  transfer the water into known cups, and then recurse. In order to achive a
+  failure probability of at most $1/2$, the filler doesn't recurse all the way
+  to the bottom. Rather, it stops at some level $\beta$. As each level of recursion fails with probability at
+  most $e^{-k/10}$, the probability that any level fails is bounded above, by
+  the union bound, by $e^{-n/10} + e^{-n/(2\cdot 10)} + e^{-n/(4\cdot 10)} + \cdots e^{-n/(2^\beta \cdot 10)}$
+  This sum is bounded above by $e^{-n/(2^\beta \cdot 10)} \log n $, so as long
+  as $\beta$ is not too huge this shouldn't be an issue to get to be less than $1/2$.
+\end{proof}
 
-    A major difference however is that we cannot continue the recursive
-    construction of these $f_m$'s all the way up to $f_{\log n^{1/9}}$, as this would
-    require too much running time (superlinear). 
-    Also, we don't want the probability to decay too much, so we can't ever really go below $\sqrt{n}$ as the arg.
-    Instead we recurse down from XXX all the way to ZZZ. 
-    Doing so we achieve backlog $2^{XXX}$.
-    With what probability?
-    Well, the failure probability $g_{XXX}(k) \ge g_{XXX-1}(k/2) + g(k/4) + \cdots + g(k/2^9) $
-    Expanding the tree thing, and noting the upper limit on depth imposed by running time, and the lower limit on how much you can cut stuff imposed by the need for high probability, we get YYY leaves and stuff, and this is fine, because the failure probability was literally exponentially small in $p$ so its hard to make it sad.
-    Anyways, as desried, we have pretty decent backlog with pretty decent probabiliity.
-  }
+\begin{corollary}
+  \label{cor:randalmostpoly}
+  There exists an off-line filling strategy that achieves backlog
+  $\Omega(2^{\sqrt{\log n}/2})$ with high probability in time $O(n)$.
+\end{corollary}
 
-  {\color{blue}
-    OK, so wait a second. Let's say we use cutoff parameter $\alpha$, and recursion depth $\beta$. Then the backlog is 
-    $(\alpha/2)^\beta$, and the running time is $n^\beta$. To get $\poly(n)$ run
-    time we need $\beta \le O(1)$, but to get $\Omega(2^{\sqrt{\log n}})$ backlog we
-    neeed $\beta \ge \Omega(\sqrt{\log n})$. These are incompatible, so I don't
-    think this is going to work out very well.
-  }
-
-  A much simpler solution: just lower $n$ to $\sqrt{n}$ or whatever. 
-
+With the aid of Lemma \ref{lem:obliviousamplification} we can now get our
+backlog guarantee, much as in Corollary \ref{cor:poly}.
+\begin{proof}%{Proof of Corollary \ref{cor:randalmostpoly}}
+  First cut $n$ to $n' =2^{\sqrt{\log n}}$. Note that $\log n' = \sqrt{\log n}$
+  and $\log^2 n' = \log n$, so by Remark \ref{rmk:runtime} we would expect the
+  running time of this algorithm to be $2^{\log^2 n'} \le O(n)$, and we would
+  expect the backlog obtained to be $2^{\log n'} = 2^{\sqrt{n}}$. We will now
+  show that this is pretty much the case. And this will all happen with high
+  probability.
+  Basically, just apply Lemma \ref{lem:obliviousamplification} $\log n'$ times.
+  Yay, backlog $\poly(n')$. Note that it is in the advertised running time.
+  Double yay.
+ 
 \end{proof}
 
 \end{document}
-
