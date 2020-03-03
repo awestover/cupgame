@@ -1,5 +1,5 @@
-\documentclass{article}[11pt]
-\usepackage[subtle]{savetrees}
+\documentclass[twocolumn]{article}[11pt]
+% \usepackage[subtle]{savetrees}
 \usepackage[left=1in, right=1in, top=1in, bottom=1in]{geometry}
 
 % TODO:
@@ -122,100 +122,127 @@ Before proving Proposition \ref{prop:dprand}, we prove the following useful
 proposition concerning an important subroutine that the filler will use.
 \begin{proposition}
   \label{prop:tail}
-  In the variable-processor cup game on $n$ cups against an offline filler
-  where the filler does not increase the number of processors above $n$,
-  there exists a filling strategy that guarantees--with probability at least
-  $1-e^{O(-n)}$--either to result in $\Theta(n)$ cups with fill
-  $\Omega(1)$, or to result in some cup with fill $\tilde{\Omega}(n)$, where
-  fill is relative to average fill, with negative fill allowed.
-
-  {\color{red} there is another case: gets a good number of anchor cups. Q: how
-  do we USE this other case in prop2?}
+  Let $h \ge 3$ be a large constant, and let $k \in (0,1/2)$ be a small
+  constant (with $k<1/\lceil e^h \rceil!$). There exists an oblivious
+  filling strategy in the variable-processor cup game on $n$ cups that
+  guarantees, with probability at least $1-e^{-nk/10}$, either to result in
+  $k^m\cdot n$ cups with fill at least $m\cdot h$ for some $m \in \mathbb{N}$
+  (typically $m=1$), or to result in some cup with fill $\tilde{\Omega}(n)$,
+  where fill is relative to average fill (i.e. with negative fill allowed).
 \end{proposition}
 \begin{proof}
-  A problem that arises in trying to prove that we can achieve $\Theta(n)$ cups
-  with fill $\Omega(1)$ is that many cups, in the most extreme case all but a
-  single cup, could have negative fill (fill below the average relative to
-  which fill is measured). However, if the fill is so unevenly distributed then
-  this means that the backlog is already very high, so the filler does to
-  achieve $\Theta(n)$ cups with fill $\Omega(1)$ in the context to which this
-  proposition must be applied. Furthermore, there do exist emptying algorithms
-  that can act in such a way as to disrupt our strategy for achieving
-  $\Theta(n)$ cups with backlog $\Omega(1)$, but we shall show that such emptiers 
-  incur enormous backlog; in particular backlog $\tilde{\Omega}(n)$.
+  We essentially aim to achieve backlog $\Omega(1)$ in $\Theta(n)$ cups; this
+  intuitively should be possible against most reasonable opponents.  A problem
+  that arises in this pursuit however is that many cups, in the most extreme
+  case all but a single cup, could have negative fill (fill below the average
+  relative to which fill is measured). However, if the fill is so unevenly
+  distributed then the backlog must already be very high, so the filler doesn't
+  need to achieve $\Theta(n)$ cups with fill $\Omega(1)$ in the context to
+  which this proposition must be applied. Furthermore, there do exist emptying
+  algorithms that can act in such a way as to disrupt our strategy for
+  achieving $\Theta(n)$ cups with backlog $\Omega(1)$, but we shall show that
+  such emptiers incur enormous backlog; in particular backlog
+  $\tilde{\Omega}(n)$.
 
-  Let $h \ge \Omega(1)$ be the backlog we aim to achieve in $\Theta(n)$ cups.
-  If there exists a $k<n$ such that the $k$ fullest cups have fill
-  that sums to more than $h\cdot n$, then consider the least $k$, $k_{\min}$,
-  such that this is true. We call the $k_{\min}$ fullest cups
-  \defn{overpowered}, because they are pushing the average fill of the other
-  cups down significantly. Note that overpowered cups must have
-  positive fill; otherwise an overpowered cup could be removed while
+  Let $h \ge 3$ be a large constant, and let $k \in (0,1/2)$ be a small
+  constant (with $k<1/\lceil e^h \rceil!$).  If there exists a $v<n$
+  such that the $v$ fullest cups have fill that sums to more than $h\cdot n$,
+  then consider the least $v$, $v_{\min}$, such that this is true. We call the
+  $v_{\min}$ fullest cups \defn{overpowered}, because they are pushing the
+  average fill of the other cups down significantly. Note that overpowered cups
+  must have positive fill; otherwise an overpowered cup could be removed while
   maintaining the requirement for the sum of their fills, which contradicts the
-  minimality of $k_{\min}$.
+  minimality of $v_{\min}$.
 
   If there is a cup with fill at least $h\cdot n / \log\log n \ge
   \tilde{\Omega}(n)$, then we don't need to worry about attaining $\Theta(n)$
   cups with fill at least $h$; the proposition guarantees that we either attain
-  those cups, or attain one cup with enormous fill.
+  those cups, or attain one cup with enormous fill, which we have in this case.
   Otherwise, the number of overpowered cups cannot be in $\{1, 2, \ldots, \log \log n\}$.
 
   Now we consider the case where there are at least $\log\log n$ overpowered
-  cups, but no one cup has fill larger than $h\cdot n / \log\log n$.
-  The algorithm we will describe forms a set of $n/2$ \defn{anchor} cups, of which $k\cdot
-  n$, for some appropriate $k <\frac{1}{2}$ ($k$ is determined by $h$, the
-  larger $h$ is desired the smaller $k$ will be) will have fill at least $h$,
-  and the algorithm will have success probability at least $1-e^{-nk/10}$.
-  The algorithm is completely symmetric; every cup has the same probability of
-  being part of the $n/2$ anchor cups: $1/2$. By a Chernoff Bound the
-  probability that less than $(\log\log n)/4$ overpowered cups end up in the anchor set
-  is less than $1/\log n$.
+  cups, but no one cup has fill larger than $h\cdot n / \log\log n$. The
+  algorithm we will describe forms a set of $n/2$ \defn{anchor} cups. The
+  algorithm is completely symmetric; every cup has probability $1/2$ of being
+  part of the $n/2$ anchor cups. By a Chernoff Bound, the probability that less
+  than $1/4$ of the overpowered cups end up in the anchor set is less than
+  $O(1/\log n)$. Assume for sake of contradiction that for all $m \in
+  \mathbb{N}$ there are no more than $n\cdot k^m$ cups with fill at least $h\cdot m$.
+  Then the mass of the anchor cups is not more than
+  $$n\cdot k^1 \cdot h+ n\cdot k^2 \cdot h+ n\cdot k^3 \cdot h+ \cdots = nh\frac{k}{1-k}.$$
+  But $\frac{k}{1-k} < 1$ as $k < 1/2$, so the sum of the fills of the
+  overpowered cups is less than $hn$, contradicting the definition of the
+  overpowered cups. Hence there exists $m\in\mathbb{N}$ such that at least $n\cdot k^m$ cups
+  have fill at least $h\cdot m$, as desired.
 
   Now we consider the case in which there are no overpowered cups.
   The filler anchors $n/2$ cups and repeats the following algorithm for each
-  anchored cup $i$: \\At every step the filler adds one unit of fill to each
-  anchored cup. For $(n/2)^c$ (for some constant $c > 2$, e.g. $c=3$) rounds the filler plays a
-  single processor cup game on $s\ge e^h$ non-anchored cups (e.g. $s=21$) that lasts for $s-1$ steps.
-  The filler choses a new set of $s-1$ cups for each of these single processor
-  cup games to guarantee that the cups do not have ``negative fill" (fill below
-  the average fill) to start The filler's strategy will strongly disincentivise
-  the emptier from not emptying from each of the $n/2$ anchor cups most time;
-  for simplicities sake we first analyze the case in which the emptier does
-  empty from multiple cups outside the anchor set ever. Over the $s-1$ steps the
-  emptier will remove from $s-1$ cups. In the worst case these are all distinct
-  members of the $s-1$ cups. We can predict this sequence with constant
-  probability, specifically probability $1/s!$. Hence with probability at
-  least $1/s!$ we can achieve fill at least $\frac{1}{s} + \frac{1}{s-1} +
-  \cdots + \frac{1}{1} > \ln s \ge h$ in this cup.
+  anchored cup $i$: 
+
+  At every step the filler adds one unit of fill to each anchored cup. For
+  $(n/2)^c$ (for some constant $c > 2$, e.g. $c=3$) rounds the filler plays a
+  single processor cup game on $s\ge e^{6h}$ non-anchored cups (e.g. $s=21^6$
+  if $h=\ln 21$) that lasts for $s-1$ steps. For each anchored cup the filler
+  will chose one of the $(n/2)^c$ rounds in which, at the end of the round, the
+  filler will swap a cup into the anchor set. Playing a
+  single-processor cup game using the standard strategy the filler can increase
+  the fill in a cup by $\frac{1}{s} + \frac{1}{s-1} + \cdots + \frac{1}{1} >
+  \ln s \ge 4h$ with probability at least $1/s!$. 
+
+  The rough idea of the analysis is that with constant probability we can get
+  the the fill of the cup at the end of the single-processor cup game to be at
+  least $h$ because with constant probability it increased by $6h$, with
+  probability $1/2$ it didn't start more negative than $-4h$, and the average
+  fill probably doesn't decrease in the anchor set by more than $h$ over the
+  full course of the procedure, as only $n$ cups are swapped out of the anchor
+  set. We proceed to formalize this.
+
+  For a single processor cup game the emptier choses a random set of $s-1$ cups
+  to play on. Because there are no overpowered cups there cannot be a set of
+  cups with fill less than $-h\cdot n$. Thus, there must be at least $n/4$
+  non-anchored cups with fill less negative than $-4h$ (otherwise there would be a set
+  of more than $n/4$ cups, each with fill below $-4h$, and hence a set of cups
+  with total fill less than $n\cdot h$). Hence, given a randomly chosen
+  non-anchored cup, the probability that it has fill below $-4h$ is less than
+  $1/2$.
+
+  Over the $s-1$ steps the emptier will remove from $s-1$ cups. In the worst
+  case these are all distinct members of the $s-1$ cups, for now we neglect the
+  possibility that the emptier might remove from multiple of these cups; we
+  will consider this possibility next. We can predict this
+  sequence with constant probability, specifically probability $1/s!$. Hence
+  with probability at least $1/s!$ we can increase fill by $\frac{1}{s} +
+  \frac{1}{s-1} + \cdots + \frac{1}{1} > \ln s \ge 6h$ in this cup. With probability
+  at least $1/2$ this cup had fill greater than $-4h$ to start, so it will now have fill $2h$.
 
   For each for each of the anchor cups the filler choses a round uniformly at
   random from the $(n/2)^c$ rounds to swap the cup that has constant probability of
-  having at least constant fill with the anchor cup being focussed on at that point.
+  having fill at least $h$ with the anchor cup being focussed on at that point.
 
   Thus, at the end of this process each cup in the anchor set has at
-  least a $1/s!$ chance of having fill at least $h$. The expectation of
-  the number of cups that have fill at least $h$ is at least $(n/2)/s!$. 
-  Using a Chernoff bound we can show that with exponentially high probability in $n$ the actual
-  number of such cups does not deviate from this mean by more than a constant
-  factor. In particular, let $m_A$ be the actual number of cups with fill at
-  least $h$ in the anchor set, and let $m_E$ be the expected number (i.e.
-  $m_E = (n/2)/s!$) of such cups in the anchor set. Then $$\Pr[m_A < m_E /2 ]
-  \le e^{-n / (40\cdot s!)}.$$
+  least a $1/(2s!)$ chance of having fill at least $h$. The expectation of
+  the number of cups that have fill at least $h$ is at least $(n/2)/(2s!)$. 
+  Using a Chernoff bound we can show that with exponentially high probability
+  in $n$ the actual number of such cups does not deviate from this mean by more
+  than a constant factor. In particular, let $m_A$ be the actual number of cups
+  with fill at least $h$ in the anchor set, and let $m_E$ be the expected
+  number (i.e.  $m_E = (n/2)/s!$) of such cups in the anchor set. Then
+  $$\Pr[m_A < m_E /2 ] \le e^{-n / (20\cdot s!)}.$$ 
 
   Now we consider the case where the emptier choses some rounds to empty from
   multiple non-anchor cups. This is problematic since it could mean that we
-  are not genuinely playing a single processor cup game on the selected $21$ cups.
+  are not genuinely playing a single processor cup game on the selected $s$ cups.
   However, neglecting an anchor cups is dangerous for the emptier, as it will
   substantially increase the fill in the anchor set. If the emptier neglects
-  the anchor set in $d$ of the $p^c$ rounds, then the probability of the
+  the anchor set in $d$ of the $(n/2)^c$ rounds, then the probability of the
   emptier interfering with the single processor cup game on the $1$ round that
-  the filler has selected to swap the cup into the anchor set is $d/p^c$. If
+  the filler has selected to swap the cup into the anchor set is $d/(n/2)^c$. If
   this is small, e.g. less than $1/2$, then we can simply accept a small
   constant reductive factor on the number of cups that we are guaranteeing have
-  the desired constant fill. On the other hand, if $d/p^c > 1/2$, then $d \ge \Omega(p^c)$. 
+  the desired constant fill. On the other hand, if $d/p^c > 1/2$, then $d \ge \Omega(n^c)$. 
   This means that the average fill in the anchor set has increased dramatically, by $\poly(p)$.
-  Thus at least one of the anchor cups must have fill $\Omega(\poly(p))$. This
-  guarantees fill $\Omega(\poly p)$ for $\Omega(\poly(p))$ rounds, which is
+  Thus at least one of the anchor cups must have fill $\Omega(\poly(n))$. This
+  guarantees fill $\Omega(\poly(n))$ for $\Omega(\poly(n))$ rounds, which is
   sufficient to satisfy the proposition.
 
 \end{proof}
@@ -401,13 +428,15 @@ We now use the Amplication Lemma to achieve the following:
   To prove this, we prove the following lowerbound for $f_m$ by induction:
   $$f_m(k) \geq 2^m \log_2 k, \text{ for } k \geq (2^9)^m.$$
   The base case follows from the definition of $f_0$. Assuming the property for $f_m$, we get the following:
+  $ \text{for } k > (2^9)^{m+1},$
   \begin{align}
-    \text{for } k > (2^9)^{m+1}, f_{m+1}(k) &= \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9) + \cdots)\\
+    f_{m+1}(k) &= \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9) + \cdots)\\
   &\geq \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9))\\
   &\geq \frac{1}{2}2^m(\log_2 (k/2) + \log_2(k/4) + \cdots + \log_2(k/2^9))\\
   &\geq \frac{1}{2}2^m(9\log_2 (k) - \frac{9 \cdot 10}{2}) \label{step:readydrop}\\
   &\geq 2^{m+1} \log_2(k) \label{step:dropped}
   \end{align}
+
   as desired. Hence the inductive claim holds, which establishes that $f_{\log_2
   n^{1/9}}$ satisfies the desried condition, which proves that backlog can be
   made $\tilde{\Omega}(n^{1/9})$.
