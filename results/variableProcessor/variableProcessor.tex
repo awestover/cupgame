@@ -122,12 +122,13 @@ Before proving Proposition \ref{prop:dprand}, we prove the following useful
 proposition concerning an important subroutine that the filler will use.
 \begin{proposition}
   \label{prop:tail}
-  Let $h \ge 3$ be a large constant, and let $k \in (0,1/2)$ be a small
-  constant (with $k<1/\lceil e^h \rceil!$). There exists an oblivious
+  Let $h \ge 3$ be a large constant, and let $k \in (0,1/2)$ be a sufficiently small
+  constant (in particular $k\le 1/ (2\lceil e^{6h} \rceil!)$). There exists an oblivious
   filling strategy in the variable-processor cup game on $n$ cups that
-  guarantees, with probability at least $1-e^{-nk/10}$, either to result in
+  guarantees, with probability at least $1-O(1/\log n)$%%$1-e^{-nk/10}$
+  , either to result in
   $k^m\cdot n$ cups with fill at least $m\cdot h$ for some $m \in \mathbb{N}$
-  (typically $m=1$), or to result in some cup with fill $\tilde{\Omega}(n)$,
+  (typically $m=1$), or to result in some cup with fill $\Omega(\poly(n))$,
   where fill is relative to average fill (i.e. with negative fill allowed).
 \end{proposition}
 \begin{proof}
@@ -144,15 +145,15 @@ proposition concerning an important subroutine that the filler will use.
   such emptiers incur enormous backlog; in particular backlog
   $\tilde{\Omega}(n)$.
 
-  Let $h \ge 3$ be a large constant, and let $k \in (0,1/2)$ be a small
-  constant (with $k<1/\lceil e^h \rceil!$).  If there exists a $v<n$
-  such that the $v$ fullest cups have fill that sums to more than $h\cdot n$,
-  then consider the least $v$, $v_{\min}$, such that this is true. We call the
-  $v_{\min}$ fullest cups \defn{overpowered}, because they are pushing the
+  Let $h \ge 3$ be a large constant, and let $k \in (0,1/2)$ be a sufficiently small
+  constant (in particular $k\le 1/ (2\lceil e^{6h} \rceil!)$). If there exists
+  a $v<n$ such that the $v$ fullest cups have combined mass (the \defn{mass} of
+  a set of cups is the sum of their fills) larger than $h\cdot n$, then
+  consider the least $v$, denoted $v_{\min}$, such that this is true. We call
+  the $v_{\min}$ fullest cups \defn{overpowered}, because they are pushing the
   average fill of the other cups down significantly. Note that overpowered cups
   must have positive fill; otherwise an overpowered cup could be removed while
-  maintaining the requirement for the sum of their fills, which contradicts the
-  minimality of $v_{\min}$.
+  without decreasing their mass, which contradicts the minimality of $v_{\min}$.
 
   If there is a cup with fill at least $h\cdot n / \log\log n \ge
   \tilde{\Omega}(n)$, then we don't need to worry about attaining $\Theta(n)$
@@ -163,15 +164,15 @@ proposition concerning an important subroutine that the filler will use.
   Now we consider the case where there are at least $\log\log n$ overpowered
   cups, but no one cup has fill larger than $h\cdot n / \log\log n$. The
   algorithm we will describe forms a set of $n/2$ \defn{anchor} cups. The
-  algorithm is completely symmetric; every cup has probability $1/2$ of being
-  part of the $n/2$ anchor cups. By a Chernoff Bound, the probability that less
+  algorithm is completely symmetric; every cup will have probability $1/2$ of being
+  part of the $n/2$ anchor cups at the end. By a Chernoff Bound, the probability that less
   than $1/4$ of the overpowered cups end up in the anchor set is less than
   $O(1/\log n)$. Assume for sake of contradiction that for all $m \in
   \mathbb{N}$ there are no more than $n\cdot k^m$ cups with fill at least $h\cdot m$.
   Then the mass of the anchor cups is not more than
   $$n\cdot k^1 \cdot h+ n\cdot k^2 \cdot h+ n\cdot k^3 \cdot h+ \cdots = nh\frac{k}{1-k}.$$
   But $\frac{k}{1-k} < 1$ as $k < 1/2$, so the sum of the fills of the
-  overpowered cups is less than $hn$, contradicting the definition of the
+  overpowered cups is less than $h\cdot n$, contradicting the definition of the
   overpowered cups. Hence there exists $m\in\mathbb{N}$ such that at least $n\cdot k^m$ cups
   have fill at least $h\cdot m$, as desired.
 
