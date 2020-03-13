@@ -41,204 +41,115 @@
 \fancyfoot[R]{\thepage}
 \renewcommand{\headrulewidth}{0pt}
 
-\title{On variable-processor cup games (easier results)}
+\title{Variable-Processor Cup Games}
 \author{Alek Westover}
 
 \begin{document}
 \maketitle
 
-\paragraph{Oblivious Lowerbounds}
+\paragraph{Introduction}
+The cup game is a classic game in computer science that models work-scheduling.
+In the cup game a filler and an emptier take turns adding and removing water
+(i.e. work) to the cups. We investigate a variant of the vanilla multiprocessor
+cup game which we call the \defn{variable-processor cup game} in which the
+filler is allowed to change the number of processors $p$ (the amount of water
+that the filler can add and the number of cups from which the emptier can
+remove water. This is a natural extention of the vanilla multi-processor cup
+game to when the resources available are variable. Note that although the
+restriction that the filler and emptier's resources vary together may seem
+artificial, this is the only way to conduct the analysis; the rationale behind
+giving the emptier and filler equal resources in the classical vanilla
+multi-processor cup game is that this is the only way to achieve upper and
+lower bounds. The equivalent rational holds for the motivation of the
+variable-processor cup game. Analysis of this game does provide information
+about how real-world systems will behave.
 
-\begin{theorem}{Hoeffding's Inequality}
-  Let $X_i$ be independent bounded random variabels with $X_i \in [a,b]$. Then,
-  $$P\left(\Big|\frac{1}{n} \sum_{i=1}^n (X_i - \E[X_i])\Big|\ge t\right) \le 2\exp\left(-\frac{2nt^2}{(b-a)^2}\right) $$
-\end{theorem}
+Apriori the fact that the number of processors can vary offers neither the
+filler nor the emptier a clear advantage: lower values of $p$ mean that the
+emptier is at more of a discretization disadvantage but also mean that the
+filler can anchor fewer cups.  We hoped that the variable-processor cup game
+could be simulated in the vanilla multiprocessor cup game, because the extra
+ability given to the filler does not seem very strong. The new version of the
+cup game arose as we tried to get a bound of $\Omega(\log p)$ backlog in the
+multiprocessor game against an oblivious filler, which would combine with
+previous results to give us a lower bound that matches our upper bound:
+$O(\log\log n + \log p)$. In Proposition \ref{prop:obliviousBase} we prove that
+there is an oblivious filling strategy in the variable-processor cup game on
+$n$ cups that achieve backlgo $\Omega(\log n)$ as desired. \footnote{Note that
+  we have $\Omega(\log n)$ in this proposition instead of $\Omega(\log p)$
+  because the filler can increase the number of processors, so it increases the
+  number of processors to $n-1$ to start. A nearly identical construction could
+  be used to show that backlog $\Omega(\log p_{\max})$ can be achieved, where
+  the number of processors starts at $p_{\max}$ and the filler does not ever
+  increase the number of processors. However, using $p_{\max} = n$ is natural
+  in the variable-processor cup game, so we do not consider the game with 
+the restriction that the filler can not increase the number of processors above
+some $p_{\max} < n$.}
 
-\begin{proposition}
-  There exists an oblivious filling strategy in the variabl-processor cup game on $n$ cups that achieves backlog $\Omega(\log n)$ against a smoothed greedy emptier.
-\end{proposition}
-\begin{proof}
-  Let $A$ be the anchor set, randomly chosen, let $B$ be non-anchor set, with
-  $|A| = |B| = n/2$. Let $h = \Theta(1)$ be the fill that we will achieve at
-  each level of our recursive procedure.
-Our strategy to achieve backlog $\Omega(\log n)$ is roughly as follows:
-\begin{itemize}
-  \item Make each cup in the anchor set have a constant probability of having
-    fill at least $h$.
-  \item Reduce the number of processors to a constant fraction $nk$ of $n$ and
-    raise the fill of $nk$ cups to $h/2$. This step relies on the emptier being
-    greedy.
-  \item Recurse on the $nk$ cups that are known to have fill $\ge h/2$.
-\end{itemize}
-We can perfom $\Omega(\log n)$ levels of recursion, achieving constant backlog
-at each step (relative to average fill); doing so yields backlog $\Omega(\log
-n)$.
+However, we also show that attempts at simulating the variable-processor cup
+game are futile because the variable-processor cup game
+is--surprisingly--fundamentally different from the multiprocessor cup game, and
+thus impossible to simulate. This follows as a corollary of an
+\defn{Amplification Lemma} for both the adaptive and oblivious filler.
 
-Our strategy is somewhat complicated by the possibility of the fill being very concentrated in a few cups. We proceed as follows:
-
-For each anchor cup $i$:
+The following paragraphs follow the structure:
 \begin{enumerate}
-  \item Chose an index $j \in [n^c]$
-  \item For $n^c$ times (for some $c > 2$), we select a random subset $C\subset B$ of the non-anchor
-    cups and play a single processor cup game on $C$.
-  \item On round $j$ with $1/2$ probability we swap the winner of the single
-    processor cup game into the anchor set, and with $1/2$ probability we swap
-    a random cup from $B$ into the anchor set.
+  \item Proposition: Base case of inductive argument in corollary
+  \item Lemma: Amplification Lemma, allows for inductive step in inductive argument
+  \item Corollary: Repeatedly amplify the base case backlog to get very large backlog
 \end{enumerate}
+We proceed with our results.
 
-Say that a cup is \defn{op} if it contains fill $\ge \sqrt{\frac{n}{\log\log
-n}}$. If there is ever an op cup, then we win. Note that we don't even need to
-know which cup is op because it will take $\Omega(\poly(n))$ rounds for the
-emptier to reduce the fill below $\poly(n)$. Hence, we can assume without loss
-of generality that no cup is ever op.
-
-% want it to be more like you are globally using either clm1 or clm2. ie its hard to transition between the stages
-
-\begin{clm}
-  \label{clm:reg}
-  If at least $1/2$ of the non-anchor cups have fill $\ge -h/2$ then the
-  contribution to the anchor set has fill $\ge h/2$ with constant probability. 
-\end{clm}
-\begin{proof}
-  Playing the single-processor cup game $n^c$ times, with only one time
-  that we actually swap a cup into the anchor set, makes it bad for the emptier
-  to ignore the anchor set on a more than a constant fraction of the games.
-  In particular, if the emptier neglects the anchor set at least once for more
-  than half of the games then the anchor set's average fill will have increased
-  by $n^{c-1} \ge \Omega(\poly(n))$. Hence we have the desired backlog.
-
-  Otherwise, we have at least a $1/2$ chance that the round $j$ when we will
-  perform a switch into the anchor set occurs on a round when the emptier choses 
-  not to neglect the anchor set. In this case, the round was a legitimate
-  single processor cup game on $e^h$ cups, and we achieved fill increase $\ge
-  h$ by the end of the game with probability at least $1/e^h!$, the probability
-  that we correctly guess the sequence of cups within the single processor cup
-  game that the emptier would neglect. And we get another factor of $1/2^{e^h}$
-  (ish), the probability that the randomly chosen subset of the cups has all
-  cups with fill $\ge -h/2$. In this case, which we established happens with
-  constant probability, it is the case that the winner of the single processor
-  cup game now has fill $\ge h/2$, as desired.
-\end{proof}
-
-\begin{clm}
-  \label{clm:xtreme}
-  Let $X$ be a uniformly randomly selected cup from $B$.
-  Let $Y_i$ be the random variable $Y_i=\tilt_+(X)$ where $X$ is a randomly
-  selected cup from the non-anchor set at the start of the $i$-th round of
-  playing single processor cups games. 
-  If less than $1/2$ of the non-anchor cups have fill $\ge -h/2$ fill, then
-  with probability at least $1- 1/\polylog(n)$,
-  $$\frac{1}{n/2}\sum_{i=1}^{n/2} Y_i \ge h/4.$$
-\end{clm}
-
-\begin{proof}
-  We assume for simplicity that the average fill of $B$ is $0$. In reality this
-  is not the case, but by a Hoeffding bound and the fact that op cups don't
-  exist, the fill is really tightly concentrated around $0$, so this is almost
-  WLOG.
-
-  Let the positive tilt of a cup $i$ be $\tilt_+(i) \defeq \max(\fil(i), 0)$.
-  We have
-  $$\E[\tilt_+(X)] = \frac{1}{2}\E[|\fil(X)|] \ge h/2$$
-  (because negative tilt is at least $nh/4$ and positive tilt must oppose this).
-  
-  Let $Y_i$ be the random variable $Y_i=\tilt_+(X)$ where $X$ is a randomly
-  selected cup from the non-anchor set at the start of the $i$-th round of
-  playing single processor cups games. Note that the $Y_i$ are not really
-  independent, but it is probably ok. Note that $0\le Y_i \le n/\lg\lg n$.
-  Now we have, by Hoeffding's inequality, that 
-  $$P\left(\Big|\frac{1}{n/2} \sum_{i=1}^{n/2} (Y_i - \E[Y_i])\Big|\ge h/4
-  \right) \le 2\exp\left(-\frac{n(h/4)^2}{(\sqrt{n/\lg\lg n})^2}\right) $$
-  $$P\left(\frac{1}{n/2}\sum_{i=1}^{n/2} Y_i \le h/4\right) \le 1/\polylog(n) $$
-
-\end{proof}
-
-Now we consider two cases based on how many times we must apply Claim
-\ref{clm:reg} and Claim \ref{clm:xtreme}. If we must apply Claim
-$\ref{clm:reg}$ at least half the time, then we achieve a constant fraction of
-the anchor cups with fill at least $h/2$. If on the other hand we must apply
-Claim $\ref{clm:xtreme}$ at least half of the time, we have that with
-probability $1- 1/\polylog(n)$ the process brings $n\cdot h/8$ positive tilt to
-the anchor set as desired. 
-
-  In either case we achieve, with probability at least $1-1/\polylog n$,
-  positive tilt at least $hn/k$ in the anchor set.
-  Use the positive tilt, with one processors, we can transfer over the fill into $n/k$ cups. 
-  (Note, we use one processor because we do not know how many cups the fill is
-  concentrated in). The filler repeatedly distributes $1$ unit of fill to each of the $n/k$ cups in succession, and continues until $h/4$ fill has been distributed. We cannot continue beyond this point because we have used up the positive tilt. Now we recurse on this set of $n/k$ cups.
-
-  We can perform $\Omega(\log n)$ levels of recursion, and gain $\Omega(1)$
-  fill at each step. Hence, overall, backlog of $\Omega(\log n)$ is achieved.
-\end{proof}
-
-
-\begin{lemma}{The Oblivious Amplification Lemma}
-  Given an oblivious filling strategy for achieving backlog $f(k)$ in the
-  variable-processor cup game on $k$ cups that succeeds with probability at
-  least $1/2$, there exists a strategy for achieving ``amplified" fill $$f'(k)
-  \ge \frac{1}{4}(f(k/2) + f(k/4) + f(k/8) + \cdots $$ that succceeds with constant probability.
-\end{lemma}
-\begin{proof}
-  Want to do: same proof as before, but there are \textbf{concerns, about using higher values of $h$:}
-\begin{itemize}
-  \item dealing with star: problem: need to say WLOG avg fill of A,B is 0 each
-    initially solution: no op cups wlog, so if we pick them randomly star holds
-    by Hoeffding's. (kinda, bc stuff isnt really independent, can probably swap
-    with replacement to fix this tho)
-\item dealing with start star: What if C needs to be big because we need big
-  backlog? claim: star star isnt a problem beause the base case is the only
-  case that needs to explicitely deal with positive and negative fill
-\end{itemize}
-  
-\end{proof}
-
-\begin{corollary}
-  There is an oblivious filling strategy for the variable-processor cup game on
-  $n$ cups that achieves backlog $2^{\Omega(\sqrt{\log n})}$ in running time
-  $O(n)$
-\end{corollary}
-\begin{proof}
-  
-\end{proof}
-
-\clearpage
 \paragraph{Adaptive Lowerbound}
 \begin{proposition}
+\label{prop:adaptiveBase}
   There exists an adaptive filling strategy for the variable-processor cup game
-  on $k$ cups that achieves backlog $\Omega(\log n)$, where fill is relative to
+  on $n$ cups that achieves backlog $\Omega(\log n)$, where fill is relative to
   the average fill of the cups, with negative fill allowed.
 \end{proposition}
 \begin{proof}
-  Let $h = \frac{1}{4}\log n/2$ be the desired fill. Call a cup be \defn{op} if
-  it has fill at least $h$. Once there exists an op cup, the proposition is
-  immediately satisfied. Let the \defn{positive tilt} of a cup $i$ with fill
-  $v$ be $\max(0,v)$, and let the positive tilt of a set $S$ of cups be the sum
-  of the positive tilt of each cup $i\in S$.
+  Let $h = \frac{1}{4}\log n/2$ be the desired fill. We call a cup
+  \defn{overpowered} if it has fill at least $h$. If there exists an
+  overpowered cup the proposition is immediately satisfied, so we assume
+  without loss of generality that there are no overpowered cups. Denote the
+  fill of a cup $i$ by $\fil(i)$. Let the \defn{positive tilt} of a cup $i$ be
+  $\tilt_+(i) = \max(0, \fil(i))$, and let the positive tilt of a set $S$ of
+  cups be $\sum_{i\in S} \tilt_+(i)$. Let the \defn{mass} of a set of cups $S$
+  be $\sum_{i\in S} \fil(i)$. Let $A$ consist of the $n/2$ fullest cups, and
+  $B$ consist of the rest of the cups.
 
-  If no cups are op, then positive tilt $< h\cdot n$. Assume for sake of
-  contradiction that there are $\ge n/2$ cups with fill $\le -2h$. Then the
-  mass of those cups would be $\le -hn $, but there isn't enough positive tilt
-  to oppose this. Hence there are $<n/2$ cups with fill $\le -2h$. We set the
-  number of processors equal to $1$ and play a single processor cup game on
-  $n/2$ cups that have fill at least $-2h$, which must exist as stated. In the
-  single processor cup game we distribute water equally among all the cups in
-  the active set at each step. Then the emptier will chose some cup to empty.
-  If this cup is in our active set we remove it from the active set.
-  At the end of this process the active set is non-empty, and any cup in the
-  active set has gained fill at least $H_{n/2} \ge \log n/2 = 4h$. Thus such a cup
-  has fill at least $2h$ now, so the proposition is statisfied.
+  If no cups are overpowered, then $\tilt_+(A\cup B) < h\cdot n$. Assume for
+  sake of contradiction that there are more than $n/2$ cups $i$ with $\fil(i)
+  \le -2h$. The mass of those cups would be less than $-hn $, but there isn't
+  enough positive tilt to oppose this, a contradiction. Hence there are at most
+  $n/2$ cups $i$ with $\fil(i) \le -2h$. 
+
+  We set the number of processors equal to $1$ and play a single processor cup
+  game on $n/2$ cups that have fill at least $-2h$ (which must exist) for $n/2
+  -1$ steps. We initialize our ``active set" to be $A$, noting that $\fil(i)
+  \ge -2h$ for all cups $i\in A$, and remove $1$ cup from the active set at
+  each step.
+  At each step the filler distributes water equally among the cups in its
+  active set. Then, the emptier will chose some cup to empty from. If this cup
+  is in the active set the filler removes it from the active set. Otherwise, the
+  filler chooses an arbitrary cup to remove from the active set.
+
+  After $n/2-1$ steps the active set will consist of a single cup. This cup's
+  fill has increased by $1/(n/2) + 1/(n/2 - 1) + \cdots + 1/2 + 1/1 = H_{n/2}
+  \ge \log n/2 = 4h$. Thus such a cup has fill at least $2h$ now, so the
+  proposition is statisfied
 \end{proof}
 
-\begin{lemma}{The Adaptive Amplification Lemma}
-  Given an adaptive filling strategy for achieving backlog $f(k)$ in the 
+\begin{lemma}[The Adaptive Amplification Lemma]
+  Given an adaptive filling strategy for achieving fill $f(k)$ in a cup in the 
   variable-processor cup game on $k$ cups, there exists
-  a strategy for achieving ``amplified" fill $$f'(k) \ge \frac{1}{4}(f(k/2) +
-  f(k/4) + f(k/8) + \cdots .$$
+  a strategy for achieving \defn{amplified} fill 
+  $$f'(k) \ge \frac{1}{2}(f(k/2) + f(k/4) + f(k/8) + \cdots .$$
 \end{lemma}
 \begin{proof}
   If, at any point in the process that will be described, backlog is greater
   than $f'(k)$, then the filler stops and the Lemma is satisfied as the desired
-  backlog having been achieved. Thus we assume without loss of generality for
+  backlog has been achieved. Thus we assume without loss of generality for
   the rest of the proof that no cup ever exceeds fill $f'(k)$ during the course
   of our algorithm. That is, we assume that we don't achieve the desired
   backlog until the end of our process.
@@ -250,33 +161,44 @@ the anchor set as desired.
     \item Recurse on the $n/2$ cups with high average fill.
   \end{enumerate}
 
+  Let $A$ the \defn{anchor set} be initialized to consist of the $n/2$ fullest
+  cups, and let $B$ the \defn{non-anchor set} be initialized to consist of the
+  rest of the cups.
   Let $h_l = f(k/2^l)$; the filler will achieve a set of at
   least $n_l/2 = n/2^l$ cups with average fill at least $h_l / 2$ on the $l$-th
   level of recursion. 
 
-  On the $l$-th level of recursion we will repeat the following at most $n_l/2$ times:
-  \begin{itemize}
-    \item If the non-anchor set has average fill at least $-h_l/2$ then we
-      apply $f$ to the non-anchor set. This gets us fill $-h_l/2 + f(n_l/2) =
-      h_l/2$ in some non-anchor cup. We replace the lowest cup in the anchor
-      set with this cup. A slight complication with this method is that we are
-      anchoring the anchor set, and assuming that the emptier allways empties
-      from each anchor cup; this may not be the case. However, the issue can be
-      resolved by applying $f$ up to $h_ln_l/4+1$ times. If on all of these
-      applications of $f$ the emptier doesn't always empty from each cup in the
-      anchor set, then the average fill in the anchor set increases by more
-      than $h_l/2$, so the desired fill was achieved. Otherwise, there must a
-      time when we apply $f$ and the emptier does empty from each anchor cup
-      each time. In this case we actually do achieve fill $-h_l/2 + f(n_l/2)$
-      in a non-anchor cup, and swap it into the anchor set, as descibred
-      before.
-    \item If the non-anchor has average fill lower
-      than $-h_l/2$, then anchor set has average fill at least
-      $h_l/2$, so we terminate the process.
-  \end{itemize}
+  On the $l$-th level of recursion we will repeatedly apply $f$ to the
+  non-anchor set until the anchor set has the desired average fill. If at any
+  point in this process the non-anchor has average fill lower than $-h_l/2$,
+  then anchor set has average fill at least $h_l/2$, so the process is
+  finished. So long as $B$ has average fill at least $-h_l/2$ then we would
+  like to apply $f$ to $B$. This would get fill $-h_l/2 + f(n_l/2) = h_l/2$ in
+  some non-anchor cup. We replace the lowest cup in the anchor set with this
+  cup. 
+
+  A slight complication with this method is that we are anchoring the anchor
+  set, and assuming that the emptier allways empties from each anchor cup; this
+  may not be the case. However, the issue can be resolved by applying $f$ up to
+  $h_ln_l/4+1$ times per anchor cup.
+
+  Say that the emptier \defn{neglects} the anchor set on an application of $f$
+  if there is some step during the application of $f$ in which the emptier does
+  not empty from some anchor cup. Note that each time the emptier neflects the
+  anchor set the mass of the anchor set increases by $1$. If the emptier
+  neglects the anchor set $h_l n_l/4 + 1$ times, then the  average fill in the
+  anchor set increases by more than $h_l/2$, so the desired fill is achieved in
+  the anchor set.
+
+  Otherwise, there must have been an application of $f$ for which the emptier
+  did not neglect the anchor set. We only swap a cup into the anchor set if
+  this is the case. In this case we actually do achieve fill $-h_l/2 +
+  f(n_l/2)$ in a non-anchor cup, and swap it into the anchor set, as descibred
+  before.
 \end{proof}
 
 \begin{corollary}
+  \label{cor:adaptivePoly}
   There is an adaptive filling strategy for the variable-processor cup game on $n$ cups that achieves backlog $\Omega(\poly(n))$ in running time $2^{O(\log^2 n)}$
 \end{corollary}
 \begin{proof}
@@ -297,7 +219,8 @@ the anchor set as desired.
   The base case follows from the definition of $f_0$. Assuming the property for $f_m$, we get the following:
   $ \text{for } k > (2^9)^{m+1},$
   \begin{align*}
-    f_{m+1}(k) &= \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9) + \cdots)\\
+  &f_{m+1}(k) \\
+  &= \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9) + \cdots)\\
   &\geq \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9))\\
   &\geq \frac{1}{2}2^m(\log_2 (k/2) + \log_2(k/4) + \cdots + \log_2(k/2^9))\\
   &\geq \frac{1}{2}2^m(9\log_2 (k) - \frac{9 \cdot 10}{2}) \\
@@ -309,90 +232,333 @@ the anchor set as desired.
   made $\Omega(\poly(n))$.
 
 
+  \begin{remark}
+  The recursive construction requires quite a lot of steps, in fact a
+  superpolynomial number of steps. If we consider the tree that represents
+  computation of $f_{\log n^{1/\alpha}}(n)$ we see that each node will have at
+  most $\alpha$ (some constant, e.g. $\alpha = 9$, $\alpha$ is the number of
+  terms that we keep in the sum) children (the children of $f_k(c)$ are
+  $f_{k-1}(c/2), f_{k-1}(c/4), \ldots f_{k-1}(c/2^\alpha)$), and the depth of
+  the tree is $\log n^{1/\alpha}$. Say that the running time at the node
+  $f_{\log n^{1/\alpha}}(n)$ is $T(n)$. Then because $f_{k}(n)$ must call each
+  of $f_{k-1}(n/2^i)$ $n/2^i$ times for $1\le i \le \alpha$, we have that $
+  T(n) \le \frac{\alpha n}{2}T(n/2)$. This recurrence yeilds $T(n) \le
+  \poly(n)^{\log n} = O(2^{\log^2 n})$ for the running time.
+  \end{remark}
+
+  Generalizing our approach we can achieve a (slightly) better polynomial
+  lowerbound on backlog. In our construction the point after which we had a
+  bound for $f_m$ grew further out by a factor of $2^9$ each time. Instead of
+  $2^9$ we now use $2^\alpha$ for some $\alpha \in \mathbb{N}$, and can find a
+  better value of $\alpha$. The value of $\alpha$ dictates how many
+  itterations we can perform: we can perform $\log_2 n^{1/\alpha}$ itterations.
+  The parameter $\alpha$ also dictates the multiplicative factor that we gain
+  upon going from $f_m$ to $f_{m+1}$. For $\alpha = 9$ this was $2$. In general
+  it turns out to be $\frac{\alpha -1}{4}$.  Hence, we can achieve backlog
+  $\Omega\left(\left(\frac{\alpha -1}{4}\right)^{\log_2 n^{1/\alpha}}\log_2
+  n\right)$. This optimizes at $\alpha = 13$, to backlog
+  $\Omega(n^{\frac{\log_2 3}{13}}\log n) \approx \Omega(n^{0.122}\log n)$. 
+
+  We can even improve over this. Note that in the proof that
+  $f_{m+1}$ gains a factor of $2$ over $f_m$ given above, we lowerbound
+  $9\log_2 k - 9\cdot 10 /2$ with $2\log_2 k$. Usually however this is very
+  loose: for small $m$ a significant portion of the $9 \log_2 k$ is annihlated
+  by the constant $1+2+\cdots+9$ (or in general $\alpha \log_2 k$ and
+  $1+2+\cdots + \alpha$), but for larger values of $m$ because $k$ must be
+  large we can get larger factors between steps, in theory factors arbitrarily
+  close to $\alpha$. If we could gain a factor of $\alpha$ at each step, then
+  the backlog achievable would be $\Omega(\alpha^{\log_2{n^{1/\alpha}}}\log n)=
+  \Omega(n^{(\log_2{\alpha})/\alpha} \log n)$ which optimizes (over the
+  naturals)
+  at $\alpha = 3$ to $n^{(\log_2 3)/3} \approx n^{0.528}$. However, we can't
+  actually gain a factor of $\alpha$ each time because of the subtracted
+  constant. But, for any $\epsilon >0$ we can achieve a $\alpha - \epsilon$
+  factor increase each time (for sufficiently large $m$). Of course $\epsilon$
+  can't be made arbitrarily small becasue $m$ can't be made arbitrarily large,
+  and the ``cut off" $m$ where we start achieving the $\alpha - \epsilon$
+  factor increase must be a constant (not dependent on $n$). When the cutoff
+  $m$, or equivalently $\epsilon$, is constant then we can achieve backlog
+  $\Omega((\alpha - \epsilon)^{\log_2{n^{1/\alpha}}}\log n)=
+  \Omega(n^{(\log_2(\alpha - \epsilon))/\alpha} \log n)$. For instance, with
+  this method we can get backlog $\Omega(\sqrt{n})$ for appropriate $\epsilon,
+  \alpha$ choice, or $\tilde{\Omega}(n^{(\log_2 (3 - \epsilon))/3})$ for any
+  constant $\epsilon >0$. 
+
+  We could potentially aim to achieve even higher
+  backlog by using more than the first $\alpha$ terms of the sum. The terms
+  after $f_m(k/2^\alpha)$ in the sum are evaluated at points where they are
+  potentially positive, but will not have the full strength of the $2^m \log_2
+  k$. This makes them difficult to deal with, and as it seems that we will just
+  get a modest increase in the exponent of our polynomial we do not pursue
+  this. 
+\end{proof}
+
+\paragraph{Oblivious Lowerbounds}
+
+An important theorem that we use repeatedly in our analysis is Hoeffding's Inequality:
+\begin{theorem}[Hoeffding's Inequality]
+  Let $X_i$ be independent bounded random variabels with $X_i \in [a,b]$. Then,
+  $$P\left(\Big|\frac{1}{n} \sum_{i=1}^n (X_i - \E[X_i])\Big|\ge t\right) \le 2\exp\left(-\frac{2nt^2}{(b-a)^2}\right) $$
+\end{theorem}
+
+\begin{proposition}
+  \label{prop:obliviousBase}
+  There exists an oblivious filling strategy in the variable-processor cup game
+  on $n$ cups that achieves backlog $\Omega(\log n)$ against a smoothed greedy
+  emptier with probability at least $1-1/\polylog(n)$.
+\end{proposition}
+\begin{proof}
+  Let $A$ be the anchor set, randomly chosen, let $B$ be non-anchor set, with
+  $|A| = |B| = n/2$. Let $h = \Theta(1)$ be the fill that we will achieve at
+  each level of our recursive procedure.
+Our strategy to achieve backlog $\Omega(\log n)$ is roughly as follows:
+\begin{itemize}
+  \item Repeatedly make cups in $B$ have a constant probability of having
+    fill at least $h$, and then transfer these cups into $A$.
+  \item Reduce the number of processors to a constant fraction $nc$ of $n$ and
+    raise the fill of $nc$ cups to $h/2$. This step relies on the emptier being
+    greedy.
+  \item Recurse on the $nc$ cups that are known to have fill $\ge h/2$.
+\end{itemize}
+We can perfom $\Omega(\log n)$ levels of recursion, achieving constant backlog
+at each step (relative to average fill); doing so yields backlog $\Omega(\log
+n)$.
+
+Our strategy is somewhat complicated by the possibility of the fill being very
+concentrated in a few cups. We proceed as follows:
+
+For each anchor cup $i$ we perform the following \defn{switching-process}:
+\begin{enumerate}
+  \item Chose an index $j \in [n^2]$; our process proceeds for $n^2$
+    \defn{rounds}, $j$ is the index of the switching-process at which we will
+    switch a cup into the anchor set.
+  \item For $n^2$ rounds, we select a random subset $C\subset B$ of the
+    non-anchor cups and play a single processor cup game on $C$.
+  \item On round $j$ with $1/2$ probability we swap the winner of the single
+    processor cup game into the anchor set, and with $1/2$ probability we swap
+    a random cup from $B$ into the anchor set.
+\end{enumerate}
+
+Say that a cup is \defn{op} if it contains fill $\ge \sqrt{\frac{nh}{\log\log
+n}}$. If there is ever an overpowered cup, then we win. Note that we don't need to
+know which cup is overpowered because it will take $\Omega(\poly(n))$ rounds for the
+emptier to reduce the fill below $\poly(n)$. Hence, we can assume without loss
+of generality that no cup is ever op.
+
+We consider two cases:
+\begin{itemize}
+  \item \textbf{Case 1:} For at least $1/2$ of the switching-processes, at
+    least $1/2$ of the cups in $B$ have fill $\ge -h/2$.
+  \item \textbf{Case 2:} For at least $1/2$ of the switching-processes, less
+    than $1/2$ of the cups in $B$ have fill $\ge -h/2$.
+\end{itemize}
+
+\begin{clm}
+  \label{clm:reg} In Case 1, with probability at least $1-e^{-\Omega(n)}$, we
+  achieve fill $\ge h/2$ in a constant fraction of the cups in $A$.
+\end{clm}
+\begin{proof}
+  Consider a switching-process where we have at least $1/2$ of the cups in $B$
+  have fill $\ge -h/2$.
+
+  Say the emptier \defn{neglects} the anchor set in a round if on at least one
+  step of the round the emptier does not empty from every anchor cup. By
+  playing the single-processor cup game for $n^2$ rounds, with only one time
+  when we actually swap a cup into the anchor set, we strongly disincentivise
+  the emptier from neglecting the anchor set on more than a constant fraction
+  of the rounds. 
+  The emptier must have some binary function, $I(k)$ that indicates whether or
+  not they will neglect the anchor set on round $k$ if we have not already
+  swapped. Note that the emptier will know when we perform a swap, so whether
+  or not the emptier neglects a round $k$ depends on this information. This is
+  the only relevant statistic that the emptier can use to decide whether or not
+  to neglect a round, because on any round when we simply redistribute water
+  amongst the non-anchor cups we effectively have not changed anything about
+  the game state.
+
+  If the emptier is willing to neglect the anchor set for at least half of the
+  rounds, i.e. $\sum_{k=1}^{n^2} I(k) \ge n^2 / 2$, then with probability at
+  least $1/4$, $j \in (3/4 n^2, n^2)$, so the emptier neglects the anchor set
+  on at least $n^2/4$ rounds. The anchor set's average fill increases by at
+  least $1$ each round that the anchor set is neglected, and thus the anchor
+  set's average fill will have increased by at least $n \ge \Omega(\poly(n))$.
+  Hence we have the desired backlog.
+
+  Otherwise, we have at least a $1/2$ chance that the round $j$, which is
+  chosen uniformly at random from the rounds, when we will perform a switch
+  into the anchor set occurs on a round with $I(j)$ indicating that the emptier
+  won't neglect the anchor set on round $j$. In this case, the round was a
+  legitimate single processor cup game on $C_j$, the randomly chosen set of
+  $e^h$ cups on the $j$-th round. Then we achieve fill increase $\ge h$ by the
+  end of the game with probability at least $1/e^h!$, the probability that we
+  correctly guess the sequence of cups within the single processor cup game
+  that the emptier would empty from. 
+
+  The probability that the random set $C_j \subset B$ contains only elements
+  with fill $\ge -h/2$ is at least $1/2^{e^h}$, because at least half of the
+  elements of $B$ have fill $\ge -h/2$. If all elements of $C_j$ have fill $\ge
+  -h/2$, then the fill of the winner of the cup game has fill at least $-h/2 +
+  h = h/2$ if we guess the emptier's emptying sequence correctly.
+
+  Combining the results, we have that for such a switching-process there is a
+  constant probability of the cup which we switch into the anchor set has fill
+  $\ge h/2$. 
+
+  Say that this probability is $k \in (0,1)$. Then the expectation of the
+  number of cups in $A$ with fill $ \ge h/2$ is at least $kn/2$. Let $X_i$
+  independent and identically distributed binary random variables, with $X_i$
+  taking value $1$ if a uniformly randomly selected element of $A$ has fill
+  $\ge h/2$ and $X_i$ taking value $0$ otherwise. Then by a Chernoff Bound
+  (Hoeffding's Inequality applied to Binary Random Variables),
+  $$P\left(\sum_{i=1}^{n/2} X_i\le nk/4\right) \le e^{-n(k/2)^2}.$$ That is,
+  the probability is exponentially small in $n$.
+\end{proof}
+
+\begin{clm}
+  \label{clm:xtreme}
+  In Case 2, with probability at least $1- 1/\polylog(n)$, we achieve positive tilt $hn/8$ in the anchor set.
+\end{clm}
+
+\begin{proof}
+  Consider a switching-process where we have less than $1/2$ of the cups in $B$
+  with fill $\ge -h/2$.
+
+  % RIP this totally doesnt take into account that B might start with neg fill.
+
+  %! oh crap and fill is sinking! make sure it doesnt sink too much!!!
+  We assume for simplicity that the average fill of $B$ is $0$. In reality this
+  is not the case, but by a Hoeffding bound and the fact that overpowered cups don't
+  exist, the fill is really tightly concentrated around $0$, so this is almost
+  WLOG.
+
+  Let the positive tilt of a cup $i$ be $\tilt_+(i) \defeq \max(\fil(i), 0)$.
+  We have
+  $$\E[\tilt_+(X)] = \frac{1}{2}\E[|\fil(X)|] \ge h/2$$
+  (because negative tilt is at least $nh/4$ and positive tilt must oppose this).
+  
+  Let $Y_i$ be the random variable $Y_i=\tilt_+(X)$ where $X$ is a randomly
+  selected cup from the non-anchor set at the start of the $i$-th round of
+  playing single processor cups games. Note that the $Y_i$ are not really
+  independent, but it is probably ok. Note that $0\le Y_i \le hn/\lg\lg n$.
+  Now we have, by Hoeffding's inequality, that 
+  $$P\left(\Big|\frac{1}{n/2} \sum_{i=1}^{n/2} (Y_i - \E[Y_i])\Big|\ge h/4
+  \right) \le$$
+  $$2\exp\left(-\frac{n(h/4)^2}{(\sqrt{hn/\lg\lg n})^2}\right) $$
+  $$P\left(\frac{1}{n/2}\sum_{i=1}^{n/2} Y_i \le h/4\right) \le 1/\polylog(n) $$
+
+\end{proof}
+
+Now we consider two cases based on how many times we must apply Claim
+\ref{clm:reg} and Claim \ref{clm:xtreme}. If we must apply Claim
+$\ref{clm:reg}$ at least half the time, then we achieve a constant fraction of
+the anchor cups with fill at least $h/2$. If on the other hand we must apply
+Claim $\ref{clm:xtreme}$ at least half of the time, we have that with
+probability $1- 1/\polylog(n)$ the process brings $n\cdot h/8$ positive tilt to
+the anchor set as desired. 
+
+  In either case we achieve, with probability at least $1-1/\polylog n$,
+  positive tilt at least $hn/k$ in the anchor set. Use the positive tilt, with
+  one processors, we can transfer over the fill into $n/k$ cups. 
+  (Note, we use one processor because we do not know how many cups the fill is
+  concentrated in). The filler repeatedly distributes $1$ unit of fill to each
+  of the $n/k$ cups in succession, and continues until $h/4$ fill has been
+  distributed. We cannot continue beyond this point because we have used up the
+  positive tilt. Now we recurse on this set of $n/k$ cups.
+
+  We can perform $\Omega(\log n)$ levels of recursion, and gain $\Omega(1)$
+  fill at each step. Hence, overall, backlog of $\Omega(\log n)$ is achieved.
+
+  Note that the only part of this proof that was specific to smoothed greedy
+  was the end, when we wanted to achieve known fill in some cups. Against an
+  arbitrary opponent we cannot assume that just because they are far behind
+  means that they won't oppose our attempts to achieve cups with known fill.
+  Extending this result to non-greedy emptiers, or showing that it cannot be
+  extended is an important open question.
 \end{proof}
 
 
+\begin{lemma}[The Oblivious Amplification Lemma]
+  Given an oblivious filling strategy for achieving backlog $f(k)$ in the
+  variable-processor cup game on $k$ cups that succeeds with probability at
+  least $1/2$, there exists a strategy for achieving ``amplified" fill $$f'(k)
+  \ge \frac{1}{32}(f(k/2) + f(k/4) + f(k/8) + \cdots $$ that succceeds with constant probability.
+\end{lemma}
+\begin{proof}
+  We essentially perform the same proof as Proposition \ref{prop:obliviousBase}, but some new issues arise, which we proceed to highlight and address. 
 
+\begin{clm}
+  Let a cup be \defn{verysad} if it has fill $< -nh/\lg\lg n$.
+  WLOG there are no verysad cups. 
+\end{clm}
+\begin{proof}
+  First note that becasue WLOG there are no overpowered cups, there fewer than $n/2$ verysad cups.
 
+  Consider 2 cases:
+  \begin{itemize}
+    \item If the mass of the verysad cups is less than $nh/8$ then we can
+      ignore them and accept a $-h/8$ penalty to the average fill.
+    \item On the other hand, if the mass of the verysad cups is greater than
+      $nh/8$, then by the end the average fill of everything else is already
+      $h/8$ which is also basically as desired.
+  \end{itemize}
+\end{proof}
 
+\begin{clm}
+  WLOG $A,B$ have average fill $\ge -h/8$.
+  In particular, we can construct a subset of $n/2$
+  cups with average fill $\ge -h/8$ with high probability in $n$. 
+\end{clm}
+\begin{proof}
 
+  Recall the definition of an overpowered cup as a cup with fill $\ge nh / \lg \lg n$,
+  and the fact that WLOG there are no overpowered cups.
+  So, If we randomly pick $B$ then this means that we are pretty good. 
+  Formalizing this, let $X_i$ be the fill of the $n/2$-th randomly chosen cup
+  for $B$. Unfortunately these are not quite independent events.
 
+  Lets say we pick $2n$ things from $n$ things with replacement. Claim: with
+  exponentially good probability we have $n/2$ distinct things. 
+  Proof: chernoff bound. Let $X_i$ be indicator variable for cup $i$ (whether
+  it was chosen or not). Probability that $X_i$ was chosen: $1-((n-1)/n)^n
+  \approx 1-1/e > 1/2$ for large $n$. 
+  Then by a Chernoff Bound we have that $\sum_i X_i$ is tightly concentrated
+  around its mean, which is larger than $n$. In particular, with probability
+  exponentially close to $1$ in $n$ we have that at least $n/2$ cups were chosen.
 
-% TODO:
-% amplification lemma
-% hoeffding bound stuff
+    initially solution: no overpowered cups wlog, so if we pick them randomly star holds
+    by Hoeffding's. (kinda, bc stuff isnt really independent, can probably swap
+    with replacement to fix this tho)
+  
+\end{proof}
+\begin{clm}
+  What if $C$ needs to be big because we need big backlog? 
+\end{clm}
+\begin{proof}
+ this isnt a problem beause the base case is the only case that needs to explicitely deal with positive and negative fill
+\end{proof}
+These concerns resolved, the exact same argument as in Proposition
+\ref{prop:obliviousBase} gives the desired result.
 
+\end{proof}
 
-
-
-
-% thoughts:
-
-% if there are at least n/2 cups with like fill at least -h/4 then we are golden
-% cuz just play on them
-
-% if there are less than n/2 cups with fill at least -h/4
-% tehn the negative tilt is at least nh/8
-
-% so so it the positive tilt
-% (negative tilt overall = positive tilt overall)
-
-
-
-% rough goal: get n/2 cups with avgfill at least h
-% problem: what if we cant because there are op cups.
-% solution: take the op cups.
-% question: when is a cup op? if it has fill at least 1/2 f(n/2) + f(n/4) + ...
-% or maybe it should just be 1/2f(n/2)
-
-
-
-% we win if there isa cup with fill at  least that sum
-% if there are none
-
-% wellll the sum is like less than log n f(n/2) 1/2
-% could go down to 4.5 f(n/2) if we really wanted
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-% thoughts:
-
-% goal: get a cup with fill h = 1/2 f(n/2) + f(n/4) + ...
-% subgoals: get n/2 cups with fill 1/2 f(n/2), n/4 cups with fill 1/2 f(n/2) + f(n/4) ...
-
-
-% case 1: 
-% there exists a set of size $n/2^m$ with fill $\frac{1}{2} (f(n/2) + \cdots + f(n/2^m))$
-% then yay that was our subgoal, recurse
-
-% case 2: 
-% no set of size at least $n/2^m$ with fill at least $\frac{1}{2} (f(n/2) + \cdots + f(n/2^m))$
-
-% well then total positive tilt is less than ... n/2 1/2 f(n/2) + n/4 1/2 f(n/4) + ... < nh/2
-
-% imagene $> n/\sqrt{2}$ of the cups had fill $< -h/\sqrt{2}$
-% then negative tilt would be at least $-hn/2$
-% but this cant be
-
-% hence $< n/\sqrt{2}$ of the cups have fill $< -h/\sqrt{2}$
-% at least $1-1/\sqrt{2}$ of the cups have fill $>-h/\sqrt{2}$
-
-% so yay we can apply the alg to those cups.
-
-% feelsbad
-
-
+\begin{corollary}
+  There is an oblivious filling strategy for the variable-processor cup game on
+  $n$ cups that achieves backlog $2^{\Omega(\sqrt{\log n})}$ in running time
+  $O(n)$
+\end{corollary}
+\begin{proof}
+  We must reduce want to reduce $\log^2 n$ to $\log n$ to achieve the
+  appropriate running-time, so we reduce $n$ to $n' = 2^{\sqrt{\log n}}$. This
+  detail taken care of we apply exactly the same recursive construction of
+  $f_{\theta(\log n)}$ as in Corollary \ref{cor:adaptivePoly}, but using
+  repeated application of the Oblivious Amplification Lemma rather than the
+  Adaptive Amplification Lemma, which yields the disclaimer that the backlog is
+  only achieved with constant probability.
+  So we achieve backlog $\Omega(2^{\log n'})$ in running time $O(2^{\log^2
+  n'})$. By design, expressing this in terms of $n$ we have running time $O(n)$
+  (randomized lowerbounds are not supposed to take longer than $\poly(n)$
+  time), and as a consequence we get backlog $\Omega(2^{\sqrt{\log n}})$.
+\end{proof}
 
 
 \end{document}
