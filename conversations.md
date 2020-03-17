@@ -11,6 +11,7 @@ Bill:		+ b / k
 Bill:		This all works if the b cups were above average
 Bill:		out of the k fullest cups (or maybe it's out of the k + b fullest cups)
 Bill:		But if they're not, then it seems like maybe there's a different argument to make?
+
 Bill:		Set b = 10
 Bill:		k = 100
 Bill:		If the b cups have below-avg fill for the b + k fullest cups
