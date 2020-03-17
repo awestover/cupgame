@@ -18,6 +18,7 @@
 \DeclareMathOperator{\st}{\text{ such that }}
 \DeclareMathOperator{\tilt}{\text{tilt}}
 \DeclareMathOperator{\fil}{\text{fill}}
+\DeclareMathOperator{\avgfil}{\text{avgfill}}
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 
 \newcommand{\contr}[0]{\[ \Rightarrow\!\Leftarrow \]}
@@ -47,7 +48,7 @@
 \begin{document}
 \maketitle
 
-\paragraph{Introduction}
+\section{Introduction}
 The cup game is a classic game in computer science that models work-scheduling.
 In the cup game a filler and an emptier take turns adding and removing water
 (i.e. work) to the cups. We investigate a variant of the vanilla multiprocessor
@@ -91,8 +92,7 @@ game are futile because the variable-processor cup game
 is--surprisingly--fundamentally different from the multiprocessor cup game, and
 thus impossible to simulate. This follows as a corollary of an
 \defn{Amplification Lemma} for both the adaptive and oblivious filler.
-
-The following paragraphs follow the structure:
+Section \ref{sec:adaptive} and Section \ref{sec:oblivious} follow the structure:
 \begin{enumerate}
   \item Proposition: Base case of inductive argument in corollary
   \item Lemma: Amplification Lemma, allows for inductive step in inductive argument
@@ -100,7 +100,7 @@ The following paragraphs follow the structure:
 \end{enumerate}
 We proceed with our results.
 
-\paragraph{Adaptive Lower Bound}
+\section{Adaptive Lower Bound}\label{sec:adaptive}
 \begin{proposition}
 \label{prop:adaptiveBase}
   There exists an adaptive filling strategy for the variable-processor cup game
@@ -129,7 +129,7 @@ We proceed with our results.
   \ge -2h$ for all cups $i\in A$, and remove $1$ cup from the active set at
   each step.
   At each step the filler distributes water equally among the cups in its
-  active set. Then, the emptier will chose some cup to empty from. If this cup
+  active set. Then, the emptier will choose some cup to empty from. If this cup
   is in the active set the filler removes it from the active set. Otherwise, the
   filler chooses an arbitrary cup to remove from the active set.
 
@@ -139,45 +139,40 @@ We proceed with our results.
   proposition is satisfied.
 \end{proof}
 
-\begin{lemma}[The Adaptive Amplification Lemma]
+\begin{lemma}[The Adaptive Amplification Lemma]\label{lem:adaptiveAmplification}
   Given an adaptive filling strategy for achieving fill $f(n)$ in a cup in the
   variable-processor cup game on $n$ cups (relative to average fill, with
-  negative fill allowed), there exists a strategy for achieving
-  \defn{amplified} fill 
-  $$f'(n) \ge \frac{1}{2}(f(n/2) + f(n/4) + f(n/8) + \cdots ).$$
+  negative fill allowed), for any constant $\delta\in (0,1)$, there exists a strategy for
+  achieving \defn{amplified} fill 
+  $$f'(n) \ge (1-\delta)\sum_{i= 0}^{\frac{\lg (n(1-\delta))}{\lg (1/\delta)} } f((1-\delta)\delta^in).$$
 \end{lemma}
 \begin{proof}
-  % If, at any point in the process that will be described, backlog is greater
-  % than $f'(n)$, then the filler stops and the Lemma is satisfied as the desired
-  % backlog has been achieved. Thus we assume without loss of generality for
-  % the rest of the proof that no cup ever exceeds fill $f'(n)$ during the course
-  % of our algorithm. That is, we assume that we don't achieve the desired
-  % backlog until the end of our process.
-
   The basic idea of this analysis is as follows:
   \begin{enumerate}
-    \item Using $f$ repeatedly, achieve average fill at least $\frac{1}{2} f(n/2)$ in a set of $n/2$ cups. 
-    \item Halve the number of processors
-    \item Recurse on the $n/2$ cups with high average fill.
+    \item Using $f$ repeatedly, achieve average fill at least $(1-\delta) f(n(1-\delta))$ in a set of $n\delta$ cups. 
+    \item Reduce the number of processors to $n\delta$.
+    \item Recurse on the $n\delta$ cups with high average fill.
   \end{enumerate}
-  We now elaborate on how to achieve Step (1).
 
-  Let $A$ the \defn{anchor set} be initialized to consist of the $n/2$ fullest
+  Let $A$ the \defn{anchor set} be initialized to consist of the $nk$ fullest
   cups, and let $B$ the \defn{non-anchor set} be initialized to consist of the
-  rest of the cups.
-  Let $h_l = f(k/2^l)/2$; the filler will achieve a set of at
-  least $n_l/2 = n/2^l$ cups with average fill at least $h_l$ on the $l$-th
-  level of recursion. 
+  rest of the cups (so $|B| = (1-\delta)n$).
+  Let $h_l = (1-\delta)f(n(1-\delta)\delta^{l-1})$; the filler will achieve a set of at least $n_l\cdot \delta =
+  n\cdot \delta^l$ cups with average fill at least $h_l$ on the $l$-th level of
+  recursion. On the $l$-th level of recursion $|A| = \delta\cdot n_l, |B| = (1-\delta)\cdot n_l$.
 
-  Our filling strategy consists of always placing $1$ unit of water in each
-  anchor cup. This ensures that average fill in the anchor set is non-decreasing.
+  We now elaborate on how to achieve Step 1.
+  Our filling strategy always places $1$ unit of water in each anchor cup. This
+  ensures that average fill in the anchor set is non-decreasing.
 
   On the $l$-th level of recursion we will repeatedly apply $f$ to
   $B$, and then take the cup generated by $f$ within $B$ to have large backlog
-  and swap it with a cup in $A$ until $A$ has the desired average fill. If at
-  any point in this process $B$ has average fill lower than $-h_l$,
+  and swap it with a cup in $A$ until $A$ has the desired average fill. 
+  Note that $$\avgfil(A) \cdot |A| +\avgfil(B)\cdot |B| = 0$$
+  so $$\avgfil(A) = - \avgfil(B) \cdot (1-\delta)/ \delta.$$
+  Thus, if at any point in this process $B$ has average fill lower than $-h_l \cdot \delta/(1-\delta)$,
   then anchor set has average fill at least $h_l$, so the process is
-  finished. So long as $B$ has average fill at least $-h_l$ then we will
+  finished. So long as $B$ has average fill at least $-h_l\cdot \delta/(1-\delta)$ we will
   apply $f$ to $B$.
   
   It is somewhat complicated to apply $f$ to $B$ however, because we need to
@@ -195,36 +190,42 @@ We proceed with our results.
   Note that each time the emptier neglects the anchor set the mass of the
   anchor set increases by $1$. If the emptier neglects the anchor set $h_l
   n_l/2 + 1$ times, then the average fill in the anchor set increases by more
-  than $h_l$, so the desired fill is achieved in the anchor set.
+  than $h_l$, so the desired average fill is achieved in the anchor set.
 
   Otherwise, there must have been an application of $f$ for which the emptier
   did not neglect the anchor set. We only swap a cup into the anchor set if
-  this is the case. In this case we actually do achieve fill $-h_l/2 +
-  f(n_l/2)$ in a non-anchor cup, and swap it with the smallest cup in the anchor set.
+  this is the case. In this case we achieve fill 
+  $$-h_l \cdot \delta/(1-\delta) + f(n_l (1-\delta)) = (1-\delta)f(n_l (1-\delta)) = h_l$$
+  in a non-anchor cup, and swap it with the smallest cup in the anchor set.
 \end{proof}
 
 \begin{corollary}
   \label{cor:adaptivePoly}
   There is an adaptive filling strategy for the variable-processor cup game on
-  $n$ cups that achieves backlog $\Omega(\poly(n))$ in running time
-  $2^{O(\log^2 n)}$
+  $n$ cups that achieves backlog $\Omega(n^{1-\epsilon})$ for any constant
+  $\epsilon \in (0,1)$, in running time $2^{O(\log^2 n)}$.
 \end{corollary}
-\begin{proof}
+\begin{proof}$ $\\
+  \paragraph{Basic Idea}
   Let
   $$f_0(k) = 
   \begin{cases} 
     \log_2 k, & k\geq 1, \\
     0 & \text{else.}
   \end{cases}$$
-
-  Let $f_{m+1} $ be the result of applying The Amplification Lemma to $f_m$. 
-  By repeated amplification $\log_2 n^{1/9}$ times we 
-  achieve a function $f_{\log_2 n^{1/9}}(k)$ with the property that for $k \geq n,$
-  $f_{\log_2 n^{1/9}}(k) \geq 2^{\log_2 n^{1/9}} \log_2 k$. In particular, this gives a filling strategy 
-  that when applied to $n$ cups gives backlog $\Omega(n^{1/9}\log_2 n) \ge \Omega(\poly(n))$ as desired.
-  To prove this, we prove the following lower bound for $f_m$ by induction:
+  Note that we can achieve backlog $f_0(k)$ on $k$ cups by Proposition \ref{prop:adaptiveBase}.
+  Let $f_{m+1} $ be the result of applying the Amplification Lemma to $f_m$ with $\delta=1/2$. 
+  The function $f_{\log_2 n^{1/9}}(k)$ satisfies 
+  \begin{equation}\label{eqn:amppppp}
+  \text{for } k \geq n,\,\, f_{\log_2 n^{1/9}}(k) \geq 2^{\log_2 n^{1/9}} \log_2 k.
+  \end{equation}
+  In particular, using $f_{\log_2 n^{1/9}}(n)$ (applying the function to all of
+  the cups) we achieve backlog $\Omega(n^{1/9}\log_2 n) \ge \Omega(\poly(n))$
+  as desired.
+  To prove Equation \ref{eqn:amppppp}, we prove the following lower bound for $f_m$ by induction:
   $$f_m(k) \geq 2^m \log_2 k, \text{ for } k \geq (2^9)^m.$$
-  The base case follows from the definition of $f_0$. Assuming the property for $f_m$, we get the following:
+  The base case follows from the definition of $f_0$. Assuming the property for
+  $f_m$, we get the following by Lemma \ref{lem:adaptiveAmplification}:
   $ \text{for } k > (2^9)^{m+1},$
   \begin{align*}
   &f_{m+1}(k) \\
@@ -234,13 +235,11 @@ We proceed with our results.
   &\geq \frac{1}{2}2^m(9\log_2 (k) - \frac{9 \cdot 10}{2}) \\
   &\geq 2^{m+1} \log_2(k) ,
   \end{align*}
-
   as desired. Hence the inductive claim holds, which establishes that $f_{\log_2
   n^{1/9}}$ satisfies the desired condition, which proves that backlog can be
   made $\Omega(\poly(n))$.
 
-
-  \begin{remark}
+  \paragraph{Running Time Analysis}
   The recursive construction requires quite a lot of steps, in fact a
   super-polynomial number of steps. If we consider the tree that represents
   computation of $f_{\log n^{1/\alpha}}(n)$ we see that each node will have at
@@ -252,8 +251,8 @@ We proceed with our results.
   of $f_{k-1}(n/2^i)$ $n/2^i$ times for $1\le i \le \alpha$, we have that $
   T(n) \le \frac{\alpha n}{2}T(n/2)$. This recurrence yields $T(n) \le
   \poly(n)^{\log n} = O(2^{\log^2 n})$ for the running time.
-  \end{remark}
 
+  \paragraph{Generalizing Our Approach}
   Generalizing our approach we can achieve a (slightly) better polynomial
   lower bound on backlog. In our construction the point after which we had a
   bound for $f_m$ grew further out by a factor of $2^9$ each time. Instead of
@@ -267,7 +266,7 @@ We proceed with our results.
   n\right)$. This optimizes at $\alpha = 13$, to backlog
   $\Omega(n^{\frac{\log_2 3}{13}}\log n) \approx \Omega(n^{0.122}\log n)$. 
 
-  We can even improve over this. Note that in the proof that
+  We can further improve over this. Note that in the proof that
   $f_{m+1}$ gains a factor of $2$ over $f_m$ given above, we lower bound
   $9\log_2 k - 9\cdot 10 /2$ with $2\log_2 k$. Usually however this is very
   loose: for small $m$ a significant portion of the $9 \log_2 k$ is annihilated
@@ -292,16 +291,58 @@ We proceed with our results.
   \alpha$ choice, or $\tilde{\Omega}(n^{(\log_2 (3 - \epsilon))/3})$ for any
   constant $\epsilon >0$. 
 
-  We could potentially aim to achieve even higher
-  backlog by using more than the first $\alpha$ terms of the sum. The terms
-  after $f_m(k/2^\alpha)$ in the sum are evaluated at points where they are
-  potentially positive, but will not have the full strength of the $2^m \log_2
-  k$. This makes them difficult to deal with, and as it seems that we will just
-  get a modest increase in the exponent of our polynomial we do not pursue
-  this. 
+  \paragraph{Further Generalizing Our Approach}
+  Intuitively we should be able to keep growing $f_m$ until the Amplification
+  Lemma stops increasing $f_m$, i.e. until $f_{m+1}= f_m$. If the optimal
+  function is $n^\alpha$, then we can determine $\alpha$ in terms of $\delta$:
+  $$\sum_{i\ge 0} (1-\delta)(n(1-\delta)\delta^i)^\alpha = n^\alpha (1-\delta)
+  \frac{(1-\delta)^\alpha}{1-\delta^\alpha}.$$
+  In order for this to be $n^\alpha$ we need
+  $(1-\delta)^{\alpha+1}/(1-\delta^\alpha) = 1$, i.e. $$(1-\delta)^{\alpha+1} +
+  \delta^\alpha= 1.$$
+  We claim that by chosing $\delta$ to be a constant arbitrarily close to $0$,
+  one can achieve exponent $\alpha$ arbitrarily close to $1$.
+  Let $\epsilon$ be constant, we aim to achieve $\alpha = 1-\epsilon$.
+  Consider the function $g(\delta) = (1-\delta)^{\alpha+1}+\delta^\alpha.$
+
+  We aim to prove that there is a solution $g(\delta) = 1$ for $\delta\in (0,1)$.
+  We will argue by the Intermediate Value Theorem.
+  First we find a $\delta$ very close to $0$ where $g(\delta) > 1$, then we
+  will find a $\delta$ where $g(\delta) < 1$. As $g(\delta)$ is clearly
+  continuous, so combining these facts gives that $g(\delta) = 1$ has a solution
+  on the desired interval.
+
+  Consider the Taylor series for $(1-\delta)^{\alpha}$, $(1-\delta)^{\alpha} =
+  1 - (\alpha+1)\delta - O(\delta^2).$ 
+  By taking $\delta$ sufficiently small the $O(\delta^2)$ term becomes
+  negligable compared to the $(\alpha+1)\delta$ term. In particular, say that
+  the $O(\delta^2)$ term is less than $M \delta^2$ for some constant $M$.
+  Taking $\delta$ small enough such that $\delta^2 M < \delta$, we have that
+  $(1-\delta)^{\alpha} > 1-(\alpha+1)\delta - \delta$.
+ 
+  So, to find a $\delta$ where $g(\delta) >1$ it suffices to find a $\delta$ with 
+  $$\delta^\alpha \ge (\alpha+2)\delta.$$
+  The equality is achieved at $\delta = (\alpha+2)^{1/(\alpha - 1)} < 1$.
+
+  To get a $\delta$ where $g(\delta) < 1$, note that if $\alpha \ge 0.9, g(1/2)
+  < 1$ which follows from the following calculation:
+  $$(1/2)^{\alpha+1}+(1/2)^\alpha = \frac{3}{2}\frac{1}{2^\alpha} \le
+  \frac{3}{2} \frac{1}{2^{0.9}} \approx 0.804 <1.$$
+
+  Thus, as desired, by the Intermediate Value Theorem we have a $\delta
+  \in(0,1)$ which achieves $g(\delta) = 1$.
+
+  However, it is not obvious that this backlog is achievable. We now show that
+  the equality case of the Amplification Lemma is achieved.
+
+  YAY PASCALS TRIANGLE.
+
+  Hence we have backlog $\Omega(n^{1-\epsilon})$ for any constant $\epsilon \in (0,1)$.
+
+
 \end{proof}
 
-\paragraph{Oblivious Lower Bounds}
+\section{Oblivious Lower Bounds}\label{sec:oblivious}
 
 An important theorem that we use repeatedly in our analysis is Hoeffding's Inequality:
 \begin{theorem}[Hoeffding's Inequality]
@@ -312,7 +353,8 @@ Hoeffding also proved that this is true even if $X_i$ are drawn without
 replacement from some finite population. This is intuitive as drawing without
 replacement clearly has less variance than sampling with replacement, i.e.
 sampling without replacement should be more tightly concentrated around the
-mean than sampling with replacement.
+mean than sampling with replacement. This is a corollary of his Theorem 4, see
+page 28 of his seminal work \cite{who62}.
 
 Call an emptying strategy $(\ell, \delta)$\defn{-greedy-like} if is satisfies
 the following property when the number of processors is $p$: for any cup
@@ -352,7 +394,7 @@ n)$.
 
 Now we detail how to achieve Step 1.
 For each anchor cup $i$ we will perform a \defn{switching-process}.
-First we chose an index $j \in [n^2]$; the process proceeds for $n^2$
+First we choose an index $j \in [n^2]$; the process proceeds for $n^2$
 \defn{rounds}, $j$ is the index of the switching-process at which we will
 switch a cup into the anchor set.
 On each of the $n^2$ rounds, the filler selects a random subset $C\subset B$ of
@@ -587,4 +629,6 @@ These concerns resolved, the exact same argument as in Proposition
 \end{proof}
 
 
+\bibliographystyle{plain}
+\bibliography{paper}
 \end{document}
