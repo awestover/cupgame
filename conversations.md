@@ -37,4 +37,7 @@ Bill:		was actually smaller than the bound that we stated for them
 Bill:		which means the b cups were actually emptier than we've analyzed them as
 Bill:		and so on...
 
+# Tuesday the 17th of March
+
+
 

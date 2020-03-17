@@ -75,31 +75,46 @@
 \maketitle
 
 \begin{itemize}
-  \item \textbf{Single-Processor, online filler: } \\
-    Filler: $\Omega(\log n)$ (ignore the touched cup each time, equal water to all others, $\frac{1}{n}+\frac{1}{n-1}  + \cdots + \frac{1}{1}$)\\
+  \item \textbf{Single-Processor, adaptive filler: } \\
+    Filler: $\Omega(\log n)$ (ignore the touched cup each time, equal water to
+    all others, $\frac{1}{n}+\frac{1}{n-1}  + \cdots + \frac{1}{1}$)\\
     Emptier: $O(\log n)$ (inductive proof)
-  \item \textbf{Single-Processor, offline filler: } \\
+  \item \textbf{Single-Processor, oblivious filler: } \\
     Filler: $\Omega(\log\log n)$ (anchoring???) \\
     Emptier: $O(\log\log n)$ (no more than $\log n$ of the cups ever get fill above constant, play a cup game on the rest of the cups, get $O(\log \log n)$)
-  \item \textbf{Multi-Processor, online filler: } \\
-    Filler: $\Omega(\log n)$ (For $p < n-\sqrt{n}$ see Bills paper that gets $\Omega(\log (n-p))$ which is tight for these small values of $p$ by playing a single processor cup game on $n-p+1$ cups and anchoring the other $p-1$ cups. For $p>n-\sqrt{n}$ you build the anchor set, adding $n-p$ cups to it each time, to get $\log n - \log (n-p)$ backlog)\\
-    Emptier: $O(\log n)$ (Bill's complicated paper, generalizes the inductive proof for single processor case using skewed averages)
-  \item \textbf{Multi-Processor, offline filler: } \\
-    Filler: $\Omega(\log\log n)$ (anchoring???, HYPOTHESIS: this is not tight! we should be able to get $\Omega(\log p + \log \log n)$ $Pr[\text{Hypothesis is correct}] \approx 0.5$ ) \\
+  \item \textbf{Multi-Processor, adaptive filler: } \\
+    Filler: $\Omega(\log n)$ (For $p < n-\sqrt{n}$ see Bills paper that gets
+    $\Omega(\log (n-p))$ which is tight for these small values of $p$ by
+    playing a single processor cup game on $n-p+1$ cups and anchoring the other
+    $p-1$ cups. For $p>n-\sqrt{n}$ you build the anchor set, adding $n-p$ cups
+    to it each time, to get $\log n - \log (n-p)$ backlog)\\
+    Emptier: $O(\log n)$ (Bill's complicated paper, generalizes the inductive
+    proof for single processor case using skewed averages)
+  \item \textbf{Multi-Processor, oblivious filler: } \\
+    Filler: $\Omega(\log\log n)$ (anchoring???, HYPOTHESIS: this is not tight!
+    we should be able to get $\Omega(\log p + \log \log n)$
+    $Pr[\text{Hypothesis is correct}] \approx 0.5$ ) \\
     Emptier: $O(\log\log n + \log p)$  
-  \item \textbf{Variable-Processor, online filler: } \\
-    Filler: $\Omega(\text{poly}(p))$ (Amplification Lemma: $f'(p) = \frac{1}{2}\cdot(f(p/2) + f(p/4) + \ldots)$) \\
-    Emptier: $O(\text{poly}(p))$ (this is a conjecture, no legit thoughts on how to prove it yet)
-  \item \textbf{Variable-Processor, offline filler: } \\
-    Filler: $\Omega(\log p + \log \log n)$ (using the superpower you can get $\Theta(p)$ cups with known constant fill in them. Recursing on these $\log p$ times gives $\log p$ backlog, and we already knew $\Omega(\log\log n)$) CONJECTURE: we can probably do better: $\Omega(2^{\sqrt{\log n} /2})$ in $\text{poly}(n)$ moves (via careful use of Chernoff bounds)\\
+  \item \textbf{Variable-Processor, adaptive filler: } \\
+    Filler: $\Omega(n^{1-\epsilon})$ for any constant $\epsilon >0$ (Amplification Lemma: $f'(p) =
+    \frac{1}{2}\cdot(f(p/2) + f(p/4) + \ldots)$) \\
+    Emptier: $O(n)$ (this is a conjecture, no legit thoughts on how to prove it yet)
+  \item \textbf{Variable-Processor, oblivious filler: } \\
+    Filler: $\Omega(\log p + \log \log n)$ (using the superpower you can get
+    $\Theta(p)$ cups with known constant fill in them. Recursing on these $\log
+    p$ times gives $\log p$ backlog, and we already knew $\Omega(\log\log n)$)
+    CONJECTURE: we can probably do better: $\Omega(2^{\sqrt{\log n} /2})$ in
+    $\text{poly}(n)$ moves (via careful use of Chernoff bounds)\\
     Emptier: Probably $O(2^{\sqrt{\log n} /2})$ is true (how to prove it? maybe not worth it...)
   
 \end{itemize}
 
 \textbf{Current goals:}
 \begin{itemize}
-  \item Make upper bound and lower bound agree for multi-processor cup game with offline opponent (i.e. randomized)
-  \item Prove bounds on variable-processor cup game against offline and online fillers
+  \item Make upper bound and lower bound agree for multi-processor cup game
+    with oblivious opponent (i.e. randomized)
+  \item Prove better bounds on variable-processor cup game against oblivious
+    and adaptive fillers
 \end{itemize}
 
 \end{document}
