@@ -39,5 +39,35 @@ Bill:		and so on...
 
 # Tuesday the 17th of March
 
+(paraphrased)
+Alek: Yo I got n^{1-\epsilon}
+Alek: Woops, the proof only works for $\delta = 1-\delta = 1/2$
+Bill: pretty cool anyways, very surprising!
+Bill & Alek graph some stuff
+Bill: wow it actually works. nice
+Bill: Existential argument for why its good: consider f^*(n) = sup of achievable backlogs on n cups,
+Bill: clearly f^* satisfies the amplificaiotn lemma
+Bill: Assume for contraditction that f^* is less than cn^0.75 (say) for big enough n
+Bill: but then derive a contradiction for appropriate delta!
+Alek: yoo
+Bill: maybe you can make this a constructive proof...
+Alek: Ill look into it
+Alek: Here is why that thing is (1-delta)^i
+Bill & Alek: RIP, last part doesnt go through anymore
+Bill: ah look at that f((1-delta)n) term. you are totally ignoring it, but its like the only reason that delta small is any good
+Alek: ah gotchya
+Bill: also, its nice that you arent throwing away anything
+Bill: Also, what if we could get better than n^{1-\epsilon}
+Alek: you mean like n/polylog ????
+Bill: sure, or even n
+Alek: wait but i like throwing away constants
+Bill: having a tight analysis of this would be epic
+Alek: true
+Bill: how about that upperbound
+Alek: tried, no luck with the invariant you proposed
+Bill: try this extremal invariant: 1/k
+Alek: sounds pretty good will do
+Bill: cool cya
+Alek: cya!!!!
 
 

@@ -147,14 +147,15 @@ We proceed with our results.
   1$. Let $\delta\in(0,1)$ be constant, and let $M\in\mathbb{N}$ be a constant
   such that $n_0 \le (1-\delta)\delta^M n \le n_0/\delta$.
 
-  Then, there exists an adaptive filling strategy that achieves \defn{amplified} fill
+  Then, there exists an adaptive filling strategy that achieves backlog
   $$f'(n) \ge \max\left(1, (1-\delta)\sum_{\ell= 0}^{M} f((1-\delta)\delta^\ell n)\right)$$
-  on $n\ge n_0$ cups.
+  in the variable processor cup game on $n\ge n_0$ cups.
 \end{lemma}
 \begin{proof}
   The basic idea of this analysis is as follows:
   \begin{enumerate}
-    \item Using $f$ repeatedly, achieve average fill at least $(1-\delta) f(n(1-\delta))$ in a set of $n\delta$ cups. 
+    \item Using $f$ repeatedly, achieve average fill at least $(1-\delta)
+      f(n(1-\delta))$ in a set of $n\delta$ cups. 
     \item Reduce the number of processors to $n\delta$.
     \item Recurse on the $n\delta$ cups with high average fill.
   \end{enumerate}
@@ -208,7 +209,7 @@ We proceed with our results.
   in a non-anchor cup, and swap it with the smallest cup in the anchor set.
 
   We achieve average fill $h_\ell$ in the anchor set for $M$ levels of
-  recursion. Note that as $n\ge n_0$ we can allways simply use Proposition
+  recursion. Note that as $n\ge n_0$ we can always simply use Proposition
   \ref{prop:adaptiveBase} to achieve backlog $1$. We will revert to this option
   if it gives larger fill than we get by repeatedly applying $f$.
 \end{proof}
@@ -224,20 +225,20 @@ We proceed with our results.
   Let
   $$f_0(k) = 
   \begin{cases} 
-    \log_2 k, & k\geq 1, \\
+    \lg k, & k\geq 1, \\
     0 & \text{else.}
   \end{cases}$$
   Note that we can achieve backlog $f_0(k)$ on $k$ cups by Proposition \ref{prop:adaptiveBase}.
   Let $f_{m+1} $ be the result of applying the Amplification Lemma to $f_m$ with $\delta=1/2$. 
-  The function $f_{\log_2 n^{1/9}}(k)$ satisfies 
+  The function $f_{\lg n^{1/9}}(k)$ satisfies 
   \begin{equation}\label{eqn:amppppp}
-  \text{for } k \geq n,\,\, f_{\log_2 n^{1/9}}(k) \geq 2^{\log_2 n^{1/9}} \log_2 k.
+  \text{for } k \geq n,\,\, f_{\lg n^{1/9}}(k) \geq 2^{\lg n^{1/9}} \lg k.
   \end{equation}
-  In particular, using $f_{\log_2 n^{1/9}}(n)$ (applying the function to all of
-  the cups) we achieve backlog $\Omega(n^{1/9}\log_2 n) \ge \Omega(\poly(n))$
+  In particular, using $f_{\lg n^{1/9}}(n)$ (applying the function to all of
+  the cups) we achieve backlog $\Omega(n^{1/9}\lg n) \ge \Omega(\poly(n))$
   as desired.
   To prove Equation \ref{eqn:amppppp}, we prove the following lower bound for $f_m$ by induction:
-  $$f_m(k) \geq 2^m \log_2 k, \text{ for } k \geq (2^9)^m.$$
+  $$f_m(k) \geq 2^m \lg k, \text{ for } k \geq (2^9)^m.$$
   The base case follows from the definition of $f_0$. Assuming the property for
   $f_m$, we get the following by Lemma \ref{lem:adaptiveAmplification}:
   $ \text{for } k > (2^9)^{m+1},$
@@ -245,11 +246,11 @@ We proceed with our results.
   &f_{m+1}(k) \\
   &\ge \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9) + \cdots)\\
   &\geq \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9))\\
-  &\geq \frac{1}{2}2^m(\log_2 (k/2) + \log_2(k/4) + \cdots + \log_2(k/2^9))\\
-  &\geq \frac{1}{2}2^m(9\log_2 (k) - \frac{9 \cdot 10}{2}) \\
-  &\geq 2^{m+1} \log_2(k) ,
+  &\geq \frac{1}{2}2^m(\lg (k/2) + \lg(k/4) + \cdots + \lg(k/2^9))\\
+  &\geq \frac{1}{2}2^m(9\lg (k) - \frac{9 \cdot 10}{2}) \\
+  &\geq 2^{m+1} \lg(k) ,
   \end{align*}
-  as desired. Hence the inductive claim holds, which establishes that $f_{\log_2
+  as desired. Hence the inductive claim holds, which establishes that $f_{\lg
   n^{1/9}}$ satisfies the desired condition, which proves that backlog can be
   made $\Omega(\poly(n))$.
 
@@ -272,26 +273,26 @@ We proceed with our results.
   bound for $f_m$ grew further out by a factor of $2^9$ each time. Instead of
   $2^9$ we now use $2^\alpha$ for some $\alpha \in \mathbb{N}$, and can find a
   better value of $\alpha$. The value of $\alpha$ dictates how many
-  iterations we can perform: we can perform $\log_2 n^{1/\alpha}$ iterations.
+  iterations we can perform: we can perform $\lg n^{1/\alpha}$ iterations.
   The parameter $\alpha$ also dictates the multiplicative factor that we gain
   upon going from $f_m$ to $f_{m+1}$. For $\alpha = 9$ this was $2$. In general
   it turns out to be $\frac{\alpha -1}{4}$.  Hence, we can achieve backlog
-  $\Omega\left(\left(\frac{\alpha -1}{4}\right)^{\log_2 n^{1/\alpha}}\log_2
+  $\Omega\left(\left(\frac{\alpha -1}{4}\right)^{\lg n^{1/\alpha}}\lg
   n\right)$. This optimizes at $\alpha = 13$, to backlog
-  $\Omega(n^{\frac{\log_2 3}{13}}\log n) \approx \Omega(n^{0.122}\log n)$. 
+  $\Omega(n^{\frac{\lg 3}{13}}\log n) \approx \Omega(n^{0.122}\log n)$. 
 
   We can further improve over this. Note that in the proof that
   $f_{m+1}$ gains a factor of $2$ over $f_m$ given above, we lower bound
-  $9\log_2 k - 9\cdot 10 /2$ with $2\log_2 k$. Usually however this is very
-  loose: for small $m$ a significant portion of the $9 \log_2 k$ is annihilated
-  by the constant $1+2+\cdots+9$ (or in general $\alpha \log_2 k$ and
+  $9\lg k - 9\cdot 10 /2$ with $2\lg k$. Usually however this is very
+  loose: for small $m$ a significant portion of the $9 \lg k$ is annihilated
+  by the constant $1+2+\cdots+9$ (or in general $\alpha \lg k$ and
   $1+2+\cdots + \alpha$), but for larger values of $m$ because $k$ must be
   large we can get larger factors between steps, in theory factors arbitrarily
   close to $\alpha$. If we could gain a factor of $\alpha$ at each step, then
-  the backlog achievable would be $\Omega(\alpha^{\log_2{n^{1/\alpha}}}\log n)=
-  \Omega(n^{(\log_2{\alpha})/\alpha} \log n)$ which optimizes (over the
+  the backlog achievable would be $\Omega(\alpha^{\lg{n^{1/\alpha}}}\log n)=
+  \Omega(n^{(\lg{\alpha})/\alpha} \log n)$ which optimizes (over the
   naturals)
-  at $\alpha = 3$ to $n^{(\log_2 3)/3} \approx n^{0.528}$. However, we can't
+  at $\alpha = 3$ to $n^{(\lg 3)/3} \approx n^{0.528}$. However, we can't
   actually gain a factor of $\alpha$ each time because of the subtracted
   constant. But, for any $\epsilon >0$ we can achieve a $\alpha - \epsilon$
   factor increase each time (for sufficiently large $m$). Of course $\epsilon$
@@ -299,70 +300,64 @@ We proceed with our results.
   and the ``cut off" $m$ where we start achieving the $\alpha - \epsilon$
   factor increase must be a constant (not dependent on $n$). When the cutoff
   $m$, or equivalently $\epsilon$, is constant then we can achieve backlog
-  $\Omega((\alpha - \epsilon)^{\log_2{n^{1/\alpha}}}\log n)=
-  \Omega(n^{(\log_2(\alpha - \epsilon))/\alpha} \log n)$. For instance, with
+  $\Omega((\alpha - \epsilon)^{\lg{n^{1/\alpha}}}\log n)=
+  \Omega(n^{(\lg(\alpha - \epsilon))/\alpha} \log n)$. For instance, with
   this method we can get backlog $\Omega(\sqrt{n})$ for appropriate $\epsilon,
-  \alpha$ choice, or $\tilde{\Omega}(n^{(\log_2 (3 - \epsilon))/3})$ for any
+  \alpha$ choice, or $\tilde{\Omega}(n^{(\lg (3 - \epsilon))/3})$ for any
   constant $\epsilon >0$. 
 
-  \paragraph{Bounds on Amplification Lemma Improvement}
-  Intuitively we should be able to keep growing $f_m$ until the Amplification
-  Lemma stops increasing $f_m$, i.e. until $f_{m+1}= f_m$. If the optimal
-  function is $n^\alpha$, then we can determine $\alpha$ in terms of $\delta$:
-  $$\sum_{i\ge 0} (1-\delta)(n(1-\delta)\delta^i)^\alpha = n^\alpha (1-\delta)
-  \frac{(1-\delta)^\alpha}{1-\delta^\alpha}.$$
-  In order for this to be $n^\alpha$ we need
-  $(1-\delta)^{\alpha+1}/(1-\delta^\alpha) = 1$, i.e. $$(1-\delta)^{\alpha+1} +
-  \delta^\alpha= 1.$$
-  We claim that by chosing $\delta$ to be a constant arbitrarily close to $0$,
-  one can achieve exponent $\alpha$ arbitrarily close to $1$.
-  Let $\epsilon$ be constant, we aim to achieve $\alpha = 1-\epsilon$.
-  Consider the function $g(\delta) = (1-\delta)^{\alpha+1}+\delta^\alpha.$
+  \paragraph{Existential Improvement}
+  We now (non-constructively) demonstrate the existence of a filling strategy
+  that achieves backlog $c n^{1-\epsilon}$ for constant $\epsilon \in (0,1)$
+  and $c \ll 1$.
 
-  We aim to prove that there is a solution $g(\delta) = 1$ for $\delta\in (0,1)$.
-  We will argue by the Intermediate Value Theorem.
-  First we find a $\delta$ very close to $0$ where $g(\delta) > 1$, then we
-  will find a $\delta$ where $g(\delta) < 1$. As $g(\delta)$ is clearly
-  continuous, so combining these facts gives that $g(\delta) = 1$ has a solution
-  on the desired interval.
+  Let $f^*(n)$ be the supremum over all filling strategies of the fill achievable on $n$ cups.
+  Clearly $f^*(n)$ satisfies the Amplification Lemma, i.e.
+  $$f^*(n) \ge (1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n).$$
+  Assume for the sake of deriving a contradiction that there is some $n$ such
+  that $f^*(n) < cn^{1-\epsilon}$, let $n_*$ be the minimum such $n$.
 
-  Consider the Taylor series for $(1-\delta)^{\alpha}$, $(1-\delta)^{\alpha} =
-  1 - (\alpha+1)\delta - O(\delta^2).$ 
-  By taking $\delta$ sufficiently small the $O(\delta^2)$ term becomes
-  negligable compared to the $(\alpha+1)\delta$ term. In particular, say that
+  Then we have 
+  $$cn_*^{1-\epsilon} > f^*(n_*) \ge (1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n_*).$$
+  However, 
+  \begin{align*}
+  &(1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n_*) \\
+  &\ge cn_*^{1-\epsilon}(1-\delta)\sum_{\ell=0}^M((1-\delta)\delta^\ell)^{1-\epsilon}\\
+  &\ge cn_*^{1-\epsilon}(1-\delta) \frac{(1-\delta)^{1-\epsilon}}{1-\delta^{1-\epsilon}}.
+  \end{align*}
+  We will now show that there is an appropriate choice of $\delta \in (0,1)$
+  such that $$\frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}} \ge 1,$$
+  which contradicts the assumption that $c n_*^{1-\epsilon} > f^*(n_*)$.
+  Rearranging, we desire $$(1-\delta)^{2-\epsilon} + \delta^{1-\epsilon}\ge 1.$$
+  For any $\epsilon$ we will show that there is an appropriate choice of
+  $\delta\ll 1$ satisfying this inequality.
+
+  Consider the Taylor series for $(1-\delta)^{2-\epsilon}$:
+  $$(1-\delta)^{2-\epsilon} = 1 - (2-\epsilon)\delta - O(\delta^2).$$
+  By taking $\delta$ sufficiently small, the $O(\delta^2)$ term becomes
+  negligible compared to the $(\alpha+1)\delta$ term. In particular, say that
   the $O(\delta^2)$ term is less than $c \delta^2$ for some constant $c$.
   Taking $\delta$ small enough such that $\delta^2 c < \delta$, we have that
-  $(1-\delta)^{\alpha} > 1-(\alpha+1)\delta - \delta$.
+  $(1-\delta)^{2-\epsilon} > 1-(2-\epsilon)\delta - \delta$.
  
-  So, to find a $\delta$ where $g(\delta) >1$ it suffices to find a $\delta$ with 
-  $$\delta^\alpha \ge (\alpha+2)\delta.$$
-  The equality is achieved at $\delta = (\alpha+2)^{1/(\alpha - 1)} < 1$.
+  So, to find a $\delta$ where $g(\delta) \ge 1$ it suffices to find a $\delta$ with 
+  $$\delta^{1-\epsilon} \ge (3-\epsilon)\delta.$$
+  The equality is achieved at $\delta = (\frac{1}{3-\epsilon})^{1/\epsilon}$.
 
-  To get a $\delta$ where $g(\delta) < 1$, note that if $\alpha \ge 0.9, g(1/2)
-  < 1$ which follows from the following calculation:
-  $$(1/2)^{\alpha+1}+(1/2)^\alpha = \frac{3}{2}\frac{1}{2^\alpha} \le
-  \frac{3}{2} \frac{1}{2^{0.9}} \approx 0.804 <1.$$
+  This establishes the existence of a filling strategy that achieves backlog
+  $\Omega(n^{1-\epsilon})$.
 
-  Thus, as desired, by the Intermediate Value Theorem we have a $\delta
-  \in(0,1)$ which achieves $g(\delta) = 1$.
-
-  This argument merely establishes that $\Omega(n^{1-\epsilon})$ is the best
-  backlog we can hope to attain by use of the Amplification Lemma, it does not
-  guarantee that this backlog is achievable. We now show that
-  the equality case of the Amplification Lemma is achievable.
-
-  \paragraph{Achieving backlog $\Omega(n^{1-\epsilon})$}
+  \paragraph{Achieving backlog $\Omega(n^{\lg 3/2})$}
   Recall the recursive procedure that we use in the proof of the Amplification
-  Lemma: to achieve the desired fill we must call $f(n(1-\delta)\delta^i)$ for
-  $\delta = 0,1,2,\ldots$. As $f_{m+1}$ recursively calls $f_m$, there is even
-  more recursion.
+  Lemma: to achieve the desired fill we must call $f(n/2^\ell)$ for
+  $\ell = 0,1,2,\ldots$. As $f_{m+1}$ recursively calls $f_m$, there is even more recursion.
 
-  Let $\#(m, i)$ denote the number of times ${f_m(n(1-\delta)\delta^i)}$ occurs
-  in the recurisve construction. Let there be $M = \frac{\lg (n(1-\delta))}{\lg
-  (1/\delta)}$  levels of recursion. The first level in the tree has $\#(M,
-  i)=1$ for all $i$. Note that we have $$\#(m-1, i) = \sum_{j > i} \#(m, j)$$
-  for any level $m$, because any expression $f_m(n(1-\delta)\delta^j)$ will
-  call $f_{m-1}(n(1-\delta)\delta^i)$ for $j>i$.
+  Let $\#(m, i)$ denote the number of times ${f_m(n/2^i)}$ occurs
+  in the recursive construction. Let there be $M = \lg (n/2)$  levels of
+  recursion. The first level in the tree has $\#(M, i)=1$ for all $i$. Note
+  that we have $$\#(m-1, i) = \sum_{j > i} \#(m, j)$$
+  for any level $m$, because any expression $f_m(n/2^j)$ will
+  call $f_{m-1}(n/2^i)$ for $j>i$.
 
   This is very reminiscent of the hockey stick identity:
   $${n \choose i} = \sum_{i-1\le j\le n-1} {j \choose i-1}.$$
@@ -382,33 +377,19 @@ We proceed with our results.
   \end{align*}
   as desired.
 
-  We know that $f_m(n(1-\delta)\delta^M) \ge 1$ by design in Lemma
+  We know that $f_m(n/2^M) \ge 1$ by design in Lemma
   \ref{lem:adaptiveAmplification}, so to determine the total backlog we add up
-  the occurences of $f_m(n(1-\delta)\delta^M)$ on each level, weighted by the
-  $\delta$ decay factor. Then the backlog we get is $$\sum_{i=0}^M {M \choose
-  i}\delta^i  = (1+\delta)^{M}.$$
+  the occurrences of $f_m(n/2^M)$ on each level, weighted by the
+  $1/2$ decay factor. Then the backlog we get is $$\sum_{i=0}^M {M \choose
+  i}\frac{1}{2^i} = (3/2)^{M} = n^{\lg(3/2)}.$$
+  This is optimal for $\delta= 1/2$.
 
-  Say we desire backlog $n^{1-\epsilon}$. We now solve for an appropriate
-  choice of $\delta$ to yield this desired backlog.
-
-  \begin{align*}
-    (1+\delta)^M &\\
-                 &= (1+\delta)^{\frac{\lg ((1-\delta)n)}{\lg (1/\delta)}}\\
-    &= [(1+\delta)^{\lg (1-\delta) + \lg n)}]^{1/\lg (1/\delta)} \\
-    &= n^{\frac{\lg (1+\delta)}{\lg (1/\delta)}} \cdot (1+\delta)^{\frac{\lg (1-\delta)}{\lg (1/\delta)}}.
-  \end{align*}
-  Thus we want 
-  $$\frac{\lg(1+\delta)}{\lg(1/\delta)} = 1-\epsilon.$$
-  Solving, 
-  \begin{align*}
-    2^{\lg(\delta+1)} = (2^{\lg(1/\delta)})^{1-\epsilon}, \\
-    \iff (\delta+1)\delta^{1-\epsilon} = 1.
-  \end{align*}
-
-  Consider the function $g(\delta) = \delta^{2-\epsilon} + \delta^{1-\epsilon}$ for $\delta \in (0,1)$.
-  Note that $g(0) = 0, g(1) = 2$ so by the Intermediate Value Theorem (note that $g$ is continuous, so this applies) there exists a $\delta \in (0,1)$ with $g(\delta) = 1$ as desired.
-
-  Hence we have backlog $\Omega(n^{1-\epsilon})$ for any constant $\epsilon \in (0,1)$.
+  \textbf{Constructively achieving backlog $\Omega(n^{1-\epsilon})$}
+  The existential proof that backlog $\Omega(n^{1-\epsilon})$ suggests that we
+  will need to take $\delta \ll 1$ to achieve this backlog. The analysis from
+  the case $\delta = 1/2$ doesn't immediately apply here; that analysis was
+  significantly simplified by the fact that $\delta = 1-\delta$ for $\delta =
+  1/2$. However, we use some similar ideas.
 
 
 \end{proof}
@@ -418,7 +399,8 @@ We proceed with our results.
 An important theorem that we use repeatedly in our analysis is Hoeffding's Inequality:
 \begin{theorem}[Hoeffding's Inequality]
   Let $X_i$ be independent bounded random variables with $X_i \in [a,b]$. Then,
-  $$P\left(\Big|\frac{1}{n} \sum_{i=1}^n (X_i - \E[X_i])\Big|\ge t\right) \le 2\exp\left(-\frac{2nt^2}{(b-a)^2}\right) $$
+  $$P\left(\Big|\frac{1}{n} \sum_{i=1}^n (X_i - \E[X_i])\Big|\ge t\right) \le
+  2\exp\left(-\frac{2nt^2}{(b-a)^2}\right) $$
 \end{theorem}
 Hoeffding also proved that this is true even if $X_i$ are drawn without
 replacement from some finite population. This is intuitive as drawing without
@@ -618,8 +600,9 @@ We consider two cases:
 \begin{lemma}[The Oblivious Amplification Lemma]
   Given an oblivious filling strategy for achieving backlog $f(n)$ in the
   variable-processor cup game on $n$ cups that succeeds with probability at
-  least $1/2$, there exists a strategy for achieving ``amplified" fill 
-  $$f'(n) \ge \frac{1}{32}(f(n/2) + f(n/4) + f(n/8) + \cdots) $$ that succeeds with constant probability.
+  least $1/2$, there exists a strategy for achieving backlog 
+  $$f'(n) \ge \frac{1}{32}(f(n/2) + f(n/4) + f(n/8) + \cdots) $$ that succeeds
+  with constant probability.
 \end{lemma}
 \begin{proof}
   We essentially perform the same proof as Proposition \ref{prop:obliviousBase}, but some new issues arise, which we proceed to highlight and address. 
