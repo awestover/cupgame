@@ -394,6 +394,70 @@ We proceed with our results.
 
 \end{proof}
 
+\section{Adaptive Upper Bounds}\label{sec:adaptiveUpperBound}
+Let $\mu(X)$ denote the average fill of a set of cups $X$.
+\begin{lemma}
+  The greedy emptier maintains the invariant $\mu(S_t(k)) \le n-k$ for all $t$.
+  In particular, this emptier never lets backlog exceed $O(n)$.
+\end{lemma}
+\begin{proof}
+  Let $S_t(k)$ denote the $k$ fullest cups at the $t$-th time step of the game,
+  and let $I_t(k)$ denote the $k$ fullest cups after the filler has distributed
+  water on the $t$-th time step, but before the emptier has emptied cups.
+
+  We prove the Lemma by inducting on $t$.
+  The Lemma holds trivially for $t=0$: the cups start empty so $\mu(S_0(k)) = 0 \le n-k$ for all $k$ as desired.
+
+  Fix time $t\ge0$, and $k\le n$. We assume the Lemma for time $t$ and show
+  that $\mu(S_{t+1}(k)) \le n-k$, which as $k$ is arbitrary establishes the
+  Lemma for time $t+1$. Then, by induction, the Lemma holds for all times.
+
+  Let the number of processors be $p$. Let $A$ be the set of cups from $I_t(k)$
+  that the emptier empties from that remain among the $k$ fullest cups in
+  $S_{t+1}(k)$ and let $B$ be the other cups that the emptier empties from.
+
+  Note that as the emptier is greedy the $a+b = p$ cups that the emptier
+  empties from are precisely $I_t(p)$.
+  Also note that $A = I_t(a)$ and $B = I_t(b)\setminus A$.
+
+  {\color{red}
+    It's WLOG that: $A = I_t(a) = S_t(a)$, that exactly $a$ units of fill were
+    placed by the filler in $S_t(a)$, that $B = I_t(b) \setminus A = S_t(b)
+    \setminus A$ and that the filler placed no fill in $B$.
+  }
+  Let $S'_t(x)$ denote the cups with fill ranks $a+1, \ldots, a+x$. Let $k' =
+  k-a$.
+
+  Note that we have $\mu(S'_t(x))\le \mu(S_t(a+x)) \le (n-a)-x$.
+  Also this is not wasteful: if the filler and emptier
+  are always each putting $1$ unit of water in the top $a$ cups, then it's
+  basically like those cups aren't even part of the game, so it's like we are
+  playing a cup game on $n-a$ cups, and the invariant just reduces down to what
+  the invariant for a cup game on $n-a$ cups would be!
+
+  Let $v = \mu(S'_t(b+k')\setminus B) + b/k'$. We have $\mu(S'_{t+1}) = v$. 
+  Also note that $\mu(S_t'(b)) \ge v$ by the WLOG assumption.
+  Now consider this,
+  \begin{align*}
+    b\mu(S_t'(b)) + k'\mu(S'_t(b+k')\setminus B) = (k' + b)\mu(S_t(k'+b))\\
+    b\mu(S_t'(b)) + k'v - b = (k' + b)\mu(S_t(k'+b))\\
+    b\mu(S_t'(b)) + k'v - b = (k' + b)\mu(S_t(k'+b))\\
+    bv + k'v - b \le (k' + b)\mu(S_t(k'+b))\\
+    v \le \frac{(k' + b)\mu(S_t(k'+b)) + b}{b+k'}\\
+    v \le \frac{(k' + b)(n-k'-b) + b}{b+k'}\\
+    v \le n-k'-b + \frac{b}{b+k'}\\
+    v \le n-k'.
+  \end{align*}
+
+  This implies that 
+  $$S_{t+1}(k) \le \frac{a}{k} (n-a) + \frac{k-a}{k}(n-k-a) = n-k$$
+  as desired.
+
+  TODO: clean it up, especially the sketchy WLOGs.
+\end{proof}
+
+
+
 \section{Oblivious Lower Bounds}\label{sec:oblivious}
 
 An important theorem that we use repeatedly in our analysis is Hoeffding's Inequality:
