@@ -558,4 +558,124 @@ backlog guarantee, much as in Corollary \ref{cor:poly}.
  
 \end{proof}
 
+
+
+\section{Upperbound}
+
+  {\color{red} WLOG the following:}
+  \begin{itemize}
+    \item $A \defeq I_t(a) = S_t(a)$, 
+    \item filler places $a$ units of fill in $S_t(a)$,
+    \item $B \defeq I_t(p) \setminus A = S_t(p) \setminus A$,
+    \item filler places no fill in $B$.
+  \end{itemize}
+
+  Let $S'_t(x)$ denote the cups with fill ranks $a+1, \ldots, a+x$. Let $k' =
+  k-a$.
+
+  Note that we have $$\mu(S'_t(x))\le \mu(S_t(a+x)) \le (n-a)-x.$$
+  Also this bound is not wasteful: if the filler and emptier
+  are always each putting $1$ unit of water in the top $a$ cups, then it's
+  basically like those cups aren't even part of the game, so it's like we are
+  playing a cup game on $n-a$ cups, and the invariant just reduces down to what
+  the invariant for a cup game on $n-a$ cups would be!
+
+  Let $v = \mu(S'_t(b+k')\setminus B) + b/k'$. We have $\mu(S'_{t+1}) = v$. 
+  Also note that $\mu(S_t'(b)) \ge v$ by the WLOG assumption.
+
+  Now we endeavor to show that $v \le n-k'$. We will exploit the invariant on
+  $S'_t(b+k')$ and the fact that the cups $S_t'(b)$ must have started with
+  average fill greater than $v$ (which holds because the emptier is greedy)
+  to achieve an upper bound on $v$.
+
+  We can decompose $S_t(k'+b)$ as:
+  $$(k' + b)\mu(S'_t(k'+b)) = b\mu(S_t'(b)) + k'\mu(S'_t(b+k')\setminus B)$$
+  Putting this in terms of $v$ we have
+  $$(k' + b)\mu(S'_t(k'+b)) \ge bv + k'v - b.$$
+  Isolating $v$ we have,
+  $$v \le \frac{(k' + b)\mu(S'_t(k'+b)) + b}{b+k'}.$$
+  Now exploiting the invariant on $S'_t(k'+b)$ we have,
+  $$v \le \frac{(k' + b)(n-k'-b) + b}{b+k'}.$$
+  Simplifying, 
+  $$v \le n-k'-b + \frac{b}{b+k'},$$
+  $$v \le n-k'.$$
+
+  This implies that 
+  $$S_{t+1}(k) \le \frac{a}{k} (n-a) + \frac{k-a}{k}(n-k+a) = n - (a^2 - (k')^2)/k$$
+  which is NOT as desired. In particualr it is a useless piece of junk.
+
+  Luckily we can bound it another way,
+
+  New strategy summary: WLOG WLOG WLOG WLOG, BASHING we get nasty equiv nasty
+  equiv nasty implied by nasty equiv true (proof by wolfram alpha). This is
+  super awful.
+
+OK so basically here is how this is gonna go:
+There are sets $A$, $B$ and $C$. $A$ is the fullest cups at $I_t$, they stay in
+the $k$ fullest cups. $B$ is the other cups that are emptied from, they do not
+stay in the $k$ fullest cups. $C$ is the rest of the $k+b$ fullest cups.
+
+$|A| =a, |B|=b, |C| = k-a$.
+$+a,-a$ units of water go to $A$, $+0,-b$ units of water go to $B$ and $-0, +b$ units of water go to $C$.
+(ok this is WLOG, but really we can write down some inequalities and even will do that, but just think abot it like this for now K???) 
+
+OK, so by the invariant we have $\mu(S_t(b+k)) \le n-b-k$, and $(b+k)\mu(S_t(b+k)) = a\mu(A_0) + (b+k-a)\mu(B\cup C)$.
+So $\mu(B\cup C) \le \frac{(n-b-k)(b+k) - a\mu(A_0)}{b+k-a}.$
+Anyways $\mu(B) \ge \mu(C)$.
+In the ``worst case" this difference is such that all the fill can be added to $C$ none to $B$ without exceeding $B$, but exactly meeting $B$.
+So if we have $\mu(B)$ deviate above $\mu(B\cup C)$ by $+\delta|C|$, then a deviation of $-\delta|B|$ in the average fill of $C$ will exactly preserve the average of $B \cup C$.
+We want $\delta(|B|+|C|) = b/|C|$ so we find $\delta = \frac{b}{(k-a)(k-a+b)}$.
+Now if we look at the total fill in the end its pretty much less than
+$$\frac{(\mu(B\cup C) -\delta|B|)|C| + b + a\mu(A)}{k}$$
+now we bash.
+Actually first lets clear up the WLOGs and stuff
+The final fill is genuinely less than $\mu(C)|C| + \mu(A)|A| + b$, as $a+b$ units of fill are placed in, and at least $a$ are taken out.
+What about the assumption that $\mu(C) \le \mu(B\cup C) - \delta |B|$?
+Well, consider two cases.
+\emph{Case 1}: the cups in $B$ were more full than the cups in $C$ at $S_t$. In
+particular there is no cup in $B$ that had rank $>p$ at $S_t$. If this is the
+case, then the fill of $C$ must have been at least $b$ lower than hte fill of
+$B$, hence the $\delta$ thing is true. 
+\emph{Case 2}: some of the cups in $B$ came from cups that had rank $>p$ at $S_t$.
+Well this is just wasteful! In particular, any fill that was added to cups in
+$B$ is going to exit the $k$ fullest cups. Define a new intermediate state
+where the emptier starts to empty water from these cups. The emptier empties
+just enough from the cups in $B$ that used to have rank $> p$ so that there is
+some cup that used to have rank $\le k$ that now has the same fill as that cup.
+Then the cups are indistinguishable and we can swap them. It repeats this for
+all the cups in $B$ that got out of order, and then we are good. Anyways this
+case is pretty intuitive.
+
+OK so the bound is actually legit. Nice.
+Now we simplify it a bit and then just plug it into  wolfram alpha and yay its always true. woooooo.
+
+In particular we want to show that the following inequality allways holds (for valid settings of $a,b,k,n$ i.e. $a,b,k,n \in \mathbb{Z}_{\ge0}$ with $a+b<k<n$).
+$$\frac{(\mu(B\cup C) -\delta|B|)|C| + b + a\mu(A)}{k} \le n-k.$$
+To have this be satisfied, it suffices to have the following be satisfied:
+$$ \left(\frac{(n-b-k)(b+k) - a\mu(A_0)}{b+k-a} - \delta|B|\right)|C| + b + a \mu(A) \le nk - k^2.$$
+Next we will isolate $\mu(A)$ and use the bound $\mu(A) \le n-a$ to get another inequality that is sufficient to prove the above inequality.
+$$ a\mu(A) \left( 1-\frac{|C|}{b+k-a} \right) + \left(\frac{(n-b-k)(b+k)}{b+k-a}-\delta|B|\right)|C| + b\le nk-k^2.$$
+It suffices to show that
+$$ a(n-a) \left( 1-\frac{|C|}{b+k-a} \right) + \left(\frac{(n-b-k)(b+k)}{b+k-a}-\delta|B|\right)|C| + b\le nk-k^2.$$
+Expanding our things like $\delta, |C|, |B|$ we have
+$$ a(n-a) \frac{b}{b+k-a} + \left(\frac{(n-b-k)(b+k)}{b+k-a}-\frac{b}{(k-a)(k-a+b)} b\right)(k-a) + b\le nk-k^2.$$
+We can simplify it a bit,
+$$ ab(n-a) + (n-b-k)(b+k)(k-a)- b^2 + b(b+k-a)  \le (nk-k^2)(b+k-a).$$
+Now we ask wolfram alpha for some input. Simplifying the above, wolfram alpha gives, that it is equivalent to 
+$$-a+b+k-1\ge 0$$ 
+which is clearly true for the $a,b,k$ that we care about. QED.
+
+Thoughts on a combinatorial proof:
+First we provide a combinatorial proof of the following fact:
+$$\frac{1}{k}(a\mu(A)\frac{b}{b+k-a} + (n-b-k)\frac{(b+k)(k-a)}{(b+k-a)k} \le n-k$$
+Let $m(X)$ be the things original mass, then this is saying
+$$\frac{1}{k}(\frac{b}{b+c} m(A) + \frac{c}{b+c} m(ABC)) \le n-k$$
+which is saying
+$$\frac{1}{k}(m(A) + \frac{c}{b+c} m(BC)) \le n-k$$
+but if you think about it, deleting $B$ and sliding the $C$ cups up will preserve the invariants. So this is just measuring the mass of the fullest $c+a = k$ cups. By the invariant this is less than $k(n-k)$.
+Hence the desired inequality holds.
+
+Taking a stab at a combinatorial proof of the invariant.
+
+
 \end{document}

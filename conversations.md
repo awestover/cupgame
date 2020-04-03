@@ -6,8 +6,7 @@ Bill:		Suppose the $b$ cups that are removed were above average for the $k + b$ 
 Bill:		Then the new $k$ fullest cups have avg fill
 Bill:		at most as large as the avg fill of the previously $k + b$ fullest cups
 Bill:		plus $b / k$ from the new units of water
-Alek:		avgfill_k <= avgfill_{k+b} ish
-Bill:		+ b / k
+Alek:		avgfill_k <= avgfill_{k+b} + b / k
 Bill:		This all works if the b cups were above average
 Bill:		out of the k fullest cups (or maybe it's out of the k + b fullest cups)
 Bill:		But if they're not, then it seems like maybe there's a different argument to make?
@@ -27,8 +26,9 @@ Bill:		(n - 10) * 10 / 100 + (n - 109.9) * 90 /100
 Alek:		n- 99.91
 Alek:		dang
 Alek:		was supposed to be n-100
-Bill:		When is a is small relative to b
+Bill:		When is a is small relative to b 
 Bill:		we actually win
+[in particular Alek computed that a < b/2 ish then we win]
 Bill:		Also
 Bill:		if k is really big compared to p = a+ b, then I think we also win
 Bill:		Where is there room for improvement?
@@ -71,3 +71,10 @@ Bill: cool cya
 Alek: cya!!!!
 
 
+Alek: Hey isn't this wrong: (x+(1/delta) x^c)^K
+Bill: If $F = (x + 1/\delta x^c)$
+Bill: Don't we want the generating funcation
+Bill: 1 + F + F^2 + F^3 + ...
+Bill: If that is what we want
+Bill: 1 / (1 - F)
+Alek: yah ok, that might be helpful...
