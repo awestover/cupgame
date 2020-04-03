@@ -405,27 +405,26 @@ $p_t$ cups to empty $1$ unit of water from. After this the round is over, and
 the state is $S_{t+1}$.
 
 Let the rank of a cup at a given state be its position in a sorted list of the
-cups, breaking ties arbitrarily but consistently. For example the fullest cup
+cups, breaking ties arbitrarily but consistently. For example, the fullest cup
 at a state has rank $1$, and the least full cup has rank $n$.
-
-Let $\mu(X, S), m(X,S)$ denote the average fill and mass of a set of cups $X$
-(respectively) at state $S$ ($S$ could be $S_t$ or $I_t$ for any $t\in\mathbb{N}$).
+Let $\mu_S(X), m_S(X)$ denote the average fill and mass of a set of cups $X$
+respectively at state $S$ ($S$ could be $S_t$ or $I_t$ for any $t\in\mathbb{N}$).
 Let $S_t(\{r_1, \ldots, r_m\})$ and $I_t(\{r_1,\ldots, r_m\})$ denote the cups
 of ranks $r_1, r_2, \ldots, r_m$ at states $S_t$ and $I_t$ respectively.
-
 We establish the following Lemma:
+
 \begin{lemma}
-  The greedy emptier maintains the invariant $\mu(S_t([k]), S_t) \le n-k$ for all $t$ for all $k \le n$.
+  The greedy emptier maintains the invariant $\mu_{S_t}(S_t([k])) \le n-k$ for all $t\in\mathbb{N}, k \le n$.
   In particular, for $k=1$, this means that the emptier never lets backlog exceed $O(n)$.
 \end{lemma}
 \begin{proof}
   First note that the invariant is trivial when $k=n$, as the average fill of the set of all cups is by definition $0$.
 
-  Fix any $k < n$. We prove that $\mu(S_t([k]), S_t)\le n-k$ for all $t\in\mathbb{N}$ by induction on $t$.
-  The Lemma holds trivially for $t=1$: the cups start empty so $\mu(S_1([k]), S_1) = 0 \le n-k$.
+  Fix any $k < n$. We prove that $\mu_{S_t}(S_t([k]))\le n-k$ for all $t\in\mathbb{N}$ by induction on $t$.
+  The Lemma holds trivially for $t=1$: the cups start empty so $\mu_{S_1}(S_1([k])) = 0 \le n-k$.
 
-  Fix time $t \ge 1$. We assume that $\mu(S_t([k]), S_t) \le n-k$ and show
-  that $\mu(S_{t+1}([k]), S_{t+1}) \le n-k$. 
+  Fix time $t \ge 1$. We assume that $\mu_{S_t}(S_t([k])) \le n-k$ and show
+  that $\mu_{S_{t+1}}(S_{t+1}([k])) \le n-k$. 
 
   Note that as the emptier is greedy it always empties from the cups $I_t(p_t)$.
 
@@ -445,7 +444,7 @@ First, we claim that without loss of generality the cups in $B$ get no fill.
 This is true because, you basically just move the water around. We only care
 about the $k$-th invariant, so whatever we can satisfy it probably. (???)
 Hum. This is a bit sketchy.
-OK, but what if $\mu(C, S_t) \ge \mu(B\cup C, S_t) - b/c$.
+OK, but what if $\mu_{S_t}(C) \ge \mu_{S_t}(B\cup C) - b/c$.
 Well in this case I think you can just move water around.
 In particular, consider the cups that end up in $B$ at $I_t$. 
 Let's make up a new state that has these $B$ cups in those states. And we
@@ -453,18 +452,18 @@ subtract the water from the initial state. You might wonder, could this
 possibly mess with the invariants? The answer my friend is no. We only care
 about the $k$-th invariant.
 
-Now, consider $\mu(C, S_t) \le \mu(B\cup C, S_t) - b/c$.
+Now, consider $\mu_{S_t}(C) \le \mu_{S_t}(B\cup C) - b/c$.
 We have
-$$m(S_{t+1}([k]), S_{t+1}) \le m(A, S_t) + m(C, S_t) + b$$
+$$m_{S_{t+1}}(S_{t+1}([k])) \le m_{S_t}(A) + m_{S_t}(C) + b$$
 because the emptier emptied at least $a$ of the $a+b$ units of water that the
 filler placed in the cups, and $A \cup C = S_{t+1}([k])$.
-Using our bound on $\mu(C, S_t)$ we get
-$$m(S_{t+1}([k]), S_{t+1}) \le m(A, S_t) + c\mu(B\cup C, S_t).$$
-Note that $\mu(B\cup C, S_t) \le \mu(S_t(a+[c]), S_t)$.
+Using our bound on $\mu_{S_t}(C)$ we get
+$$m_{S_{t+1}}(S_{t+1}([k])) \le m_{S_t}(A) + c\mu_{S_t}(B\cup C).$$
+Note that $\mu_{S_t}(B\cup C) \le \mu_{S_t}(S_t(a+[c]))$.
 Thus, 
-$$m(S_{t+1}([k]), S_{t+1}) \le m(A, S_t) + m(S_t(a+[c]), S_t).$$
-But $m(A, S_t) + m(S_t(a+[c]), S_t) \le m(S_t([a+c]), S_t)$, so, by the invariant on $S_t$ for $k=a+c$, 
-$$m(S_{t+1}([k]), S_{t+1}) \le k(n-k)$$
+$$m_{S_{t+1}}(S_{t+1}([k])) \le m_{S_t}(A) + m_{S_t}(S_t(a+[c])).$$
+But $m_{S_t}(A) + m_{S_t}(S_t(a+[c])) \le m_{S_t}(S_t([a+c]))$, so, by the invariant on $S_t$ for $k=a+c$, 
+$$m_{S_{t+1}}(S_{t+1}([k])) \le k(n-k)$$
 as desired.
 
 \end{proof}
