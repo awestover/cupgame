@@ -434,7 +434,7 @@ We establish the following Lemma:
   Fix any $k < n$. We prove that $\mu_{S_t}(S_t([k]))\le n-k$ for all $t\in\mathbb{N}$ by induction on $t$.
   The Lemma holds trivially for $t=1$: the cups start empty so $\mu_{S_1}(S_1([k])) = 0 \le n-k$.
 
-  Fix a round $t \ge 1$. We assume that $\mu_{S_t}(S_t([k])) \le n-k$ and show
+  Fix a round $t \ge 1$. We assume all the invariants for state $S_t$ and show
   that $\mu_{S_{t+1}}(S_{t+1}([k])) \le n-k$. 
 
   Note that as the emptier is greedy it always empties from the cups $I_t(p_t)$.
@@ -510,9 +510,33 @@ This will increase the average fill in $B$ by $\frac{c}{b}\left(\frac{b}{c} -
 {\color{red} Questions: OK, but can the filler get to the same intermediate state? Also how
 do you know you didn't break the invariants...}
 
+\textbf{A more universal Argument}
+$$m_f \le m(A) + m(C) + b$$
+$$m_f \le m(A) + \frac{m(ABC) - m(A)}{b+c}c + b$$
+$$m_f \le \frac{b}{b+c}m(A) + \frac{c}{b+c}m(ABC) + b.$$
+Wolfra alpha says this is at most $k(n-k)$ if
+$$b=0 \text{ or } a \le k-1$$ 
+which is always true.
+Dang that's elegant!
+
+In particular, wolfram alpha says:
+$$\frac{b}{b+c}m(A) + \frac{c}{b+c}m(ABC) \le k(n-k) + b(a-k)$$
+with equality when $\mu(A), \mu(ABC)$ are set extremally.
+
+Here is the algebraic proof of Wolfram Alpha's statement:
+\begin{multline*}
+  \frac{b}{b+c}a(n-a) + \frac{c}{b+c}(a+b+c)(n-a-b-c)\\
+  = \left(\frac{b}{b+c}a + \frac{c}{b+c}(a+b+c)\right) n - \left( \frac{ba^2 + c(a+b+c)^2}{b+c}\right)\\
+  = (a+c) n - \left( \frac{ba^2 + ca^2 + 2ca(b+c) + c(b+c)^2}{b+c}\right)\\
+  = (a+c) n - a^2 - 2ca - c(b+c)\\
+  = (a+c) n - (a+c)^2 -cb
+\end{multline*}
+As desired.
+
 \textbf{Conclusion:}\\
-Thus, by induction we have the invariant for all rounds $t\in\mathbb{N}$, and
-since $k$ was arbitrary we have the invariant for all $k$.
+The proof was for arbitrary $k$, so given that the invariants all hold at state
+$S_t$ they also must all hold at state $S_{t+1}$.
+Thus, by induction we have the invariant for all rounds $t\in\mathbb{N}$.
 \end{proof}
 \clearpage
 
