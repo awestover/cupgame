@@ -678,4 +678,82 @@ Hence the desired inequality holds.
 Taking a stab at a combinatorial proof of the invariant.
 
 
+
+
+
+\textbf{Without loss of generality $A = S_t([a])$}\\
+Say there are cups $x, y$ with $x\in S_t([a]), x\not\in A, y \in A, y \not\in S_t([a])$.
+Let the fills of cups $x,y$ at state $S_t$ be $f_x, f_y$; note that $f_x > f_y$. Let the amount of fill that the
+emptier adds to these cups be $\Delta_x, \Delta_y \le 1$; note that $f_x +\Delta_x < f_y + \Delta_y$.
+
+Define a new state $S_t'$ where cup $x$ has fill $f_y$ and cup $y$ has fill $f_x$. 
+Let the amount of water that the filler places in these cups from the new state be
+$f_x-f_y+\Delta_x$ and $f_y-f_x + \Delta_y$ for cups $x,y$ respectively.
+Note that this is valid as $f_y-f_x + \Delta_y\le 1$ and $f_x-f_y+\Delta_x < 1$
+which is true because, $f_x-f_y+\Delta_x<\Delta_y \le 1$ and $f_y-f_x + \Delta_x < \Delta_x \le 1$.
+
+We can repeatedly apply this process to swap each cup in $A\setminus S_t([a])$ into $S_t([a])$.
+At the end of this process we will have some ``fake" state $S_t^f$. Note that
+$S_t^f$ must satisfy the invariant if $S_t$ satisfied the invariant, because we
+are essentially just renaming variables.
+
+
+\textbf{Case 2: $a<k$, $\mu_{S_t}(C) \le \mu_{S_t}(B\cup C) - b/c$}\\
+First note that $c \neq 0$ as $c=k-a > 0$, so the inequality comparing the
+average fill of $C$ and $B\cup C$ is defined.
+Analyzing the mass of the $k$ fullest cups at the end of the round we have,
+$$m_{S_{t+1}}(S_{t+1}([k])) \le m_{S_t}(A) + m_{S_t}(C) + b$$
+because the emptier removed at least $a$ units of water, the filler added
+$a+b$ units of water, and $A \cup C = S_{t+1}([k])$.
+Using our bound on $\mu_{S_t}(C)$ we get
+$$m_{S_{t+1}}(S_{t+1}([k])) \le m_{S_t}(A) + c\mu_{S_t}(B\cup C).$$
+Note that $\mu_{S_t}(B\cup C) \le \mu_{S_t}(S_t(a+[c]))$ because $|B\cup C| \ge
+c$, and $(B\cup C) \cap A = \emptyset$ (this is true because without loss of
+generality, $A = S_t([a])$, as proved above).
+Thus, $$m_{S_{t+1}}(S_{t+1}([k])) \le m_{S_t}(A) + m_{S_t}(S_t(a+[c])).$$
+But $m_{S_t}(A) + m_{S_t}(S_t(a+[c])) \le m_{S_t}(S_t([a+c]))$, so, by the invariant on $S_t$ for $k=a+c$, 
+$$m_{S_{t+1}}(S_{t+1}([k])) \le k(n-k)$$
+as desired.
+
+\textbf{Case 3: $a<k$, $\mu_{S_t}(C) > \mu_{S_t}(B\cup C) - b/c$}\\
+We claim that this case can be reduced to case 2, by defining an appropriate
+alternate state $S_t'$ and filling actions that lead to the same intermediate
+state $I_t$.
+Let the $\epsilon \in [0, b/c)$ be such that $\mu_{S_t}(C) = \mu_{S_t}(B\cup C) - \epsilon$.
+We want to decrease the average fill of $C$ to $\mu(B\cup C) - b/c$ by
+redistributing water among the cups in $B\cup C$ (without disrupting the invariant).
+This will require removing mass $c(b/c - \epsilon)$ from $C$ and transfering it into $B$.
+This will increase the average fill in $B$ by $\frac{c}{b}\left(\frac{b}{c} -
+\epsilon\right)$. Note in particular that this quantity is at most $1$.
+
+{\color{red} Questions: OK, but can the filler get to the same intermediate state? Also how
+do you know you didn't break the invariants...}
+
+\textbf{A more universal Argument}
+$$m_f \le m(A) + m(C) + b$$
+$$m_f \le m(A) + \frac{m(ABC) - m(A)}{b+c}c + b$$
+$$m_f \le \frac{b}{b+c}m(A) + \frac{c}{b+c}m(ABC) + b.$$
+Wolfra alpha says this is at most $k(n-k)$ if
+$$b=0 \text{ or } a \le k-1$$ 
+which is always true.
+Dang that's elegant!
+
+In particular, wolfram alpha says:
+$$\frac{b}{b+c}m(A) + \frac{c}{b+c}m(ABC) \le k(n-k) + b(a-k)$$
+with equality when $\mu(A), \mu(ABC)$ are set extremally.
+
+Here is the algebraic proof of Wolfram Alpha's statement:
+\begin{multline*}
+  \frac{b}{b+c}a(n-a) + \frac{c}{b+c}(a+b+c)(n-a-b-c)\\
+  = \left(\frac{b}{b+c}a + \frac{c}{b+c}(a+b+c)\right) n - \left( \frac{ba^2 + c(a+b+c)^2}{b+c}\right)\\
+  = (a+c) n - \left( \frac{ba^2 + ca^2 + 2ca(b+c) + c(b+c)^2}{b+c}\right)\\
+  = (a+c) n - a^2 - 2ca - c(b+c)\\
+  = (a+c) n - (a+c)^2 -cb
+\end{multline*}
+As desired.
+
+
+
+
+
 \end{document}
