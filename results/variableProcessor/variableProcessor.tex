@@ -47,6 +47,32 @@
 \begin{document}
 \maketitle
 
+\abstract{ 
+  The \defn{cup game} is a classic problem in computer science that models work-scheduling.
+  In the cup game there are two players: the \defn{emptier} and the \defn{filler}. 
+  The cup game consists of many rounds. In a given round, the filler
+  distributes $p$ of water among the cups (with at most $1$ unit to any
+  particualr cup) and then the emptier removes $1$ unit fo water from $p$ of
+  the cups. We investigate a variant of the classic multi-processor cup game,
+  the \defn{variable-processor cup game}, in which the resources are variable:
+  the filler is allowed to change $p$.
+ 
+  Although the modification to allow variable resources seems small, we will
+  show that it drastically alters the outcome of the game.
+  We demonstrate a recursive algorithm that an adaptive filler can use to
+  achieve backlog $\Omega(n^{1-\epsilon})$ for any constant $\epsilon > 0$.
+  We also demonstrate that this lower bound on backlog is essentially tight: 
+  using a novel set of invariants we prove that a greedy emptier never lets
+  backlog exceed $O(n)$.
+
+  We also investigate bounds on an oblivous filler. We show that an oblivious
+  filler can achieve backlog $2^{\Omega(\sqrt{\log n})}$ in running time
+  $O(\poly(n))$ with constant probability against greedy-like emptiers.
+  This result surprisingly uses very similar techniques as in the analysis of
+  the adaptive filler, in addition to Hoeffding's Inequality for proving that 
+  the amount of water that we get in certain sets is tightly concentrated around its mean.
+}
+
 \section{Introduction}
 The cup game is a classic game in computer science that models work-scheduling.
 In the cup game a filler and an emptier take turns adding and removing water
@@ -67,7 +93,7 @@ about how real-world systems will behave.
 A priori the fact that the number of processors can vary offers neither the
 filler nor the emptier a clear advantage: lower values of $p$ mean that the
 emptier is at more of a discretization disadvantage but also mean that the
-filler can anchor fewer cups.  We hoped that the variable-processor cup game
+filler can anchor fewer cups. We hoped that the variable-processor cup game
 could be simulated in the vanilla multiprocessor cup game, because the extra
 ability given to the filler does not seem very strong. The new version of the
 cup game arose as we tried to get a bound of $\Omega(\log p)$ backlog in the
@@ -594,7 +620,6 @@ The proof was for arbitrary $k$, so given that the invariants all hold at state
 $S_t$ they also must all hold at state $S_{t+1}$.
 Thus, by induction we have the invariant for all rounds $t\in\mathbb{N}$.
 \end{proof}
-\clearpage
 
 
 \section{Oblivious Lower Bounds}\label{sec:oblivious}
