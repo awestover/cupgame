@@ -51,8 +51,8 @@
   The \defn{cup game} is a classic problem in computer science that models work-scheduling.
   In the cup game there are two players: the \defn{emptier} and the \defn{filler}. 
   The cup game consists of many rounds. In a given round, the filler
-  distributes $p$ of water among the cups (with at most $1$ unit to any
-  particualr cup) and then the emptier removes $1$ unit fo water from $p$ of
+  distributes $p$ of water among the $n$ cups (with at most $1$ unit to any
+  particular cup) and then the emptier removes $1$ unit of water from $p$ of
   the cups. We investigate a variant of the classic multi-processor cup game,
   the \defn{variable-processor cup game}, in which the resources are variable:
   the filler is allowed to change $p$.
@@ -65,65 +65,130 @@
   using a novel set of invariants we prove that a greedy emptier never lets
   backlog exceed $O(n)$.
 
-  We also investigate bounds on an oblivous filler. We show that an oblivious
+  We also investigate bounds on an oblivious filler. We show that an oblivious
   filler can achieve backlog $2^{\Omega(\sqrt{\log n})}$ in running time
-  $O(\poly(n))$ with constant probability against greedy-like emptiers.
+  $O(\poly(n))$ with constant probability against any ``greedy-like" emptier.
   This result surprisingly uses very similar techniques as in the analysis of
   the adaptive filler, in addition to Hoeffding's Inequality for proving that 
   the amount of water that we get in certain sets is tightly concentrated around its mean.
 }
 
 \section{Introduction}
-The cup game is a classic game in computer science that models work-scheduling.
-In the cup game a filler and an emptier take turns adding and removing water
-(i.e. work) to the cups. We investigate a variant of the vanilla multiprocessor
-cup game which we call the \defn{variable-processor cup game} in which the
-filler is allowed to change the number of processors $p$ (the amount of water
-that the filler can add and the number of cups from which the emptier can
-remove water. This is a natural extension of the vanilla multi-processor cup
-game to when the resources available are variable. Note that although the
-restriction that the filler and emptier's resources vary together may seem
-artificial, this is the only way to conduct the analysis; the rationale behind
-giving the emptier and filler equal resources in the classical vanilla
-multi-processor cup game is that this is the only way to achieve upper and
-lower bounds. The equivalent rational holds for the motivation of the
-variable-processor cup game. Analysis of this game does provide information
-about how real-world systems will behave.
+The \defn{cup game} is a classic problem in theoretical computer science that
+models work-scheduling. In the cup game, there are two players:
+the \defn{filler} and the \defn{emptier}. The cup game consists of many rounds.
+On each round the filler first distributes $p$ units of water among
+the $n$ cups with at most $1$ unit to any particular cup (without this
+restriction the filler can trivially achieve unbounded backlog by placing all
+of its fill in a single cup every round), and then the emptier 
+removes $1$ unit of water from each of $p$ cups.\footnote{Water represents
+work, at every time step some amount of new work comes in, and then we must
+allocate resources, in particular $p$ processors, to certain processes, with
+the goal of minimizing backlog.}
 
-A priori the fact that the number of processors can vary offers neither the
-filler nor the emptier a clear advantage: lower values of $p$ mean that the
-emptier is at more of a discretization disadvantage but also mean that the
-filler can anchor fewer cups. We hoped that the variable-processor cup game
-could be simulated in the vanilla multiprocessor cup game, because the extra
-ability given to the filler does not seem very strong. The new version of the
-cup game arose as we tried to get a bound of $\Omega(\log p)$ backlog in the
-multiprocessor game against an oblivious filler, which would combine with
-previous results to give us a lower bound that matches our upper bound:
-$O(\log\log n + \log p)$. In Proposition \ref{prop:obliviousBase} we prove that
-there is an oblivious filling strategy in the variable-processor cup game on
-$n$ cups that achieve backlog $\Omega(\log n)$ as desired. \footnote{Note that
-  we have $\Omega(\log n)$ in this proposition instead of $\Omega(\log p)$
-  because the filler can increase the number of processors, so it increases the
-  number of processors to $n-1$ to start. A nearly identical construction could
-  be used to show that backlog $\Omega(\log p_{\max})$ can be achieved, where
-  the number of processors starts at $p_{\max}$ and the filler does not ever
-  increase the number of processors. However, using $p_{\max} = n$ is natural
-  in the variable-processor cup game, so we do not consider the game with 
-the restriction that the filler can not increase the number of processors above
+We investigate a variant of the vanilla multi-processor
+cup game which we call the \defn{variable-processor cup game} in which the
+filler is allowed to change the $p$ --the amount of water that the filler adds,
+and the emptier removes, from the cups per round--at the beginning of each
+round. Note that we do not allow the resources of the filler and emptier to vary separately; 
+like in the classic cup game we make the resources of the filler and emptier identical.
+Although this restriction may seem artificial, it is crucial; for example, if
+the filler had more resources than the emptier in the classic cup game, then
+the filler could trivially achieve unbounded backlog, as average fill would
+increase by at least some positive constant at each round.
+Thus, analysis of this game does provide useful information about how real-world
+systems behave.
+
+A priori having variable resources offers neither player a clear advantage:
+lower values of $p$ mean that the emptier is at more of a discretization
+disadvantage but also mean that the filler can ``anchor" fewer cups\footnote{A
+useful part of many filling algorithms is maintaining an ``anchor" set of
+``anchored" cups. The filler always places $1$ unit of water in each anchored
+cup. This ensures that the fill of an anchored cup never decreases after it is
+placed in the anchor set.}. We hoped that the variable-processor cup game could
+be simulated in the vanilla multi-processor cup game, because the extra
+ability given to the filler does not seem very strong. 
+
+We invented the new version of the cup game arose as we tried to get a bound of
+$\Omega(\log p)$ backlog in the multi-processor game against an oblivious
+filler, which would combine with previous results to give us a lower bound that
+matches our upper bound: $O(\log\log n + \log p)$ \cite{wku20}. In Proposition
+\ref{prop:obliviousBase} we prove that there is an oblivious filling strategy
+in the variable-processor cup game on $n$ cups that achieve backlog
+$\Omega(\log n)$ as desired. \footnote{Note that we have $\Omega(\log n)$ in
+  this proposition instead of $\Omega(\log p)$ because the filler can increase
+  the number of processors, so it increases the number of processors to $n-1$
+  to start. A nearly identical construction could be used to show that backlog
+  $\Omega(\log p_{\max})$ can be achieved, where the number of processors
+  starts at $p_{\max}$ and the filler does not ever increase the number of
+  processors. However, using $p_{\max} = n$ is natural in the
+variable-processor cup game, so we do not consider the game with the
+restriction that the filler can not increase the number of processors above
 some $p_{\max} < n$.}
 
 However, we also show that attempts at simulating the variable-processor cup
 game are futile because the variable-processor cup game
-is--surprisingly--fundamentally different from the multiprocessor cup game, and
-thus impossible to simulate. This follows as a corollary of an
-\defn{Amplification Lemma} for both the adaptive and oblivious filler.
-Section \ref{sec:adaptive} and Section \ref{sec:oblivious} follow the structure:
-\begin{enumerate}
-  \item Proposition: Base case of inductive argument in corollary
-  \item Lemma: Amplification Lemma, allows for inductive step in inductive argument
-  \item Corollary: Repeatedly amplify the base case backlog to get very large backlog
-\end{enumerate}
-We proceed with our results.
+is--surprisingly--vastly different from the multi-processor cup game. This
+follows as a corollary of an \defn{Amplification Lemma} for both the adaptive and oblivious filler.
+
+\paragraph{Outline and Results}
+In Section \ref{sec:prelims} we establish the conventions and notations we will
+use to discuss the variable-processor cup game. 
+
+In Section \ref{sec:adaptive} we provide an inductive
+proof of a lower bound on backlog in Corollary \ref{cor:adaptivePoly}.
+The base case of the argument is a direct consequence of Proposition
+\ref{prop:adaptiveBase}, and the inductive step follows from the ``Adaptive
+Amplification Lemma" (Lemma \ref{lem:adaptiveAmplification}). Corollary \ref{cor:adaptivePoly}
+gives the lower bound $\Omega(n^{1-\epsilon})$ for any constant $\epsilon>0$ on
+backlog.
+
+Section \ref{sec:oblivious} has identical macro-structure to Section
+\ref{sec:adaptive}: We lower bound backlog in
+Corollary \ref{cor:obliviousPoly}, using Proposition \ref{prop:obliviousBase}
+as the base case of the inductive argument and the ``Oblivious Amplification Lemma" (Lemma
+\ref{lem:obliviousAmplification}) to facilitate the inductive step. Corollary
+\ref{cor:obliviousPoly} gives the lower bound $2^{\Omega(\sqrt{\log n})}$ on
+backlog, against a ``greedy-like" emptier. In particular the corollary asserts
+that we can achieve this backlog in time $O(\poly(n))$. Note that the
+restriction on runtime of the filler is the only way in which this bound
+differs from the adaptive case.
+
+In Section \ref{sec:adaptiveUpperBound} we prove a novel invariant: the average
+fill of the $k$ fullest cups is at most $n-k$. In particular this implies
+(setting $k=1$) that backlog is $O(n)$. This means that our analysis is essentially tight.
+
+\section{Preliminaries}\label{sec:prelims}
+The cup game consists of a sequence of rounds. On the $t$-th round the state
+starts as $S_t$. The filler chooses the number of processors $p_t$ for the round. 
+Then the filler distributes $p_t$ units of water among the cups (with at most
+$1$ unit of water to any particular cup). After this, the game is in an intermediate
+state, which we call state $I_t$. Then the emptier chooses
+$p_t$ cups to empty $1$ unit of water from. This concludes the round; the state of the game is now $S_{t+1}$.
+
+Denote the fill of a cup $c$ by $\fil(c)$. Let the \defn{positive tilt} of a cup $c$ be
+$\tilt(c) = \max(0, \fil(c))$, and let the positive tilt of a set $X$ of
+cups be $\sum_{c\in X} \tilt(c)$. Let the \defn{mass} of a set of cups $X$
+be $m(X) = \sum_{c\in X} \fil(c)$. Denote the average fill of a set of cups $X$ by 
+$\mu(X)$. Note that $\mu(X) |X| = m(X)$.
+
+Let the \defn{rank} of a cup at a given state be its position in a list of the
+cups sorted by fill at the given state, breaking ties arbitrarily but
+consistently. For example, the fullest cup at a state has rank $1$, and the
+least full cup has rank $n$.
+
+In the proof of the upper bound it is important to note that we adopt the
+convention of allowing for negative fill.\footnote{It is not important in the
+proofs of the lower bounds. Allowing for cups to have negative fill makes the
+game harder for the filler, as it means that none of the emptier's emptying is
+ever wasted by cups "zeroing-out". Our filling strategy does not rely on cups
+zeroing out to achieve large backlog however, so the lower bounds hold
+regardless of if fill is allowed to zero out or not. On the other hand the
+proof of the upper bound does depend on the fact that cups never zero out. In
+that proof we call the average fill of the cups $0$ and say that it never
+changes. We chose to allow negative fill (which has no physical analog in the
+work scheduling analogy) because it makes the problem more elegant.
+}
 
 \section{Adaptive Lower Bound}\label{sec:adaptive}
 \begin{proposition}
@@ -134,32 +199,29 @@ We proceed with our results.
 \end{proposition}
 \begin{proof}
   Let $h = \frac{1}{4}\ln (n/2)$ be the desired fill. Once a cup with fill at
-  least $h$ is achieved the filler stops, the process completed. Denote the
-  fill of a cup $i$ by $\fil(i)$. Let the \defn{positive tilt} of a cup $i$ be
-  $\tilt_+(i) = \max(0, \fil(i))$, and let the positive tilt of a set $S$ of
-  cups be $\sum_{i\in S} \tilt_+(i)$. Let the \defn{mass} of a set of cups $S$
-  be $m(S) = \sum_{i\in S} \fil(i)$. Denote the average fill of a set of cups $S$ as 
-  $\mu(S) = m(S) / |S|$. Let $A$ consist of the $n/2$ fullest cups, and
-  $B$ consist of the rest of the cups.
+  least $h$ is achieved the filler stops, the process completed.  
+  Let $A$ consist of the $n/2$ fullest cups, and $B$ consist of the rest of the
+  cups (at any given state, so $A, B$ are implicitly functions of the round
+  $t$).
 
-  If the process is not yet complete, that is $\fil(i) < h$ for all cups $i$,
-  then $\tilt_+(A\cup B) < h\cdot n$. Assume for
-  sake of contradiction that there are more than $n/2$ cups $i$ with $\fil(i)
-  \le -2h$. The mass of those cups would be less than $-hn $, but there isn't
+  If the process is not yet complete, that is $\fil(c) < h$ for all cups $c$,
+  then $\tilt(A\cup B) < h\cdot n$. Assume for
+  sake of contradiction that there are more than $n/2$ cups $i$ with $\fil(c)
+  \le -2h$. The mass of those cups would be at most $-hn$, but there isn't
   enough positive tilt to oppose this, a contradiction. Hence there are at most
-  $n/2$ cups $i$ with $\fil(i) \le -2h$. 
+  $n/2$ cups $c$ with $\fil(c) \le -2h$. 
 
   We set the number of processors equal to $1$ and play a single processor cup
   game on $n/2$ cups that have fill at least $-2h$ (which must exist) for $n/2
-  -1$ steps. We initialize our ``active set" to be $A$, noting that $\fil(i)
-  \ge -2h$ for all cups $i\in A$, and remove $1$ cup from the active set at
+  -1$ steps. We initialize our ``active set" to be $A$, noting that $\fil(c)
+  \ge -2h$ for all cups $c\in A$, and remove $1$ cup from the active set at
   each step.
   At each step the filler distributes water equally among the cups in its
   active set. Then, the emptier will choose some cup to empty from. If this cup
   is in the active set the filler removes it from the active set. Otherwise, the
   filler chooses an arbitrary cup to remove from the active set.
 
-  After $n/2-1$ steps the active set will consist of a single cup. This cup's
+  After $n/2-1$ steps, the active set will consist of a single cup. This cup's
   fill has increased by $1/(n/2) + 1/(n/2 - 1) + \cdots + 1/2 + 1/1
   \ge \ln n/2 = 4h$. Thus such a cup has fill at least $2h$ now, so the
   proposition is satisfied.
@@ -170,12 +232,12 @@ We proceed with our results.
   variable-processor cup game on $n$ cups (relative to average fill, with
   negative fill allowed).
   Let $n_0 \in \mathbb{N}$ be a constant such that $\frac{1}{4} \ln (n_0/2) \ge
-  1$. Let $\delta\in(0,1)$ be constant, and let $M\in\mathbb{N}$ be a constant
-  such that $n_0 \le (1-\delta)\delta^M n \le n_0/\delta$.
+  1$. Let $\delta\in(0,1)$ be constant, and let $L\in\mathbb{N}$ be a constant
+  such that $n_0 \le (1-\delta)\delta^L n \le n_0/\delta$.
 
-  Then, there exists an adaptive filling strategy that achieves backlog
-  $$f'(n) \ge \max\left(1, (1-\delta)\sum_{\ell= 0}^{M} f((1-\delta)\delta^\ell n)\right)$$
-  in the variable processor cup game on $n\ge n_0$ cups.
+  Then, there exists an adaptive filling strategy that achieves backlog $f'(n)$ satisfying
+  $$f'(n) \ge (1-\delta)\sum_{\ell= 0}^{L} f((1-\delta)\delta^\ell n)$$
+  and $f'(n) \ge 1$, in the variable processor cup game on $n\ge n_0$ cups.
 \end{lemma}
 \begin{proof}
   The basic idea of this analysis is as follows:
@@ -186,7 +248,7 @@ We proceed with our results.
     \item Recurse on the $n\delta$ cups with high average fill.
   \end{enumerate}
 
-  Let $A$ the \defn{anchor set} be initialized to consist of the $n\delta$
+  Let $A$, the \defn{anchor set}, be initialized to consist of the $n\delta$
   fullest cups, and let $B$ the \defn{non-anchor set} be initialized to consist
   of the rest of the cups (so $|B| = (1-\delta)n$).
   Let $n_\ell = n\delta^{\ell-1}$, $h_\ell = (1-\delta)f(n_\ell(1-\delta))$;
@@ -199,14 +261,16 @@ We proceed with our results.
   Our filling strategy always places $1$ unit of water in each anchor cup. This
   ensures that average fill in the anchor set is non-decreasing.
 
-  On the $\ell$-th level of recursion we will repeatedly apply $f$ to
+  On the $\ell$-th level of recursion the filler uses the following
+  \defn{process} to achieve the desired average fill in $A$: repeatedly apply $f$ to
   $B$, and then take the cup generated by $f$ within $B$ to have large backlog
-  and swap it with a cup in $A$ until $A$ has the desired average fill. 
-  Note that $$\mu(A) \cdot |A| +\mu(B)\cdot |B| = 0$$
-  so $$\mu(A) = - \mu(B) \cdot (1-\delta)/ \delta.$$
-  Thus, if at any point in this process $B$ has average fill lower than $-h_\ell
-  \cdot \delta/(1-\delta)$,
-  then anchor set has average fill at least $h_\ell$, so the process is
+  and swap it with a cup in $A$; repeat until $A$ has the desired average fill.
+  Note that $$\mu(A) \cdot |A| +\mu(B)\cdot |B| = 0,$$
+  so
+  $$\mu(A) = - \mu(B) \cdot (1-\delta)/ \delta.$$
+
+  Thus, if at any point in the process $B$ has average fill lower than $-h_\ell
+  \cdot \delta/(1-\delta)$, then $A$ has average fill at least $h_\ell$, so the process is
   finished. So long as $B$ has average fill at least $-h_\ell\cdot
   \delta/(1-\delta)$ we will apply $f$ to $B$.
   
@@ -234,8 +298,10 @@ We proceed with our results.
   (1-\delta)) = h_\ell$$
   in a non-anchor cup, and swap it with the smallest cup in the anchor set.
 
-  We achieve average fill $h_\ell$ in the anchor set for $M$ levels of
-  recursion. Note that as $n\ge n_0$ we can always simply use Proposition
+  We achieve average fill $h_\ell$ in the anchor set for $L$ levels of
+  recursion. Summing $h_\ell$ for $0\le \ell \le L$ yields the desired result.
+
+  Note that as $n\ge n_0$ we can always simply use Proposition
   \ref{prop:adaptiveBase} to achieve backlog $1$. We will revert to this option
   if it gives larger fill than we get by repeatedly applying $f$.
 \end{proof}
@@ -247,140 +313,11 @@ We proceed with our results.
   $\epsilon \in (0,1)$, in running time $2^{O(\log^2 n)}$.
 \end{corollary}
 \begin{proof}$ $\\
-  \paragraph{Basic Idea}
-  Let
-  $$f_0(k) = 
-  \begin{cases} 
-    \lg k, & k\geq 1, \\
-    0 & \text{else.}
-  \end{cases}$$
-  Note that we can achieve backlog $f_0(k)$ on $k$ cups by Proposition \ref{prop:adaptiveBase}.
-  Let $f_{m+1} $ be the result of applying the Amplification Lemma to $f_m$ with $\delta=1/2$. 
-  The function $f_{\lg n^{1/9}}(k)$ satisfies 
-  \begin{equation}\label{eqn:amppppp}
-  \text{for } k \geq n,\,\, f_{\lg n^{1/9}}(k) \geq 2^{\lg n^{1/9}} \lg k.
-  \end{equation}
-  In particular, using $f_{\lg n^{1/9}}(n)$ (applying the function to all of
-  the cups) we achieve backlog $\Omega(n^{1/9}\lg n) \ge \Omega(\poly(n))$
-  as desired.
-  To prove Equation \ref{eqn:amppppp}, we prove the following lower bound for $f_m$ by induction:
-  $$f_m(k) \geq 2^m \lg k, \text{ for } k \geq (2^9)^m.$$
-  The base case follows from the definition of $f_0$. Assuming the property for
-  $f_m$, we get the following by Lemma \ref{lem:adaptiveAmplification}:
-  $ \text{for } k > (2^9)^{m+1},$
-  \begin{align*}
-  &f_{m+1}(k) \\
-  &\ge \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9) + \cdots)\\
-  &\geq \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9))\\
-  &\geq \frac{1}{2}2^m(\lg (k/2) + \lg(k/4) + \cdots + \lg(k/2^9))\\
-  &\geq \frac{1}{2}2^m(9\lg (k) - \frac{9 \cdot 10}{2}) \\
-  &\geq 2^{m+1} \lg(k) ,
-  \end{align*}
-  as desired. Hence the inductive claim holds, which establishes that $f_{\lg
-  n^{1/9}}$ satisfies the desired condition, which proves that backlog can be
-  made $\Omega(\poly(n))$.
-
-  \paragraph{Running Time Analysis}
-  The recursive construction requires quite a lot of steps, in fact a
-  super-polynomial number of steps. If we consider the tree that represents
-  computation of $f_{\log n^{1/\alpha}}(n)$ we see that each node will have at
-  most $\alpha$ (some constant, e.g. $\alpha = 9$, $\alpha$ is the number of
-  terms that we keep in the sum) children (the children of $f_k(c)$ are
-  $f_{k-1}(c/2), f_{k-1}(c/4), \ldots f_{k-1}(c/2^\alpha)$), and the depth of
-  the tree is $\log n^{1/\alpha}$. Say that the running time at the node
-  $f_{\log n^{1/\alpha}}(n)$ is $T(n)$. Then because $f_{k}(n)$ must call each
-  of $f_{k-1}(n/2^i)$ $n/2^i$ times for $1\le i \le \alpha$, we have that $
-  T(n) \le \frac{\alpha n}{2}T(n/2)$. This recurrence yields $T(n) \le
-  \poly(n)^{\log n} = O(2^{\log^2 n})$ for the running time.
-
-  \paragraph{Generalizing Our Approach}
-  Generalizing our approach we can achieve a (slightly) better polynomial
-  lower bound on backlog. In our construction the point after which we had a
-  bound for $f_m$ grew further out by a factor of $2^9$ each time. Instead of
-  $2^9$ we now use $2^\alpha$ for some $\alpha \in \mathbb{N}$, and can find a
-  better value of $\alpha$. The value of $\alpha$ dictates how many
-  iterations we can perform: we can perform $\lg n^{1/\alpha}$ iterations.
-  The parameter $\alpha$ also dictates the multiplicative factor that we gain
-  upon going from $f_m$ to $f_{m+1}$. For $\alpha = 9$ this was $2$. In general
-  it turns out to be $\frac{\alpha -1}{4}$.  Hence, we can achieve backlog
-  $\Omega\left(\left(\frac{\alpha -1}{4}\right)^{\lg n^{1/\alpha}}\lg
-  n\right)$. This optimizes at $\alpha = 13$, to backlog
-  $\Omega(n^{\frac{\lg 3}{13}}\log n) \approx \Omega(n^{0.122}\log n)$. 
-
-  We can further improve over this. Note that in the proof that
-  $f_{m+1}$ gains a factor of $2$ over $f_m$ given above, we lower bound
-  $9\lg k - 9\cdot 10 /2$ with $2\lg k$. Usually however this is very
-  loose: for small $m$ a significant portion of the $9 \lg k$ is annihilated
-  by the constant $1+2+\cdots+9$ (or in general $\alpha \lg k$ and
-  $1+2+\cdots + \alpha$), but for larger values of $m$ because $k$ must be
-  large we can get larger factors between steps, in theory factors arbitrarily
-  close to $\alpha$. If we could gain a factor of $\alpha$ at each step, then
-  the backlog achievable would be $\Omega(\alpha^{\lg{n^{1/\alpha}}}\log n)=
-  \Omega(n^{(\lg{\alpha})/\alpha} \log n)$ which optimizes (over the
-  naturals)
-  at $\alpha = 3$ to $n^{(\lg 3)/3} \approx n^{0.528}$. However, we can't
-  actually gain a factor of $\alpha$ each time because of the subtracted
-  constant. But, for any $\epsilon >0$ we can achieve a $\alpha - \epsilon$
-  factor increase each time (for sufficiently large $m$). Of course $\epsilon$
-  can't be made arbitrarily small because $m$ can't be made arbitrarily large,
-  and the ``cut off" $m$ where we start achieving the $\alpha - \epsilon$
-  factor increase must be a constant (not dependent on $n$). When the cutoff
-  $m$, or equivalently $\epsilon$, is constant then we can achieve backlog
-  $\Omega((\alpha - \epsilon)^{\lg{n^{1/\alpha}}}\log n)=
-  \Omega(n^{(\lg(\alpha - \epsilon))/\alpha} \log n)$. For instance, with
-  this method we can get backlog $\Omega(\sqrt{n})$ for appropriate $\epsilon,
-  \alpha$ choice, or $\tilde{\Omega}(n^{(\lg (3 - \epsilon))/3})$ for any
-  constant $\epsilon >0$. 
-
-  \paragraph{Existential Improvement}
-  We now (non-constructively) demonstrate the existence of a filling strategy
-  that achieves backlog $c n^{1-\epsilon}$ for constant $\epsilon \in (0,1)$
-  and $c \ll 1$.
-
-  Let $f^*(n)$ be the supremum over all filling strategies of the fill achievable on $n$ cups.
-  Clearly $f^*(n)$ satisfies the Amplification Lemma, i.e.
-  $$f^*(n) \ge (1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n).$$
-  Assume for the sake of deriving a contradiction that there is some $n$ such
-  that $f^*(n) < cn^{1-\epsilon}$, let $n_*$ be the minimum such $n$.
-
-  Then we have 
-  $$cn_*^{1-\epsilon} > f^*(n_*) \ge (1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n_*).$$
-  However, 
-  \begin{align*}
-  &(1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n_*) \\
-  &\ge cn_*^{1-\epsilon}(1-\delta)\sum_{\ell=0}^M((1-\delta)\delta^\ell)^{1-\epsilon}\\
-  &\ge cn_*^{1-\epsilon}(1-\delta) \frac{(1-\delta)^{1-\epsilon}}{1-\delta^{1-\epsilon}}.
-  \end{align*}
-  We will now show that there is an appropriate choice of $\delta \in (0,1)$
-  such that $$\frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}} \ge 1,$$
-  which contradicts the assumption that $c n_*^{1-\epsilon} > f^*(n_*)$.
-  Rearranging, we desire $$(1-\delta)^{2-\epsilon} + \delta^{1-\epsilon}\ge 1.$$
-  For any $\epsilon$ we will show that there is an appropriate choice of
-  $\delta\ll 1$ satisfying this inequality.
-
-  Consider the Taylor series for $(1-\delta)^{2-\epsilon}$:
-  $$(1-\delta)^{2-\epsilon} = 1 - (2-\epsilon)\delta - O(\delta^2).$$
-  By taking $\delta$ sufficiently small, the $O(\delta^2)$ term becomes
-  negligible compared to the $(\alpha+1)\delta$ term. In particular, say that
-  the $O(\delta^2)$ term is less than $c \delta^2$ for some constant $c$.
-  Taking $\delta$ small enough such that $\delta^2 c < \delta$, we have that
-  $(1-\delta)^{2-\epsilon} > 1-(2-\epsilon)\delta - \delta$.
- 
-  So, to find a $\delta$ where $g(\delta) \ge 1$ it suffices to find a $\delta$ with 
-  $$\delta^{1-\epsilon} \ge (3-\epsilon)\delta.$$
-  The equality is achieved at $\delta = (\frac{1}{3-\epsilon})^{1/\epsilon}$.
-
-  This establishes the existence of a filling strategy that achieves backlog
-  $\Omega(n^{1-\epsilon})$.
-
-  \paragraph{Modifying the Existential Argument to achieve backlog $n^{1-\epsilon}$ in finite time}
-  We can modify the existential argument to get a guarantee on how long it will take to achieve the desired backlog.
-  Fix an $\epsilon > 0$, and choose a $\delta\in(0,1)$ satisfying $(1-\delta)^{2-\epsilon} / 1-\delta^{1-\epsilon} \ge 1$.
-  Fix $c \ll 1$. Say we aim to achieve backlog at least $cn^{1-\epsilon}$.
-  Note that the choice of $\delta$ is motivated by the fact that
-  $$(1-\delta)\sum_{\ell=0}^M ((1-\delta)\delta^i)^{1-\epsilon} \approx \frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}},$$
-  and, as in the existential argument it will be useful to assert that this quantity is at least $1$.
-  {\color{red} ok I'm kind of worried about things not being integers being a problem.}
+  Fix constants $\epsilon,c,\delta \in (0,1)$ with $\delta$
+  satisfying 
+  $$\frac{(1-\delta)^{2-\epsilon}}{ 1-\delta^{1-\epsilon}}\ge 1.$$
+  Say we aim to achieve backlog at least $cn^{1-\epsilon}$.
+  {\color{red} I'm kind of worried about things not being integers being a problem.}
   We start with 
   $$f_0(k) = 
   \begin{cases} 
@@ -392,93 +329,242 @@ We proceed with our results.
   $$f_\ell(k) \ge cn^{1-\epsilon} \text{ for all } k>n/(1-\delta)^\ell.$$
   This is clearly true in the base case with $f_0$.
   If $f_\ell(k) \ge cn^{1-\epsilon}$ for all $k$ then we are already done.
-  Otherwise, let $k_*+1$ be the smallest $k$ such that $f_\ell(k) < cn^{1-\epsilon}$. Note that by assumption we have $k_* > n/(1-\delta)^\ell$.
+  Otherwise, let $k_*+1$ be the smallest $k$ such that $f_\ell(k) <
+  cn^{1-\epsilon}$. Note that by assumption we have $k_* > n/(1-\delta)^\ell$.
   Now consider the amplification $f_{\ell+1}$ of $f_\ell$.
   \begin{align*}
     f_{\ell+1}(k_*/(1-\delta)) &\\
-    &\ge (1-\delta)\sum f_\ell((1-\delta)\delta^in)\\
+    &\ge (1-\delta)\sum_{\ell=0}^M f_\ell((1-\delta)\delta^in)\\
     &\ge cn^{1-\epsilon}\frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}}\\
     &\ge cn^{1-\epsilon}.
   \end{align*}
   This is as desired. 
   Thus, by taking $f_{(\log n) /\log (1/(1-\delta))}$ we achieve backlog $cn^{1-\epsilon}$.
 
+  % \paragraph{Basic Idea}
+  % Let
+  % $$f_0(k) = 
+  % \begin{cases} 
+  %   \lg k, & k\geq 1, \\
+  %   0 & \text{else.}
+  % \end{cases}$$
+  % Note that we can achieve backlog $f_0(k)$ on $k$ cups by Proposition \ref{prop:adaptiveBase}.
+  % Let $f_{m+1} $ be the result of applying the Amplification Lemma to $f_m$ with $\delta=1/2$. 
+  % The function $f_{\lg n^{1/9}}(k)$ satisfies 
+  % \begin{equation}\label{eqn:amppppp}
+  % \text{for } k \geq n,\,\, f_{\lg n^{1/9}}(k) \geq 2^{\lg n^{1/9}} \lg k.
+  % \end{equation}
+  % In particular, using $f_{\lg n^{1/9}}(n)$ (applying the function to all of
+  % the cups) we achieve backlog $\Omega(n^{1/9}\lg n) \ge \Omega(\poly(n))$
+  % as desired.
+  % To prove Equation \ref{eqn:amppppp}, we prove the following lower bound for $f_m$ by induction:
+  % $$f_m(k) \geq 2^m \lg k, \text{ for } k \geq (2^9)^m.$$
+  % The base case follows from the definition of $f_0$. Assuming the property for
+  % $f_m$, we get the following by Lemma \ref{lem:adaptiveAmplification}:
+  % $ \text{for } k > (2^9)^{m+1},$
+  % \begin{align*}
+  % &f_{m+1}(k) \\
+  % &\ge \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9) + \cdots)\\
+  % &\geq \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9))\\
+  % &\geq \frac{1}{2}2^m(\lg (k/2) + \lg(k/4) + \cdots + \lg(k/2^9))\\
+  % &\geq \frac{1}{2}2^m(9\lg (k) - \frac{9 \cdot 10}{2}) \\
+  % &\geq 2^{m+1} \lg(k) ,
+  % \end{align*}
+  % as desired. Hence the inductive claim holds, which establishes that $f_{\lg
+  % n^{1/9}}$ satisfies the desired condition, which proves that backlog can be
+  % made $\Omega(\poly(n))$.
 
-  \paragraph{Achieving backlog $\Omega(n^{\lg 3/2})$}
-  Recall the recursive procedure that we use in the proof of the Amplification
-  Lemma: to achieve the desired fill we must call $f(n/2^\ell)$ for
-  $\ell = 0,1,2,\ldots$. As $f_{m+1}$ recursively calls $f_m$, there is even more recursion.
+  % \paragraph{Running Time Analysis}
+  % The recursive construction requires quite a lot of steps, in fact a
+  % super-polynomial number of steps. If we consider the tree that represents
+  % computation of $f_{\log n^{1/\alpha}}(n)$ we see that each node will have at
+  % most $\alpha$ (some constant, e.g. $\alpha = 9$, $\alpha$ is the number of
+  % terms that we keep in the sum) children (the children of $f_k(c)$ are
+  % $f_{k-1}(c/2), f_{k-1}(c/4), \ldots f_{k-1}(c/2^\alpha)$), and the depth of
+  % the tree is $\log n^{1/\alpha}$. Say that the running time at the node
+  % $f_{\log n^{1/\alpha}}(n)$ is $T(n)$. Then because $f_{k}(n)$ must call each
+  % of $f_{k-1}(n/2^i)$ $n/2^i$ times for $1\le i \le \alpha$, we have that $
+  % T(n) \le \frac{\alpha n}{2}T(n/2)$. This recurrence yields $T(n) \le
+  % \poly(n)^{\log n} = O(2^{\log^2 n})$ for the running time.
 
-  Let $\#(m, i)$ denote the number of times ${f_m(n/2^i)}$ occurs
-  in the recursive construction. Let there be $M = \lg (n/2)$  levels of
-  recursion. The first level in the tree has $\#(M, i)=1$ for all $i$. Note
-  that we have $$\#(m-1, i) = \sum_{j > i} \#(m, j)$$
-  for any level $m$, because any expression $f_m(n/2^j)$ will
-  call $f_{m-1}(n/2^i)$ for $j>i$.
+  % \paragraph{Generalizing Our Approach}
+  % Generalizing our approach we can achieve a (slightly) better polynomial
+  % lower bound on backlog. In our construction the point after which we had a
+  % bound for $f_m$ grew further out by a factor of $2^9$ each time. Instead of
+  % $2^9$ we now use $2^\alpha$ for some $\alpha \in \mathbb{N}$, and can find a
+  % better value of $\alpha$. The value of $\alpha$ dictates how many
+  % iterations we can perform: we can perform $\lg n^{1/\alpha}$ iterations.
+  % The parameter $\alpha$ also dictates the multiplicative factor that we gain
+  % upon going from $f_m$ to $f_{m+1}$. For $\alpha = 9$ this was $2$. In general
+  % it turns out to be $\frac{\alpha -1}{4}$.  Hence, we can achieve backlog
+  % $\Omega\left(\left(\frac{\alpha -1}{4}\right)^{\lg n^{1/\alpha}}\lg
+  % n\right)$. This optimizes at $\alpha = 13$, to backlog
+  % $\Omega(n^{\frac{\lg 3}{13}}\log n) \approx \Omega(n^{0.122}\log n)$. 
 
-  This is very reminiscent of the hockey stick identity:
-  $${n \choose i} = \sum_{i-1\le j\le n-1} {j \choose i-1}.$$
+  % We can further improve over this. Note that in the proof that
+  % $f_{m+1}$ gains a factor of $2$ over $f_m$ given above, we lower bound
+  % $9\lg k - 9\cdot 10 /2$ with $2\lg k$. Usually however this is very
+  % loose: for small $m$ a significant portion of the $9 \lg k$ is annihilated
+  % by the constant $1+2+\cdots+9$ (or in general $\alpha \lg k$ and
+  % $1+2+\cdots + \alpha$), but for larger values of $m$ because $k$ must be
+  % large we can get larger factors between steps, in theory factors arbitrarily
+  % close to $\alpha$. If we could gain a factor of $\alpha$ at each step, then
+  % the backlog achievable would be $\Omega(\alpha^{\lg{n^{1/\alpha}}}\log n)=
+  % \Omega(n^{(\lg{\alpha})/\alpha} \log n)$ which optimizes (over the
+  % naturals)
+  % at $\alpha = 3$ to $n^{(\lg 3)/3} \approx n^{0.528}$. However, we can't
+  % actually gain a factor of $\alpha$ each time because of the subtracted
+  % constant. But, for any $\epsilon >0$ we can achieve a $\alpha - \epsilon$
+  % factor increase each time (for sufficiently large $m$). Of course $\epsilon$
+  % can't be made arbitrarily small because $m$ can't be made arbitrarily large,
+  % and the ``cut off" $m$ where we start achieving the $\alpha - \epsilon$
+  % factor increase must be a constant (not dependent on $n$). When the cutoff
+  % $m$, or equivalently $\epsilon$, is constant then we can achieve backlog
+  % $\Omega((\alpha - \epsilon)^{\lg{n^{1/\alpha}}}\log n)=
+  % \Omega(n^{(\lg(\alpha - \epsilon))/\alpha} \log n)$. For instance, with
+  % this method we can get backlog $\Omega(\sqrt{n})$ for appropriate $\epsilon,
+  % \alpha$ choice, or $\tilde{\Omega}(n^{(\lg (3 - \epsilon))/3})$ for any
+  % constant $\epsilon >0$. 
 
-  In fact we claim that if you look at it right (i.e. sideways) the $\#(m,
-  i)$'s form Pascal's triangle!
-  Specifically the bijection is 
-  $$\#(m,i) = {i \choose M-m}.$$
+  % \paragraph{Existential Improvement}
+  % We now (non-constructively) demonstrate the existence of a filling strategy
+  % that achieves backlog $c n^{1-\epsilon}$ for constant $\epsilon \in (0,1)$
+  % and $c \ll 1$.
 
-  This is true because of the Hockey Stick Identity and the base case
-  like $\#(M, i)=1$ for all $i$. We induct on the diagonals of Pascal's
-  triangle. The inductive hypothesis is that $\#(m, i) = {i \choose M-m}$ for
-  all $i$ for some $m$. Then by the Hockey Stick Identity we get 
-  \begin{align*}
-  &\#(m-1, i) = \sum_{j>i} \#(m,j) \\
-  &= \sum_{j>i} {j \choose M-m} = {i \choose M-(m-1)}
-  \end{align*}
-  as desired.
+  % Let $f^*(n)$ be the supremum over all filling strategies of the fill achievable on $n$ cups.
+  % Clearly $f^*(n)$ satisfies the Amplification Lemma, i.e.
+  % $$f^*(n) \ge (1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n).$$
+  % Assume for the sake of deriving a contradiction that there is some $n$ such
+  % that $f^*(n) < cn^{1-\epsilon}$, let $n_*$ be the minimum such $n$.
 
-  We can also prove this with a simple combinatorial argument: there is a
-  bijection between terms of the form $f_{M-m}(n/2^{m+i-m})$ and integer
-  partitions of $i-m$ into $m$ integers, as you must divide up the array
-  subdivisions among the different levels of recursion. This demonstrates that
-  $$\#(m, i) = {i-m+m \choose M-m} = {i \choose M-m}.$$
+  % Then we have 
+  % $$cn_*^{1-\epsilon} > f^*(n_*) \ge (1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n_*).$$
+  % However, 
+  % \begin{align*}
+  % &(1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n_*) \\
+  % &\ge cn_*^{1-\epsilon}(1-\delta)\sum_{\ell=0}^M((1-\delta)\delta^\ell)^{1-\epsilon}\\
+  % &\ge cn_*^{1-\epsilon}(1-\delta) \frac{(1-\delta)^{1-\epsilon}}{1-\delta^{1-\epsilon}}.
+  % \end{align*}
+  % We will now show that there is an appropriate choice of $\delta \in (0,1)$
+  % such that $$\frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}} \ge 1,$$
+  % which contradicts the assumption that $c n_*^{1-\epsilon} > f^*(n_*)$.
+  % Rearranging, we desire $$(1-\delta)^{2-\epsilon} + \delta^{1-\epsilon}\ge 1.$$
+  % For any $\epsilon$ we will show that there is an appropriate choice of
+  % $\delta\ll 1$ satisfying this inequality.
 
-  We know that $f_m(n/2^M) \ge 1$ by design in Lemma
-  \ref{lem:adaptiveAmplification}, so to determine the total backlog we add up
-  the occurrences of $f_m(n/2^M)$ on each level, weighted by the
-  $1/2$ decay factor. Then the backlog we get is $$\sum_{i=0}^M {M \choose
-  i}\frac{1}{2^i} = (3/2)^{M} = n^{\lg(3/2)}.$$
-  This is optimal for $\delta= 1/2$.
+  % Consider the Taylor series for $(1-\delta)^{2-\epsilon}$:
+  % $$(1-\delta)^{2-\epsilon} = 1 - (2-\epsilon)\delta - O(\delta^2).$$
+  % By taking $\delta$ sufficiently small, the $O(\delta^2)$ term becomes
+  % negligible compared to the $(\alpha+1)\delta$ term. In particular, say that
+  % the $O(\delta^2)$ term is less than $c \delta^2$ for some constant $c$.
+  % Taking $\delta$ small enough such that $\delta^2 c < \delta$, we have that
+  % $(1-\delta)^{2-\epsilon} > 1-(2-\epsilon)\delta - \delta$.
+ 
+  % So, to find a $\delta$ where $g(\delta) \ge 1$ it suffices to find a $\delta$ with 
+  % $$\delta^{1-\epsilon} \ge (3-\epsilon)\delta.$$
+  % The equality is achieved at $\delta = (\frac{1}{3-\epsilon})^{1/\epsilon}$.
 
-  \textbf{Constructively achieving backlog $\Omega(n^{1-\epsilon})$}
-  The existential proof that backlog $\Omega(n^{1-\epsilon})$ suggests that we
-  will need to take $\delta \ll 1$ to achieve this backlog. The analysis from
-  the case $\delta = 1/2$ doesn't immediately apply here; that analysis was
-  significantly simplified by the fact that $\delta = 1-\delta$ for $\delta =
-  1/2$. However, we use some similar ideas.
+  % This establishes the existence of a filling strategy that achieves backlog
+  % $\Omega(n^{1-\epsilon})$.
+
+  % \paragraph{Modifying the Existential Argument to achieve backlog $n^{1-\epsilon}$ in finite time}
+  % We can modify the existential argument to get a guarantee on how long it will take to achieve the desired backlog.
+  % Fix an $\epsilon > 0$, and choose a $\delta\in(0,1)$ satisfying $(1-\delta)^{2-\epsilon} / 1-\delta^{1-\epsilon} \ge 1$.
+  % Fix $c \ll 1$. Say we aim to achieve backlog at least $cn^{1-\epsilon}$.
+  % Note that the choice of $\delta$ is motivated by the fact that
+  % $$(1-\delta)\sum_{\ell=0}^M ((1-\delta)\delta^i)^{1-\epsilon} \approx \frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}},$$
+  % and, as in the existential argument it will be useful to assert that this quantity is at least $1$.
+  % {\color{red} ok I'm kind of worried about things not being integers being a problem.}
+  % We start with 
+  % $$f_0(k) = 
+  % \begin{cases} 
+  %   \lg k, & k\geq 1, \\
+  %   0 & \text{else.}
+  % \end{cases}$$
+  % Then we construct $f_n$ as the amplification of $f_{n-1}$. 
+  % We claim the following regarding this construction:
+  % $$f_\ell(k) \ge cn^{1-\epsilon} \text{ for all } k>n/(1-\delta)^\ell.$$
+  % This is clearly true in the base case with $f_0$.
+  % If $f_\ell(k) \ge cn^{1-\epsilon}$ for all $k$ then we are already done.
+  % Otherwise, let $k_*+1$ be the smallest $k$ such that $f_\ell(k) <
+  % cn^{1-\epsilon}$. Note that by assumption we have $k_* > n/(1-\delta)^\ell$.
+  % Now consider the amplification $f_{\ell+1}$ of $f_\ell$.
+  % \begin{align*}
+  %   f_{\ell+1}(k_*/(1-\delta)) &\\
+  %   &\ge (1-\delta)\sum f_\ell((1-\delta)\delta^in)\\
+  %   &\ge cn^{1-\epsilon}\frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}}\\
+  %   &\ge cn^{1-\epsilon}.
+  % \end{align*}
+  % This is as desired. 
+  % Thus, by taking $f_{(\log n) /\log (1/(1-\delta))}$ we achieve backlog $cn^{1-\epsilon}$.
+
+
+  % \paragraph{Achieving backlog $\Omega(n^{\lg 3/2})$}
+  % Recall the recursive procedure that we use in the proof of the Amplification
+  % Lemma: to achieve the desired fill we must call $f(n/2^\ell)$ for
+  % $\ell = 0,1,2,\ldots$. As $f_{m+1}$ recursively calls $f_m$, there is even more recursion.
+
+  % Let $\#(m, i)$ denote the number of times ${f_m(n/2^i)}$ occurs
+  % in the recursive construction. Let there be $M = \lg (n/2)$  levels of
+  % recursion. The first level in the tree has $\#(M, i)=1$ for all $i$. Note
+  % that we have $$\#(m-1, i) = \sum_{j > i} \#(m, j)$$
+  % for any level $m$, because any expression $f_m(n/2^j)$ will
+  % call $f_{m-1}(n/2^i)$ for $j>i$.
+
+  % This is very reminiscent of the hockey stick identity:
+  % $${n \choose i} = \sum_{i-1\le j\le n-1} {j \choose i-1}.$$
+
+  % In fact we claim that if you look at it right (i.e. sideways) the $\#(m,
+  % i)$'s form Pascal's triangle!
+  % Specifically the bijection is 
+  % $$\#(m,i) = {i \choose M-m}.$$
+
+  % This is true because of the Hockey Stick Identity and the base case
+  % like $\#(M, i)=1$ for all $i$. We induct on the diagonals of Pascal's
+  % triangle. The inductive hypothesis is that $\#(m, i) = {i \choose M-m}$ for
+  % all $i$ for some $m$. Then by the Hockey Stick Identity we get 
+  % \begin{align*}
+  % &\#(m-1, i) = \sum_{j>i} \#(m,j) \\
+  % &= \sum_{j>i} {j \choose M-m} = {i \choose M-(m-1)}
+  % \end{align*}
+  % as desired.
+
+  % We can also prove this with a simple combinatorial argument: there is a
+  % bijection between terms of the form $f_{M-m}(n/2^{m+i-m})$ and integer
+  % partitions of $i-m$ into $m$ integers, as you must divide up the array
+  % subdivisions among the different levels of recursion. This demonstrates that
+  % $$\#(m, i) = {i-m+m \choose M-m} = {i \choose M-m}.$$
+
+  % We know that $f_m(n/2^M) \ge 1$ by design in Lemma
+  % \ref{lem:adaptiveAmplification}, so to determine the total backlog we add up
+  % the occurrences of $f_m(n/2^M)$ on each level, weighted by the
+  % $1/2$ decay factor. Then the backlog we get is $$\sum_{i=0}^M {M \choose
+  % i}\frac{1}{2^i} = (3/2)^{M} = n^{\lg(3/2)}.$$
+  % This is optimal for $\delta= 1/2$.
+
+  % \textbf{Constructively achieving backlog $\Omega(n^{1-\epsilon})$}
+  % The existential proof that backlog $\Omega(n^{1-\epsilon})$ suggests that we
+  % will need to take $\delta \ll 1$ to achieve this backlog. The analysis from
+  % the case $\delta = 1/2$ doesn't immediately apply here; that analysis was
+  % significantly simplified by the fact that $\delta = 1-\delta$ for $\delta =
+  % 1/2$. However, we use some similar ideas.
 
 
 \end{proof}
 
 \section{Adaptive Upper Bounds}\label{sec:adaptiveUpperBound}
-Let $[n] = \{1,2,\ldots, n\}$, let $i+[n] = \{i+1, i+2, \ldots, i+n\}$.
-The cup game consists of many successive rounds. On the $t$-th round the state
-starts as $S_t$. The filler chooses the number of processors $p_t$ for the round. 
-Then the filler distributes $p_t$ units of water among the cups (with at most
-$1$ unit of water to any particular cup). After this, we are at an intermediate
-state in the $t$-th round, which we call state $I_t$. Then the emptier chooses
-$p_t$ cups to empty $1$ unit of water from. After this the round is over, and
-the state is $S_{t+1}$.
 
-Let the rank of a cup at a given state be its position in a sorted list of the
-cups, breaking ties arbitrarily but consistently. For example, the fullest cup
-at a state has rank $1$, and the least full cup has rank $n$.
 Let $\mu_S(X), m_S(X)$ denote the average fill and mass of a set of cups $X$
 respectively at state $S$ ($S$ could be $S_t$ or $I_t$ for any $t\in\mathbb{N}$)
-\footnote{Note that previously when we used the notation $m, \mu$ for mass and
-average fill, we left off the subscript indicating the state at which the
-properties were measured. Previously it was sufficient to leave the round
-implicit as it was understandable from context, however in this Section the
-state is crucial, and needs to be explicit in the notation.}.
+\footnote{Note that in the proofs of lower bounds when we used the notation $m$
+  (for mass) and $\mu$ (for average fill), we omitted the subscript
+  indicating the state at which the properties were measured. 
+  In those proofs it was sufficiently clear to leave the state implicit.
+  However, in this Section the state is crucial, and needs to be explicit in the notation.}.
 Let $S_t(\{r_1, \ldots, r_m\})$ and $I_t(\{r_1,\ldots, r_m\})$ denote the cups
 of ranks $r_1, r_2, \ldots, r_m$ at states $S_t$ and $I_t$ respectively.
+Let $[n] = \{1,2,\ldots, n\}$, let $i+[n] = \{i+1, i+2, \ldots, i+n\}$.
+
 We establish the following Lemma:
 
 \begin{lemma}
@@ -613,8 +699,6 @@ Hence the invariant holds.
 
 % maybe just say: given a fixed value of m(ABC) might as well just push the water into A cuz m(BC) has that nasty c/(b+c) < 1 thing. this is a bit simpler. 
 
-
-
 \textbf{Conclusion:}\\
 The proof was for arbitrary $k$, so given that the invariants all hold at state
 $S_t$ they also must all hold at state $S_{t+1}$.
@@ -637,33 +721,36 @@ sampling without replacement should be more tightly concentrated around the
 mean than sampling with replacement. This is a corollary of his Theorem 4, see
 page 28 of his seminal work \cite{who62}.
 
-Call an emptying strategy $(\ell, \delta)$\defn{-greedy-like} if is satisfies
+Call an emptying strategy $(T, \Delta)$\defn{-greedy-like} if is satisfies
 the following property when the number of processors is $p$: for any cup
-$i$, if $\fil(i) + \delta > \ell$, and there are at least $p$ cups containing fill
-greater than $\fil(i) + \delta$, the emptier does not empty from cup $i$.
+$i$, if $\fil(i) + \Delta > T$, and there are at least $p$ cups containing fill
+greater than $\fil(i) + \Delta$, the emptier does not empty from cup $i$. 
+Combinatorially the quantity $T$ is the threshold above which the filler
+``notices" cups, and $\pm\Delta$ is the tolerance in cup fills within which the
+emptier is allowed to not be greedy.
 Of particular interest is the smoothed greedy emptier, which is $(1, 0)$-greedy-like.
 
 \begin{proposition}
   \label{prop:obliviousBase}
   There exists an oblivious filling strategy in the variable-processor cup game
-  on $n$ cups that achieves backlog $\Omega(\log n)$ against a $(\ell,
-  \delta)$-greedy-like emptier (where $\ell, \delta \le O(1)$ are constants
+  on $n$ cups that achieves backlog $\Omega(\log n)$ against a $(T,
+  \Delta)$-greedy-like emptier (where $T, \Delta \le O(1)$ are constants
   known to the filler), with probability at least $1-1/\polylog(n)$.
 \end{proposition}
 \begin{proof}
   Let $A$, the \defn{anchor} set, be a subset of the cups chosen uniformly at
   random from all subsets of size $n/2$ of the cups, and let $B$, the
   \defn{non-anchor} set, consist of the rest of the cups ($|B| = n/2$). 
-  Let $h = 2 \ell + g $ where $g$ is a sufficiently large constant. At each
+  Let $h = 2 T + g $ where $g$ is a sufficiently large constant. At each
   level of our recursive procedure we will achieve fill $h$ in some fraction of
-  the cups in $A$, and because the emptier is greedy, we can turn this into a
-  known set of cups with fill at least $h' = \ell + (g+\delta)/2$.
+  the cups in $A$, and because the emptier is $(T, \Delta)$-greedy-like, we can turn this into a
+  known set of cups with fill at least $h' = T + (g+\Delta)/2$.
   Our strategy to achieve backlog $\Omega(\log n)$ overall is roughly as follows:
   \begin{itemize}
     \item \textbf{Step 1:} 
-      Obtain large positive tilt in $B$, either by repeatedly making cups in $B$ have a constant probability of having
-      fill at least $h$ and then transferring these cups into $A$, or by
-      exploiting high expected positive tilt.
+      Obtain large positive tilt in $B$, either by repeatedly making cups in
+      $B$ have a constant probability of having fill at least $h$ and then
+      transferring these cups into $A$, or by exploiting high expected positive tilt.
   \item \textbf{Step 2:} Reduce the number of processors to a constant fraction $nc$ of $n$ and
     raise the fill of $nc$ cups to $h'$. This step relies on the emptier being
     greedy.
@@ -674,7 +761,7 @@ at each step (relative to average fill); doing so yields backlog $\Omega(\log
 n)$.
 
 Now we detail how to achieve Step 1.
-For each anchor cup $i$ we will perform a \defn{switching-process}.
+For each anchor cup $c$ we will perform a \defn{switching-process}.
 First we choose an index $j \in [n^2]$; the process proceeds for $n^2$
 \defn{rounds}, $j$ is the index of the switching-process at which we will
 switch a cup into the anchor set.
@@ -696,9 +783,9 @@ of generality that no cup is ever overpowered.
 We consider two cases:
 \begin{itemize}
   \item \textbf{Case 1:} For at least $1/2$ of the switching-processes, at
-    least $1/2$ of the cups $i \in B$ have $\fil(i) \ge -h$.
+    least $1/2$ of the cups $c \in B$ have $\fil(c) \ge -h$.
   \item \textbf{Case 2:} For at least $1/2$ of the switching-processes, less
-    than $1/2$ of the cups $i \in B$ have $\fil(i) \ge -h$.
+    than $1/2$ of the cups $c \in B$ have $\fil(c) \ge -h$.
 \end{itemize}
 
 \begin{clm}
@@ -708,8 +795,8 @@ We consider two cases:
   constant $k \in (0,1)$ ($k$ is a complicated function of $h$).
 \end{clm}
 \begin{proof}
-  Consider a switching-process where at least $1/2$ of the cups $i \in B$
-  have $\fil(i) \ge -h$.
+  Consider a switching-process where at least $1/2$ of the cups $c \in B$
+  have $\fil(c) \ge -h$.
 
   Say the emptier \defn{neglects} the anchor set in a round if on at least one
   step of the round the emptier does not empty from every anchor cup. By
@@ -718,17 +805,17 @@ We consider two cases:
   the emptier from neglecting the anchor set on more than a constant fraction
   of the rounds. 
 
-  The emptier must have some binary function, $I(k)$ that indicates whether or
-  not they will neglect the anchor set on round $k$ if the filler has not already
+  The emptier must have some binary function, $I(i)$ that indicates whether or
+  not they will neglect the anchor set on round $i$ if the filler has not already
   swapped. Note that the emptier will know when the filler perform a swap, so
-  whether or not the emptier neglects a round $k$ depends on this information.
+  whether or not the emptier neglects a round $i$ depends on this information.
   This is the only relevant statistic that the emptier can use to decide
   whether or not to neglect a round, because on any round when we simply
   redistribute water amongst the non-anchor cups we effectively have not
   changed anything about the game state. 
 
   If the emptier is willing to neglect the anchor set for at least $1/2$ of the
-  rounds, i.e. $\sum_{k=1}^{n^2} I(k) \ge n^2 / 2$, then with probability at
+  rounds, i.e. $\sum_{i=1}^{n^2} I(i) \ge n^2 / 2$, then with probability at
   least $1/4$, $j \in ((3/4) n^2, n^2)$, in which case the emptier neglects the anchor set
   on at least $n^2/4$ rounds ($I(k)$ must be $1$ for at least $n^2/4$ of the
   first $(3/4)n^2$ rounds). Each time the emptier neglects the anchor set the
@@ -759,13 +846,13 @@ We consider two cases:
   constant probability of the cup which we switch into the anchor set has fill
   $\ge h$. 
 
-  Say that this probability is $k \in (0,1)$. Then the expectation of the
-  number of cups $i \in A$ with $\fil(i) \ge h$ is at least $kn/2$. Let $X_i$
+  Say that this probability is $q \in (0,1)$. Then the expectation of the
+  number of cups $c \in A$ with $\fil(c) \ge h$ is at least $qn/2$. Let $X_i$
   be the binary random variables, with $X_i$ taking value $1$ if the $i$-th
   switching-process succeeded, and $0$ if it failed. Then by a Chernoff Bound
   (Hoeffding's Inequality applied to Binary Random Variables),
-  $$P\left(\sum_{i=1}^{n/2} X_i\le nk/4\right) \le e^{-n(k/2)^2}.$$ 
-  That is, the probability that less than $nk/4$ of the anchor cups have fill
+  $$P\left(\sum_{i=1}^{n/2} X_i\le nq/4\right) \le e^{-n(q/2)^2}.$$ 
+  That is, the probability that less than $nq/4$ of the anchor cups have fill
   at least $h$ is exponentially small in $n$.
 
 \end{proof}
@@ -776,8 +863,8 @@ We consider two cases:
 \end{clm}
 
 \begin{proof}
-  Consider a switching-process where we have less than $1/2$ of the cups $i\in B$
-  with $\fil(i) \ge -h$.
+  Consider a switching-process where we have less than $1/2$ of the cups $c\in B$
+  with $\fil(c) \ge -h$.
 
   % RIP this totally doesn't take into account that B might start with neg fill.
 
@@ -787,15 +874,15 @@ We consider two cases:
   exist, the fill is really tightly concentrated around $0$, so this is almost
   without loss of generality.
 
-  Let the positive tilt of a cup $i$ be $\tilt_+(i) \defeq \max(\fil(i), 0)$.
-  We have
-  $$\E[\tilt_+(X)] = \frac{1}{2}\E[|\fil(X)|] \ge h$$
-  (because negative tilt is at least $nh/2$ and positive tilt must oppose this).
-  
-  Let $Y_i$ be the random variable $Y_i=\tilt_+(X)$ where $X$ is a randomly
+  Let $Y_i$ be the random variable $Y_i=\tilt(X)$ where $X$ is a randomly
   selected cup from the non-anchor set at the start of the $i$-th round of
   playing single processor cups games. {\color{red}Note that the $Y_i$ are not really
   independent, but it is probably ok}. Note that $0\le Y_i \le hn/\lg\lg n$.
+
+  We have
+  $$\E[\tilt(X)] = \frac{1}{2}\E[|\fil(X)|] \ge h$$
+  (because negative tilt is at least $nh/2$ and positive tilt must oppose this).
+  
   Now we have, by Hoeffding's inequality, that 
   $$P\left(\Big|\frac{1}{n/2} \sum_{i=1}^{n/2} (Y_i - \E[Y_i])\Big|\ge h/2
   \right) \le$$
@@ -805,20 +892,20 @@ We consider two cases:
 \end{proof}
 
   In both cases we achieve, with probability at least $1-1/\polylog n$,
-  positive tilt at least $hnk$ in the anchor set for some known $k\in(0,1)$. Using the
+  positive tilt at least $hnq$ in the anchor set for some known $q\in(0,1)$. Using the
   positive tilt, with one processors, we can transfer over the fill into $nk$ cups. 
   Note, we use one processor because we do not know how many cups the fill is
   concentrated in. The filler repeatedly distributes $1$ unit of fill to each
-  of the $nk$ cups in succession, and continues until $h'$ fill has been
+  of the $nq$ cups in succession, and continues until $h'$ fill has been
   distributed. We cannot continue beyond this point because we have used up the
-  positive tilt. Now we recurse on this set of $nk$ cups.
+  positive tilt. Now we recurse on this set of $nq$ cups.
 
   Note that this is the only part of this proof that was specific to a greedy
   emptier: when we wanted to achieve known fill in some cups. Against an
   arbitrary opponent we can't assume that just because they are far behind
   means that they won't oppose our attempts to achieve cups with known fill.
-  Extending this result to non-greedy emptiers, or showing that it cannot be
-  extended is an important open question.
+  How to extend this result to a general non-greedy emptier is an important
+  open question.
 
   We can perform $\Omega(\log n)$ levels of recursion, and gain $\Omega(1)$
   fill at each step. Hence, overall, backlog of $\Omega(\log n)$ is achieved.
@@ -826,6 +913,7 @@ We consider two cases:
 
 
 \begin{lemma}[The Oblivious Amplification Lemma]
+  \label{lem:obliviousAmplification}
   Given an oblivious filling strategy for achieving backlog $f(n)$ in the
   variable-processor cup game on $n$ cups that succeeds with probability at
   least $1/2$, there exists a strategy for achieving backlog 
@@ -892,6 +980,7 @@ These concerns resolved, the exact same argument as in Proposition
 \end{proof}
 
 \begin{corollary}
+  \label{cor:obliviousPoly}
   There is an oblivious filling strategy for the variable-processor cup game on
   $n$ cups that achieves backlog $2^{\Omega(\sqrt{\log n})}$ in running time
   $O(n)$
