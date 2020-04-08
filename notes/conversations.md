@@ -78,3 +78,22 @@ Bill: 1 + F + F^2 + F^3 + ...
 Bill: If that is what we want
 Bill: 1 / (1 - F)
 Alek: yah ok, that might be helpful...
+
+
+
+
+Bill: v nice. explain it better
+
+set them numerically, 
+then lets just imagine this configuration to see what’s going on combinatorially.
+say explicitly that it might not satisfy the invariants.  
+
+b/(b+c) (a+b+c)(n-a-b-c) + b/(b+c) a (n-a) = 
+a(n − a) + c(n − |ABC| − a)
+
+maybe just say: given a fixed value of m(ABC) might as well just push the water into A cuz m(BC) has that nasty c/(b+c) < 1 thing. this is a bit simpler. 
+
+Bill: also look at constructivey stuff for the suppy thing
+
+Alek: oke
+

@@ -347,6 +347,37 @@ We proceed with our results.
   This establishes the existence of a filling strategy that achieves backlog
   $\Omega(n^{1-\epsilon})$.
 
+  \paragraph{Modifying the Existential Argument to achieve backlog $n^{1-\epsilon}$ in finite time}
+  We can modify the existential argument to get a guarantee on how long it will take to achieve the desired backlog.
+  Fix an $\epsilon > 0$, and choose a $\delta\in(0,1)$ satisfying $(1-\delta)^{2-\epsilon} / 1-\delta^{1-\epsilon} \ge 1$.
+  Fix $c \ll 1$. Say we aim to achieve backlog at least $cn^{1-\epsilon}$.
+  Note that the choice of $\delta$ is motivated by the fact that
+  $$(1-\delta)\sum ((1-\delta)\delta^i)^{1-\epsilon} = \frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}},$$
+  and, as in the existential argument it will be useful to assert that this quantity is at least $1$.
+  {\color{red} ok I'm kind of worried about things not being integers being a problem.}
+  We start with 
+  $$f_0(k) = 
+  \begin{cases} 
+    \lg k, & k\geq 1, \\
+    0 & \text{else.}
+  \end{cases}$$
+  Then we construct $f_n$ as the amplification of $f_{n-1}$. 
+  We claim the following regarding this construction:
+  $$f_\ell(k) \ge cn^{1-\epsilon} \text{ for all } k>n/(1-\delta)^\ell.$$
+  This is clearly true in the base case with $f_0$.
+  If $f_\ell(k) \ge cn^{1-\epsilon}$ for all $k$ then we are already done.
+  Otherwise, let $k_*+1$ be the smallest $k$ such that $f_\ell(k) < cn^{1-\epsilon}$. Note that by assumption we have $k_* > n/(1-\delta)^\ell$.
+  Now consider the amplification $f_{\ell+1}$ of $f_\ell$.
+  \begin{align*}
+    f_{\ell+1}(k_*/(1-\delta)) &\\
+    &\ge (1-\delta)\sum f_\ell((1-\delta)\delta^in)\\
+    &\ge cn^{1-\epsilon}\frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}}\\
+    &\ge cn^{1-\epsilon}.
+  \end{align*}
+  This is as desired. 
+  Thus, by taking $f_{(\log n) /\log (1/(1-\delta))}$ we achieve backlog $cn^{1-\epsilon}$.
+
+
   \paragraph{Achieving backlog $\Omega(n^{\lg 3/2})$}
   Recall the recursive procedure that we use in the proof of the Amplification
   Lemma: to achieve the desired fill we must call $f(n/2^\ell)$ for
@@ -543,6 +574,20 @@ So
 $$m_{S_t}(A) + m_{S_t}(C)+b \le k(n-k).$$
 As shown previously the left hand side of the above expression is an upper bound for $m_{S_{t+1}}([k])$.
 Hence the invariant holds.
+
+
+% explain the last part better:
+
+% set them numerically, 
+% then lets just imagine this configuration to see what’s going on combinatorially.
+% say explicitly that it might not satisfy the invariants.  
+
+% b/(b+c) (a+b+c)(n-a-b-c) + b/(b+c) a (n-a) = 
+% a(n − a) + c(n − |ABC| − a)
+
+% maybe just say: given a fixed value of m(ABC) might as well just push the water into A cuz m(BC) has that nasty c/(b+c) < 1 thing. this is a bit simpler. 
+
+
 
 \textbf{Conclusion:}\\
 The proof was for arbitrary $k$, so given that the invariants all hold at state
