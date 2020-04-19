@@ -313,11 +313,68 @@ work scheduling analogy) because it makes the problem more elegant.
   $\epsilon \in (0,1)$, in running time $2^{O(\log^2 n)}$.
 \end{corollary}
 \begin{proof}$ $\\
-  Fix constants $\epsilon,\delta,c \in (0,1)$ with $\delta$ satisfying 
-  $$\frac{(1-\delta)^{2-\epsilon}}{ 1-\delta^{1-\epsilon}}\ge 1,$$
-  and with $c$ sufficiently small (the choice of $c$ depends on $\epsilon$, we
-  will choose $c$ to satisfy a certain inequality).
-  Say we aim to achieve backlog at least $cn^{1-\epsilon}$.
+  Fix constant $\epsilon \in (0,1)$, and determine $c$ as a function of
+  $\epsilon$ -- we will specify precisely what inequalities $c$ must satisfy
+  later. 
+  Say that we aim to achieve backlog at least $cn^{1-\epsilon}$.
+  Observe that if we apply the Amplification Lemma to the function satisfying
+  $f(k) \ge ck^{1-\epsilon}$ for $k \le g$ then for any $k_0$ with
+  $k_0(1-\delta)\le g$ (which enforces $k_0 \le g/ (1-\delta)$) we have the
+  following:
+  \begin{align*}
+  f'(k_0)\ge&\\
+  &(1-\delta)\sum_{\ell=0}^L c (((1-\delta)\delta^\ell)k_0)^{1-\epsilon}\\
+  &= ck_0^{1-\epsilon} \frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}}(1-(\delta^{1-\epsilon})^{L+1}).
+  \end{align*}
+
+  Recall that $L$ is defined in the statement of the Amplification Lemma to be
+  the greatest integer such that $(1-\delta)\delta^Ln \ge n_0$ where $n_0$ is a
+  constant such that $\frac{1}{4}\ln(n_0/2) \ge 1$.
+  Let $n$ be greater than some constant $n_{\min}$.
+  % wait crap we only need like 1 term now
+
+  Let 
+  $$h(\delta) = \frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}}.$$
+  Note that if $h(\delta)\ge 1$, then $f'(k_0) \ge c
+  k_0^{1-\epsilon}$({\color{red} so long as you ignore that approx symbol...}),
+  meaning we have constructed from $f$ a new function $f'$ that satisfies the inequality
+  $f'(k) \ge ck^{1-\epsilon}$ for $k\le g/(1-\delta)$, as opposed to only for
+  $k \le g$ as in the case of $f$.
+  Note that although $f'(k) \ge ck^{1-\epsilon}$ holds for at least as many $k$
+  as $f(k) \ge c k^{1-\epsilon}$, it does not necessarily hold for strictly
+  more; in particular, if $\lfloor g/(1-\delta) \rfloor = g$ then the inequality on
+  $f'$ holds for no more $k$ than the inequality on $f$, as $f$ and $f'$ are
+  functions on $\mathbb{N}$.
+
+  We claim that for any choice of $\epsilon \in (0,1)$ it is possible to chose
+  a $\delta \in (0,1)$ such that $h(\delta) \ge 1$.
+
+  Rearranging, we desire $$(1-\delta)^{2-\epsilon} + \delta^{1-\epsilon}\ge 1.$$
+  For any $\epsilon$ we will show that there is an appropriate choice of
+  $\delta\ll 1$ satisfying this inequality.
+
+  Consider the Taylor series for $(1-\delta)^{2-\epsilon}$ about $\delta = 0$:
+  $$(1-\delta)^{2-\epsilon} = 1 - (2-\epsilon)\delta + O(\delta^2).$$
+ 
+  So, to find a $\delta$ where $h(\delta) \ge 1$ it suffices to find a $\delta$ with 
+  $$\delta^{1-\epsilon} \ge (2-\epsilon)\delta.$$
+  The equality is achieved at $\delta = (\frac{1}{2-\epsilon})^{1/\epsilon} \in (0,1)$.
+
+  Now we choose $\delta \in (0,1)$ such that $h(\delta)\ge 1$.
+
+  At this point an existential argument for an algorithm that achieves backlog $c n^{1-\epsilon}$ becomes clear. 
+  Let $f^*$ be the supremum over all filling strategies of the backlog's achievable on $n$ cups. Then $f^*$ satisfies the Amplification Lemma. Assume for contradiction that there is some least $n_*$ such that $f^*(n) < cn^{1-\epsilon}$, by appropriate choice of $c$ $f^*(n) \ge cn^{1-\epsilon}$ for $n < n_*$ which is not the empty set. Because $f^*$ satisfies the Amplification Lemma we have:
+\begin{align*}
+  f^*(n_*) & \\
+           &\ge (1-\delta)\sum_{\ell=0}^L f^*((1-\delta)\delta^\ell n_*) \\
+           &\approx \ge cn_*^{1-\epsilon} h(\delta)\\
+           &\ge cn_*^{1-\epsilon}
+\end{align*}
+which is {\color{red}approximately} a contradiction.
+
+However this is somewhat unsatisfactory as it does not provide an algorithm with bounded running time.
+To remedy this we now show, via a similar construction, that the same backlog is achievable in finite running time.
+
   We start with the algorithm given by Proposition \ref{prop:adaptiveBase} for
   achieving backlog
   $$f_0(k) = 
@@ -331,6 +388,8 @@ work scheduling analogy) because it makes the problem more elegant.
   Define a sequence $g_i \in \mathbb{N}^\infty$ with $g_0 = \lceil 1/\delta
   \rceil \gg 1$, and for $i\ge0$ $g_{i+1} =\lceil g_i/(1-\delta)\rceil -1$
   (that is, $g_{i+1}$ is the greatest integer strictly less than $g_i$).
+  Note that $ (1/\delta) / (1-\delta) > (1+\delta)/\delta = 1/\delta + 1.$
+  Thus $g_1 = 1+ g_0$, and in general, $g_{i+1} > g_i$.
 
   We claim the following regarding this construction:
   $$f_i(k) \ge ck^{1-\epsilon} \text{ for all } k < g_i.$$
@@ -338,8 +397,8 @@ work scheduling analogy) because it makes the problem more elegant.
 
   The claim is true in the base case of $f_0$ by taking $c$ sufficiently small,
   in particular small enough that $f_0(k) \ge ck^{1-\epsilon}$ holds for $k < g_0$.
-  As our inductive hypothesis we assume the claim for $i$; We aim to show that
-  the claim holds for $i+1$.
+  As our inductive hypothesis we assume the claim for $f_i$; we aim to show that
+  the claim holds for $f_{i+1}$.
   Note the key property of $g_i$, that $g_{i+1}\cdot(1-\delta) < g_i$. Also
   note that (without loss of generality) the $f_i$ are monotonically increasing
   functions: given more cups we can always achieve higher fill than with fewer
@@ -357,11 +416,56 @@ work scheduling analogy) because it makes the problem more elegant.
   reach some $f_{i_*}$ such that $f_{i_*}(n) \ge cn^{1-\epsilon}$.
   Note that $i_* \le n$.
   Let the running time $f_{i_*}(n)$ be $T(n)$.
-  We essentially have the following recurrence:
-  $$T(n) \le n\frac{\log n}{\log 1/\delta}T(n(1-\delta)).$$
+  Note that $f_{i_*}(n)$ must call $f_{i_*-1}(n(1-\delta)\delta^\ell)$ as many
+  as $n(1-\delta)\delta^\ell$ times, for all $0 \le \ell\le L$.
+  We have the following recurrence (which is quite loose):
+  $$T(n) \le nL \cdot T(n(1-\delta)).$$
   We can upper bound this by
-  $$\left(\frac{n\log n}{\log 1/\delta}\right)^{(\log n)/(\log (1/(1-\delta)))}.$$
+  $$\left(nL\right)^{\frac{\log n}{\log (1/(1-\delta))}}.$$
   This is very large. But it's also finite. Hence we can achieve the desired backlog in finite time.
+
+  {\color{blue}But it get's better! 
+    It is in fact true that we only need $L \ge 1$. This enforces $\frac{\lg
+    n}{\lg 1/\delta} \ge 1 $ so $\delta \ge 1/n$. If this is the case then we
+    are interested in when the following expression is at least $1$:
+    $$(1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon})\ge 1$$
+    Expanding out the Taylor series for  the term on the left, this is 
+    $$(1-(2-\epsilon)\delta + O(\delta^2))(1+\delta^{1-\epsilon}) \ge 1$$
+    hence it suffices for 
+    $$\delta^{1-\epsilon} \ge (2-\epsilon)\delta (1+\delta^{1-\epsilon})$$
+    simplifying, and noting that $1+\delta^{1-\epsilon} \le 2$ we have that it suffices for,
+    $$\frac{1}{2-\epsilon} \ge 2\delta^{\epsilon} $$
+    that is, 
+    $$\delta\le \frac{1}{(2(2-\epsilon))^{1/\epsilon}}.$$
+    Combining this with the earlier constraint, valid $\epsilon $ satisfy the following inequality:
+    $$\frac{1}{n}\le \frac{1}{(2(2-\epsilon))^{1/\epsilon}}$$
+    this is
+    $$(2(2-\epsilon))^{1/\epsilon}\le n.$$
+    Notice that this inequality is satisfied for $\epsilon = 2/\lg n$.
+    This gives backlog 
+    $$ n $$
+
+    Another possibly more elegant proof is as follows.
+    Let $(1-\delta)^c = \delta$, let $\delta^2 n < n_0 < (1-\delta)^{2c-1}$ by our choice of $\delta$.
+    We can get backlog 
+    $$\sum_{i=1}^c (1-\delta)^i $$
+    by making a binary tree: at every vertex we have a choice, do a $\delta$,
+    in which case we have a small enough set of cups that we just collect our
+    backlog, or do a $1-\delta$.
+    The sum evaluates to 
+    $$\frac{(1-\delta)^2}{\delta}$$
+    which, if we chose $\delta = 1/n$, becomes $\Omega(n)$.
+
+    % Solving this inequality yields
+    % $$\epsilon \ge \frac{2 \ln(n) - W(\frac{1}{2} n^2 \ln n)}{\ln n}$$
+    % where $W$ is the Lambert-W function, i.e. the inverse of the function $z\mapsto ze^z$.
+    % Note that as $n\to \infty$ smaller and smaller values of $\epsilon$ are permissible.
+
+    % Note that the Lambert-W function satisfies $W(x) = \ln x -\ln\ln x + o(1)$.
+    % Using this, we can get a very loose lower bound of $\Omega(n^{1-2/\ln n})$,
+    % although of course the expression with the $W$ in it is a better lower bound.
+  }
+
 
   % \paragraph{Basic Idea}
   % Let
