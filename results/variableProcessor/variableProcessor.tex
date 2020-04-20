@@ -60,8 +60,8 @@
   Although the modification to allow variable resources seems small, we will
   show that it drastically alters the outcome of the game.
   We demonstrate a recursive algorithm that an adaptive filler can use to
-  achieve backlog $\Omega(n^{1-\epsilon})$ for any constant $\epsilon > 0$.
-  We also demonstrate that this lower bound on backlog is essentially tight: 
+  achieve backlog $\Omega(n)$.
+  We also demonstrate that this lower bound on backlog is tight: 
   using a novel set of invariants we prove that a greedy emptier never lets
   backlog exceed $O(n)$.
 
@@ -140,10 +140,9 @@ proof of a lower bound on backlog in Corollary \ref{cor:adaptivePoly}.
 The base case of the argument is a direct consequence of Proposition
 \ref{prop:adaptiveBase}, and the inductive step follows from the ``Adaptive
 Amplification Lemma" (Lemma \ref{lem:adaptiveAmplification}). Corollary \ref{cor:adaptivePoly}
-gives the lower bound $\Omega(n^{1-\epsilon})$ for any constant $\epsilon>0$ on
-backlog.
+gives the lower bound $\Omega(n)$ on backlog.
 
-Section \ref{sec:oblivious} has identical macro-structure to Section
+Section \ref{sec:oblivious} has similar macro-structure to Section
 \ref{sec:adaptive}: We lower bound backlog in
 Corollary \ref{cor:obliviousPoly}, using Proposition \ref{prop:obliviousBase}
 as the base case of the inductive argument and the ``Oblivious Amplification Lemma" (Lemma
@@ -156,7 +155,7 @@ differs from the adaptive case.
 
 In Section \ref{sec:adaptiveUpperBound} we prove a novel invariant: the average
 fill of the $k$ fullest cups is at most $n-k$. In particular this implies
-(setting $k=1$) that backlog is $O(n)$. This means that our analysis is essentially tight.
+(setting $k=1$) that backlog is $O(n)$. Thus, our analysis is tight.
 
 \section{Preliminaries}\label{sec:prelims}
 The cup game consists of a sequence of rounds. On the $t$-th round the state
@@ -231,8 +230,8 @@ work scheduling analogy) because it makes the problem more elegant.
   Let $f$ be an adaptive filling strategy that achieves backlog $f(n)$ in the
   variable-processor cup game on $n$ cups (relative to average fill, with
   negative fill allowed).
-  Let $n_0 \in \mathbb{N}$ be a constant such that $\frac{1}{4} \ln (n_0/2) \ge
-  1$. Let $\delta\in(0,1)$ be constant, and let $L\in\mathbb{N}$ be a constant
+  Let $n_0 \in \mathbb{N}$ be a constant such that we can achieve backlog $1$ on $n_0$ cups.
+  Let $\delta\in(0,1)$ be a parameter, and let $L\in\mathbb{N}$ be a constant
   such that $n_0 \le (1-\delta)\delta^L n \le n_0/\delta$.
 
   Then, there exists an adaptive filling strategy that achieves backlog $f'(n)$ satisfying
@@ -309,13 +308,12 @@ work scheduling analogy) because it makes the problem more elegant.
 \begin{corollary}
   \label{cor:adaptivePoly}
   There is an adaptive filling strategy for the variable-processor cup game on
-  $n$ cups that achieves backlog $\Omega(n^{1-\epsilon})$ for any constant
-  $\epsilon \in (0,1)$, in running time $2^{O(\log^2 n)}$.
+  $n$ cups that achieves backlog $\Omega(n)$ in bounded running time.
+  % that achieves backlog $\Omega(n^{1-\epsilon})$ for any constant $\epsilon \in (0,1)$, in running time $2^{O(\log^2 n)}$.
 \end{corollary}
 \begin{proof}$ $\\
-  Fix constant $\epsilon \in (0,1)$, and determine $c$ as a function of
-  $\epsilon$ -- we will specify precisely what inequalities $c$ must satisfy
-  later. 
+  Fix $\epsilon \in (0,1/2)$, and let $c, \delta$ be parameters, with $c\in
+  (0,1), 0 < \delta \ll 1/2$ -- these will depend on $\epsilon, n$.
   Say that we aim to achieve backlog at least $cn^{1-\epsilon}$.
   Observe that if we apply the Amplification Lemma to the function satisfying
   $f(k) \ge ck^{1-\epsilon}$ for $k \le g$ then for any $k_0$ with
@@ -324,56 +322,110 @@ work scheduling analogy) because it makes the problem more elegant.
   \begin{align*}
   f'(k_0)\ge&\\
   &(1-\delta)\sum_{\ell=0}^L c (((1-\delta)\delta^\ell)k_0)^{1-\epsilon}\\
-  &= ck_0^{1-\epsilon} \frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}}(1-(\delta^{1-\epsilon})^{L+1}).
+  &= ck_0^{1-\epsilon} (1-\delta)^{2-\epsilon} \sum_{\ell=0}^L (\delta^\ell)^{1-\epsilon},
   \end{align*}
-
-  Recall that $L$ is defined in the statement of the Amplification Lemma to be
-  the greatest integer such that $(1-\delta)\delta^Ln \ge n_0$ where $n_0$ is a
-  constant such that $\frac{1}{4}\ln(n_0/2) \ge 1$.
-  Let $n$ be greater than some constant $n_{\min}$.
-  % wait crap we only need like 1 term now
-
+  where $L$ is the greatest integer such that $(1-\delta)\delta^Ln \ge n_0$
+  where $n_0$ is a constant such that we can achieve backlog $1$ on $n_0$ cups
+  (this definition is identical to the definition in the statement of Lemma
+  \ref{lem:adaptiveAmplification}).
+  Note that as $\delta$ will be very small, $\sum_{\ell=0}^L
+  (\delta^L)^{1-\epsilon}$ is very well approximated by
+  $1+\delta^{1-\epsilon}$, so we will not loose much by relaxing our lower
+  bound on $f'(k_0)$ to only use the first $2$ terms of the sum. Then we have 
+  $$f'(k_0) \ge ck_0^{1-\epsilon}(1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon}).$$
   Let 
-  $$h(\delta) = \frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}}.$$
+  $$h(\delta) = (1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon}).$$
+  We will show that $h(\delta) \ge 1$ is satisfiable for sufficiently small $\delta$ given any choice of $\epsilon \in (0,1)$.
   Note that if $h(\delta)\ge 1$, then $f'(k_0) \ge c
-  k_0^{1-\epsilon}$({\color{red} so long as you ignore that approx symbol...}),
-  meaning we have constructed from $f$ a new function $f'$ that satisfies the inequality
+  k_0^{1-\epsilon}$, meaning we have constructed from $f$ a new function $f'$ that satisfies the inequality
   $f'(k) \ge ck^{1-\epsilon}$ for $k\le g/(1-\delta)$, as opposed to only for
   $k \le g$ as in the case of $f$.
-  Note that although $f'(k) \ge ck^{1-\epsilon}$ holds for at least as many $k$
-  as $f(k) \ge c k^{1-\epsilon}$, it does not necessarily hold for strictly
-  more; in particular, if $\lfloor g/(1-\delta) \rfloor = g$ then the inequality on
-  $f'$ holds for no more $k$ than the inequality on $f$, as $f$ and $f'$ are
-  functions on $\mathbb{N}$.
-
-  We claim that for any choice of $\epsilon \in (0,1)$ it is possible to chose
-  a $\delta \in (0,1)$ such that $h(\delta) \ge 1$.
-
-  Rearranging, we desire $$(1-\delta)^{2-\epsilon} + \delta^{1-\epsilon}\ge 1.$$
-  For any $\epsilon$ we will show that there is an appropriate choice of
-  $\delta\ll 1$ satisfying this inequality.
-
+  \footnote{Note that although $f'(k) \ge ck^{1-\epsilon}$ holds for at least as many $k$
+    as $f(k) \ge c k^{1-\epsilon}$, it does not necessarily hold for strictly
+    more; in particular, if $\lfloor g/(1-\delta) \rfloor = g$ then the inequality on
+    $f'$ holds for no more $k$ than the inequality on $f$, as $f$ and $f'$ are
+    functions on $\mathbb{N}$. We have to be somewhat careful about the fact that
+    there are an integer number of cups.
+  }
   Consider the Taylor series for $(1-\delta)^{2-\epsilon}$ about $\delta = 0$:
   $$(1-\delta)^{2-\epsilon} = 1 - (2-\epsilon)\delta + O(\delta^2).$$
  
-  So, to find a $\delta$ where $h(\delta) \ge 1$ it suffices to find a $\delta$ with 
-  $$\delta^{1-\epsilon} \ge (2-\epsilon)\delta.$$
-  The equality is achieved at $\delta = (\frac{1}{2-\epsilon})^{1/\epsilon} \in (0,1)$.
+  So, to find a $\delta$ where $h(\delta) \ge 1$ it suffices -- note that, again, we choose
+  to neglect the $\delta^2$ term as it does not help us substantially becuase
+  it is so small -- to find a $\delta$ with 
+  $$(1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon}) \ge 1.$$
+  Rearranging we have 
+  $$\delta^{1-\epsilon} \ge (2-\epsilon)\delta + (2-\epsilon)\delta^{2-\epsilon}.$$
+  This clearly is true for sufficiently small $\delta$, as
+  $\delta^{1-\epsilon}$ will be much greater than $\delta$ or
+  $\delta^{2-\epsilon}$.
+  However it will be beneficial to have a more explicit criterion for possible
+  choices of $\delta$ in terms of $\epsilon$. To get this, we enforce a much
+  stronger inequality on $\delta^{1-\epsilon}$ by vastly overestimating
+  $\delta^{2-\epsilon}$ as $\delta$. Surprisingly even with this overestimate
+  we are still able to get the desired value of $\epsilon$ to work, as we will demonstrate later.
+  We have,
+  $$\delta \le \frac{1}{(2(2-\epsilon))^{1/\epsilon}}.$$
 
-  Now we choose $\delta \in (0,1)$ such that $h(\delta)\ge 1$.
+  In addition to the constraint that $\delta$ must be small enough such that
+  $h(\delta) \ge 1$, the only other constraint on $\delta$ is that $\delta$
+  must be large enough that the sum from the Amplification Lemma has at least two terms, i.e. such that $L \ge 1$.
+  The condition $L \ge 1$ enforces 
+  $$\delta(1-\delta)n \ge n_0. $$
+  Recall that we choose $\delta < 1/2$, so $1-\delta > 1/2$. Thus to make
+  $\delta$ sufficiently big it suffices to chose $\delta$ with 
+  $$\delta \ge 2n_0/n.$$
+  Any choice of $\delta$ that is sufficiently large to make $L \ge 1$ and
+  simultaneously small enough to make $h(\delta) \ge 1$ is a valid choice of
+  $\delta$. That is, $\delta$ is valid if and only if it satisfies
+  \begin{equation}
+    \label{eqn:deltainequality}
+       2n_0/n \le \delta \le  \frac{1}{(2(2-\epsilon))^{1/\epsilon}}.
+  \end{equation}
+  To achieve the desired backlog of $\Omega(n)$ we can use $\epsilon =
+  \gamma/\lg n$ for appropriate constant $\gamma$, as $$n^{1-\gamma/\lg n} =
+  n/2^\gamma = \Omega(n).$$
+  We show that there is a valid choice of $\gamma$ such that the following inequality is satisfied:
+  \begin{equation}
+    \label{eqn:thatinequality}
+   2n_0/n \le \frac{1}{(2(2-\gamma/\lg n))^{(1/\gamma)\lg n}}.
+  \end{equation}
+  Note that 
+  $$(2(2-\gamma/\lg n))^{(1/\gamma)\lg n} \le 4^{(1/\gamma)\lg n} \le n^{2/\gamma}$$
+  Clearly by choosing e.g. $\gamma = 4$ we have the desired inequality.
+  Inequality \ref{eqn:thatinequality} implies that there is a valid choice of
+  $\delta$ when we chose $\epsilon = \gamma / \lg n$. Throughout the remainder
+  of the proof we use $\epsilon = 4 / \lg n$, and $\delta$ satisfying
+  Inequality \ref{eqn:deltainequality}, based on our choice of $\epsilon$. 
 
-  At this point an existential argument for an algorithm that achieves backlog $c n^{1-\epsilon}$ becomes clear. 
-  Let $f^*$ be the supremum over all filling strategies of the backlog's achievable on $n$ cups. Then $f^*$ satisfies the Amplification Lemma. Assume for contradiction that there is some least $n_*$ such that $f^*(n) < cn^{1-\epsilon}$, by appropriate choice of $c$ $f^*(n) \ge cn^{1-\epsilon}$ for $n < n_*$ which is not the empty set. Because $f^*$ satisfies the Amplification Lemma we have:
+  Now we proceed to show that with the chosen values of $\delta, \epsilon$ we
+  can achieve a filling strategy that achieves backlog $cn^{1-\epsilon}$ on $n$ cups.
+  First we present a simple existential argument which asserts that a strategy
+  that achieves the desired backlog exists. Then we will provide a constructive
+  argument that uses repeated amplification of a base case to
+  achieve a function, in finite running time, with the same backlog guarantee
+  on $n$ cups.
+  
+  \paragraph{Existential Argument}
+  Let $f^*$ be the supremum over all filling strategies of the backlog
+  achievable on $n$ cups. Then $f^*$ satisfies the Amplification Lemma. Assume
+  for contradiction that there is some least $n_*$ such that $f^*(n) <
+  cn^{1-\epsilon}$, whereas by appropriate choice of $c$ $f^*(n) \ge cn^{1-\epsilon}$
+  for $n < n_*$ which is not the empty set. Because $f^*$ satisfies the
+  Amplification Lemma we have:
 \begin{align*}
   f^*(n_*) & \\
            &\ge (1-\delta)\sum_{\ell=0}^L f^*((1-\delta)\delta^\ell n_*) \\
-           &\approx \ge cn_*^{1-\epsilon} h(\delta)\\
+           &\ge cn_*^{1-\epsilon} h(\delta)\\
            &\ge cn_*^{1-\epsilon}
 \end{align*}
-which is {\color{red}approximately} a contradiction.
+which is a contradiction. Hence $f^*$ achieves backlog $cn^{1-\epsilon} = \Omega(n)$ for all $n$.
 
-However this is somewhat unsatisfactory as it does not provide an algorithm with bounded running time.
-To remedy this we now show, via a similar construction, that the same backlog is achievable in finite running time.
+\paragraph{Constructive Argument}
+It is desirable to have an algorithm for achieving this backlog with bounded
+running time; we now modify the existential argument to make it constructive, 
+which yields an algorithm for achieving backlog $cn^{1-\epsilon}$ on $n$ cups 
+in finite running time.
 
   We start with the algorithm given by Proposition \ref{prop:adaptiveBase} for
   achieving backlog
@@ -407,7 +459,7 @@ To remedy this we now show, via a similar construction, that the same backlog is
   \begin{align*}
     f_{i+1}(k) &\\
     &\ge (1-\delta)\sum_{\ell=0}^L f_i((1-\delta)\delta^\ell k)\\
-    &\ge ck^{1-\epsilon}\frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}}\\
+    &\ge ck^{1-\epsilon}h(\delta)\\
     &\ge ck^{1-\epsilon},
   \end{align*}
   as desired. 
@@ -417,34 +469,17 @@ To remedy this we now show, via a similar construction, that the same backlog is
   Note that $i_* \le n$.
   Let the running time $f_{i_*}(n)$ be $T(n)$.
   Note that $f_{i_*}(n)$ must call $f_{i_*-1}(n(1-\delta)\delta^\ell)$ as many
-  as $n(1-\delta)\delta^\ell$ times, for all $0 \le \ell\le L$.
+  as $n(1-\delta)\delta^\ell$ times, for all $0 \le \ell\le 1$.
   We have the following recurrence (which is quite loose):
-  $$T(n) \le nL \cdot T(n(1-\delta)).$$
+  $$T(n) \le n \cdot T(n(1-\delta)).$$
   We can upper bound this by
-  $$\left(nL\right)^{\frac{\log n}{\log (1/(1-\delta))}}.$$
-  This is very large. But it's also finite. Hence we can achieve the desired backlog in finite time.
+  $$n^{\frac{\log n}{\log (1/(1-\delta))}}.$$
+  {\color{red} 
+    If $\delta = 1/n$ then this is approximately $2^{n\log^2 n}$. Which is exponential (i.e. bad).
+    This is very large. But it's also finite. Hence we can achieve the desired backlog in finite time.
+  }
 
   {\color{blue}But it get's better! 
-    It is in fact true that we only need $L \ge 1$. This enforces $\frac{\lg
-    n}{\lg 1/\delta} \ge 1 $ so $\delta \ge 1/n$. If this is the case then we
-    are interested in when the following expression is at least $1$:
-    $$(1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon})\ge 1$$
-    Expanding out the Taylor series for  the term on the left, this is 
-    $$(1-(2-\epsilon)\delta + O(\delta^2))(1+\delta^{1-\epsilon}) \ge 1$$
-    hence it suffices for 
-    $$\delta^{1-\epsilon} \ge (2-\epsilon)\delta (1+\delta^{1-\epsilon})$$
-    simplifying, and noting that $1+\delta^{1-\epsilon} \le 2$ we have that it suffices for,
-    $$\frac{1}{2-\epsilon} \ge 2\delta^{\epsilon} $$
-    that is, 
-    $$\delta\le \frac{1}{(2(2-\epsilon))^{1/\epsilon}}.$$
-    Combining this with the earlier constraint, valid $\epsilon $ satisfy the following inequality:
-    $$\frac{1}{n}\le \frac{1}{(2(2-\epsilon))^{1/\epsilon}}$$
-    this is
-    $$(2(2-\epsilon))^{1/\epsilon}\le n.$$
-    Notice that this inequality is satisfied for $\epsilon = 2/\lg n$.
-    This gives backlog 
-    $$ n $$
-
     Another possibly more elegant proof is as follows.
     Let $(1-\delta)^c = \delta$, let $\delta^2 n < n_0 < (1-\delta)^{2c-1}$ by our choice of $\delta$.
     We can get backlog 

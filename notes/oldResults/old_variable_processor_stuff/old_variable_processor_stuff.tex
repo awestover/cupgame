@@ -1,0 +1,281 @@
+\documentclass{article}[11pt]
+\usepackage[subtle]{savetrees}
+\usepackage[left=1in, right=1in, top=1in, bottom=1in]{geometry}
+
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{Alek Westover}
+\rhead{}
+\usepackage{hyperref}
+
+\newcommand{\defn}[1]{{\textit{\textbf{\boldmath #1}}}}
+\renewcommand{\paragraph}[1]{\vspace{0.09in}\noindent{\bf \boldmath #1.}} 
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{\text{Var}}
+\DeclareMathOperator{\img}{Img}
+\DeclareMathOperator{\polylog}{\text{polylog}}
+\DeclareMathOperator{\poly}{\text{poly}}
+
+\DeclareMathOperator{\st}{\text{ such that }}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\interior}[1]{%
+  {\kern0pt#1}^{\mathrm{o}}%
+}
+\newcommand{\mb}{\mathbf}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\y}{\mathbf{y}}
+\newcommand{\z}{\mathbf{z}}
+\renewcommand{\d}{\mathrm{d}} %straight d for integrals
+\newcommand{\De}{\Delta}
+\renewcommand{\Re}{\mathrm{Re}}
+\renewcommand{\Im}{\mathrm{Im}}
+\newcommand{\setof}[2]{\left\{ #1\; : \;#2 \right\}}
+\newcommand{\set}[1]{\left\{ #1\right\}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\contr}[0]{\[ \Rightarrow\!\Leftarrow \]}
+\newcommand{\defeq}{\vcentcolon=}
+\newcommand{\eqdef}{=\vcentcolon}
+
+\newtheorem{fact}{Fact}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{theorem}{Theorem}
+\usepackage{mdframed}
+\newmdtheoremenv{q}{Question}
+\newenvironment{ans}
+  { \emph{Solution.}}
+  {$ $\\\noindent\rule{\textwidth}{1pt}}
+
+
+\begin{document}
+\begin{center}
+\begin{Large}
+	Alek Westover \\
+	\vspace{2mm}
+  Variable Processor Cup Games
+\end{Large}
+\end{center}
+\thispagestyle{empty}
+\section{Lower Bound Corollary}
+  \paragraph{Basic Idea}
+  Let
+  $$f_0(k) = 
+  \begin{cases} 
+    \lg k, & k\geq 1, \\
+    0 & \text{else.}
+  \end{cases}$$
+  Note that we can achieve backlog $f_0(k)$ on $k$ cups by Proposition \ref{prop:adaptiveBase}.
+  Let $f_{m+1} $ be the result of applying the Amplification Lemma to $f_m$ with $\delta=1/2$. 
+  The function $f_{\lg n^{1/9}}(k)$ satisfies 
+  \begin{equation}\label{eqn:amppppp}
+  \text{for } k \geq n,\,\, f_{\lg n^{1/9}}(k) \geq 2^{\lg n^{1/9}} \lg k.
+  \end{equation}
+  In particular, using $f_{\lg n^{1/9}}(n)$ (applying the function to all of
+  the cups) we achieve backlog $\Omega(n^{1/9}\lg n) \ge \Omega(\poly(n))$
+  as desired.
+  To prove Equation \ref{eqn:amppppp}, we prove the following lower bound for $f_m$ by induction:
+  $$f_m(k) \geq 2^m \lg k, \text{ for } k \geq (2^9)^m.$$
+  The base case follows from the definition of $f_0$. Assuming the property for
+  $f_m$, we get the following by Lemma \ref{lem:adaptiveAmplification}:
+  $ \text{for } k > (2^9)^{m+1},$
+  \begin{align*}
+  &f_{m+1}(k) \\
+  &\ge \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9) + \cdots)\\
+  &\geq \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9))\\
+  &\geq \frac{1}{2}2^m(\lg (k/2) + \lg(k/4) + \cdots + \lg(k/2^9))\\
+  &\geq \frac{1}{2}2^m(9\lg (k) - \frac{9 \cdot 10}{2}) \\
+  &\geq 2^{m+1} \lg(k) ,
+  \end{align*}
+  as desired. Hence the inductive claim holds, which establishes that $f_{\lg
+  n^{1/9}}$ satisfies the desired condition, which proves that backlog can be
+  made $\Omega(\poly(n))$.
+
+  \paragraph{Running Time Analysis}
+  The recursive construction requires quite a lot of steps, in fact a
+  super-polynomial number of steps. If we consider the tree that represents
+  computation of $f_{\log n^{1/\alpha}}(n)$ we see that each node will have at
+  most $\alpha$ (some constant, e.g. $\alpha = 9$, $\alpha$ is the number of
+  terms that we keep in the sum) children (the children of $f_k(c)$ are
+  $f_{k-1}(c/2), f_{k-1}(c/4), \ldots f_{k-1}(c/2^\alpha)$), and the depth of
+  the tree is $\log n^{1/\alpha}$. Say that the running time at the node
+  $f_{\log n^{1/\alpha}}(n)$ is $T(n)$. Then because $f_{k}(n)$ must call each
+  of $f_{k-1}(n/2^i)$ $n/2^i$ times for $1\le i \le \alpha$, we have that $
+  T(n) \le \frac{\alpha n}{2}T(n/2)$. This recurrence yields $T(n) \le
+  \poly(n)^{\log n} = O(2^{\log^2 n})$ for the running time.
+
+  \paragraph{Generalizing Our Approach}
+  Generalizing our approach we can achieve a (slightly) better polynomial
+  lower bound on backlog. In our construction the point after which we had a
+  bound for $f_m$ grew further out by a factor of $2^9$ each time. Instead of
+  $2^9$ we now use $2^\alpha$ for some $\alpha \in \mathbb{N}$, and can find a
+  better value of $\alpha$. The value of $\alpha$ dictates how many
+  iterations we can perform: we can perform $\lg n^{1/\alpha}$ iterations.
+  The parameter $\alpha$ also dictates the multiplicative factor that we gain
+  upon going from $f_m$ to $f_{m+1}$. For $\alpha = 9$ this was $2$. In general
+  it turns out to be $\frac{\alpha -1}{4}$.  Hence, we can achieve backlog
+  $\Omega\left(\left(\frac{\alpha -1}{4}\right)^{\lg n^{1/\alpha}}\lg
+  n\right)$. This optimizes at $\alpha = 13$, to backlog
+  $\Omega(n^{\frac{\lg 3}{13}}\log n) \approx \Omega(n^{0.122}\log n)$. 
+
+  We can further improve over this. Note that in the proof that
+  $f_{m+1}$ gains a factor of $2$ over $f_m$ given above, we lower bound
+  $9\lg k - 9\cdot 10 /2$ with $2\lg k$. Usually however this is very
+  loose: for small $m$ a significant portion of the $9 \lg k$ is annihilated
+  by the constant $1+2+\cdots+9$ (or in general $\alpha \lg k$ and
+  $1+2+\cdots + \alpha$), but for larger values of $m$ because $k$ must be
+  large we can get larger factors between steps, in theory factors arbitrarily
+  close to $\alpha$. If we could gain a factor of $\alpha$ at each step, then
+  the backlog achievable would be $\Omega(\alpha^{\lg{n^{1/\alpha}}}\log n)=
+  \Omega(n^{(\lg{\alpha})/\alpha} \log n)$ which optimizes (over the
+  naturals)
+  at $\alpha = 3$ to $n^{(\lg 3)/3} \approx n^{0.528}$. However, we can't
+  actually gain a factor of $\alpha$ each time because of the subtracted
+  constant. But, for any $\epsilon >0$ we can achieve a $\alpha - \epsilon$
+  factor increase each time (for sufficiently large $m$). Of course $\epsilon$
+  can't be made arbitrarily small because $m$ can't be made arbitrarily large,
+  and the ``cut off" $m$ where we start achieving the $\alpha - \epsilon$
+  factor increase must be a constant (not dependent on $n$). When the cutoff
+  $m$, or equivalently $\epsilon$, is constant then we can achieve backlog
+  $\Omega((\alpha - \epsilon)^{\lg{n^{1/\alpha}}}\log n)=
+  \Omega(n^{(\lg(\alpha - \epsilon))/\alpha} \log n)$. For instance, with
+  this method we can get backlog $\Omega(\sqrt{n})$ for appropriate $\epsilon,
+  \alpha$ choice, or $\tilde{\Omega}(n^{(\lg (3 - \epsilon))/3})$ for any
+  constant $\epsilon >0$. 
+
+  \paragraph{Existential Improvement}
+  We now (non-constructively) demonstrate the existence of a filling strategy
+  that achieves backlog $c n^{1-\epsilon}$ for constant $\epsilon \in (0,1)$
+  and $c \ll 1$.
+
+  Let $f^*(n)$ be the supremum over all filling strategies of the fill achievable on $n$ cups.
+  Clearly $f^*(n)$ satisfies the Amplification Lemma, i.e.
+  $$f^*(n) \ge (1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n).$$
+  Assume for the sake of deriving a contradiction that there is some $n$ such
+  that $f^*(n) < cn^{1-\epsilon}$, let $n_*$ be the minimum such $n$.
+
+  Then we have 
+  $$cn_*^{1-\epsilon} > f^*(n_*) \ge (1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n_*).$$
+  However, 
+  \begin{align*}
+  &(1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n_*) \\
+  &\ge cn_*^{1-\epsilon}(1-\delta)\sum_{\ell=0}^M((1-\delta)\delta^\ell)^{1-\epsilon}\\
+  &\ge cn_*^{1-\epsilon}(1-\delta) \frac{(1-\delta)^{1-\epsilon}}{1-\delta^{1-\epsilon}}.
+  \end{align*}
+  We will now show that there is an appropriate choice of $\delta \in (0,1)$
+  such that $$\frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}} \ge 1,$$
+  which contradicts the assumption that $c n_*^{1-\epsilon} > f^*(n_*)$.
+  Rearranging, we desire $$(1-\delta)^{2-\epsilon} + \delta^{1-\epsilon}\ge 1.$$
+  For any $\epsilon$ we will show that there is an appropriate choice of
+  $\delta\ll 1$ satisfying this inequality.
+
+  Consider the Taylor series for $(1-\delta)^{2-\epsilon}$:
+  $$(1-\delta)^{2-\epsilon} = 1 - (2-\epsilon)\delta - O(\delta^2).$$
+  By taking $\delta$ sufficiently small, the $O(\delta^2)$ term becomes
+  negligible compared to the $(\alpha+1)\delta$ term. In particular, say that
+  the $O(\delta^2)$ term is less than $c \delta^2$ for some constant $c$.
+  Taking $\delta$ small enough such that $\delta^2 c < \delta$, we have that
+  $(1-\delta)^{2-\epsilon} > 1-(2-\epsilon)\delta - \delta$.
+ 
+  So, to find a $\delta$ where $g(\delta) \ge 1$ it suffices to find a $\delta$ with 
+  $$\delta^{1-\epsilon} \ge (3-\epsilon)\delta.$$
+  The equality is achieved at $\delta = (\frac{1}{3-\epsilon})^{1/\epsilon}$.
+
+  This establishes the existence of a filling strategy that achieves backlog
+  $\Omega(n^{1-\epsilon})$.
+
+  \paragraph{Modifying the Existential Argument to achieve backlog $n^{1-\epsilon}$ in finite time}
+  We can modify the existential argument to get a guarantee on how long it will take to achieve the desired backlog.
+  Fix an $\epsilon > 0$, and choose a $\delta\in(0,1)$ satisfying $(1-\delta)^{2-\epsilon} / 1-\delta^{1-\epsilon} \ge 1$.
+  Fix $c \ll 1$. Say we aim to achieve backlog at least $cn^{1-\epsilon}$.
+  Note that the choice of $\delta$ is motivated by the fact that
+  $$(1-\delta)\sum_{\ell=0}^M ((1-\delta)\delta^i)^{1-\epsilon} \approx \frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}},$$
+  and, as in the existential argument it will be useful to assert that this quantity is at least $1$.
+  {\color{red} ok I'm kind of worried about things not being integers being a problem.}
+  We start with 
+  $$f_0(k) = 
+  \begin{cases} 
+    \lg k, & k\geq 1, \\
+    0 & \text{else.}
+  \end{cases}$$
+  Then we construct $f_n$ as the amplification of $f_{n-1}$. 
+  We claim the following regarding this construction:
+  $$f_\ell(k) \ge cn^{1-\epsilon} \text{ for all } k>n/(1-\delta)^\ell.$$
+  This is clearly true in the base case with $f_0$.
+  If $f_\ell(k) \ge cn^{1-\epsilon}$ for all $k$ then we are already done.
+  Otherwise, let $k_*+1$ be the smallest $k$ such that $f_\ell(k) <
+  cn^{1-\epsilon}$. Note that by assumption we have $k_* > n/(1-\delta)^\ell$.
+  Now consider the amplification $f_{\ell+1}$ of $f_\ell$.
+  \begin{align*}
+    f_{\ell+1}(k_*/(1-\delta)) &\\
+    &\ge (1-\delta)\sum f_\ell((1-\delta)\delta^in)\\
+    &\ge cn^{1-\epsilon}\frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}}\\
+    &\ge cn^{1-\epsilon}.
+  \end{align*}
+  This is as desired. 
+  Thus, by taking $f_{(\log n) /\log (1/(1-\delta))}$ we achieve backlog $cn^{1-\epsilon}$.
+
+
+  \paragraph{Achieving backlog $\Omega(n^{\lg 3/2})$}
+  Recall the recursive procedure that we use in the proof of the Amplification
+  Lemma: to achieve the desired fill we must call $f(n/2^\ell)$ for
+  $\ell = 0,1,2,\ldots$. As $f_{m+1}$ recursively calls $f_m$, there is even more recursion.
+
+  Let $\#(m, i)$ denote the number of times ${f_m(n/2^i)}$ occurs
+  in the recursive construction. Let there be $M = \lg (n/2)$  levels of
+  recursion. The first level in the tree has $\#(M, i)=1$ for all $i$. Note
+  that we have $$\#(m-1, i) = \sum_{j > i} \#(m, j)$$
+  for any level $m$, because any expression $f_m(n/2^j)$ will
+  call $f_{m-1}(n/2^i)$ for $j>i$.
+
+  This is very reminiscent of the hockey stick identity:
+  $${n \choose i} = \sum_{i-1\le j\le n-1} {j \choose i-1}.$$
+
+  In fact we claim that if you look at it right (i.e. sideways) the $\#(m,
+  i)$'s form Pascal's triangle!
+  Specifically the bijection is 
+  $$\#(m,i) = {i \choose M-m}.$$
+
+  This is true because of the Hockey Stick Identity and the base case
+  like $\#(M, i)=1$ for all $i$. We induct on the diagonals of Pascal's
+  triangle. The inductive hypothesis is that $\#(m, i) = {i \choose M-m}$ for
+  all $i$ for some $m$. Then by the Hockey Stick Identity we get 
+  \begin{align*}
+  &\#(m-1, i) = \sum_{j>i} \#(m,j) \\
+  &= \sum_{j>i} {j \choose M-m} = {i \choose M-(m-1)}
+  \end{align*}
+  as desired.
+
+  We can also prove this with a simple combinatorial argument: there is a
+  bijection between terms of the form $f_{M-m}(n/2^{m+i-m})$ and integer
+  partitions of $i-m$ into $m$ integers, as you must divide up the array
+  subdivisions among the different levels of recursion. This demonstrates that
+  $$\#(m, i) = {i-m+m \choose M-m} = {i \choose M-m}.$$
+
+  We know that $f_m(n/2^M) \ge 1$ by design in Lemma
+  \ref{lem:adaptiveAmplification}, so to determine the total backlog we add up
+  the occurrences of $f_m(n/2^M)$ on each level, weighted by the
+  $1/2$ decay factor. Then the backlog we get is $$\sum_{i=0}^M {M \choose
+  i}\frac{1}{2^i} = (3/2)^{M} = n^{\lg(3/2)}.$$
+  This is optimal for $\delta= 1/2$.
+
+  \textbf{Constructively achieving backlog $\Omega(n^{1-\epsilon})$}
+  The existential proof that backlog $\Omega(n^{1-\epsilon})$ suggests that we
+  will need to take $\delta \ll 1$ to achieve this backlog. The analysis from
+  the case $\delta = 1/2$ doesn't immediately apply here; that analysis was
+  significantly simplified by the fact that $\delta = 1-\delta$ for $\delta =
+  1/2$. However, we use some similar ideas.
+
+
+
+\end{document}
+
