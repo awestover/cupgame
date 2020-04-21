@@ -189,7 +189,7 @@ changes. We chose to allow negative fill (which has no physical analog in the
 work scheduling analogy) because it makes the problem more elegant.
 }
 
-\section{Adaptive Lower Bound}\label{sec:adaptive}
+\section{Adaptive Filler Lower Bound}\label{sec:adaptive}
 \begin{proposition}
 \label{prop:adaptiveBase}
   There exists an adaptive filling strategy for the variable-processor cup game
@@ -365,7 +365,10 @@ work scheduling analogy) because it makes the problem more elegant.
   $\delta^{2-\epsilon}$ as $\delta$. Surprisingly even with this overestimate
   we are still able to get the desired value of $\epsilon$ to work, as we will demonstrate later.
   We have,
-  $$\delta \le \frac{1}{(2(2-\epsilon))^{1/\epsilon}}.$$
+  \begin{equation}
+    \label{eqn:deltaUpperIneq}
+    \delta \le \frac{1}{(2(2-\epsilon))^{1/\epsilon}}. 
+  \end{equation}
 
   In addition to the constraint that $\delta$ must be small enough such that
   $h(\delta) \ge 1$, the only other constraint on $\delta$ is that $\delta$
@@ -374,7 +377,10 @@ work scheduling analogy) because it makes the problem more elegant.
   $$\delta(1-\delta)n \ge n_0. $$
   Recall that we choose $\delta < 1/2$, so $1-\delta > 1/2$. Thus to make
   $\delta$ sufficiently big it suffices to chose $\delta$ with 
-  $$\delta \ge 2n_0/n.$$
+  \begin{equation}
+    \label{eqn:deltaLowerBound}
+    \delta \ge 2n_0/n.
+  \end{equation}
   Any choice of $\delta$ that is sufficiently large to make $L \ge 1$ and
   simultaneously small enough to make $h(\delta) \ge 1$ is a valid choice of
   $\delta$. That is, $\delta$ is valid if and only if it satisfies
@@ -394,38 +400,52 @@ work scheduling analogy) because it makes the problem more elegant.
   $$(2(2-\gamma/\lg n))^{(1/\gamma)\lg n} \le 4^{(1/\gamma)\lg n} \le n^{2/\gamma}$$
   Clearly by choosing e.g. $\gamma = 4$ we have the desired inequality.
   Inequality \ref{eqn:thatinequality} implies that there is a valid choice of
-  $\delta$ when we chose $\epsilon = \gamma / \lg n$. Throughout the remainder
-  of the proof we use $\epsilon = 4 / \lg n$, and $\delta$ satisfying
-  Inequality \ref{eqn:deltainequality}, based on our choice of $\epsilon$. 
+  $\delta$ when we chose $\epsilon = \gamma / \lg n$. When proving that we can
+  achieve backlog $\Omega(n)$ we use $\epsilon = 4 / \lg n$, and $\delta =
+  O(1/n)$ satisfying Inequality \ref{eqn:deltainequality}, based on our choice
+  of $\epsilon$. When proving that we can achieve backlog
+  $\Omega(n^{1-\epsilon})$ for constant $\epsilon > 0$ we choose $\delta$ to be
+  a constant satisfying Inequality \ref{eqn:deltaUpperIneq}, and $\delta$, being constant, is
+  trivially not too small, hence satisfies Inequality \ref{eqn:deltaLowerBound}.
 
-  Now we proceed to show that with the chosen values of $\delta, \epsilon$ we
+  Now we proceed to show that with the appropriate values of $\delta, \epsilon$ we
   can achieve a filling strategy that achieves backlog $cn^{1-\epsilon}$ on $n$ cups.
   First we present a simple existential argument which asserts that a strategy
-  that achieves the desired backlog exists. Then we will provide a constructive
-  argument that uses repeated amplification of a base case to
-  achieve a function, in finite running time, with the same backlog guarantee
-  on $n$ cups.
+  that achieves the desired backlog exists. Then we provide two constructive
+  arguments: one achieving backlog $\Omega(n)$ in running time $2^{O(n)}$,
+  the other achieving backlog $\Omega(n^{1-\epsilon})$ for constant $\epsilon>
+  0$ in running time $2^{O(\log^2 n)}$. Both constructive arguments rely on
+  repeated application of the Amplification Lemma.
   
   \paragraph{Existential Argument}
+  Let $\epsilon > 0$ be constant. Let $\delta \ll 1/2$ be appropriate constant
+  We proved above that such choice of $\delta, \epsilon$ is possible.
   Let $f^*$ be the supremum over all filling strategies of the backlog
-  achievable on $n$ cups. Then $f^*$ satisfies the Amplification Lemma. Assume
-  for contradiction that there is some least $n_*$ such that $f^*(n) <
-  cn^{1-\epsilon}$, whereas by appropriate choice of $c$ $f^*(n) \ge cn^{1-\epsilon}$
-  for $n < n_*$ which is not the empty set. Because $f^*$ satisfies the
-  Amplification Lemma we have:
+  achievable on $n$ cups. Then $f^*$ must be greater than or equal to the
+  amplification of $f^*$. Assume
+  for contradiction that there is some least $n_*$ such that 
+  $$  \begin{cases}
+    f^*(k)< ck^{1-\epsilon}, & k > n_*\\
+    f^*(k)> ck^{1-\epsilon}, & k < n_*
+  \end{cases} $$
+  Note that $n_*(1-\delta)\delta \ge n_0$ by appropriate choice of constant
+  $c$, and Proposition \ref{prop:adaptiveBase}, which states that we can get
+  backlog $O(\log n_*)$ on $n_*$ cups\footnote{Note: this is where it is
+  crucial that $\epsilon, \delta$ are constants.}.
+  Because $f^*$ satisfies the Amplification Lemma we have:
 \begin{align*}
   f^*(n_*) & \\
            &\ge (1-\delta)\sum_{\ell=0}^L f^*((1-\delta)\delta^\ell n_*) \\
            &\ge cn_*^{1-\epsilon} h(\delta)\\
            &\ge cn_*^{1-\epsilon}
 \end{align*}
-which is a contradiction. Hence $f^*$ achieves backlog $cn^{1-\epsilon} = \Omega(n)$ for all $n$.
+which is a contradiction. Hence $f^*$ achieves backlog $cn^{1-\epsilon}$ for all $n$.
 
-\paragraph{Constructive Argument}
+\paragraph{Constructive Argument achieving backlog $\Omega(n^{1-\epsilon})$ (for constant $\epsilon > 0$) in time $2^{O(\log^2 n)}$}
 It is desirable to have an algorithm for achieving this backlog with bounded
 running time; we now modify the existential argument to make it constructive, 
 which yields an algorithm for achieving backlog $cn^{1-\epsilon}$ on $n$ cups 
-in finite running time.
+in finite running time. We again use constant $\epsilon > 0$ and appropriate constant $\delta$.
 
   We start with the algorithm given by Proposition \ref{prop:adaptiveBase} for
   achieving backlog
@@ -434,23 +454,31 @@ in finite running time.
     \lg k, & k\geq 1, \\
     0 & \text{else.}
   \end{cases}$$
-  Then we construct $f_{i+1}$ as the amplification of $f_{i}$; this is possible
-  by Lemma \ref{lem:adaptiveAmplification}. 
+  Then we construct an algorithm that achieves better backlog using the
+  Amplification Lemma (Lemma \ref{lem:adaptiveAmplification}):
+  we construct $f_{i+1}$ as the amplification of $f_{i}$. 
 
-  Define a sequence $g_i \in \mathbb{N}^\infty$ with $g_0 = \lceil 1/\delta
-  \rceil \gg 1$, and for $i\ge0$ $g_{i+1} =\lceil g_i/(1-\delta)\rceil -1$
-  (that is, $g_{i+1}$ is the greatest integer strictly less than $g_i$).
+  Define a sequence $g_i \in \mathbb{N}^\infty$ with 
+  $$ g_i = \begin{cases}
+    \lceil 1/\delta \rceil \gg 1,  & i = 0,\\
+    \lceil g_{i-1}/(1-\delta)\rceil -1 & i  \ge 1
+  \end{cases} $$
+  Note that is, $g_{i+1}$ is the greatest integer strictly less than $g_i/(1-\delta)$.
   Note that $ (1/\delta) / (1-\delta) > (1+\delta)/\delta = 1/\delta + 1.$
-  Thus $g_1 = 1+ g_0$, and in general, $g_{i+1} > g_i$.
+  Thus $g_1 = 1+ g_0$, and in general, $g_{i+1} > g_i$, because the difference $g_{i+1}-g_i$ can only grow as $i$ grows.
 
   We claim the following regarding this construction:
-  $$f_i(k) \ge ck^{1-\epsilon} \text{ for all } k < g_i.$$
-  We shall prove this claim by induction on $i$.
+  \begin{equation}
+    \label{clm:fikinduction}
+    f_i(k) \ge ck^{1-\epsilon} \text{ for all } k < g_i. \tag{*}
+  \end{equation}
+  We shall prove Claim \ref{clm:fikinduction} by induction on $i$.
 
-  The claim is true in the base case of $f_0$ by taking $c$ sufficiently small,
-  in particular small enough that $f_0(k) \ge ck^{1-\epsilon}$ holds for $k < g_0$.
-  As our inductive hypothesis we assume the claim for $f_i$; we aim to show that
-  the claim holds for $f_{i+1}$.
+  Claim \ref{clm:fikinduction} is true in the base case of $f_0$ by taking $c$ sufficiently small,
+  in particular small enough that $f_0(k) \ge ck^{1-\epsilon}$ holds for $k <
+  g_0$\footnote{Note: this is where it is crucial that $\epsilon, \delta$
+  are constants.}. As our inductive hypothesis we assume Claim \ref{clm:fikinduction} for $f_i$; we aim to show that
+  Claim \ref{clm:fikinduction} holds for $f_{i+1}$.
   Note the key property of $g_i$, that $g_{i+1}\cdot(1-\delta) < g_i$. Also
   note that (without loss of generality) the $f_i$ are monotonically increasing
   functions: given more cups we can always achieve higher fill than with fewer
@@ -469,27 +497,53 @@ in finite running time.
   Note that $i_* \le n$.
   Let the running time $f_{i_*}(n)$ be $T(n)$.
   Note that $f_{i_*}(n)$ must call $f_{i_*-1}(n(1-\delta)\delta^\ell)$ as many
-  as $n(1-\delta)\delta^\ell$ times, for all $0 \le \ell\le 1$.
-  We have the following recurrence (which is quite loose):
-  $$T(n) \le n \cdot T(n(1-\delta)).$$
+  as $n(1-\delta)\delta^\ell$ times, for all $0 \le \ell\le L$. However, we
+  only use the terms of the sum where $\ell=0,1$, so we could use a modified
+  version of the Amplification Lemma in which we truncate the sum.
+  This we have the following (loose) recurrence bounding $T(n)$:
+  $$T(n) \le \delta n \cdot T(n(1-\delta)) + T(\delta n).$$
   We can upper bound this by
   $$n^{\frac{\log n}{\log (1/(1-\delta))}}.$$
-  {\color{red} 
-    If $\delta = 1/n$ then this is approximately $2^{n\log^2 n}$. Which is exponential (i.e. bad).
-    This is very large. But it's also finite. Hence we can achieve the desired backlog in finite time.
-  }
+  Continuing for $O(\log n)$ levels of recursion should be sufficient to achieve the desired backlog. This gives running time
+  $$T(n) \le ((1+\delta) n)^{O(\log n)} \le 2^{O(\lg^2 n)}$$
+  as desired.
+  {\color{red} ok, technically I'm ignoring integer problems in saying lets
+  only do $O(\lg n)$ levels of recursion, it'll be enough. I should prove it.
+But for $\delta$ constant it seems pretty obvious.}
 
-  {\color{blue}But it get's better! 
-    Another possibly more elegant proof is as follows.
-    Let $(1-\delta)^c = \delta$, let $\delta^2 n < n_0 < (1-\delta)^{2c-1}$ by our choice of $\delta$.
+  \paragraph{Constructive Argument for backlog $\Omega(n)$ in time $2^{O(n)}$}
+  We describe a simple filling strategy that gives the desired backlog. Let
+  $n_0 \le O(1)$ be a constant such that we can achieve backlog $1$ on $n_0$
+  cups, and note that this is possible by Proposition \ref{prop:adaptiveBase}.
+  We construct a function that achieves large backlog on $n$ cups.
+  To achieve large backlog on $n$ cups we first recursively apply our function to
+  $(1-\delta)n$ cups repeatedly (for each of the $\delta n$ cups that we are
+  attempting to get high fill in), as described in the proof of the
+  Amplification Lemma, and transfer over the cups that we get. Then we achieve backlog $1$ on
+  the $\delta n$ cups whose average fill has been increased. The backlog we
+  achieve satisfies the following recurrence:
+  $$f(n) \ge \begin{cases}
+    (1-\delta)f((1-\delta)n) + 1, & \text{if } n\delta(1-\delta) > n_0\\
+    0, \text{ else.}
+  \end{cases}$$
+  Let $(1-\delta)^c = \delta$, let $\delta^2 n < n_0 < (1-\delta)^{2c-1} n$ by our choice of $\delta = O(1/n)$.
     We can get backlog 
-    $$\sum_{i=1}^c (1-\delta)^i $$
-    by making a binary tree: at every vertex we have a choice, do a $\delta$,
-    in which case we have a small enough set of cups that we just collect our
-    backlog, or do a $1-\delta$.
+    $$\sum_{i=1}^c (1-\delta)^i. $$
+    To see this, consider a binary tree representing our algorithm. At every branch we both proceed to recurse on a $1-\delta$ fraction of the cups, and achieve backlog $1$ on a $\delta$ fraction of the cups.
+
     The sum evaluates to 
     $$\frac{(1-\delta)^2}{\delta}$$
     which, if we chose $\delta = 1/n$, becomes $\Omega(n)$.
+
+    The running time satisfies the recurrence 
+    $$T(n) = \delta n T((1-\delta)n) + O(1)$$
+    because to achieve backlog $f(n)$ we must achieve backlog
+    $f((1-\delta)n)$ $\delta n$ times, and then achieve backlog $1$ on the
+    remaining cups. Solving this recurrence yields that the running time is
+    $$\frac{(\delta n)^c - 1}{\delta n - 1}.$$
+    Recalling that $\delta = O(1/n)$ this becomes 
+    $$2^{O(n)}.$$
+
 
     % Solving this inequality yields
     % $$\epsilon \ge \frac{2 \ln(n) - W(\frac{1}{2} n^2 \ln n)}{\ln n}$$
@@ -499,221 +553,11 @@ in finite running time.
     % Note that the Lambert-W function satisfies $W(x) = \ln x -\ln\ln x + o(1)$.
     % Using this, we can get a very loose lower bound of $\Omega(n^{1-2/\ln n})$,
     % although of course the expression with the $W$ in it is a better lower bound.
-  }
-
-
-  % \paragraph{Basic Idea}
-  % Let
-  % $$f_0(k) = 
-  % \begin{cases} 
-  %   \lg k, & k\geq 1, \\
-  %   0 & \text{else.}
-  % \end{cases}$$
-  % Note that we can achieve backlog $f_0(k)$ on $k$ cups by Proposition \ref{prop:adaptiveBase}.
-  % Let $f_{m+1} $ be the result of applying the Amplification Lemma to $f_m$ with $\delta=1/2$. 
-  % The function $f_{\lg n^{1/9}}(k)$ satisfies 
-  % \begin{equation}\label{eqn:amppppp}
-  % \text{for } k \geq n,\,\, f_{\lg n^{1/9}}(k) \geq 2^{\lg n^{1/9}} \lg k.
-  % \end{equation}
-  % In particular, using $f_{\lg n^{1/9}}(n)$ (applying the function to all of
-  % the cups) we achieve backlog $\Omega(n^{1/9}\lg n) \ge \Omega(\poly(n))$
-  % as desired.
-  % To prove Equation \ref{eqn:amppppp}, we prove the following lower bound for $f_m$ by induction:
-  % $$f_m(k) \geq 2^m \lg k, \text{ for } k \geq (2^9)^m.$$
-  % The base case follows from the definition of $f_0$. Assuming the property for
-  % $f_m$, we get the following by Lemma \ref{lem:adaptiveAmplification}:
-  % $ \text{for } k > (2^9)^{m+1},$
-  % \begin{align*}
-  % &f_{m+1}(k) \\
-  % &\ge \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9) + \cdots)\\
-  % &\geq \frac{1}{2}(f_m(k/2) + f_m(k/4) + \cdots + f_m(k/2^9))\\
-  % &\geq \frac{1}{2}2^m(\lg (k/2) + \lg(k/4) + \cdots + \lg(k/2^9))\\
-  % &\geq \frac{1}{2}2^m(9\lg (k) - \frac{9 \cdot 10}{2}) \\
-  % &\geq 2^{m+1} \lg(k) ,
-  % \end{align*}
-  % as desired. Hence the inductive claim holds, which establishes that $f_{\lg
-  % n^{1/9}}$ satisfies the desired condition, which proves that backlog can be
-  % made $\Omega(\poly(n))$.
-
-  % \paragraph{Running Time Analysis}
-  % The recursive construction requires quite a lot of steps, in fact a
-  % super-polynomial number of steps. If we consider the tree that represents
-  % computation of $f_{\log n^{1/\alpha}}(n)$ we see that each node will have at
-  % most $\alpha$ (some constant, e.g. $\alpha = 9$, $\alpha$ is the number of
-  % terms that we keep in the sum) children (the children of $f_k(c)$ are
-  % $f_{k-1}(c/2), f_{k-1}(c/4), \ldots f_{k-1}(c/2^\alpha)$), and the depth of
-  % the tree is $\log n^{1/\alpha}$. Say that the running time at the node
-  % $f_{\log n^{1/\alpha}}(n)$ is $T(n)$. Then because $f_{k}(n)$ must call each
-  % of $f_{k-1}(n/2^i)$ $n/2^i$ times for $1\le i \le \alpha$, we have that $
-  % T(n) \le \frac{\alpha n}{2}T(n/2)$. This recurrence yields $T(n) \le
-  % \poly(n)^{\log n} = O(2^{\log^2 n})$ for the running time.
-
-  % \paragraph{Generalizing Our Approach}
-  % Generalizing our approach we can achieve a (slightly) better polynomial
-  % lower bound on backlog. In our construction the point after which we had a
-  % bound for $f_m$ grew further out by a factor of $2^9$ each time. Instead of
-  % $2^9$ we now use $2^\alpha$ for some $\alpha \in \mathbb{N}$, and can find a
-  % better value of $\alpha$. The value of $\alpha$ dictates how many
-  % iterations we can perform: we can perform $\lg n^{1/\alpha}$ iterations.
-  % The parameter $\alpha$ also dictates the multiplicative factor that we gain
-  % upon going from $f_m$ to $f_{m+1}$. For $\alpha = 9$ this was $2$. In general
-  % it turns out to be $\frac{\alpha -1}{4}$.  Hence, we can achieve backlog
-  % $\Omega\left(\left(\frac{\alpha -1}{4}\right)^{\lg n^{1/\alpha}}\lg
-  % n\right)$. This optimizes at $\alpha = 13$, to backlog
-  % $\Omega(n^{\frac{\lg 3}{13}}\log n) \approx \Omega(n^{0.122}\log n)$. 
-
-  % We can further improve over this. Note that in the proof that
-  % $f_{m+1}$ gains a factor of $2$ over $f_m$ given above, we lower bound
-  % $9\lg k - 9\cdot 10 /2$ with $2\lg k$. Usually however this is very
-  % loose: for small $m$ a significant portion of the $9 \lg k$ is annihilated
-  % by the constant $1+2+\cdots+9$ (or in general $\alpha \lg k$ and
-  % $1+2+\cdots + \alpha$), but for larger values of $m$ because $k$ must be
-  % large we can get larger factors between steps, in theory factors arbitrarily
-  % close to $\alpha$. If we could gain a factor of $\alpha$ at each step, then
-  % the backlog achievable would be $\Omega(\alpha^{\lg{n^{1/\alpha}}}\log n)=
-  % \Omega(n^{(\lg{\alpha})/\alpha} \log n)$ which optimizes (over the
-  % naturals)
-  % at $\alpha = 3$ to $n^{(\lg 3)/3} \approx n^{0.528}$. However, we can't
-  % actually gain a factor of $\alpha$ each time because of the subtracted
-  % constant. But, for any $\epsilon >0$ we can achieve a $\alpha - \epsilon$
-  % factor increase each time (for sufficiently large $m$). Of course $\epsilon$
-  % can't be made arbitrarily small because $m$ can't be made arbitrarily large,
-  % and the ``cut off" $m$ where we start achieving the $\alpha - \epsilon$
-  % factor increase must be a constant (not dependent on $n$). When the cutoff
-  % $m$, or equivalently $\epsilon$, is constant then we can achieve backlog
-  % $\Omega((\alpha - \epsilon)^{\lg{n^{1/\alpha}}}\log n)=
-  % \Omega(n^{(\lg(\alpha - \epsilon))/\alpha} \log n)$. For instance, with
-  % this method we can get backlog $\Omega(\sqrt{n})$ for appropriate $\epsilon,
-  % \alpha$ choice, or $\tilde{\Omega}(n^{(\lg (3 - \epsilon))/3})$ for any
-  % constant $\epsilon >0$. 
-
-  % \paragraph{Existential Improvement}
-  % We now (non-constructively) demonstrate the existence of a filling strategy
-  % that achieves backlog $c n^{1-\epsilon}$ for constant $\epsilon \in (0,1)$
-  % and $c \ll 1$.
-
-  % Let $f^*(n)$ be the supremum over all filling strategies of the fill achievable on $n$ cups.
-  % Clearly $f^*(n)$ satisfies the Amplification Lemma, i.e.
-  % $$f^*(n) \ge (1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n).$$
-  % Assume for the sake of deriving a contradiction that there is some $n$ such
-  % that $f^*(n) < cn^{1-\epsilon}$, let $n_*$ be the minimum such $n$.
-
-  % Then we have 
-  % $$cn_*^{1-\epsilon} > f^*(n_*) \ge (1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n_*).$$
-  % However, 
-  % \begin{align*}
-  % &(1-\delta)\sum_{\ell=0}^M f^*((1-\delta)\delta^\ell n_*) \\
-  % &\ge cn_*^{1-\epsilon}(1-\delta)\sum_{\ell=0}^M((1-\delta)\delta^\ell)^{1-\epsilon}\\
-  % &\ge cn_*^{1-\epsilon}(1-\delta) \frac{(1-\delta)^{1-\epsilon}}{1-\delta^{1-\epsilon}}.
-  % \end{align*}
-  % We will now show that there is an appropriate choice of $\delta \in (0,1)$
-  % such that $$\frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}} \ge 1,$$
-  % which contradicts the assumption that $c n_*^{1-\epsilon} > f^*(n_*)$.
-  % Rearranging, we desire $$(1-\delta)^{2-\epsilon} + \delta^{1-\epsilon}\ge 1.$$
-  % For any $\epsilon$ we will show that there is an appropriate choice of
-  % $\delta\ll 1$ satisfying this inequality.
-
-  % Consider the Taylor series for $(1-\delta)^{2-\epsilon}$:
-  % $$(1-\delta)^{2-\epsilon} = 1 - (2-\epsilon)\delta - O(\delta^2).$$
-  % By taking $\delta$ sufficiently small, the $O(\delta^2)$ term becomes
-  % negligible compared to the $(\alpha+1)\delta$ term. In particular, say that
-  % the $O(\delta^2)$ term is less than $c \delta^2$ for some constant $c$.
-  % Taking $\delta$ small enough such that $\delta^2 c < \delta$, we have that
-  % $(1-\delta)^{2-\epsilon} > 1-(2-\epsilon)\delta - \delta$.
- 
-  % So, to find a $\delta$ where $g(\delta) \ge 1$ it suffices to find a $\delta$ with 
-  % $$\delta^{1-\epsilon} \ge (3-\epsilon)\delta.$$
-  % The equality is achieved at $\delta = (\frac{1}{3-\epsilon})^{1/\epsilon}$.
-
-  % This establishes the existence of a filling strategy that achieves backlog
-  % $\Omega(n^{1-\epsilon})$.
-
-  % \paragraph{Modifying the Existential Argument to achieve backlog $n^{1-\epsilon}$ in finite time}
-  % We can modify the existential argument to get a guarantee on how long it will take to achieve the desired backlog.
-  % Fix an $\epsilon > 0$, and choose a $\delta\in(0,1)$ satisfying $(1-\delta)^{2-\epsilon} / 1-\delta^{1-\epsilon} \ge 1$.
-  % Fix $c \ll 1$. Say we aim to achieve backlog at least $cn^{1-\epsilon}$.
-  % Note that the choice of $\delta$ is motivated by the fact that
-  % $$(1-\delta)\sum_{\ell=0}^M ((1-\delta)\delta^i)^{1-\epsilon} \approx \frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}},$$
-  % and, as in the existential argument it will be useful to assert that this quantity is at least $1$.
-  % {\color{red} ok I'm kind of worried about things not being integers being a problem.}
-  % We start with 
-  % $$f_0(k) = 
-  % \begin{cases} 
-  %   \lg k, & k\geq 1, \\
-  %   0 & \text{else.}
-  % \end{cases}$$
-  % Then we construct $f_n$ as the amplification of $f_{n-1}$. 
-  % We claim the following regarding this construction:
-  % $$f_\ell(k) \ge cn^{1-\epsilon} \text{ for all } k>n/(1-\delta)^\ell.$$
-  % This is clearly true in the base case with $f_0$.
-  % If $f_\ell(k) \ge cn^{1-\epsilon}$ for all $k$ then we are already done.
-  % Otherwise, let $k_*+1$ be the smallest $k$ such that $f_\ell(k) <
-  % cn^{1-\epsilon}$. Note that by assumption we have $k_* > n/(1-\delta)^\ell$.
-  % Now consider the amplification $f_{\ell+1}$ of $f_\ell$.
-  % \begin{align*}
-  %   f_{\ell+1}(k_*/(1-\delta)) &\\
-  %   &\ge (1-\delta)\sum f_\ell((1-\delta)\delta^in)\\
-  %   &\ge cn^{1-\epsilon}\frac{(1-\delta)^{2-\epsilon}}{1-\delta^{1-\epsilon}}\\
-  %   &\ge cn^{1-\epsilon}.
-  % \end{align*}
-  % This is as desired. 
-  % Thus, by taking $f_{(\log n) /\log (1/(1-\delta))}$ we achieve backlog $cn^{1-\epsilon}$.
-
-
-  % \paragraph{Achieving backlog $\Omega(n^{\lg 3/2})$}
-  % Recall the recursive procedure that we use in the proof of the Amplification
-  % Lemma: to achieve the desired fill we must call $f(n/2^\ell)$ for
-  % $\ell = 0,1,2,\ldots$. As $f_{m+1}$ recursively calls $f_m$, there is even more recursion.
-
-  % Let $\#(m, i)$ denote the number of times ${f_m(n/2^i)}$ occurs
-  % in the recursive construction. Let there be $M = \lg (n/2)$  levels of
-  % recursion. The first level in the tree has $\#(M, i)=1$ for all $i$. Note
-  % that we have $$\#(m-1, i) = \sum_{j > i} \#(m, j)$$
-  % for any level $m$, because any expression $f_m(n/2^j)$ will
-  % call $f_{m-1}(n/2^i)$ for $j>i$.
-
-  % This is very reminiscent of the hockey stick identity:
-  % $${n \choose i} = \sum_{i-1\le j\le n-1} {j \choose i-1}.$$
-
-  % In fact we claim that if you look at it right (i.e. sideways) the $\#(m,
-  % i)$'s form Pascal's triangle!
-  % Specifically the bijection is 
-  % $$\#(m,i) = {i \choose M-m}.$$
-
-  % This is true because of the Hockey Stick Identity and the base case
-  % like $\#(M, i)=1$ for all $i$. We induct on the diagonals of Pascal's
-  % triangle. The inductive hypothesis is that $\#(m, i) = {i \choose M-m}$ for
-  % all $i$ for some $m$. Then by the Hockey Stick Identity we get 
-  % \begin{align*}
-  % &\#(m-1, i) = \sum_{j>i} \#(m,j) \\
-  % &= \sum_{j>i} {j \choose M-m} = {i \choose M-(m-1)}
-  % \end{align*}
-  % as desired.
-
-  % We can also prove this with a simple combinatorial argument: there is a
-  % bijection between terms of the form $f_{M-m}(n/2^{m+i-m})$ and integer
-  % partitions of $i-m$ into $m$ integers, as you must divide up the array
-  % subdivisions among the different levels of recursion. This demonstrates that
-  % $$\#(m, i) = {i-m+m \choose M-m} = {i \choose M-m}.$$
-
-  % We know that $f_m(n/2^M) \ge 1$ by design in Lemma
-  % \ref{lem:adaptiveAmplification}, so to determine the total backlog we add up
-  % the occurrences of $f_m(n/2^M)$ on each level, weighted by the
-  % $1/2$ decay factor. Then the backlog we get is $$\sum_{i=0}^M {M \choose
-  % i}\frac{1}{2^i} = (3/2)^{M} = n^{\lg(3/2)}.$$
-  % This is optimal for $\delta= 1/2$.
-
-  % \textbf{Constructively achieving backlog $\Omega(n^{1-\epsilon})$}
-  % The existential proof that backlog $\Omega(n^{1-\epsilon})$ suggests that we
-  % will need to take $\delta \ll 1$ to achieve this backlog. The analysis from
-  % the case $\delta = 1/2$ doesn't immediately apply here; that analysis was
-  % significantly simplified by the fact that $\delta = 1-\delta$ for $\delta =
-  % 1/2$. However, we use some similar ideas.
 
 
 \end{proof}
 
-\section{Adaptive Upper Bounds}\label{sec:adaptiveUpperBound}
+\section{Adaptive Filler Upper Bound}\label{sec:adaptiveUpperBound}
 
 Let $\mu_S(X), m_S(X)$ denote the average fill and mass of a set of cups $X$
 respectively at state $S$ ($S$ could be $S_t$ or $I_t$ for any $t\in\mathbb{N}$)
@@ -724,14 +568,15 @@ respectively at state $S$ ($S$ could be $S_t$ or $I_t$ for any $t\in\mathbb{N}$)
   However, in this Section the state is crucial, and needs to be explicit in the notation.}.
 Let $S_t(\{r_1, \ldots, r_m\})$ and $I_t(\{r_1,\ldots, r_m\})$ denote the cups
 of ranks $r_1, r_2, \ldots, r_m$ at states $S_t$ and $I_t$ respectively.
-Let $[n] = \{1,2,\ldots, n\}$, let $i+[n] = \{i+1, i+2, \ldots, i+n\}$.
+Let $[n] = \{1,2,\ldots, n\}$, let $i+[n] = \{i+1, i+2, \ldots, i+n\}$. We will
+use concatenation of sets to denote unions, i.e. $AB = A\cup B$.
 
 We establish the following Lemma:
 
 \begin{lemma}
-  The greedy emptier maintains the invariant $\mu_{S_t}(S_t([k])) \le n-k$ for
-  all $t\in\mathbb{N}, k \le n$. In particular, for $k=1$, this means that the
-  emptier never lets backlog exceed $O(n)$.
+  The greedy emptier maintains the invariant $$\mu_{S_t}(S_t([k])) \le n-k
+  \text{ for all } t\ge 1, k \le n.$$ In particular, for $k=1$, this
+  means that the greedy emptier never lets backlog exceed $O(n)$.
 \end{lemma}
 \begin{proof}
 First note that the invariant is trivial when $k=n$, as the average fill of the
@@ -759,8 +604,8 @@ Let $C = I_t(a+b+[k-a])$, with $c=k-a = |C|$ (Note that $k-a\ge 0$ as $a+b \le k
 Note that $a+ b = \min(k, p_t)$.
 Note that $A = I_t([a])$ and $B = I_t(a+[b])$, as every cup in $A$
 must have higher fill than all cups in $B$ in order to remain above the cups in
-$B$ after $1$ unit of water is removed from all cups in $A\cup B$.
-Further, note that $S_{t+1}([k]) = A \cup C$, because once the cups in $B$
+$B$ after $1$ unit of water is removed from all cups in $AB$.
+Further, note that $S_{t+1}([k]) = AC$, because once the cups in $B$
 are emptied from cups in $C$ take their place among the $k$ fullest cups.
 
 With these definitions made, we proceed to prove the Lemma.
@@ -800,45 +645,63 @@ units of among the cups in $S_t([k])$. Thus the invariant holds:
 $$m_{S_{t+1}}(S_{t+1}([k])) \le m_{S_t}(S_t([k]))+a-a \le k(n-k).$$
 
 Now consider $b\neq 0$. In particular, note that this implies $a < k$ as $a+b
-\le k$. Recall that $S_{t+1}([k]) = A \cup C$, so the mass of the $k$ fullest
-cups at $S_{t+1}$ is the mass of $A\cup C$ at $S_t$ plus any water added to
-cups in $A\cup C$ by the filler, minus any water removed by the emptier. 
-The emptier removes exactly $a$ units of water from $A\cup C$, and the filler
-adds at most $a+b \le p_t$ (recall $a+b = \min(p_t, k)$) units of water to $A\cup C$.
+\le k$. Recall that $S_{t+1}([k]) = AC$, so the mass of the $k$ fullest
+cups at $S_{t+1}$ is the mass of $AC$ at $S_t$ plus any water added to
+cups in $AC$ by the filler, minus any water removed by the emptier. 
+The emptier removes exactly $a$ units of water from $AC$, and the filler
+adds at most $a+b \le p_t$ (recall $a+b = \min(p_t, k)$) units of water to $AC$.
 Thus:
 $$m_{S_{t+1}}(S_{t+1}([k])) \le m_{S_t}(A) + m_{S_t}(C) + b.$$
-This is easy to bound if $m_{S_t}(C) \le m_{S_t}(B\cup C) - b$, because 
-$$m_{S_t}(A) + m_{S_t}(B\cup C)  = m_{S_t}(A\cup B\cup C) \le m_{S_t}([k])$$
+This is easy to bound if $m_{S_t}(C) \le m_{S_t}(BC) - b$, because 
+$$m_{S_t}(A) + m_{S_t}(BC)  = m_{S_t}(ABC) \le m_{S_t}([k])$$
 which would imply the invariant for $S_{t+1}$, $k$.
-If $\mu_{S_t}(C)$ is not significantly less than $\mu_{S_t}(B\cup C)$ we have more difficulty.
+If $\mu_{S_t}(C)$ is not significantly less than $\mu_{S_t}(BC)$ we have more difficulty.
 The key insight is to notice that larger values for $m_{S_t}(A)$ correspond to
 smaller values for $m_{S_t}(C)$ because of the invariants; the higher fill in
 $A$ \defn{pushes down} the fill that $C$ can have.
 By quantifying exactly how much higher fill in $A$ pushes down fill in $C$ we
 can arrive at the desired invariant.
-We can upper bound $\mu(C)$ by $\frac{c}{b+c}m_{S_t}(BC) = (m_{S_t}(ABC) - m_{S_t}(A))\frac{c}{b+c}$ as
+We can upper bound $m_{S_t}(C)$ by $\frac{c}{b+c}m_{S_t}(BC) = (m_{S_t}(ABC) - m_{S_t}(A))\frac{c}{b+c}$ as
 $\mu_{S_t}(C) \le \mu_{S_t}(B)$ (we established that this was without loss of
 generality because interchanging is possible).
 Thus, we have 
-$$m_{S_t}(A) + m_{S_t}(C) \le \frac{c}{b+c}m_{S_t}(ABC) + \frac{b}{b+c}m_{S_t}(A).$$
-Now we set $\mu_{S_t}(ABC)$ and $\mu_{S_t}(A)$ extremally, that is
-$\mu_{S_t}(ABC) = n-|ABC|$ and $\mu_{S_t}(A) = n-|A|$.
+$$m_{S_t}(A) + m_{S_t}(C) \le m_{S_t}(A) + \frac{c}{b+c}m_{S_t}(BC)$$
+where 
+\begin{equation}
+  \label{eqn:redistributeA}
+\begin{split}
+  &m_{S_t}(A) + \frac{c}{b+c}m_{S_t}(BC) \\
+  &= \frac{c}{b+c}m_{S_t}(ABC) + \frac{b}{b+c}m_{S_t}(A).
+\end{split}
+\end{equation}
+Note that this expression is monotonicly increasing in both $\mu_{S_t}(ABC)$
+and $\mu_{S_t}(A)$. Hence by numerically replacing both average fills with
+their extremal values ($n-|ABC|, n-|A|$) we upper bound $m_{S_t}(A) + m_{S_t}(C)$.
 At this point the inequality can be verified by straightforward algebra,
 however this is not elegant; instead, we combinatorially interpret the sum.
-Consider $\mu_{S_t}(BC)$. By setting $A$ extremally we have raised its average
-fill $|BC|$ above $n-|ABC|$, the average fill of $ABC$. If we initially had
-equal water level in all cups, then to equalize an increase in $\mu_{S_t}(A)$
-of $|BC|$, there would need to be a corresponding decrease in the average fill
-of $B\cup C$ by $|A|$.
-Thus we have $$\mu_{S_t}(BC) \le n-|ABC|-|A|.$$
+
+We define a new ``fake" state $F$, which may not represent
+a valid configuration of cups (i.e. might not satisfy the invariants), where
+$\mu_F(A)=n-|A|, \mu_F(ABC)=n-|ABC|$, in particular with all the cups in $A$
+having identical fill, and all the cups in $BC$ having identical fill.
+We can think of $F$ as having come from a state where every cup has fill
+$\mu_F(ABC) = n-|ABC|$. To reach $F$ from this state where every cup has
+identical fill we must increase the fill of each cup in $A$ by some amount, and
+decrease the fill of each cup in $BC$ by an amount such that the mass added to
+$A$ is taken away from $BC$. To reach fill $\mu_F(A) = n-|A|$, the cups in $A$
+must have been increased by $|BC|$ from their previous fill of $n-|ABC|$.
+In order to accomplish this whlie maintaining $\mu_{F}(ABC)$, we must decrease the fill of cups in $BC$. 
+To equalize an increase in $\mu_{F}(A)$ of $|BC|$, we need a corresponding decrease in $\mu_{F}(BC)$ by $|A|$.
+Thus we have $$\mu_{F}(BC) = n-|ABC|-|A|.$$
 Thus we have the following bound:
 \begin{align*}
-  m_{S_t}(A) + m_{S_t}(C)&\\
-&\le m_{S_t}(A) + c\mu_{S_t}(BC)\\
-&\le a(n-a) + c(n-|ABC|-a)\\
-&(a+c)(n-a) - c(a+c+b)\\
-&(a+c)(n-a-c) - cb.
+  m_{S_t}(A) + m_{S_t}(C)& \\
+&\le m_{F}(A) + c\mu_{F}(BC) \tag{*}\\
+&\le a(n-a) + c(n-|ABC|-a) \\
+&\le (a+c)(n-a) - c(a+c+b) \\
+&\le (a+c)(n-a-c) - cb,
 \end{align*}
+where (*) follows from Equation \ref{eqn:redistributeA}.
 Recall that we were considering $b> 0, c \ge 1$ (we previously handled the case
 where $b=0$, and if $b>0$ then $c=k-a\ge b\ge 0$).
 Hence we have 
@@ -848,26 +711,20 @@ $$m_{S_t}(A) + m_{S_t}(C)+b \le k(n-k).$$
 As shown previously the left hand side of the above expression is an upper bound for $m_{S_{t+1}}([k])$.
 Hence the invariant holds.
 
-
 % explain the last part better:
-
 % set them numerically, 
 % then lets just imagine this configuration to see what’s going on combinatorially.
 % say explicitly that it might not satisfy the invariants.  
-
 % b/(b+c) (a+b+c)(n-a-b-c) + b/(b+c) a (n-a) = 
 % a(n − a) + c(n − |ABC| − a)
-
 % maybe just say: given a fixed value of m(ABC) might as well just push the water into A cuz m(BC) has that nasty c/(b+c) < 1 thing. this is a bit simpler. 
-
-\textbf{Conclusion:}\\
 The proof was for arbitrary $k$, so given that the invariants all hold at state
 $S_t$ they also must all hold at state $S_{t+1}$.
 Thus, by induction we have the invariant for all rounds $t\in\mathbb{N}$.
 \end{proof}
 
 
-\section{Oblivious Lower Bounds}\label{sec:oblivious}
+\section{Oblivious Filler Lower Bound}\label{sec:oblivious}
 
 An important theorem that we use repeatedly in our analysis is Hoeffding's Inequality:
 \begin{theorem}[Hoeffding's Inequality]
@@ -1160,6 +1017,8 @@ These concerns resolved, the exact same argument as in Proposition
   time), and as a consequence we get backlog $\Omega(2^{\sqrt{\log n}})$.
 \end{proof}
 
+\section{Conclusion}
+Many important open questions remain open.
 
 \bibliographystyle{plain}
 \bibliography{paper}
