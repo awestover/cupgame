@@ -94,7 +94,7 @@
   $O(\poly(n))$ with constant probability against any ``greedy-like" emptier.
 }
 
-\section{Introduction}
+\section{Introduction}\label{sec:intro}
 \paragraph{Definition and Motivation}
 The \defn{cup game} is a multi-round game in which the two players -- the
 \defn{filler} and the \defn{emptier} -- take turns adding and removing water
@@ -620,59 +620,56 @@ But for $\delta$ constant it seems pretty obvious.}
 
 \section{Adaptive Filler Upper Bound}\label{sec:adaptiveUpperBound}
 
-Let $\mu_S(X), m_S(X)$ denote the average fill and mass of a set of cups $X$
-respectively at state $S$ ($S$ could be $S_t$ or $I_t$ for any $t\in\mathbb{N}$)
-\footnote{Note that in the proofs of lower bounds when we used the notation $m$
-  (for mass) and $\mu$ (for average fill), we omitted the subscript
-  indicating the state at which the properties were measured. 
+Let $\mu_S(X)$ and $m_S(X)$ denote the average fill and mass of a set of cups $X$
+at state $S$ (e.g. $S=S_t$ or $S=I_t$).
+\footnote{Note that in the lower bound proofs (e.g. Section \ref{sec:adaptive})
+  when we used the notation $m$ (for mass) and $\mu$ (for average fill), we
+  omitted the subscript indicating the state at which the properties were measured. 
   In those proofs it was sufficiently clear to leave the state implicit.
-  However, in this Section the state is crucial, and needs to be explicit in the notation.}.
+  However, in this section the state is crucial, and needs to be explicit in the notation.}.
 Let $S_t(\{r_1, \ldots, r_m\})$ and $I_t(\{r_1,\ldots, r_m\})$ denote the cups
 of ranks $r_1, r_2, \ldots, r_m$ at states $S_t$ and $I_t$ respectively.
 Let $[n] = \{1,2,\ldots, n\}$, let $i+[n] = \{i+1, i+2, \ldots, i+n\}$. We will
-use concatenation of sets to denote unions, i.e. $AB = A\cup B$.
-
+use concatenation of sets to denote unions, i.e. $AB = A\cup B$.\\
 We establish the following Lemma:
 
 \begin{lemma}
   The greedy emptier maintains the invariant $$\mu_{S_t}(S_t([k])) \le n-k
-  \text{ for all } t\ge 1, k \le n.$$ In particular, for $k=1$, this
-  means that the greedy emptier never lets backlog exceed $O(n)$.
+  \text{ for all } t\ge 1, k \in [n].$$ In particular, for $k=1$, this
+  says that the greedy emptier never lets backlog exceed $O(n)$.
 \end{lemma}
 \begin{proof}
 First note that the invariant is trivial when $k=n$, as the average fill of the
 set of all cups is by definition $0$.
 
 We will prove the invariant by induction on $t$.
-The invariant holds trivially for $t=1$ (the base case of our recurrence): 
+The invariant holds trivially for $t=1$ (the base case for the inductive proof): 
 the cups start empty so $\mu_{S_1}(S_1([k])) = 0 \le n-k$.
 
-Fix a round $t \ge 1$. We assume all the invariants for state $S_t$ (we will
-only use two of the invariants, but the invariants that we need depend on the
-choice of $p_t$ by the filler, so we need all of them) and show that
-$\mu_{S_{t+1}}(S_{t+1}([k])) \le n-k$. 
+Fix a round $t \ge 1$, and any $k \in [n-1]$. We assume invariant for all
+values of $k\in[n]$ for state $S_t$ (we will only explicitly use two of the
+invariants for each $k$, but the invariants that we need depend on the
+choice of $p_t$ by the filler, so we actually need all of them) and show that the invariant on the $k$ fullest cups holds on round $t+1$, i.e. that $$\mu_{S_{t+1}}(S_{t+1}([k])) \le n-k.$$
 
-Note that as the emptier is greedy it always empties from the cups $I_t([p_t])$.
-
-Let $A$, with $a=|A|$, be $A = I_t([\min(k, p_t)]) \cap S_{t+1}([k])$, that is, $A$
-consists of cups among the $k$ fullest cups in $I_t$ that were emptied from and
-ended up in the $k$ fullest cups in $S_{t+1}$.
-Let $B$, with $b=|B|$, be $I_t([\min(k, p_t)]) \setminus A$, that is $B$ consists of
-the cups among the $k$ fullest cups at state $I_t$ that the emptier empties
-from that do not end up in the $k$ fullest cups in $S_{t+1}$. 
+Note that because the emptier is greedy it always empties from the cups $I_t([p_t])$.
+Let $A$, with $a=|A|$, be $A = I_t([\min(k, p_t)]) \cap S_{t+1}([k])$; $A$
+consists of cups that are among the $k$ fullest cups in $I_t$, are emptied from, and
+are among the $k$ fullest cups in $S_{t+1}$.
+Let $B$, with $b=|B|$, be $I_t([\min(k, p_t)]) \setminus A$; $B$ consists of
+the cups that are among the $k$ fullest cups in state $I_t$, are emptied from, and aren't among the $k$ fullest cups in $S_{t+1}$. 
 Let $C = I_t(a+b+[k-a])$, with $c=k-a = |C|$ (Note that $k-a\ge 0$ as $a+b \le k$). 
 
-Note that $a+ b = \min(k, p_t)$.
-Note that $A = I_t([a])$ and $B = I_t(a+[b])$, as every cup in $A$
-must have higher fill than all cups in $B$ in order to remain above the cups in
-$B$ after $1$ unit of water is removed from all cups in $AB$.
-Further, note that $S_{t+1}([k]) = AC$, because once the cups in $B$
-are emptied from cups in $C$ take their place among the $k$ fullest cups.
-
+Note that $a+ b = \min(k, p_t)$. We also have that $A = I_t([a])$ and $B =
+I_t(a+[b])$, as every cup in $A$ must have higher fill than all cups in $B$ in
+order to remain above the cups in $B$ after $1$ unit of water is removed from
+all cups in $AB$.
+Further, note that $S_{t+1}([k]) = AC$ because, once the cups in $B$
+are emptied from, the cups in $B$ are not among the $k$ fullest cups, so the
+cups in $C$ take their places among the $k$ fullest cups.\\
 With these definitions made, we proceed to prove the Lemma.
 
-First we prove the following key property, which we call the \defn{interchangeability of cups}.
-The property is: without loss of generality $S_t([a+b]) = I_t([a+b])$.
+First we prove that without loss of generality $S_t([a+b]) = I_t([a+b])$; we
+call this fact the \defn{interchangeability of cups}.
 \begin{proof}
   Say there are cups $x, y$ with $x\in S_t([a+b]) \setminus I_t([a+b]), y \in
   I_t([a+b])\setminus S_t([a+b])$. Let the fills of cups $x,y$ at state $S_t$
@@ -683,48 +680,54 @@ The property is: without loss of generality $S_t([a+b]) = I_t([a+b])$.
 Define a new state $S_t'$ where cup $x$ has fill $f_y$ and cup $y$ has fill $f_x$. 
 Let the amount of water that the filler places in these cups from the new state be
 $f_x-f_y+\Delta_x$ and $f_y-f_x + \Delta_y$ for cups $x,y$ respectively.
-Note that this is valid as $f_y-f_x + \Delta_y\le 1$ and $f_x-f_y+\Delta_x < 1$
-which is true because, $f_x-f_y+\Delta_x<\Delta_y \le 1$ and $f_y-f_x + \Delta_x < \Delta_x \le 1$.
+This is valid as both fill amounts are at most $1$: $f_x-f_y+\Delta_x<\Delta_y
+\le 1$ and $f_y-f_x + \Delta_x < \Delta_x \le 1$.
 
 We can repeatedly apply this process to swap each cup in $I_t([a+b])\setminus
 S_t([a+b])$ into being one of the $a+b$ fullest cups in the new state $S_t'$.
 At the end of this process we will have some ``fake" state $S_t^f$. Note that
-$S_t^f$ must satisfy the invariant if $S_t$ satisfied the invariant, because we
-are essentially just renaming variables, or in other words swapping the fill of
-certain cups.
+$S_t^f$ must satisfy the invariants if $S_t$ satisfied the invariants, because
+our process can be thought of as just relabelling the cups; in particular
+$\fil(S_t^f(r)) = \fil(S_t(r))$ for all ranks $r \in [n]$.
 
 It is without loss of generality that we start in state $S_t^f$ because from
 state $I_t$ we could equally well have come from state $S_t$ or state $S_t^f$.
+Thus we consider state $I_t$ to have come from state $S_t^f$.
 \end{proof}
 
-Now we proceed with the proof of the Lemma.
-
+Now we proceed with the proof of the Lemma.\\
 First we consider the case $b=0$. If $b=0$, then $S_{t+1}([k]) = S_t([k])$. 
 The emptier has removed $a$ units of fill from the cups in $S_t([k])$
 (specifically the cups in $A$), and the filler has distributed at most $a$
 units of among the cups in $S_t([k])$. Thus the invariant holds:
 $$m_{S_{t+1}}(S_{t+1}([k])) \le m_{S_t}(S_t([k]))+a-a \le k(n-k).$$
 
-Now consider $b\neq 0$. In particular, note that this implies $a < k$ as $a+b
-\le k$. Recall that $S_{t+1}([k]) = AC$, so the mass of the $k$ fullest
-cups at $S_{t+1}$ is the mass of $AC$ at $S_t$ plus any water added to
-cups in $AC$ by the filler, minus any water removed by the emptier. 
-The emptier removes exactly $a$ units of water from $AC$, and the filler
-adds at most $a+b \le p_t$ (recall $a+b = \min(p_t, k)$) units of water to $AC$.
-Thus:
+Now consider the case $b\neq 0$. Because $b>0$, and $a+b \le k$ we have that $a
+< k$, and $c = k-a > 0$. Recall that $S_{t+1}([k]) = AC$, so the mass of the
+$k$ fullest cups at $S_{t+1}$ is the mass of $AC$ at $S_t$ plus any water added
+to cups in $AC$ by the filler, minus any water removed from cups in $AC$ by the
+emptier. The emptier removes exactly $a$ units of water from $AC$.
+The filler adds no more than $p_t$ units of water from $AC$ (because the filler
+adds at most $p_t$ total units of water per round) and the filler also
+adds no more than $k = |AC|$ units of water from $AC$ (because the filler adds
+at most $1$ unit of water to each of the $k$ cups in $AC$).
+Thus, the filler adds no more than $a+b = \min(p_t, k)$ units of water to $AC$.
+Combining these observations we have:
 $$m_{S_{t+1}}(S_{t+1}([k])) \le m_{S_t}(A) + m_{S_t}(C) + b.$$
-This is easy to bound if $m_{S_t}(C) \le m_{S_t}(BC) - b$, because 
-$$m_{S_t}(A) + m_{S_t}(BC)  = m_{S_t}(ABC) \le m_{S_t}([k])$$
-which would imply the invariant for $S_{t+1}$, $k$.
-If $\mu_{S_t}(C)$ is not significantly less than $\mu_{S_t}(BC)$ we have more difficulty.
-The key insight is to notice that larger values for $m_{S_t}(A)$ correspond to
-smaller values for $m_{S_t}(C)$ because of the invariants; the higher fill in
-$A$ \defn{pushes down} the fill that $C$ can have.
-By quantifying exactly how much higher fill in $A$ pushes down fill in $C$ we
-can arrive at the desired invariant.
-We can upper bound $m_{S_t}(C)$ by $\frac{c}{b+c}m_{S_t}(BC) = (m_{S_t}(ABC) - m_{S_t}(A))\frac{c}{b+c}$ as
-$\mu_{S_t}(C) \le \mu_{S_t}(B)$ (we established that this was without loss of
-generality because interchanging is possible).
+
+% This is easy to bound if $m_{S_t}(C) \le m_{S_t}(BC) - b$, because 
+% $$m_{S_t}(A) + m_{S_t}(BC)  = m_{S_t}(ABC) \le m_{S_t}([k])$$
+% which would imply the invariant for $S_{t+1}$, $k$.
+% If $\mu_{S_t}(C)$ is not significantly less than $\mu_{S_t}(BC)$ we have more difficulty.
+The key insight necessary to bound this is to notice that larger values for
+$m_{S_t}(A)$ correspond to smaller values for $m_{S_t}(C)$ because of the
+invariants; the higher fill in $A$ \defn{pushes down} the fill that $C$ can
+have. By quantifying exactly how much higher fill in $A$ pushes down fill in
+$C$ we can achieve the desired inequality.
+We can upper bound $m_{S_t}(C)$ by 
+$$\frac{c}{b+c}m_{S_t}(BC) = (m_{S_t}(ABC) - m_{S_t}(A))\frac{c}{b+c}$$ because
+$\mu_{S_t}(C) \le \mu_{S_t}(B)$ without loss of generality by the
+interchangeability of cups.
 Thus, we have 
 $$m_{S_t}(A) + m_{S_t}(C) \le m_{S_t}(A) + \frac{c}{b+c}m_{S_t}(BC)$$
 where 
@@ -735,15 +738,16 @@ where
   &= \frac{c}{b+c}m_{S_t}(ABC) + \frac{b}{b+c}m_{S_t}(A).
 \end{split}
 \end{equation}
-Note that this expression is monotonicly increasing in both $\mu_{S_t}(ABC)$
-and $\mu_{S_t}(A)$. Hence by numerically replacing both average fills with
+Note that the expression in Equation \ref{eqn:redistributeA} is monotonically
+increasing in both $\mu_{S_t}(ABC)$ and $\mu_{S_t}(A)$. 
+Thus, by numerically replacing both average fills with
 their extremal values ($n-|ABC|, n-|A|$) we upper bound $m_{S_t}(A) + m_{S_t}(C)$.
 At this point the inequality can be verified by straightforward algebra,
 however this is not elegant; instead, we combinatorially interpret the sum.
 
 We define a new ``fake" state $F$, which may not represent
 a valid configuration of cups (i.e. might not satisfy the invariants), where
-$\mu_F(A)=n-|A|, \mu_F(ABC)=n-|ABC|$, in particular with all the cups in $A$
+$\mu_F(A)=n-|A|$ and $\mu_F(ABC)=n-|ABC|$, in particular with all the cups in $A$
 having identical fill, and all the cups in $BC$ having identical fill.
 We can think of $F$ as having come from a state where every cup has fill
 $\mu_F(ABC) = n-|ABC|$. To reach $F$ from this state where every cup has
@@ -751,8 +755,8 @@ identical fill we must increase the fill of each cup in $A$ by some amount, and
 decrease the fill of each cup in $BC$ by an amount such that the mass added to
 $A$ is taken away from $BC$. To reach fill $\mu_F(A) = n-|A|$, the cups in $A$
 must have been increased by $|BC|$ from their previous fill of $n-|ABC|$.
-In order to accomplish this whlie maintaining $\mu_{F}(ABC)$, we must decrease the fill of cups in $BC$. 
-To equalize an increase in $\mu_{F}(A)$ of $|BC|$, we need a corresponding decrease in $\mu_{F}(BC)$ by $|A|$.
+To equalize an increase in $\mu_{F}(A)$ of $|BC|$, we need a corresponding
+decrease in $\mu_{F}(BC)$ by $|A|$.
 Thus we have $$\mu_{F}(BC) = n-|ABC|-|A|.$$
 Thus we have the following bound:
 \begin{align*}
@@ -763,21 +767,16 @@ Thus we have the following bound:
 &\le (a+c)(n-a-c) - cb,
 \end{align*}
 where (*) follows from Equation \ref{eqn:redistributeA}.
-Recall that we were considering $b> 0, c \ge 1$ (we previously handled the case
-where $b=0$, and if $b>0$ then $c=k-a\ge b\ge 0$).
+Recall that we were considering $b> 0$, and since $b>0$ we have that $c = k-a
+\ge b > 0$, i.e. $c \ge 1$. 
 Hence we have 
 $$m_{S_t}(A) + m_{S_t}(C) \le k(n-k) -b$$
 So 
 $$m_{S_t}(A) + m_{S_t}(C)+b \le k(n-k).$$
-As shown previously the left hand side of the above expression is an upper bound for $m_{S_{t+1}}([k])$.
+As shown previously the left hand side of the above expression is an upper
+bound for $m_{S_{t+1}}([k])$.
 Hence the invariant holds.
 
-% explain the last part better:
-% set them numerically, 
-% then lets just imagine this configuration to see what’s going on combinatorially.
-% say explicitly that it might not satisfy the invariants.  
-% b/(b+c) (a+b+c)(n-a-b-c) + b/(b+c) a (n-a) = 
-% a(n − a) + c(n − |ABC| − a)
 % maybe just say: given a fixed value of m(ABC) might as well just push the water into A cuz m(BC) has that nasty c/(b+c) < 1 thing. this is a bit simpler. 
 The proof was for arbitrary $k$, so given that the invariants all hold at state
 $S_t$ they also must all hold at state $S_{t+1}$.
