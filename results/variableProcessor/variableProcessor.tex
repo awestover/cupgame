@@ -619,14 +619,13 @@ But for $\delta$ constant it seems pretty obvious.}
 \end{proof}
 
 \section{Adaptive Filler Upper Bound}\label{sec:adaptiveUpperBound}
-
 Let $\mu_S(X)$ and $m_S(X)$ denote the average fill and mass of a set of cups $X$
-at state $S$ (e.g. $S=S_t$ or $S=I_t$).
-\footnote{Note that in the lower bound proofs (e.g. Section \ref{sec:adaptive})
-  when we used the notation $m$ (for mass) and $\mu$ (for average fill), we
-  omitted the subscript indicating the state at which the properties were measured. 
-  In those proofs it was sufficiently clear to leave the state implicit.
-  However, in this section the state is crucial, and needs to be explicit in the notation.}.
+at state $S$ (e.g. $S=S_t$ or $S=I_t$).\footnote{Note that in the lower bound
+  proofs (e.g. Section \ref{sec:adaptive}) when we used the notation $m$ (for
+  mass) and $\mu$ (for average fill), we omitted the subscript indicating the
+  state at which the properties were measured. In those proofs it was
+sufficiently clear to leave the state implicit. However, in this section the
+state is crucial, and needs to be explicit in the notation.}
 Let $S_t(\{r_1, \ldots, r_m\})$ and $I_t(\{r_1,\ldots, r_m\})$ denote the cups
 of ranks $r_1, r_2, \ldots, r_m$ at states $S_t$ and $I_t$ respectively.
 Let $[n] = \{1,2,\ldots, n\}$, let $i+[n] = \{i+1, i+2, \ldots, i+n\}$. We will
@@ -649,7 +648,9 @@ the cups start empty so $\mu_{S_1}(S_1([k])) = 0 \le n-k$.
 Fix a round $t \ge 1$, and any $k \in [n-1]$. We assume invariant for all
 values of $k\in[n]$ for state $S_t$ (we will only explicitly use two of the
 invariants for each $k$, but the invariants that we need depend on the
-choice of $p_t$ by the filler, so we actually need all of them) and show that the invariant on the $k$ fullest cups holds on round $t+1$, i.e. that $$\mu_{S_{t+1}}(S_{t+1}([k])) \le n-k.$$
+choice of $p_t$ by the filler, so we actually need all of them) and show that
+the invariant on the $k$ fullest cups holds on round $t+1$, i.e. that
+$$\mu_{S_{t+1}}(S_{t+1}([k])) \le n-k.$$
 
 Note that because the emptier is greedy it always empties from the cups $I_t([p_t])$.
 Let $A$, with $a=|A|$, be $A = I_t([\min(k, p_t)]) \cap S_{t+1}([k])$; $A$
@@ -728,8 +729,12 @@ We can upper bound $m_{S_t}(C)$ by
 $$\frac{c}{b+c}m_{S_t}(BC) = (m_{S_t}(ABC) - m_{S_t}(A))\frac{c}{b+c}$$ because
 $\mu_{S_t}(C) \le \mu_{S_t}(B)$ without loss of generality by the
 interchangeability of cups.
-Thus, we have 
-$$m_{S_t}(A) + m_{S_t}(C) \le m_{S_t}(A) + \frac{c}{b+c}m_{S_t}(BC)$$
+Thus we have 
+\begin{equation}
+  \label{eqn:BCdiscounted}
+m_{S_t}(AC) \le m_{S_t}(A) + \frac{c}{b+c}m_{S_t}(BC)
+\end{equation}
+{\color{red}
 where 
 \begin{equation}
   \label{eqn:redistributeA}
@@ -757,7 +762,7 @@ $A$ is taken away from $BC$. To reach fill $\mu_F(A) = n-|A|$, the cups in $A$
 must have been increased by $|BC|$ from their previous fill of $n-|ABC|$.
 To equalize an increase in $\mu_{F}(A)$ of $|BC|$, we need a corresponding
 decrease in $\mu_{F}(BC)$ by $|A|$.
-Thus we have $$\mu_{F}(BC) = n-|ABC|-|A|.$$
+That is, $$\mu_{F}(BC) = n-|ABC|-|A|.$$
 Thus we have the following bound:
 \begin{align*}
   m_{S_t}(A) + m_{S_t}(C)& \\
@@ -767,6 +772,38 @@ Thus we have the following bound:
 &\le (a+c)(n-a-c) - cb,
 \end{align*}
 where (*) follows from Equation \ref{eqn:redistributeA}.
+}
+
+{\color{blue}
+  Consider a new configuration of fills $F$ achieved by starting with state
+  $S_t$, and moving water from $BC$ into $A$ until $\mu_{F}(A) = n-|A|$.
+  \footnote{Note that whether or not $F$ satisfies the invariants is irrelevant.}
+  This transformation increases (strictly increases if and only if we move a
+  non-zero amount of water) the mass in $AC$ because water in $BC$
+  counts less towards mass in $AC$ than water in $A$ by Inequality
+  \ref{eqn:BCdiscounted}. In particular, if mass $\Delta \ge 0$ fill is moved from
+  $BC$ to $A$, then the mass of $AC$ increases by $\frac{b}{b+c} \Delta \ge 0$.
+
+  Since $\mu_F(A)$ is above $\mu_{F}(ABC)$, the greater than average fill of
+  $A$ must be counter-balanced by the lower than average fill of $BC$. In
+  particular we must have
+  $$(\mu_F(A) - \mu_F(ABC))|A| = (\mu_F(ABC) -\mu_F(BC))|BC|.$$
+  Note that $$\mu_F(A) -\mu_F(ABC) \ge (n-|A|) - (n-|ABC|) = |BC|.$$
+  Hence we must have 
+  $$\mu_F(ABC) - \mu_F(BC) \ge |A|.$$
+  Thus 
+  $$\mu_F(BC) \le \mu_F(ABC) - |A| \le n-|ABC| -|A|.$$
+
+  Thus we have the following bound:
+  \begin{align*}
+    m_{S_t}(A) + m_{S_t}(C)& \\
+  &\le m_{F}(A) + c\mu_{F}(BC)\\
+  &\le a(n-a) + c(n-|ABC|-a) \\
+  &\le (a+c)(n-a) - c(a+c+b) \\
+  &\le (a+c)(n-a-c) - cb.
+  \end{align*}
+}
+
 Recall that we were considering $b> 0$, and since $b>0$ we have that $c = k-a
 \ge b > 0$, i.e. $c \ge 1$. 
 Hence we have 
@@ -777,7 +814,6 @@ As shown previously the left hand side of the above expression is an upper
 bound for $m_{S_{t+1}}([k])$.
 Hence the invariant holds.
 
-% maybe just say: given a fixed value of m(ABC) might as well just push the water into A cuz m(BC) has that nasty c/(b+c) < 1 thing. this is a bit simpler. 
 The proof was for arbitrary $k$, so given that the invariants all hold at state
 $S_t$ they also must all hold at state $S_{t+1}$.
 Thus, by induction we have the invariant for all rounds $t\in\mathbb{N}$.
@@ -785,7 +821,6 @@ Thus, by induction we have the invariant for all rounds $t\in\mathbb{N}$.
 
 
 \section{Oblivious Filler Lower Bound}\label{sec:oblivious}
-
 An important theorem that we use repeatedly in our analysis is Hoeffding's Inequality:
 \begin{theorem}[Hoeffding's Inequality]
   Let $X_i$ be independent bounded random variables with $X_i \in [a,b]$. Then,
