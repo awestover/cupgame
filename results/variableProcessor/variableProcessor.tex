@@ -368,9 +368,9 @@ $p$ cups. \footnote{
 
 \begin{corollary}
   \label{cor:adaptivePoly}
-  There is an adaptive filling strategy for the variable-processor cup game on
-  $n$ cups that achieves backlog $\Omega(n)$ in bounded running time.
-  % that achieves backlog $\Omega(n^{1-\epsilon})$ for any constant $\epsilon \in (0,1)$, in running time $2^{O(\log^2 n)}$.
+  There are adaptive filling strategies for the variable-processor cup game on
+  $n$ cups that achieve backlog $\Omega(n)$ in time $2^{O(n)}$ and backlog
+  $\Omega(n^{1-\epsilon})$ for any constant $\epsilon > 0$ in time $2^{O(\log^2 n)}$.
 \end{corollary}
 \begin{proof}$ $\\
   Fix $\epsilon \in (0,1/2)$, and let $c, \delta$ be parameters, with $c\in
@@ -396,23 +396,38 @@ $p$ cups. \footnote{
   $$f'(k_0) \ge ck_0^{1-\epsilon}(1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon}).$$
   Let 
   $$h(\delta) = (1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon}).$$
-  We will show that $h(\delta) \ge 1$ is satisfiable for sufficiently small $\delta$ given any choice of $\epsilon \in (0,1)$.
-  Note that if $h(\delta)\ge 1$, then $f'(k_0) \ge c
-  k_0^{1-\epsilon}$, meaning we have constructed from $f$ a new function $f'$ that satisfies the inequality
-  $f'(k) \ge ck^{1-\epsilon}$ for $k\le g/(1-\delta)$, as opposed to only for
-  $k \le g$ as in the case of $f$.
+  We prove the following claim:
+
+  \begin{clm}
+    \label{clm:validchoices}
+    There exists an appropriate choice of $\delta$ that is small enough such
+    that $h(\delta) >1$ and large enough such that $L \ge 1$, when $\epsilon$
+    is chosen to be $4/\lg n$, or a positive constant. In particular, if
+    $\epsilon$ is chosen to be $4/\lg n$ then we will choose $\delta \le
+    O(1/n)$, and if $\epsilon$ is chosen to be a positive constant then we will
+    choose $\delta \le O(1)$.
+  \end{clm}
+
+  Note that if $h(\delta)\ge 1$, then $f'(k_0) \ge c k_0^{1-\epsilon}$, meaning
+  we have constructed from $f$ a new function $f'$ that satisfies the
+  inequality $f'(k) \ge ck^{1-\epsilon}$ for $k\le g/(1-\delta)$, as opposed to
+  only for $k \le g$ as in the case of $f$. 
   \footnote{Note that although $f'(k) \ge ck^{1-\epsilon}$ holds for at least as many $k$
     as $f(k) \ge c k^{1-\epsilon}$, it does not necessarily hold for strictly
     more; in particular, if $\lfloor g/(1-\delta) \rfloor = g$ then the inequality on
     $f'$ holds for no more $k$ than the inequality on $f$, as $f$ and $f'$ are
     functions on $\mathbb{N}$. We have to be somewhat careful about the fact that
-    there are an integer number of cups.
-  }
+    there are an integer number of cups.} 
+  Then by repeatedly amplifying a function, we should be able to arbitrarily
+  extend the support, which would help us attain the desired backlog.
+
+  We now prove Claim \ref{clm:validchoices}.
+  \begin{proof}
   Consider the Taylor series for $(1-\delta)^{2-\epsilon}$ about $\delta = 0$:
   $$(1-\delta)^{2-\epsilon} = 1 - (2-\epsilon)\delta + O(\delta^2).$$
  
   So, to find a $\delta$ where $h(\delta) \ge 1$ it suffices -- note that, again, we choose
-  to neglect the $\delta^2$ term as it does not help us substantially becuase
+  to neglect the $\delta^2$ term as it does not help us substantially because
   it is so small -- to find a $\delta$ with 
   $$(1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon}) \ge 1.$$
   Rearranging we have 
@@ -433,7 +448,8 @@ $p$ cups. \footnote{
 
   In addition to the constraint that $\delta$ must be small enough such that
   $h(\delta) \ge 1$, the only other constraint on $\delta$ is that $\delta$
-  must be large enough that the sum from the Amplification Lemma has at least two terms, i.e. such that $L \ge 1$.
+  must be large enough that the sum from the Amplification Lemma has at least
+  two terms, i.e. such that $L \ge 1$.
   The condition $L \ge 1$ enforces 
   $$\delta(1-\delta)n \ge n_0. $$
   Recall that we choose $\delta < 1/2$, so $1-\delta > 1/2$. Thus to make
@@ -468,6 +484,8 @@ $p$ cups. \footnote{
   $\Omega(n^{1-\epsilon})$ for constant $\epsilon > 0$ we choose $\delta$ to be
   a constant satisfying Inequality \ref{eqn:deltaUpperIneq}, and $\delta$, being constant, is
   trivially not too small, hence satisfies Inequality \ref{eqn:deltaLowerBound}.
+    
+  \end{proof}
 
   Now we proceed to show that with the appropriate values of $\delta, \epsilon$ we
   can achieve a filling strategy that achieves backlog $cn^{1-\epsilon}$ on $n$ cups.
@@ -479,13 +497,13 @@ $p$ cups. \footnote{
   repeated application of the Amplification Lemma.
   
   \paragraph{Existential Argument}
-  Let $\epsilon > 0$ be constant. Let $\delta \ll 1/2$ be appropriate constant
-  We proved above that such choice of $\delta, \epsilon$ is possible.
-  Let $f^*$ be the supremum over all filling strategies of the backlog
-  achievable on $n$ cups. Then $f^*$ must be greater than or equal to the
-  amplification of $f^*$. Assume
-  for contradiction that there is some least $n_*$ such that 
-  $$  \begin{cases}
+  Let $\epsilon > 0$ be constant. By Claim \ref{clm:validchoices}, there is a
+  valid constant setting of $\delta$; let $\delta \ll 1/2$ be appropriate
+  constant. Let $f^*$ be the supremum over all filling strategies of the
+  backlog achievable on $n$ cups. Then $f^*$ must be greater than or equal to
+  the amplification of $f^*$. Assume for contradiction that there is some least
+  $n_*$ such that 
+  $$\begin{cases}
     f^*(k)< ck^{1-\epsilon}, & k > n_*\\
     f^*(k)> ck^{1-\epsilon}, & k < n_*
   \end{cases} $$
@@ -508,8 +526,7 @@ running time; we now modify the existential argument to make it constructive,
 which yields an algorithm for achieving backlog $cn^{1-\epsilon}$ on $n$ cups 
 in finite running time. We again use constant $\epsilon > 0$ and appropriate constant $\delta$.
 
-  We start with the algorithm given by Proposition \ref{prop:adaptiveBase} for
-  achieving backlog
+  We start with the algorithm given by Proposition \ref{prop:adaptiveBase} for achieving backlog
   $$f_0(k) = 
   \begin{cases} 
     \lg k, & k\geq 1, \\
@@ -526,7 +543,8 @@ in finite running time. We again use constant $\epsilon > 0$ and appropriate con
   \end{cases} $$
   Note that is, $g_{i+1}$ is the greatest integer strictly less than $g_i/(1-\delta)$.
   Note that $ (1/\delta) / (1-\delta) > (1+\delta)/\delta = 1/\delta + 1.$
-  Thus $g_1 = 1+ g_0$, and in general, $g_{i+1} > g_i$, because the difference $g_{i+1}-g_i$ can only grow as $i$ grows.
+  Thus $g_1 = 1+ g_0$, and in general, $g_{i+1} > g_i$, because the difference
+  $g_{i+1}-g_i$ can only grow as $i$ grows.
 
   We claim the following regarding this construction:
   \begin{equation}
@@ -535,16 +553,16 @@ in finite running time. We again use constant $\epsilon > 0$ and appropriate con
   \end{equation}
   We shall prove Claim \ref{clm:fikinduction} by induction on $i$.
 
-  Claim \ref{clm:fikinduction} is true in the base case of $f_0$ by taking $c$ sufficiently small,
-  in particular small enough that $f_0(k) \ge ck^{1-\epsilon}$ holds for $k <
-  g_0$\footnote{Note: this is where it is crucial that $\epsilon, \delta$
-  are constants.}. As our inductive hypothesis we assume Claim \ref{clm:fikinduction} for $f_i$; we aim to show that
-  Claim \ref{clm:fikinduction} holds for $f_{i+1}$.
-  Note the key property of $g_i$, that $g_{i+1}\cdot(1-\delta) < g_i$. Also
-  note that (without loss of generality) the $f_i$ are monotonically increasing
+  Claim \ref{clm:fikinduction} is true in the base case of $f_0$ by taking $c$
+  sufficiently small, in particular small enough that $f_0(k) \ge
+  ck^{1-\epsilon}$ holds for $k < g_0$.\footnote{Note: this is where it is
+    crucial that $\epsilon, \delta$ are constants.}
+  As our inductive hypothesis we assume Claim \ref{clm:fikinduction} for $f_i$;
+  we aim to show that Claim \ref{clm:fikinduction} holds for $f_{i+1}$. Note
+  the key property of $g_i$, that $g_{i+1}\cdot(1-\delta) < g_i$. Also note
+  that (without loss of generality) the $f_i$ are monotonically increasing
   functions: given more cups we can always achieve higher fill than with fewer
-  cups.
-  Thus we have, for any $k<g_{i+1}$,
+  cups. Thus we have, for any $k<g_{i+1}$,
   \begin{align*}
     f_{i+1}(k) &\\
     &\ge (1-\delta)\sum_{\ell=0}^L f_i((1-\delta)\delta^\ell k)\\
@@ -565,7 +583,8 @@ in finite running time. We again use constant $\epsilon > 0$ and appropriate con
   $$T(n) \le \delta n \cdot T(n(1-\delta)) + T(\delta n).$$
   We can upper bound this by
   $$n^{\frac{\log n}{\log (1/(1-\delta))}}.$$
-  Continuing for $O(\log n)$ levels of recursion should be sufficient to achieve the desired backlog. This gives running time
+  Continuing for $O(\log n)$ levels of recursion should be sufficient to
+  achieve the desired backlog. This gives running time
   $$T(n) \le ((1+\delta) n)^{O(\log n)} \le 2^{O(\lg^2 n)}$$
   as desired.
   {\color{red} ok, technically I'm ignoring integer problems in saying lets
@@ -590,7 +609,9 @@ But for $\delta$ constant it seems pretty obvious.}
   Let $(1-\delta)^c = \delta$, let $\delta^2 n < n_0 < (1-\delta)^{2c-1} n$ by our choice of $\delta = O(1/n)$.
     We can get backlog 
     $$\sum_{i=1}^c (1-\delta)^i. $$
-    To see this, consider a binary tree representing our algorithm. At every branch we both proceed to recurse on a $1-\delta$ fraction of the cups, and achieve backlog $1$ on a $\delta$ fraction of the cups.
+    To see this, consider a binary tree representing our algorithm. At every
+    branch we both proceed to recurse on a $1-\delta$ fraction of the cups, and
+    achieve backlog $1$ on a $\delta$ fraction of the cups.
 
     The sum evaluates to 
     $$\frac{(1-\delta)^2}{\delta}$$
@@ -657,7 +678,8 @@ Let $A$, with $a=|A|$, be $A = I_t([\min(k, p_t)]) \cap S_{t+1}([k])$; $A$
 consists of cups that are among the $k$ fullest cups in $I_t$, are emptied from, and
 are among the $k$ fullest cups in $S_{t+1}$.
 Let $B$, with $b=|B|$, be $I_t([\min(k, p_t)]) \setminus A$; $B$ consists of
-the cups that are among the $k$ fullest cups in state $I_t$, are emptied from, and aren't among the $k$ fullest cups in $S_{t+1}$. 
+the cups that are among the $k$ fullest cups in state $I_t$, are emptied from,
+and aren't among the $k$ fullest cups in $S_{t+1}$. 
 Let $C = I_t(a+b+[k-a])$, with $c=k-a = |C|$ (Note that $k-a\ge 0$ as $a+b \le k$). 
 
 Note that $a+ b = \min(k, p_t)$. We also have that $A = I_t([a])$ and $B =
@@ -823,7 +845,8 @@ Thus, by induction we have the invariant for all rounds $t\in\mathbb{N}$.
 \section{Oblivious Filler Lower Bound}\label{sec:oblivious}
 An important theorem that we use throughout our analysis is Hoeffding's Inequality:
 \begin{theorem}[Hoeffding's Inequality]
-  Let $X_i$ for $i=1,2,\ldots, k$ be independent bounded random variables with $X_i \in [a,b]$ for all $i$. Then,
+  Let $X_i$ for $i=1,2,\ldots, k$ be independent bounded random variables with
+  $X_i \in [a,b]$ for all $i$. Then,
   $$P\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
   2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
 \end{theorem}
@@ -1097,7 +1120,9 @@ good probability.
   with constant probability.
 \end{lemma}
 \begin{proof}
-  We essentially perform the same proof as Proposition \ref{prop:obliviousBase}, but some new issues arise, which we proceed to highlight and address. 
+  We essentially perform the same proof as Proposition
+  \ref{prop:obliviousBase}, but some new issues arise, which we proceed to
+  highlight and address. 
 
 \begin{clm}
   Let a cup be \defn{verysad} if it has fill $< -nh/\lg\lg n$.
@@ -1131,14 +1156,14 @@ good probability.
 
   Lets say we pick $2n$ things from $n$ things with replacement. Claim: with
   exponentially good probability we have $n/2$ distinct things. 
-  Proof: chernoff bound. Let $X_i$ be indicator variable for cup $i$ (whether
+  Proof: Chernoff bound. Let $X_i$ be indicator variable for cup $i$ (whether
   it was chosen or not). Probability that $X_i$ was chosen: $1-((n-1)/n)^n
   \approx 1-1/e > 1/2$ for large $n$. 
   Then by a Chernoff Bound we have that $\sum_i X_i$ is tightly concentrated
   around its mean, which is larger than $n$. In particular, with probability
   exponentially close to $1$ in $n$ we have that at least $n/2$ cups were chosen.
 
-    initially solution: no overpowered cups wlog, so if we pick them randomly star holds
+    Initial solution: no overpowered cups WLOG, so if we pick them randomly star holds
     by Hoeffding's. (kinda, bc stuff isnt really independent, can probably swap
     with replacement to fix this tho)
   
