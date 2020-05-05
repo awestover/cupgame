@@ -866,8 +866,9 @@ $\sum_{i=1}^k Y_i$ deviating from it's mean by $t$.
 Formally we can write this as 
 \begin{corollary}
   \label{cor:hoeffdingwreplacement}
-  Let $S$ be a finite set with $\min(S) \ge a, \max(S) \le b$, and let $X_i$ for $i=1,2\ldots, k$ be chosen
-uniformly at random from $S \setminus \{X_1,\ldots, X_{i-1}\}$.
+  Let $S$ be a finite set with $\min(S) \ge a, \max(S) \le b$, and let $X_i$
+  for $i=1,2\ldots, k$ be chosen uniformly at random from $S \setminus
+  \{X_1,\ldots, X_{i-1}\}$.
 Then 
   $$P\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
   2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
@@ -887,7 +888,7 @@ does not empty from cup $c$. Combinatorially the quantity $T$ is the threshold
 above which the filler ``notices" cups, and $\pm\Delta$ is the tolerance in cup
 fills within which the emptier is allowed to not be greedy.
 
-Of particular interest is the greedy emptier, which is $(0,0)$-greedy-like, nad
+Of particular interest is the greedy emptier, which is $(0,0)$-greedy-like, and
 the smoothed greedy emptier, which is $(1, 0)$-greedy-like.
 
 \begin{proposition}
@@ -901,26 +902,23 @@ the smoothed greedy emptier, which is $(1, 0)$-greedy-like.
   Let $A$, the \defn{anchor} set, be a subset of the cups chosen uniformly at
   random from all subsets of size $n/2$ of the cups, and let $B$, the
   \defn{non-anchor} set, consist of the rest of the cups ($|B| = n/2$). Let $h
-  = 2 T + g $ where $g$ is a sufficiently large constant. At each level of our
-  recursive procedure we will achieve fill $h$ in some fraction of the cups in
-  $A$, and because the emptier is $(T, \Delta)$-greedy-like, we can turn this
-  into a known set of cups with fill at least $h' = T + (g+\Delta)/2$. Our
-  strategy to achieve backlog $\Omega(\log n)$ overall is roughly as follows:
+  = 2 T + 1$. Step 1 of our procedure is to achieve high positive tilt in $A$.
+  Exploiting the fact that the emptier is $(T, \Delta)$-greedy-like, we can
+  transform this positive tilt into a known set of cups with fill at least $h'
+  = T + (1+\Delta)/2$. More specifically, the filling algorithm proceeds as follows: 
   \begin{itemize}
     \item \textbf{Step 1:} 
-      Obtain large positive tilt in $A$. To do this, we first play a single
-      processor cup game on a randomly chosen constant-size subset of $B$.
-      Afterwords we do one of the following:
-      \begin{itemize}
-        \item Take a random cup from $B$ to swap into $A$. This helps gets high
-          positive tilt in $A$ if randomly chosen cups have high expected
-          positive tilt.
-        \item Take the ``winning" cup from the single processor cup game, i.e.
-          the cup that has had its fill increase by at least $h$ with constant
-          probability, and swap it into $A$. This helps get high positive tilt
-          if the subset that we play a single processor cup game on has average
-          fill that is not very negative.
-      \end{itemize}
+      Obtain large positive tilt in $A$. If at least half of the cups $c\in B$
+      have $\fil(c) \ge -h/8$, then we can, with constant probability, achieve
+      a cup with fill $h$ in $B$ -- which we will then swap to $A$ -- by
+      playing a single-processor cup game on a constant-size subset of $B$. On
+      the other hand, if at least half of the cups in $B$ have fill less than
+      $-h/8$, then the expectation of positive tilt is very high, so choosing 
+      an appropriate number of random cups to swap into $A$ guarantees that we
+      have the required positive tilt with the required probability. Since the
+      filler is oblivious it does not know which of the cases it is in. Thus
+      the filler employs a hybrid of the strategies, switching between them
+      with certain probabilities.
   \item \textbf{Step 2:} Reduce the number of processors to a constant fraction
     $c$ of $n$, and raise the fill of $nc$ cups to $h'$. This step relies on
     the emptier being greedy.
@@ -928,25 +926,42 @@ the smoothed greedy emptier, which is $(1, 0)$-greedy-like.
     at least $h'$.
 \end{itemize}
 We can perform $\Omega(\log n)$ levels of recursion, achieving constant backlog
-at each step (relative to the average fills); doing so yields backlog
+$h'\ge 1/2$ at each step (relative to the average fills); doing so yields backlog
 $\Omega(\log n)$.
 
 Our strategy fails if fill is extremely concentrated in a very small number of
 cups; however, in this case the proposition is trivially satisfied. In
 particular, we call a cup \defn{overpowered} if it contains fill at least
-$\sqrt{\frac{nh}{\log\log n}}$. If there is ever an overpowered cup, then the
+$h\sqrt{n}/\log\log n$. If there is ever an overpowered cup, then the
 proposition is trivially satisfied, as we have $\Omega(\poly(n))$ backlog. Note
 that we don't need to know which cup is overpowered because it will take
 $\Omega(\poly(n))$ rounds for the emptier to reduce the fill below $\poly(n)$.
 Hence, we can assume without loss of generality that no cup is ever
 overpowered. 
 
-Now we detail how to achieve Step 1. For each anchor cup $c$ we will perform a
-procedure called a \defn{swapping-process}. A swapping-process is composed of
-the substructure of a \defn{round-block}, which is a set of rounds.
-At the beginning of a swapping-process we choose an index $j \in [n^2]$. The
-swapping-process proceeds for $n^2$ round-blocks; on the $j$-th round-block we
-swap a cup into the anchor set.
+Now we detail how to achieve Step 1.
+We set apart a constant fraction $\alpha = n/1000$ of the cups in $A$, which we
+call the \defn{storage block}. Let $\gamma = 2\lg\lg n$; we will store between
+$\gamma -\gamma/2$ and $\gamma + \gamma/2$ sets of $\beta = \alpha / (\gamma +
+\gamma/2)$ randomly chosen cups at certain randomly chosen rounds.
+For each anchor cup $c$ we will perform a procedure called a \defn{swapping-process}. 
+With probability $\frac{\gamma}{n/2}$ the swapping-processes consists of what
+we term a \defn{storing-operation}; in a storing-operation the filler takes a 
+random subset of $\beta$ cups from $B$ and swaps it into the storage block.
+Note that, by a Chernoff bound, the probability that the number of
+swapping-processes where we perform a storing-operation lies within $\pm
+\gamma/2$ of its expectation $\gamma$ is at least $1-2e^{-n(\lg\lg n)^2}$,
+which is much better than the probability of success that we need.
+Thus we assume that the number of swapping-processes that consist of a
+storing-operation is between $\gamma- \gamma/2$ and $\gamma+\gamma/2$.
+
+The swapping-process does not entail performing a storing-operation with
+probability $1-\frac{\gamma}{n/2}$. In this case the swapping-process is
+composed of a substructure, repeated many times, which we call a
+\defn{round-block}. A round-block is a set of rounds. At the beginning such a
+swapping-process we choose a round-block $j \in [n^2]$ uniformly at random from
+all the round-blocks. The swapping-process proceeds for $n^2$ round-blocks; on
+the $j$-th round-block we swap a cup into the anchor set.
 
 On each of the $n^2$ round-blocks, the filler selects a random subset $C\subset
 B$ of the non-anchor cups and plays a single processor cup game on $C$. In this
@@ -960,11 +975,10 @@ probability that this results in the active set having a single cup at the end,
 with fill that has increased by at least $1/|B| + 1/(|B|-1) + \ldots + 1/1 \ge
 \ln |B|$ since the start of the round-block.
 
-On most round-blocks (all but the $j$-th), the filler does nothing with the cup
-that it achieves in the active set at the end of the single processor cup game.
-However, on round-block $j$ with $1/2$ probability the filler swaps the winner
-of the single processor cup game into the anchor set, and with $1/2$
-probability the filler swaps a random cup from $B$ into the anchor set.
+On most round-blocks -- all but the $j$-th -- the filler does nothing with the
+cup that it achieves in the active set at the end of the single processor cup
+game. However, on the $j$-th round-block the filler swaps the winner of the
+single processor cup game into the anchor set.
 
 We consider two cases:
 \begin{itemize}
@@ -978,15 +992,16 @@ good probability.
 
 \begin{clm} \label{clm:reg} 
   Let $q\ge \Omega(1)$ be an appropriately small constant ($q$ is a function of
-  $h\le O(1)$). In Case 1, with probability at least $1-e^{-n(q/2)^2}$, we
-  achieve fill at least $h$ in at least $qn/4$ of the cups in $A$ -- i.e. a
-  constant fraction of the cups in $A$. In particular, this implies that we
-  achieve positive tilt $nhq/4$ in $A$.
+  $h\le O(1)$). In Case 1, with probability at least $1-e^{-n/8}$, we
+  achieve fill at least $h$ in at least $nq/8$ of the cups in $A$ (i.e. a
+  constant fraction of the cups in $A$). In particular, this implies that we
+  achieve positive tilt $hnq/8$ in $A$.
 \end{clm}
 \begin{proof}
-  Consider a swapping-process where at least $1/2$ of the cups $c \in B$
-  have $\fil(c) \ge -h$.
-
+  Consider a swapping-process where the filler does not perform a
+  storing-operation where at least $1/2$ of the cups $c \in B$ have $\fil(c)
+  \ge -h$. Note that by assumption there are at least $n/2 - 3/2 \gamma$ such rounds.
+ 
   Say the emptier \defn{neglects} the anchor set in a round-block if on at
   least one round of the round-block the emptier does not empty from every
   anchor cup. By playing the single-processor cup game for $n^2$ round-blocks,
@@ -1034,21 +1049,26 @@ good probability.
   correctly.
 
   Say that a swapping-process where at least half of the cups $c\in B$ have
-  $\fil(c) \ge -h$ \defn{succeeds} if $C_j$ is a subset of the $n/4$ fullest cups
-  in $B$, and if the filler correctly guesses the emptier's emptying sequence.
-  Note that if a swapping-process succeeds, then the filler is able to swap a cup
-  with fill at least $h$ into $A$. We have shown that there is a constant
-  probability of a given swapping-process succeeding. Let $X_i$ be the binary
-  random variable indicating whether or not the $i$-th swapping process where at
-  least half of the cups $c\in B$ have $\fil(c) \ge -h$ succeeds. Let $q \ge
-  \Omega(1)$ be the probability of a swapping-process succeeding, i.e.
-  $P(X_i=1)$. Note that the random variables $X_i$ are clearly independent, and
-  identically distributed.
+  $\fil(c) \ge -h$ \defn{succeeds} if $C_j$ is a subset of the $n/4$ fullest
+  cups in $B$, and if the filler correctly guesses the emptier's emptying
+  sequence. Note that if a swapping-process succeeds, then the filler is able
+  to swap a cup with fill at least $h$ into $A$. We have shown that there is a
+  constant probability of a given swapping-process succeeding. Let $X_i$ be the
+  binary random variable indicating whether or not the $i$-th swapping process
+  where the filler does not perform a storing-operation where at least half of
+  the cups $c\in B$ have $\fil(c) \ge -h$ succeeds. Let $q \ge \Omega(1)$ be
+  the probability of a swapping-process succeeding, i.e. $P(X_i=1)$. Note that
+  the random variables $X_i$ are clearly independent, and identically
+  distributed.
 
-  Clearly $$\E\left[\sum_{i=1}^{n/2} X_i\right] = qn/2.$$ Then by a Chernoff
-  Bound (i.e. Hoeffding's Inequality applied to Binary Random Variables),
-  $$P\left(\sum_{i=1}^{n/2} X_i\le nq/4\right) \le e^{-n(q/2)^2}.$$ That is, the
-  probability that less than $nq/4$ of the anchor cups have fill at least $h$ is
+  Clearly $$\E\left[\sum_{i=1}^{n/4} X_i\right] = qn/4.$$ Note that we do not
+  use all the $X_i$; we know there must be at least $n/2 - 3/2 \gamma$
+  swapping-processes that do not consist of a storing-operation, but only use
+  $n/4$ of the $X_i$. We make this choice because the particular constants that
+  we get do not matter, and because it substantially simplifies the analysis.
+  By a Chernoff Bound (i.e. Hoeffding's Inequality applied to Binary Random Variables),
+  $$P\left(\sum_{i=1}^{n/4} X_i\le nq/8\right) \le e^{-n/8}.$$ That is, the
+  probability that less than $nq/8$ of the anchor cups have fill at least $h$ is
   exponentially small in $n$, as desired.
 
 \end{proof}
@@ -1057,40 +1077,46 @@ good probability.
   \label{clm:xtreme}
   In Case 2, with probability at least $1- 1/\polylog(n)$, we achieve positive
   tilt $hn/8$ in the anchor set.
+  {\color{red} nope this just isnt what we prove. I think its an instant kill if we get this thing going. so really we say, In case 2 with probability at least 1/polylog n we instant kill}
 \end{clm}
 
 \begin{proof}
-  Consider a swapping-process where less than $1/2$ of the cups $c\in B$
-  have $\fil(c) \ge -h$.
+  Consider a swapping-process on which the filler does a storing-operation and
+  at least half of the cups $c \in B$ have $\fil(c) < -h$.
 
-  % RIP this totally doesn't take into account that B might start with neg fill.
+  Let $Y_1,Y_2,\ldots, Y_\beta$ be the positive tilts of a randomly selected subset of $\beta$
+  cups from $B$, with all subsets equally likely, where $\beta \ge \Omega(n/\lg\lg n)$. 
+  Let $X$ be a randomly chosen cup from $B$, with all cups equally likely.
+  Note that for any $i$, $$\E[Y_i] = \E[\tilt(X)] = \frac{1}{2}\E[|\fil(X)|] \ge h/2$$ 
+  because we are give that there is a set of at least $n/4$ cups with average
+  fill more negative than $-h$, which implies that there must be positive tilt
+  at least $nh/4$ in some set of cups to offset the negative mass. 
+  {\color{red} I think we're assuming that $\mu(B) = 0$ here. We can fix this easily,
+  I think, by selecting $X$ is drawn from $A\cup B$, and also $Y$ drawn from
+  $A\cup B$}
 
-  %! oh crap and fill is sinking! make sure it doesn't sink too much!!!
-  We assume for simplicity that the average fill of $B$ is $0$. In reality this
-  is not the case, but by a Hoeffding bound and the fact that overpowered cups
-  don't exist, the fill is really tightly concentrated around $0$, so this is
-  almost without loss of generality.
-
-  Let $Y_i$ be the positive tilt of a randomly chosen cup at the start of the
-  $i$-th swapping process. {\color{red}Note that the $Y_i$ are not
-  really independent, but it is probably ok}. Note that $0\le Y_i \le hn/\lg\lg
-  n$.
-
-  We have
-  $$\E[\tilt(X)] = \frac{1}{2}\E[|\fil(X)|] \ge h$$
-  because negative tilt is at least $nh/2$ and positive tilt must oppose this.
+  We apply Hoeffding's Inequality for samples drawn with replacement (stated in
+  Corollary \ref{cor:hoeffdingwreplacement}) to $\sum_{i=1}^\beta Y_i$. Note
+  that $0\le Y_i \le h\sqrt{n}/\lg\lg n$, as positive tilt is
+  non-negative, and as there are no overpowered cups (without loss of
+  generality). 
   
-  Now we have, by Hoeffding's inequality, that 
-  $$P\left(\Big|\frac{1}{n/2} \sum_{i=1}^{n/2} (Y_i - \E[Y_i])\Big|\ge h/2
-  \right) \le$$
-  $$2\exp\left(-\frac{n(h/2)^2}{(\sqrt{hn/\lg\lg n})^2}\right) $$
-  $$P\left(\frac{1}{n/2}\sum_{i=1}^{n/2} Y_i \le h/4\right) \le 1/\polylog(n) $$
+  Thus we have, 
+  \begin{align*}
+  P\left(\frac{1}{\beta} \sum_{i=1}^{\beta} (Y_i - \E[Y_i]) \le -h/4 \right) \le
+  \exp\left(-\frac{2\beta(h/4)^2}{(h\sqrt{n}/\lg\lg n)^2}\right).
+  \end{align*}
+  Simplifying this gives,
+  $$P\left(\sum_{i=1}^{\beta} Y_i \le \beta h/4\right) \le \frac{1}{\polylog(n)}.$$
 
 \end{proof}
+
   By Claim \ref{clm:reg} and Claim \ref{clm:xtreme}, in both Case 1 and Case 2,
-  we achieve, with probability at least $1-1/\polylog n$,
-  positive tilt at least $nc$ in the anchor set for some constant $c$, which is
-  a function of $h$. Using the positive tilt, setting the number of processors
+  we achieve, with probability at least $1-1/\polylog n$, the filler achieves
+  positive tilt at least $nc_0$ in the anchor set for some constant $c_0$ (which is
+  a function of $h$). 
+
+  Using the positive tilt, setting the number of processors
   to $1$, the filler can obtain high fill in a set of $nc$ \emph{known} cups.
   In particular, the filler chooses a set of $nc$ cups randomly, which by
   Hoeffding's Inequality will have average fill close to $0$, and then the
