@@ -67,7 +67,7 @@
 
   We investigate a new variant of the classic multi-processor cup game, which
   we call the \defn{variable-processor cup game}, in which the resources of the
-  emptier and filler are variable. In particular, in the variable processor cup
+  emptier and filler are variable. In particular, in the variable-processor cup
   game the filler is allowed to change $p$ at the beginning of each round. 
   Although the modification to allow variable resources seems small, we will
   show that it drastically alters the outcome of the game.
@@ -298,7 +298,7 @@ $p$ cups. \footnote{
 
   Then, there exists an adaptive filling strategy that achieves backlog $f'(n)$ satisfying
   $$f'(n) \ge (1-\delta)\sum_{\ell= 0}^{L} f((1-\delta)\delta^\ell n)$$
-  and $f'(n) \ge 1$, in the variable processor cup game on $n\ge n_0$ cups.
+  and $f'(n) \ge 1$, in the variable-processor cup game on $n\ge n_0$ cups.
 \end{lemma}
 \begin{proof}
   The basic idea of this analysis is as follows:
@@ -940,18 +940,19 @@ Hence, we can assume without loss of generality that no cup is ever
 overpowered. 
 
 Now we detail how to achieve Step 1.
-We set apart a constant fraction $\alpha = n/1000$ of the cups in $A$, which we
-call the \defn{storage block}. Let $\gamma = 2\lg\lg n$; we will store between
-$\gamma -\gamma/2$ and $\gamma + \gamma/2$ sets of $\beta = \alpha / (\gamma +
+We set apart a constant fraction $\alpha n= n/1000$ of the cups in $A$, which we
+call the \defn{storage block}. Let $\gamma = (\lg\lg n)^{1/3}$; we will store between
+$\gamma -\gamma/2$ and $\gamma + \gamma/2$ sets of $\beta = \alpha n / (\gamma +
 \gamma/2)$ randomly chosen cups at certain randomly chosen rounds.
 For each anchor cup $c$ we will perform a procedure called a \defn{swapping-process}. 
-With probability $\frac{\gamma}{n/2}$ the swapping-processes consists of what
+With probability $\frac{2\gamma}{n/2}$ the swapping-processes consists of what
 we term a \defn{storing-operation}; in a storing-operation the filler takes a 
 random subset of $\beta$ cups from $B$ and swaps it into the storage block.
 Note that, by a Chernoff bound, the probability that the number of
 swapping-processes where we perform a storing-operation lies within $\pm
-\gamma/2$ of its expectation $\gamma$ is at least $1-2e^{-n(\lg\lg n)^2}$,
-which is much better than the probability of success that we need.
+\gamma/2$ of its expectation $\gamma$ is at least $1-2e^{-n(\gamma/2)^2}$,
+which is better than exponentially small in $n$, a much better than the
+probability of success that we need.
 Thus we assume that the number of swapping-processes that consist of a
 storing-operation is between $\gamma- \gamma/2$ and $\gamma+\gamma/2$.
 
@@ -1076,8 +1077,7 @@ good probability.
 \begin{clm}
   \label{clm:xtreme}
   In Case 2, with probability at least $1- 1/\polylog(n)$, we achieve positive
-  tilt $hn/8$ in the anchor set.
-  {\color{red} nope this just isnt what we prove. I think its an instant kill if we get this thing going. so really we say, In case 2 with probability at least 1/polylog n we instant kill}
+  tilt $n h\alpha/48 \ge Omega(n)$ in the anchor set.
 \end{clm}
 
 \begin{proof}
@@ -1091,9 +1091,8 @@ good probability.
   because we are give that there is a set of at least $n/4$ cups with average
   fill more negative than $-h$, which implies that there must be positive tilt
   at least $nh/4$ in some set of cups to offset the negative mass. 
-  {\color{red} I think we're assuming that $\mu(B) = 0$ here. We can fix this easily,
-  I think, by selecting $X$ is drawn from $A\cup B$, and also $Y$ drawn from
-  $A\cup B$}
+  {\color{red} We're assuming that $\mu(B) = 0$ here; we need to prove
+  that this is WLOG by Hoeffding}
 
   We apply Hoeffding's Inequality for samples drawn with replacement (stated in
   Corollary \ref{cor:hoeffdingwreplacement}) to $\sum_{i=1}^\beta Y_i$. Note
@@ -1107,7 +1106,30 @@ good probability.
   \exp\left(-\frac{2\beta(h/4)^2}{(h\sqrt{n}/\lg\lg n)^2}\right).
   \end{align*}
   Simplifying this gives,
-  $$P\left(\sum_{i=1}^{\beta} Y_i \le \beta h/4\right) \le \frac{1}{\polylog(n)}.$$
+  $$P\left(\frac{1}{\beta}\sum_{i=1}^{\beta} Y_i \le h/4\right) \le \frac{1}{\polylog(n)}.$$
+
+  Now we will show that with probability at least $1-1/\polylog(n)$ there are
+  at least $\gamma/4$ swapping-processes on which the filler does a
+  storing-operation.
+  Recall that at least $\gamma/2$ storing-operations happen. Choose a random
+  set of $\gamma/2$ of the storing-operations that happen. Note that the
+  distribution of these sets will clearly be identical to the distribution we
+  would get if we simply selected a random subset of $\gamma/2$ of the
+  swapping-process, or equivalently, if we had sampled $\gamma/2$ of the
+  swapping-processes sampling without replacement. Let $Z_i$ be the indicator
+  random variable for whether or not the $i$-th of these swapping-processes occurs on a round
+  where at least half of the cups $c \in B$ have $\fil(c) < -h$.
+  Clearly $\E\left[\sum_{i=1}^{\gamma/2} Z_i\right] \ge \gamma/4.$ 
+  Then a Chernof bound gives that
+  $$P\left(\sum_{i=1}^{\gamma/2} Z_i \ge \gamma/8 \right) \ge 1-e^{-2\gamma/2 (\gamma/8)^2},$$
+  and recalling that $\gamma=(\lg\lg n)^{1/3}$ this simplifies to 
+  $$P\left(\sum_{i=1}^{\gamma/2} Z_i \ge \gamma/8 \right) \ge 1-\frac{1}{\polylog(n)}.$$
+
+  Combining these, with probability at least
+  $(1-1/\polylog(n))(1-1/\polylog(n)) = 1-1/\polylog(n)$ we achieve positive
+  tilt at least $\beta h/4$ in at least $\gamma/8$ sets of $\beta$ cups. In
+  total, this means that means we have positive tilt $\beta\gamma h/32 =
+  \frac{\alpha n}{(3/2)\gamma}\gamma h/32 = n\alpha h / 48 \ge \Omega(n)$ in the anchor set.
 
 \end{proof}
 
@@ -1139,23 +1161,42 @@ good probability.
 
 \begin{lemma}[The Oblivious Amplification Lemma]
   \label{lem:obliviousAmplification}
-  Given an oblivious filling strategy for achieving backlog $f(n)$ in the
-  variable-processor cup game on $n$ cups that succeeds with probability at
-  least $1/2$, there exists a strategy for achieving backlog 
-  $$f'(n) \ge \frac{1}{32}(f(n/2) + f(n/4) + f(n/8) + \cdots) $$ that succeeds
-  with constant probability.
+  Let $f$ be an oblivious filling strategy that achieves backlog $f(n)$ in the
+  variable-processor cup game on $n$ cups with constant probability (relative
+  to average fill, with negative fill allowed). Let $\delta \in (0,1)$ be a
+  parameter. Then, there exists an adaptive filling strategy that, with
+  constant probability, either achieves backlog $$f'(n) \ge
+  (1-\delta)\left(f((1-\delta)n) + f((1-\delta)\delta n)\right)$$ or achieves
+  backlog at least $\Omega(\poly(n))$ in the variable processor cup game on $n$
+  cups.
 \end{lemma}
 \begin{proof}
-  We essentially perform the same proof as Proposition
-  \ref{prop:obliviousBase}, but some new issues arise, which we proceed to
-  highlight and address. 
+  Note that the statement of Lemma \ref{lem:obliviousAmplification} is very
+  similar to the statement of Lemma \ref{lem:adaptiveAmplification}.
+  We have made a few simplifications, such as not allowing more than $1$
+  ``level of recursion", for simplifying the proof, at no cost to the final
+  backlog that we will derive.
+  The more major deviation from the Adaptive Amplification Lemma, is of course
+  that the filler is oblivious in this case. This necessitates working with
+  functions that only succeed at achieving the desired backlog with certain
+  probabilities. 
+  Nevertheless, the proof is remarkably similar to the proof of Lemma \ref{lem:adaptiveAmplification}.
+  We now establish the Lemma.
+
+  First we establish some important facts.
+
+  Again, we call a cup \defn{overpowered} if it has fill at least $h\sqrt{n} /
+  \lg\lg n$. As in Proposition \ref{prop:obliviousBase}, without loss of
+  generality there are no overpowered cups, because existence of an overpowered
+  cup means that we already have $\poly(n)$ backlog.
+
+  Let a cup be \defn{verysad} if it has fill $< -h\sqrt{n}/\lg\lg n$.
 
 \begin{clm}
-  Let a cup be \defn{verysad} if it has fill $< -nh/\lg\lg n$.
-  WLOG there are no verysad cups. 
+  Without loss of generality there are no verysad cups. 
 \end{clm}
 \begin{proof}
-  First note that because WLOG there are no overpowered cups, there fewer than $n/2$ verysad cups.
+  First note that because there are no overpowered cups, there fewer than $n/2$ verysad cups.
 
   Consider 2 cases:
   \begin{itemize}
@@ -1209,21 +1250,31 @@ These concerns resolved, the exact same argument as in Proposition
 \begin{corollary}
   \label{cor:obliviousPoly}
   There is an oblivious filling strategy for the variable-processor cup game on
-  $n$ cups that achieves backlog $2^{\Omega(\sqrt{\log n})}$ in running time
-  $O(n)$
+  $n$ cups that achieves backlog at least $2^{\Omega(\sqrt{\log n})}$ in
+  running time $O(n)$ with constant probability.
 \end{corollary}
 \begin{proof}
-  We must reduce want to reduce $\log^2 n$ to $\log n$ to achieve the
-  appropriate running-time, so we reduce $n$ to $n' = 2^{\sqrt{\log n}}$. This
-  detail taken care of we apply exactly the same recursive construction of
-  $f_{\theta(\log n)}$ as in Corollary \ref{cor:adaptivePoly}, but using
+  Given the Oblivious Amplification Lemma we could try to apply the same
+  strategy as outlined in the proof of Corollary \ref{cor:adaptivePoly} 
+  to achieve backlog $\Omega(n^{1-\epsilon})$ for constant $\epsilon >0$ in time $2^{O(\log^2 n)}$.
+  Because of our definition of an overpowered cup as a cup with fill at least
+  $\tilde{\Omega}(\sqrt{n})$, we can't get quite as close to linear as an
+  adaptive filer could. However, the more pressing problem is that of running
+  time: randomized algorithms are traditionally supposed to have polynomial-running time.
+  By artificially reducing $n$, i.e. ignoring some portion of the cups, we can
+  get an algorithm that achieves high backlog, but in polynomial time.
+  In particular, we want to choose a subset of $n'$ of the cups to focus on,
+  where $2^{O(\log^2 n')} = O(n)$. An appropriate choice is $n' = 2^{\sqrt{\log n}}$.
+
+  With $n'$ chosen, we apply the exact same strategy as given in the paragraph
+  in the proof of Corollary on the $2^{O(\log^2 n)}$-time construction for
+  achieving backlog $\Omega(n^{1-\epsilon})$ for constant $\epsilon >0$, but using
   repeated application of the Oblivious Amplification Lemma rather than the
   Adaptive Amplification Lemma, which yields the disclaimer that the backlog is
   only achieved with constant probability.
-  So we achieve backlog $\Omega(2^{\log n'})$ in running time $O(2^{\log^2
+  Thus, we achieve backlog $\Omega(2^{\log n'})$ in running time $O(2^{\log^2
   n'})$. By design, expressing this in terms of $n$ we have running time $O(n)$
-  (randomized lower bounds are not supposed to take longer than $\poly(n)$
-  time), and as a consequence we get backlog $\Omega(2^{\sqrt{\log n}})$.
+  and backlog $\Omega(2^{\sqrt{\log n}})$.
 \end{proof}
 
 \section{Conclusion}
