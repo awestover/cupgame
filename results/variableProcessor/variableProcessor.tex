@@ -496,7 +496,11 @@ $p$ cups. \footnote{
   0$ in running time $2^{O(\log^2 n)}$. Both constructive arguments rely on
   repeated application of the Amplification Lemma.
   
-  \paragraph{Existential Argument}
+  \begin{proposition}
+    There exists a filling algorithm that achieves backlog
+    $\Omega(n^{1-\epsilon})$ for any constant $\epsilon > 0$.
+  \end{proposition}
+  \begin{proof}
   Let $\epsilon > 0$ be constant. By Claim \ref{clm:validchoices}, there is a
   valid constant setting of $\delta$; let $\delta \ll 1/2$ be appropriate
   constant. Let $f^*$ be the supremum over all filling strategies of the
@@ -519,8 +523,15 @@ $p$ cups. \footnote{
            &\ge cn_*^{1-\epsilon}
 \end{align*}
 which is a contradiction. Hence $f^*$ achieves backlog $cn^{1-\epsilon}$ for all $n$.
+    
+  \end{proof}
 
-\paragraph{Constructive Argument achieving backlog $\Omega(n^{1-\epsilon})$ (for constant $\epsilon > 0$) in time $2^{O(\log^2 n)}$}
+  \begin{proposition}
+    \label{prop:constructive_nepsil}
+    We can construct a filling strategy that achieves backlog
+    $\Omega(n^{1-\epsilon})$ for constant $\epsilon > 0$ in time $2^{O(\log^2 n)}$.
+  \end{proposition}
+  \begin{proof}
 It is desirable to have an algorithm for achieving this backlog with bounded
 running time; we now modify the existential argument to make it constructive, 
 which yields an algorithm for achieving backlog $cn^{1-\epsilon}$ on $n$ cups 
@@ -547,12 +558,14 @@ in finite running time. We again use constant $\epsilon > 0$ and appropriate con
   $g_{i+1}-g_i$ can only grow as $i$ grows.
 
   We claim the following regarding this construction:
-  \begin{equation}
+  \begin{clm}
     \label{clm:fikinduction}
-    f_i(k) \ge ck^{1-\epsilon} \text{ for all } k < g_i. \tag{*}
+  \begin{equation}
+    f_i(k) \ge ck^{1-\epsilon} \text{ for all } k < g_i. 
   \end{equation}
-  We shall prove Claim \ref{clm:fikinduction} by induction on $i$.
-
+  \end{clm}
+  \begin{proof}
+  We prove Claim \ref{clm:fikinduction} by induction on $i$.
   Claim \ref{clm:fikinduction} is true in the base case of $f_0$ by taking $c$
   sufficiently small, in particular small enough that $f_0(k) \ge
   ck^{1-\epsilon}$ holds for $k < g_0$.\footnote{Note: this is where it is
@@ -570,6 +583,7 @@ in finite running time. We again use constant $\epsilon > 0$ and appropriate con
     &\ge ck^{1-\epsilon},
   \end{align*}
   as desired. 
+  \end{proof}
 
   Note that $g_{i+1} \ge g_i + 1$ so by continuing this process we eventually
   reach some $f_{i_*}$ such that $f_{i_*}(n) \ge cn^{1-\epsilon}$.
@@ -590,8 +604,14 @@ in finite running time. We again use constant $\epsilon > 0$ and appropriate con
   {\color{red} ok, technically I'm ignoring integer problems in saying lets
   only do $O(\lg n)$ levels of recursion, it'll be enough. I should prove it.
 But for $\delta$ constant it seems pretty obvious.}
+    
+  \end{proof}
 
-  \paragraph{Constructive Argument for backlog $\Omega(n)$ in time $2^{O(n)}$}
+  \begin{proposition}
+    We can construct a filling algorithm that achieves backlog $\Omega(n)$ in
+    time $2^{O(n)}$.
+  \end{proposition}
+  \begin{proof}
   We describe a simple filling strategy that gives the desired backlog. Let
   $n_0 \le O(1)$ be a constant such that we can achieve backlog $1$ on $n_0$
   cups, and note that this is possible by Proposition \ref{prop:adaptiveBase}.
@@ -606,7 +626,8 @@ But for $\delta$ constant it seems pretty obvious.}
     (1-\delta)f((1-\delta)n) + 1, & \text{if } n\delta(1-\delta) > n_0\\
     0, \text{ else.}
   \end{cases}$$
-  Let $(1-\delta)^c = \delta$, let $\delta^2 n < n_0 < (1-\delta)^{2c-1} n$ by our choice of $\delta = O(1/n)$.
+  Let $(1-\delta)^c = \delta$, let $\delta^2 n < n_0 < (1-\delta)^{2c-1} n$ by
+  our choice of $\delta = O(1/n)$.
     We can get backlog 
     $$\sum_{i=1}^c (1-\delta)^i. $$
     To see this, consider a binary tree representing our algorithm. At every
@@ -635,6 +656,8 @@ But for $\delta$ constant it seems pretty obvious.}
     % Note that the Lambert-W function satisfies $W(x) = \ln x -\ln\ln x + o(1)$.
     % Using this, we can get a very loose lower bound of $\Omega(n^{1-2/\ln n})$,
     % although of course the expression with the $W$ in it is a better lower bound.
+    
+  \end{proof}
 
 
 \end{proof}
@@ -896,9 +919,10 @@ the smoothed greedy emptier, which is $(1, 0)$-greedy-like.
   There exists an oblivious filling strategy in the variable-processor cup game
   on $n$ cups that achieves backlog $\Omega(\log n)$ against a $(T,
   \Delta)$-greedy-like emptier (where $T, \Delta \le O(1)$ are constants
-  known to the filler), with probability at least $1-1/\polylog(n)$.
+  known to the filler), with constant probability.
 \end{proposition}
 \begin{proof}
+  {\color{red}
   Let $A$, the \defn{anchor} set, be a subset of the cups chosen uniformly at
   random from all subsets of size $n/2$ of the cups, and let $B$, the
   \defn{non-anchor} set, consist of the rest of the cups ($|B| = n/2$). Let $h
@@ -1148,15 +1172,20 @@ good probability.
   positive tilt at least $nc_0$ in the anchor set for some constant $c_0$ (which is
   a function of $h$). 
 
-  Using the positive tilt, setting the number of processors
-  to $1$, the filler can obtain high fill in a set of $nc$ \emph{known} cups.
-  In particular, the filler chooses a set of $nc$ cups randomly, which by
-  Hoeffding's Inequality will have average fill close to $0$, and then the
-  filler distributes a unit of water equally among these cups. The filler
-  continues until the average fill of that set of cups has increased by $h'$.
-  The filler uses one processor because it doesn't know how many cups the
-  positive tilt is concentrated in. Then the filler recurses on the set of $nc$ 
-  known cups with average fill.
+  Using the positive tilt, setting the number of processors to $1$, and
+  exploiting the greedy nature of the emptier, the filler can obtain high fill
+  in a set of $nc$ \emph{known} cups.
+
+  In particular, the filler chooses a set of $nc$ cups randomly.
+  % , which by Hoeffding's Inequality will have average fill close to $0$, 
+  With probability at least $1/2$ the average fill of $nc$ is positive.
+  The filler repeatedly distributes a unit of water equally among these $nc$ cups. 
+  The filler continues until the average fill of that set of cups has increased
+  by $h'$. The filler uses one processor because it doesn't know how many cups
+  the positive tilt is concentrated in. Then the filler recurses on the set of
+  $nc$ known cups with average fill.
+  % THIS IS HONESTLY BOGUS, the fill need not be concentrated in a small number
+  % of cups, so this only works against a (0, 0)-greedy emptier.
 
   Note that this transformation from a set with high positive tilt to a set of
   known cups with high positive average fill is the only part of the proof of
@@ -1167,6 +1196,13 @@ good probability.
   of $p$ cups, at a given setting of $p$. Extending Proposition
   \ref{prop:obliviousBase} to apply to non-greedy-like emptiers is an important
   open question.
+  }
+  {\color{blue}
+    Clearly, against a $(T, \Delta)$-greedy-like emptier, we can equalize the
+    fills of the cups by placing water uniformly among the water for a large
+    number of rounds. Crumb, we don't know how many rounds that would require.
+    smoothing is possible. then chernoff bound a bunch of single processor cup games.
+  }
 \end{proof}
 
 \begin{lemma}[The Oblivious Amplification Lemma]
@@ -1176,22 +1212,23 @@ good probability.
   to average fill, with negative fill allowed). Let $\delta \in (0,1)$ be a
   parameter. Then, there exists an adaptive filling strategy that, with
   constant probability, either achieves backlog $$f'(n) \ge
-  (1-\delta)\left(f((1-\delta)n) + f((1-\delta)\delta n)\right)$$ or achieves
-  backlog at least $\Omega(\poly(n))$ in the variable processor cup game on $n$
+  (1-\delta)\Big(f((1-\delta)n) + f((1-\delta)\delta n)\Big)$$ or achieves
+  backlog $\Omega(\poly(n))$ in the variable processor cup game on $n$
   cups.
 \end{lemma}
 \begin{proof}
+  {\color{cyan}
   Note that the statement of Lemma \ref{lem:obliviousAmplification} is very
   similar to the statement of Lemma \ref{lem:adaptiveAmplification}.
   We have made a few simplifications, such as not allowing more than $1$
-  ``level of recursion", for simplifying the proof, at no cost to the final
+  level of recursion, for simplifying the proof, at no cost to the final
   backlog that we will derive.
   The more major deviation from the Adaptive Amplification Lemma, is of course
   that the filler is oblivious in this case. This necessitates working with
   functions that only succeed at achieving the desired backlog with certain
   probabilities. 
-  Nevertheless, the proof is remarkably similar to the proof of Lemma \ref{lem:adaptiveAmplification}.
-  We now establish the Lemma.
+  Nevertheless, the proof is remarkably similar to the proof of Lemma
+  \ref{lem:adaptiveAmplification}. We now establish the Lemma.
 
   First we establish some important facts.
 
@@ -1227,7 +1264,7 @@ good probability.
 
   Recall the definition of an overpowered cup as a cup with fill $\ge nh / \lg \lg n$,
   and the fact that WLOG there are no overpowered cups.
-  So, If we randomly pick $B$ then this means that we are pretty good. 
+  So, If we randomly pick $B$ then his means that we are pretty good. 
   Formalizing this, let $X_i$ be the fill of the $n/2$-th randomly chosen cup
   for $B$. Unfortunately these are not quite independent events.
 
@@ -1245,7 +1282,7 @@ good probability.
 \end{proof}
 These concerns resolved, the exact same argument as in Proposition
 \ref{prop:obliviousBase} gives the desired result.
-
+}
 \end{proof}
 
 \begin{corollary}
@@ -1273,9 +1310,45 @@ These concerns resolved, the exact same argument as in Proposition
   repeated application of the Oblivious Amplification Lemma rather than the
   Adaptive Amplification Lemma, which yields the disclaimer that the backlog is
   only achieved with constant probability.
-  Thus, we achieve backlog $\Omega(2^{\log n'})$ in running time $O(2^{\log^2
-  n'})$. By design, expressing this in terms of $n$ we have running time $O(n)$
-  and backlog $\Omega(2^{\sqrt{\log n}})$.
+  Thus, we achieve backlog $\Omega(n')$ in running time $2^{O(\log^2
+  n')}$. By design, expressing this in terms of $n$ the filler achieves 
+  backlog $2^{\Omega(\sqrt{\log n})}$ in running time $O(n)$.
+
+  For completeness we -- briefly (as they are nearly identical) -- present the
+  ideas from Proposition \ref{prop:constructive_nepsil} in the randomized
+  context.
+
+  Fix constant $\epsilon > 0$ and choose appropriate constant $\delta$, as
+  mandated by Claim \ref{clm:validchoices}. Choose constant $c$, according to
+  an inequality to be specified later. We aim to achieve backlog
+  $c(n')^{1-\epsilon}$.
+  As before, we define a sequence of functions. First,
+  $$f_0(k) = 
+  \begin{cases} 
+    \lg k, & k\geq 1, \\
+    0 & \text{else.}
+  \end{cases}$$
+  Then, we define $f_i$ as the amplification of $f_{i-1}$ for $i \ge 1$, where
+  amplification is as defined in the Oblivious Amplification Lemma. 
+  However, this time the filling strategy $f_i$ achieves backlog $f_i(k)$ on
+  $k$ cups only with constant probability.
+  As before we define a sequence $g_i$ as 
+  $$ g_i = \begin{cases}
+    \lceil 1/\delta \rceil \gg 1,  & i = 0,\\
+    \lceil g_{i-1}/(1-\delta)\rceil -1 & i  \ge 1.
+  \end{cases} $$
+  Claim \ref{clm:fikinduction}, which states that 
+  $$f_i(k) \ge ck^{1-\epsilon} \text{ for all } k < g_i,$$
+  holds with no modifications required.
+
+  Again, because $g_i$ is increasing, we achieve the desired backlog
+  $c(n')^{1-\epsilon}$ in finite time. In particular, applying identical
+  arguments to those in Corollary \ref{cor:adaptivePoly}, we find that the
+  running time is $2^{O(\log^2 n')}$.
+
+  As stated earlier, by design of $n'$, this means we get backlog
+  $2^{\Omega(\sqrt{\log n})}$ in time $O(n)$.
+
 \end{proof}
 
 \section{Conclusion}
