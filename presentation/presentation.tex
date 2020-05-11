@@ -231,11 +231,16 @@ show that it drastically alters the outcome of the game.
 \end{frame}
 
 \begin{frame}[t]{Lower Bound against Adaptive Filler}
-  Setting $\delta = O(1/n)$ and analyzing a filling strategy that  recursively
-  applies the Amplification Lemma we proved
+  Setting $\delta = O(1/n)$ -- which is quite extremal -- and recursively using
+  the Amplification Lemma we prove:
   \begin{corollary}
-    The filler can achieve backlog 
-    $$\Omega(n)$$
+    The filler can achieve backlog $\Omega(n)$ in running-time $2^{O(n)}$.
+  \end{corollary}
+  Using $\delta \le O(1)$ and a somewhat similar argument we get almost as good
+  backlog in quasi-polynomial time:
+  \begin{corollary}
+    The filler can achieve backlog $\Omega(n^{1-\epsilon})$ for constant
+    $\epsilon > 0$ of our choice in running-time $2^{O(\log^2 n)}$.
   \end{corollary}
 \end{frame}
 
