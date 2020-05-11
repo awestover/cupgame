@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70212" creator="Ipe 7.2.12">
-<info created="D:20200510195333" modified="D:20200511153040"/>
+<info created="D:20200511153740" modified="D:20200511154524"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -254,156 +254,198 @@ h
 <page>
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
-<path layer="alpha" matrix="1 0 0 1 32 0" stroke="black" pen="ultrafat">
-80 64 m
-80 64 l
-84 64 l
-84 64 l
+<path layer="alpha" stroke="black" pen="fat">
+160 432 m
+160 428 l
+336 428 l
+336 432 l
 h
 </path>
-<path matrix="1 0 0 1 -12 0" stroke="black" pen="ultrafat">
-92 64 m
-92 64 l
-96 64 l
-96 64 l
+<path stroke="black" pen="fat">
+160 416 m
+160 412 l
+304 412 l
+304 416 l
 h
 </path>
-<path matrix="1 0 0 1 168 0" stroke="black" pen="ultrafat">
-104 64 m
-104 64 l
-108 64 l
-108 64 l
+<path stroke="black" pen="fat">
+160 400 m
+160 396 l
+288 396 l
+288 400 l
 h
 </path>
-<path matrix="1 0 0 1 124 0" stroke="black" pen="ultrafat">
-116 64 m
-116 64 l
-120 64 l
-120 64 l
+<path stroke="black" pen="fat">
+160 384 m
+160 380 l
+272 380 l
+272 384 l
 h
 </path>
-<path matrix="1 0 0 1 80 0" stroke="black" pen="ultrafat">
-128 64 m
-128 64 l
-132 64 l
-132 64 l
+<path stroke="black" pen="fat">
+160 368 m
+160 364 l
+256 364 l
+256 368 l
 h
 </path>
-<path matrix="1 0 0 1 4 0" stroke="black" pen="ultrafat">
-140 64 m
-140 64 l
-144 64 l
-144 64 l
+<path stroke="black" pen="fat">
+160 352 m
+160 348 l
+240 348 l
+240 352 l
 h
 </path>
-<path matrix="1 0 0 1 24 0" stroke="black" pen="ultrafat">
-152 64 m
-152 64 l
-156 64 l
-156 64 l
+<path stroke="black" pen="fat">
+160 336 m
+160 332 l
+224 332 l
+224 336 l
 h
 </path>
-<path stroke="black" pen="ultrafat">
-80 64 m
-80 88 l
-84 88 l
-84 64 l
+<path stroke="black" pen="fat">
+160 320 m
+160 316 l
+208 316 l
+208 320 l
 h
 </path>
-<path matrix="1 0 0 1 20 0" stroke="black" pen="ultrafat">
-92 64 m
-92 88 l
-96 88 l
-96 64 l
+<path stroke="black" pen="fat">
+160 304 m
+160 300 l
+176 300 l
+176 304 l
 h
 </path>
-<path matrix="1 0 0 1 60 0" stroke="black" pen="ultrafat">
-116 64 m
-116 88 l
-120 88 l
-120 64 l
-h
+<path stroke="black" pen="fat">
+320 432 m
+320 428 l
+320 428 l
 </path>
-<path matrix="1 0 0 1 80 0" stroke="black" pen="ultrafat">
-128 64 m
-128 88 l
-132 88 l
-132 64 l
-h
+<path stroke="black" pen="fat">
+288 416 m
+288 412 l
 </path>
-<path matrix="1 0 0 1 100 0" stroke="black" pen="ultrafat">
-140 64 m
-140 88 l
-144 88 l
-144 64 l
-h
+<path stroke="black" pen="fat">
+272 400 m
+272 396 l
 </path>
-<path matrix="1 0 0 1 120 0" stroke="black" pen="ultrafat">
-152 64 m
-152 88 l
-156 88 l
-156 64 l
-h
+<path stroke="black" pen="fat">
+256 384 m
+256 380 l
 </path>
-<path stroke="black" pen="ultrafat">
-64 88 m
-64 64 l
-64 64 l
+<path stroke="black" pen="fat">
+240 368 m
+240 364 l
+240 364 l
 </path>
-<path stroke="black" pen="ultrafat">
-60 88 m
-68 88 l
+<path stroke="black" pen="fat">
+224 352 m
+224 348 l
 </path>
-<path stroke="black" pen="ultrafat">
-60 64 m
-68 64 l
+<path stroke="black" pen="fat">
+208 336 m
+208 332 l
+208 332 l
+208 332 l
+208 332 l
+208 336 l
 </path>
-<text matrix="1 0 0 1 -20 -4" transformations="translations" pos="52 76" stroke="black" type="label" width="9.379" height="14.479" depth="5.94" valign="baseline" size="LARGE" style="math">\frac{1}{n}</text>
-<path stroke="black" pen="ultrafat">
-64 88 m
-64 116 l
+<path stroke="black" pen="fat">
+192 320 m
+192 316 l
 </path>
-<path stroke="black" pen="ultrafat">
-60 116 m
-68 116 l
+<path stroke="turquoise" pen="fat">
+172 304 m
+172 300 l
 </path>
-<path stroke="black" pen="ultrafat">
-64 116 m
-64 148 l
+<path stroke="turquoise" pen="fat">
+304 456 m
+328 432 l
+328 432 l
 </path>
-<path stroke="black" pen="ultrafat">
-60 148 m
-68 148 l
+<path stroke="turquoise" pen="fat">
+304 456 m
+240 432 l
 </path>
-<path stroke="black" pen="ultrafat">
-64 148 m
-64 188 l
+<path stroke="turquoise" pen="fat">
+240 432 m
+224 416 l
+224 416 l
 </path>
-<path stroke="black" pen="ultrafat">
-60 188 m
-68 188 l
+<path stroke="turquoise" pen="fat">
+240 432 m
+296 416 l
 </path>
-<path stroke="black" pen="ultrafat">
-64 188 m
-64 240 l
+<path stroke="turquoise" pen="fat">
+224 416 m
+216 400 l
+216 400 l
 </path>
-<path stroke="black" pen="ultrafat">
-60 240 m
-68 240 l
+<path stroke="turquoise" pen="fat">
+224 416 m
+280 400 l
 </path>
-<path stroke="black" pen="ultrafat">
-64 240 m
-64 320 l
+<path stroke="turquoise" pen="fat">
+216 400 m
+208 384 l
+208 384 l
 </path>
-<path stroke="black" pen="ultrafat">
-60 320 m
-68 320 l
+<path stroke="turquoise" pen="fat">
+216 400 m
+264 384 l
 </path>
-<path matrix="1 0 0 1 52 0" stroke="black" pen="ultrafat">
-92 64 m
-92 88 l
-96 88 l
-96 64 l
+<path stroke="turquoise" pen="fat">
+208 384 m
+196 368 l
+196 368 l
+</path>
+<path stroke="turquoise" pen="fat">
+208 384 m
+248 368 l
+</path>
+<path stroke="turquoise" pen="fat">
+196 368 m
+188 352 l
+</path>
+<path stroke="turquoise" pen="fat">
+196 368 m
+232 352 l
+232 352 l
+</path>
+<path stroke="turquoise" pen="fat">
+188 352 m
+176 336 l
+</path>
+<path stroke="turquoise" pen="fat">
+188 352 m
+216 336 l
+</path>
+<path stroke="turquoise" pen="fat">
+176 336 m
+172 320 l
+</path>
+<path stroke="turquoise" pen="fat">
+176 336 m
+200 320 l
+</path>
+<path stroke="black" pen="fat">
+172 320 m
+168 304 l
+</path>
+<path stroke="black" pen="fat">
+172 304 m
+172 300 l
+</path>
+<path stroke="turquoise" pen="fat">
+172 320 m
+168 304 l
+</path>
+<path stroke="black" pen="fat">
+160 456 m
+160 452 l
+336 452 l
+336 456 l
 h
 </path>
 </page>

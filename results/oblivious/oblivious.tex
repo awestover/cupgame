@@ -63,42 +63,134 @@ Intuitively, a $\Delta$-greedy-like emptier has a $\pm \Delta$ range within it i
 allowed to ``not be greedy". Note that a perfectly greedy emptier is $0$-greedy-like.
 Greedy and greedy-like emptiers are of great interest.
 
-We only prove lower bounds for backlog that the filler can achieve against
-$\Delta$-greedy-like emptiers, where $\Delta \le O(1)$; whether, and if so how,
-these results can be extended to a more general class of emptiers is an
+In the randomized setting we are only able to prove lower bounds for backlog
+against $\Delta$-greedy-like emptiers, for $\Delta \le O(1)$; whether or not
+our results can be extended to a more general class of emptiers is an
 interesting open question. 
 
-We say that a cup configuration is \defn{smooth} if every cup has fill in the
-interval $[-\Delta -1, \Delta +1]$. 
 Let the \defn{anti-backlog} of a set $S$ of cups be $-\min_{c\in S} \fil(c)$;
 note that anti-backlog is non-negative, and is the absolute value of the fill
 of the cup with lowest fill. 
 
+Let $R_\Delta = 2 + \Delta$. We say that a cup configuration is
+$\Delta$-\defn{smooth} if all cups have fill in $[-2R_\Delta-\Delta,
+2R_\Delta+\Delta]$. 
+
 First we prove a key property of greedy-like emptiers.
 \begin{proposition}
-  Given a cup configuration with positive tilt $T$, an oblivious filler can, in
-  running time $T$, achieve a smooth configuration of cups against a
-  $\Delta$-greedy-like emptier ($\Delta \le O(1)$).
+  Given a cup configuration with backlog and anti-backlog both at most $T$, an
+  oblivious filler can, in running time $2T$, achieve a $\Delta$-smooth
+  configuration of cups against a $\Delta$-greedy-like emptier.
 \end{proposition}
+
 \begin{proof}
-  The filler sets $p=n/2$, and equally distributes fill among the cups.
-  As long as there is some cup with fill above $\Delta+1$ the emptier must
-  empty from a cup with fill at least $1$. Thus, until all cups have fill below
-  $\Delta+1$ the positive tilt of the set of cups decreases by $n/2$ every round.
-  However, the positive tilt also increases, by at most $(n-1)/2$ (which is
-  achieved if there is a single cup with negative fill). The net change in
-  positive tilt is thus a decrease of at least $1/2$.
-  It is impossible for the positive tilt to decrease by $1/2$ for more than
-  $2T$ rounds, hence by some round $i \le 2T$ all cups will have fill at most
-  $\Delta+1$.
+  Let $\ell_t$ be anti-backlog on round $t$, $u_t$ be backlog on round $t$. Let
+  $L_t$ be the set of cups on round $t$ with fill in $[l_t, l_t+R_\Delta]$, and let
+  $U_t$ be the set of cups on round $t$ with fill in $[u_t-R_\Delta, u_t]$.
 
-  Furthermore the anti-backlog cannot have started any higher than $T$, and the
-  fill of negative cups increases by $1/2$ each time.
+  It is useful to think of $U_t$ as the union of three disjoint intervals: an
+  interval of length $1$, followed by a ``buffer" interval of length $\Delta$,
+  followed by another interval of length $1$. Note the key property that if a
+  cup with fill in $[u_t-R_\Delta, u_t-R_\Delta+1]$ is emptied from, then all
+  cups with fill in $[u_t-1, u_t]$ must also be emptied from, because of the
+  ``buffer" interval. The symmetric property holds for $L_t$.
 
-  {\color{red}I'm pretty close here. More importantly, the proposition is true.
-  At least so I believe. Maybe need to change the range to be a bit wider.}
+  \begin{clm}
+    Because the emptier is $\Delta$-greedy-like we have
+    $$U_{t} \subseteq U_{t+1}, L_t \subseteq L_{t+1}.$$
+  \end{clm}
+  \begin{proof}
+    Consider a cup $c\in U_t$.
+
+    If $\fil_{t+1}(c) = \fil_t(c)+1/2$, then clearly $c \in U_{t+1}$, because
+    $u_{t+1}\le u_t+1/2$, so $\fil_{t+1}(c)\ge u_{t+1} -R_\Delta$.
+
+    On the other hand, if $\fil_{t+1}(c) = \fil_t(c) - 1/2$, we consider two cases.
+    \begin{itemize}
+      \item If $\fil_t(c) \ge u_t-R_\Delta +1$, then $$\fil_{t+1}(c) \ge
+        u_t-R_\Delta+1/2\ge u_{t+1}-R_\Delta.$$
+      \item On the other hand, if $\fil_t(c) < u_t-R_\Delta+1$, then every cup
+        with fill in $[u_t-1, u_t]$ must have been emptied
+        from. The fullest cup at round $t+1$ is the same as the fullest cup on
+        round $t$, because the fills of all cups with fill in
+        $[u_t-1, u_t]$ have decreased by $1/2$, and no cup with fill less than
+        $u_t-1$ had fill increase by more than $1/2$. Hence $u_{t+1} = u_t -1/2$.
+        Thus we again have $\fil_{t+1}(c) \ge u_{t+1}-R_\Delta$.
+    \end{itemize}
+
+    The argument for $L_t \subseteq L_{t+1}$ is essentially identical.
+  \end{proof}
+
+  {\color{red} (red because this is the pure greedy argument)
+  Note that so long as $|U_t| \le n/2$ for all $c\in U_t$ we have
+  $\fil_{t+1}(c) = \fil_t(c) - 1/2$. Combined with the fact that no cups ever
+  exit $U_t$ after entering, and the restriction on the initial backlog, this
+  implies that there is some $t_U \le 2T$, for which for $t\ge t_U$, $|U_t| >
+  n/2$. By identical reasoning, there is a time $t_L \le 2T$, for which for $t
+  \ge t_L$, $|L_t| > n/2$. Let $t_0 = \max(t_L, t_U)$. For times $t \ge t_0$ we
+  must have $U_t \cap L_t \neq \varnothing$. Let a cup $c \in L_t \cap U_t$. We
+  have $l_t \le \fil_t(c) \le l_t+1$ and $u_t-1 \le \fil_t(c) \le u_t$.
+  Combined, this implies that $u_t - l_t \le 2$. Hence we have the fills of all
+  the cups are in $[-2, 2]$.
+}
 
 \end{proof}
+
+
+% First we establish the special case where the filler is purely greedy (i.e.
+% $0$-greedy-like). The extension to the general case will be easy.
+% \begin{proof}
+%   Let $l_t$ be anti-backlog on round $t$, $u_t$ be backlog on round $t$. Let
+%   $L_t$ be the set of cups on round $t$ with fill in $[l_t, l_t+1]$, and let
+%   $U_t$ be the set of cups on round $t$ with fill in $[u_t-1, u_t]$.
+
+%   We claim that $U_t \subset U_{t+1}$ because the emptier is greedy.
+%   Consider a cup $c\in U_t$.
+%   \begin{itemize}
+%     \item If $c$ is one of the $n/2$ fullest cups, then $\fil_{t+1}(c) =
+%       \fil_t(c) -1/2$, and $u_{t+1} \le \max(u_t-1/2, \fil(c)+1/2)$. We know
+%       that $\fil_{t+1}(c) \ge u_t -1 -1/2,$ and $\fil_{t+1}(c) \ge \fil_t(c) +
+%       1/2 -1$ so in either case of the $\max$ we have $c \in U_{t+1}$.
+%     \item On the other hand, if $c$ isn't one of the $n/2$ fullest cups, then
+%       $\fil_{t+1}(c) = \fil_t(c) + 1/2 \in [u_t-1/2, u_t+1/2]$, and $u_{t+1}\le
+%       u_t + 1/2 $ so also $c \in U_{t+1}$.
+%   \end{itemize}
+
+%   Hence we get that\footnote{The reasoning for $L_t$ is identical to the reasoning for $U_t$}
+%   $$U_{t+1} \subset U_t, \,\, L_{t+1} \subset L_t.$$
+
+%   Note that so long as $|U_t| \le n/2$ for all $c\in U_t$ we have
+%   $\fil_{t+1}(c) = \fil_t(c) - 1/2$. Combined with the fact that no cups ever
+%   exit $U_t$ after entering, and the restriction on the initial backlog, this
+%   implies that there is some $t_U \le 2T$, for which for $t\ge t_U$, $|U_t| >
+%   n/2$. By identical reasoning, there is a time $t_L \le 2T$, for which for $t
+%   \ge t_L$, $|L_t| > n/2$. Let $t_0 = \max(t_L, t_U)$. For times $t \ge t_0$ we
+%   must have $U_t \cap L_t \neq \varnothing$. Let a cup $c \in L_t \cap U_t$. We
+%   have $l_t \le \fil_t(c) \le l_t+1$ and $u_t-1 \le \fil_t(c) \le u_t$.
+%   Combined, this implies that $u_t - l_t \le 2$. Hence we have the fills of all
+%   the cups are in $[-2, 2]$.
+
+% \end{proof}
+
+% \begin{proof}
+%   The filler sets $p=n/2$, and equally distributes fill among the cups.
+%   As long as there is some cup with fill above $\Delta+1$ the emptier must
+%   empty from a cup with fill at least $1$. Thus, until all cups have fill below
+%   $\Delta+1$ the positive tilt of the set of cups decreases by $n/2$ every round.
+%   However, the positive tilt also increases, by at most $(n-1)/2$ (which is
+%   achieved if there is a single cup with negative fill). The net change in
+%   positive tilt is thus a decrease of at least $1/2$.
+%   It is impossible for the positive tilt to decrease by $1/2$ for more than
+%   $2T$ rounds, hence by some round $i \le 2T$ all cups will have fill at most
+%   $\Delta+1$.
+
+%   Furthermore the anti-backlog cannot have started any higher than $T$, and the
+%   fill of negative cups increases by $1/2$ each time.
+
+%   {\color{red}I'm pretty close here. More importantly, the proposition is true.
+%   At least so I believe. Maybe need to change the range to be a bit wider.}
+
+% \end{proof}
 
 \begin{proposition}
   \label{prop:obliviousBase}
@@ -260,72 +352,6 @@ single processor cup game into the anchor set.
 \end{lemma}
 \begin{proof}
   
-\end{proof}
-
-
-\begin{corollary}
- \label{cor:obliviousPoly}
-  There is an oblivious filling strategy for the variable-processor cup game on
-  $n$ cups that achieves backlog at least $2^{\Omega(\sqrt{\log n})}$ in
-  running time $O(n)$ with constant probability.
-\end{corollary}
-\begin{proof}
-  Given the Oblivious Amplification Lemma we could try to apply the same
-  strategy as outlined in the proof of Corollary \ref{cor:adaptivePoly} 
-  to achieve backlog $\Omega(n^{1-\epsilon})$ for constant $\epsilon >0$ in time $2^{O(\log^2 n)}$.
-  Because of our definition of an overpowered cup as a cup with fill at least
-  $\tilde{\Omega}(\sqrt{n})$, we can't get quite as close to linear as an
-  adaptive filer could. However, the more pressing problem is that of running
-  time: randomized algorithms are traditionally supposed to have polynomial-running time.
-  By artificially reducing $n$, i.e. ignoring some portion of the cups, we can
-  get an algorithm that achieves high backlog, but in polynomial time.
-  In particular, we want to choose a subset of $n'$ of the cups to focus on,
-  where $2^{O(\log^2 n')} = O(n)$. An appropriate choice is $n' = 2^{\sqrt{\log n}}$.
-
-  With $n'$ chosen, we apply the exact same strategy as given in the paragraph
-  in the proof of Corollary on the $2^{O(\log^2 n)}$-time construction for
-  achieving backlog $\Omega(n^{1-\epsilon})$ for constant $\epsilon >0$, but using
-  repeated application of the Oblivious Amplification Lemma rather than the
-  Adaptive Amplification Lemma, which yields the disclaimer that the backlog is
-  only achieved with constant probability.
-  Thus, we achieve backlog $\Omega(n')$ in running time $2^{O(\log^2
-  n')}$. By design, expressing this in terms of $n$ the filler achieves 
-  backlog $2^{\Omega(\sqrt{\log n})}$ in running time $O(n)$.
-
-  For completeness we -- briefly (as they are nearly identical) -- present the
-  ideas from Proposition \ref{prop:constructive_nepsil} in the randomized
-  context.
-
-  Fix constant $\epsilon > 0$ and choose appropriate constant $\delta$, as
-  mandated by Claim \ref{clm:validchoices}. Choose constant $c$, according to
-  an inequality to be specified later. We aim to achieve backlog
-  $c(n')^{1-\epsilon}$.
-  As before, we define a sequence of functions. First,
-  $$f_0(k) = 
-  \begin{cases} 
-    \lg k, & k\geq 1, \\
-    0 & \text{else.}
-  \end{cases}$$
-  Then, we define $f_i$ as the amplification of $f_{i-1}$ for $i \ge 1$, where
-  amplification is as defined in the Oblivious Amplification Lemma. 
-  However, this time the filling strategy $f_i$ achieves backlog $f_i(k)$ on
-  $k$ cups only with constant probability.
-  As before we define a sequence $g_i$ as 
-  $$ g_i = \begin{cases}
-    \lceil 1/\delta \rceil \gg 1,  & i = 0,\\
-    \lceil g_{i-1}/(1-\delta)\rceil -1 & i  \ge 1.
-  \end{cases} $$
-  Claim \ref{clm:fikinduction}, which states that 
-  $$f_i(k) \ge ck^{1-\epsilon} \text{ for all } k < g_i,$$
-  holds with no modifications required.
-
-  Again, because $g_i$ is increasing, we achieve the desired backlog
-  $c(n')^{1-\epsilon}$ in finite time. In particular, applying identical
-  arguments to those in Corollary \ref{cor:adaptivePoly}, we find that the
-  running time is $2^{O(\log^2 n')}$.
-
-  As stated earlier, by design of $n'$, this means we get backlog
-  $2^{\Omega(\sqrt{\log n})}$ in time $O(n)$.
 \end{proof}
 
 \end{document}

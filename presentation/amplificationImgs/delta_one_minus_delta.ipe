@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70212" creator="Ipe 7.2.12">
-<info created="D:20200510195333" modified="D:20200511153040"/>
+<info created="D:20200511152007" modified="D:20200511152403"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -254,157 +254,69 @@ h
 <page>
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
-<path layer="alpha" matrix="1 0 0 1 32 0" stroke="black" pen="ultrafat">
-80 64 m
-80 64 l
-84 64 l
-84 64 l
+<path layer="alpha" stroke="black" pen="fat">
+128 512 m
+448 512 l
+</path>
+<path stroke="black" pen="fat">
+128 640 m
+128 512 l
+192 512 l
+192 640 l
 h
 </path>
-<path matrix="1 0 0 1 -12 0" stroke="black" pen="ultrafat">
-92 64 m
-92 64 l
-96 64 l
-96 64 l
+<path stroke="black" pen="fat">
+192 512 m
+192 480 l
+448 480 l
+448 512 l
 h
 </path>
-<path matrix="1 0 0 1 168 0" stroke="black" pen="ultrafat">
-104 64 m
-104 64 l
-108 64 l
-108 64 l
+<path stroke="black" pen="fat">
+112 512 m
+464 512 l
+112 512 l
+112 512 l
+</path>
+<text matrix="1 0 0 1 124 -12" transformations="translations" pos="96 576" stroke="blue" type="label" width="149.373" height="12.896" depth="4.29" valign="baseline" size="LARGE" style="math">+(1-\delta)(f((1-\delta)n)</text>
+<text matrix="1 0 0 1 -32 0" transformations="translations" pos="48 544" stroke="black" type="label" width="81.643" height="12.896" depth="4.29" valign="baseline" size="LARGE" style="math">f((1-\delta)n)</text>
+<path stroke="black" pen="fat">
+104 640 m
+104 480 l
+104 480 l
+</path>
+<path stroke="black" pen="fat">
+100 480 m
+108 480 l
+</path>
+<path stroke="black" pen="fat">
+100 640 m
+108 640 l
+</path>
+<path stroke="black" pen="fat" arrow="normal/normal">
+208 516 m
+208 636 l
+</path>
+<path stroke="black" pen="fat" arrow="normal/normal">
+464 504 m
+464 480 l
+</path>
+<text matrix="1 0 0 1 -8 -8" transformations="translations" pos="480 496" stroke="red" type="label" width="103.144" height="12.896" depth="4.29" valign="baseline" size="LARGE" style="math">-\delta f((1-\delta)n)</text>
+<path stroke="black" fill="blue" pen="fat">
+128 640 m
+128 512 l
+192 512 l
+192 640 l
 h
 </path>
-<path matrix="1 0 0 1 124 0" stroke="black" pen="ultrafat">
-116 64 m
-116 64 l
-120 64 l
-120 64 l
+<path stroke="black" fill="red" pen="fat">
+192 512 m
+192 480 l
+448 480 l
+448 512 l
 h
 </path>
-<path matrix="1 0 0 1 80 0" stroke="black" pen="ultrafat">
-128 64 m
-128 64 l
-132 64 l
-132 64 l
-h
-</path>
-<path matrix="1 0 0 1 4 0" stroke="black" pen="ultrafat">
-140 64 m
-140 64 l
-144 64 l
-144 64 l
-h
-</path>
-<path matrix="1 0 0 1 24 0" stroke="black" pen="ultrafat">
-152 64 m
-152 64 l
-156 64 l
-156 64 l
-h
-</path>
-<path stroke="black" pen="ultrafat">
-80 64 m
-80 88 l
-84 88 l
-84 64 l
-h
-</path>
-<path matrix="1 0 0 1 20 0" stroke="black" pen="ultrafat">
-92 64 m
-92 88 l
-96 88 l
-96 64 l
-h
-</path>
-<path matrix="1 0 0 1 60 0" stroke="black" pen="ultrafat">
-116 64 m
-116 88 l
-120 88 l
-120 64 l
-h
-</path>
-<path matrix="1 0 0 1 80 0" stroke="black" pen="ultrafat">
-128 64 m
-128 88 l
-132 88 l
-132 64 l
-h
-</path>
-<path matrix="1 0 0 1 100 0" stroke="black" pen="ultrafat">
-140 64 m
-140 88 l
-144 88 l
-144 64 l
-h
-</path>
-<path matrix="1 0 0 1 120 0" stroke="black" pen="ultrafat">
-152 64 m
-152 88 l
-156 88 l
-156 64 l
-h
-</path>
-<path stroke="black" pen="ultrafat">
-64 88 m
-64 64 l
-64 64 l
-</path>
-<path stroke="black" pen="ultrafat">
-60 88 m
-68 88 l
-</path>
-<path stroke="black" pen="ultrafat">
-60 64 m
-68 64 l
-</path>
-<text matrix="1 0 0 1 -20 -4" transformations="translations" pos="52 76" stroke="black" type="label" width="9.379" height="14.479" depth="5.94" valign="baseline" size="LARGE" style="math">\frac{1}{n}</text>
-<path stroke="black" pen="ultrafat">
-64 88 m
-64 116 l
-</path>
-<path stroke="black" pen="ultrafat">
-60 116 m
-68 116 l
-</path>
-<path stroke="black" pen="ultrafat">
-64 116 m
-64 148 l
-</path>
-<path stroke="black" pen="ultrafat">
-60 148 m
-68 148 l
-</path>
-<path stroke="black" pen="ultrafat">
-64 148 m
-64 188 l
-</path>
-<path stroke="black" pen="ultrafat">
-60 188 m
-68 188 l
-</path>
-<path stroke="black" pen="ultrafat">
-64 188 m
-64 240 l
-</path>
-<path stroke="black" pen="ultrafat">
-60 240 m
-68 240 l
-</path>
-<path stroke="black" pen="ultrafat">
-64 240 m
-64 320 l
-</path>
-<path stroke="black" pen="ultrafat">
-60 320 m
-68 320 l
-</path>
-<path matrix="1 0 0 1 52 0" stroke="black" pen="ultrafat">
-92 64 m
-92 88 l
-96 88 l
-96 64 l
-h
-</path>
+<text matrix="1 0 0 1 -8 -8" transformations="translations" pos="156 500" stroke="black" type="label" width="18.174" height="11.955" depth="0" valign="baseline" size="LARGE" style="math">\delta n</text>
+<text matrix="1 0 0 1 -24 0" transformations="translations" pos="320 524" stroke="black" type="label" width="59.303" height="12.896" depth="4.29" valign="baseline" size="LARGE" style="math">(1-\delta)n</text>
 </page>
 </ipe>
