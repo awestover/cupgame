@@ -56,141 +56,121 @@
 \begin{document}
 \maketitle
 
-We call an emptier $\Delta$\defn{-greedy-like} if, when there are two cups $c_1, c_2$ with
-fills satisfying $\fil(c_1) > \fil(c_2) + \Delta$ the emptier never
-empties from $c_2$ without emptying from $c_1$ on the same round. 
-Intuitively, a $\Delta$-greedy-like emptier has a $\pm \Delta$ range within it is
-allowed to ``not be greedy". Note that a perfectly greedy emptier is $0$-greedy-like.
-Greedy and greedy-like emptiers are of great interest.
+Call a cup configuration $T$\defn{-flat} if the fill of every cup is in the
+interval $[-T, T]$.
+
+An emptying strategy is said to be $(R, t)$-\defn{-flattenable} if, given a
+$T$-flat cup configuration, the emptier can, in running-time $t(T)$, obtain a
+$R$-flat configuration of cups. An emptying strategy is said to be
+\defn{flattenable} if it is $(R, t)$-flattenable for $R\le O(1)$ and for $t$
+such that $t(T) \le O(1)$ if $T\le O(1)$.
 
 In the randomized setting we are only able to prove lower bounds for backlog
-against $\Delta$-greedy-like emptiers, for $\Delta \le O(1)$; whether or not
-our results can be extended to a more general class of emptiers is an
-interesting open question. 
+against flattenable emptiers; whether or not our results can be extended to a
+more general class of emptiers is an interesting open question. 
 
-Let the \defn{anti-backlog} of a set $S$ of cups be $-\min_{c\in S} \fil(c)$;
-note that anti-backlog is non-negative, and is the absolute value of the fill
-of the cup with lowest fill. 
+However, this class of flattenable emtpiers is alredy of great interest. 
+In particular, we will show certain emptying strategies with properties similar
+to a greedy emptier are flattenable; in particular, we will show that a greedy
+emptier is flattenable.
 
-Let $R_\Delta = 2 + \Delta$. We say that a cup configuration is
-$\Delta$-\defn{smooth} if all cups have fill in $[-2R_\Delta-\Delta,
-2R_\Delta+\Delta]$. 
+We call an emptier $\Delta$\defn{-greedy-like} if, when there are two cups
+$c_1, c_2$ with fills satisfying $\fil(c_1) > \fil(c_2) + \Delta$ the emptier
+never empties from $c_2$ without emptying from $c_1$ on the same round.
+Intuitively, a $\Delta$-greedy-like emptier has a $\pm \Delta$ range within it
+is allowed to ``not be greedy". Note that a perfectly greedy emptier is
+$0$-greedy-like.
 
-First we prove a key property of greedy-like emptiers.
+We now prove that greedy-like emptiers are flattenable. This follows
+immediately from the following proposition:
 \begin{proposition}
-  Given a cup configuration with backlog and anti-backlog both at most $T$, an
-  oblivious filler can, in running time $2T$, achieve a $\Delta$-smooth
-  configuration of cups against a $\Delta$-greedy-like emptier.
+  Given a cup configuration that is $T$-flat, an oblivious filler can, in
+  running time $2T$, achieve a $2(2+\Delta)$-flat configuration of cups against
+  a $\Delta$-greedy-like emptier.
 \end{proposition}
 
 \begin{proof}
-  Let $\ell_t$ be anti-backlog on round $t$, $u_t$ be backlog on round $t$. Let
-  $L_t$ be the set of cups on round $t$ with fill in $[l_t, l_t+R_\Delta]$, and let
-  $U_t$ be the set of cups on round $t$ with fill in $[u_t-R_\Delta, u_t]$.
+  The filler's sets $p=n/2$ and distributes fill equally amongst
+  all cups at every round, in particular placing $1/2$ units of water in each cup.
+  Let $\ell_t = \min_{c\in S_t} \fil_{S_t}(c)$, $u_t=\max_{c\in S_t} \fil_{S_t}(c)$. Let
+  $L_t$ be the set of cups $c$ with $\fil_{S_t}(c) \in \le l_t+2+\Delta$, and let
+  $U_t$ be the set of cups $c$ with $\fil_{S_t}(c) \ge u_t-2-\Delta$.
 
-  It is useful to think of $U_t$ as the union of three disjoint intervals: an
-  interval of length $1$, followed by a ``buffer" interval of length $\Delta$,
-  followed by another interval of length $1$. Note the key property that if a
-  cup with fill in $[u_t-R_\Delta, u_t-R_\Delta+1]$ is emptied from, then all
-  cups with fill in $[u_t-1, u_t]$ must also be emptied from, because of the
-  ``buffer" interval. The symmetric property holds for $L_t$.
+  There are two ways to think of $U_t$.
+  First we can consider $U_t$ as the union of intervals of length $1$,
+  $\Delta$, and $1$. Note the key property that if a cup with fill in
+  $[u_t-\Delta-2, u_t-\Delta-1]$ is emptied from, then all cups with fills in 
+  $[u_t-1, u_t]$ must be emptied from, because the emptier is $\Delta$-greedy-like.
+  On the other hand, we can consider $U_t$ as the union of $[u_t-2, u_t]$ and
+  $[u_t-\Delta-2, u_t-2]$. This is useful as the interval of width $\Delta$
+  serves as a ``buffer". In particular, if there are more than $n/2$ cups
+  outside of $U_t$ then all cups in $[u_t-2, u_t]$ must be emptied from because
+  the emptier is $\Delta$-greedy-like. $L_t$ is of course completely symmetric to $U_t$.
 
+  First we prove a key property of the sets $U_t$ and $L_t$: once a cup is in
+  $U_t$ or $L_t$ it is always in $U_{t'}, L_{t'}$ for all $t' > t$. This
+  follows immediately from the following claim:
   \begin{clm}
-    Because the emptier is $\Delta$-greedy-like we have
+    \label{clm:dontlosestuff}
     $$U_{t} \subseteq U_{t+1}, L_t \subseteq L_{t+1}.$$
   \end{clm}
   \begin{proof}
     Consider a cup $c\in U_t$.
 
-    If $\fil_{t+1}(c) = \fil_t(c)+1/2$, then clearly $c \in U_{t+1}$, because
-    $u_{t+1}\le u_t+1/2$, so $\fil_{t+1}(c)\ge u_{t+1} -R_\Delta$.
+    If $c$ is not emptied from, i.e. $\fil_{t+1}(c) = \fil_t(c)+1/2$, then
+    clearly $c \in U_{t+1}$, because backlog has increased by at most $1/2$, so
+    the fill of $c$ must still be within $2+\Delta$ of the backlog on round $t+1$. 
 
-    On the other hand, if $\fil_{t+1}(c) = \fil_t(c) - 1/2$, we consider two cases.
+    On the other hand, if $c$ is emptied from, i.e. $\fil_{t+1}(c) = \fil_t(c) - 1/2$, we consider two cases.
     \begin{itemize}
-      \item If $\fil_t(c) \ge u_t-R_\Delta +1$, then $$\fil_{t+1}(c) \ge
-        u_t-R_\Delta+1/2\ge u_{t+1}-R_\Delta.$$
-      \item On the other hand, if $\fil_t(c) < u_t-R_\Delta+1$, then every cup
+      \item If $\fil_t(c) \ge u_t-\Delta -1$, then, as $u_{t+1} \le u_t+1/2$, 
+        $$\fil_{t+1}(c) \ge u_t-\Delta-1 - 1/2\ge u_{t+1}-\Delta-2.$$
+      \item On the other hand, if $\fil_t(c) < u_t-\Delta-1$, then every cup
         with fill in $[u_t-1, u_t]$ must have been emptied
         from. The fullest cup at round $t+1$ is the same as the fullest cup on
         round $t$, because the fills of all cups with fill in
         $[u_t-1, u_t]$ have decreased by $1/2$, and no cup with fill less than
         $u_t-1$ had fill increase by more than $1/2$. Hence $u_{t+1} = u_t -1/2$.
-        Thus we again have $\fil_{t+1}(c) \ge u_{t+1}-R_\Delta$.
+        Because both the fill of $c$ and the backlog have decreased by the same
+        amount, the distance between them is still at most $\Delta+2$, hence
+        $c\inU_{t+1}$.
     \end{itemize}
 
     The argument for $L_t \subseteq L_{t+1}$ is essentially identical.
   \end{proof}
 
-  {\color{red} (red because this is the pure greedy argument)
-  Note that so long as $|U_t| \le n/2$ for all $c\in U_t$ we have
-  $\fil_{t+1}(c) = \fil_t(c) - 1/2$. Combined with the fact that no cups ever
-  exit $U_t$ after entering, and the restriction on the initial backlog, this
-  implies that there is some $t_U \le 2T$, for which for $t\ge t_U$, $|U_t| >
-  n/2$. By identical reasoning, there is a time $t_L \le 2T$, for which for $t
-  \ge t_L$, $|L_t| > n/2$. Let $t_0 = \max(t_L, t_U)$. For times $t \ge t_0$ we
-  must have $U_t \cap L_t \neq \varnothing$. Let a cup $c \in L_t \cap U_t$. We
-  have $l_t \le \fil_t(c) \le l_t+1$ and $u_t-1 \le \fil_t(c) \le u_t$.
-  Combined, this implies that $u_t - l_t \le 2$. Hence we have the fills of all
-  the cups are in $[-2, 2]$.
-}
+  Now that we have shown that $L_t$ and $U_t$ never lose cups, we will show
+  that they eventually gain a substantial number of cups. 
+
+  \begin{clm}
+    \label{clm:smallthenbigger}
+    As long as $|U_t| \le n/2$ we have $u_{t+1} = u_t -1/2$. Identically, as
+    long as $|L_t| \le n/2$ we have $\ell_{t+1} = \ell_t+ 1/2$.
+  \end{clm}
+  \begin{proof}
+    If there are more than $n/2$ cups outside of $U_t$ then there must be some
+    cup with fill less than $u_t-\Delta-2$ that is emptied from. Because the
+    emptier is $\Delta$-greedy-like this means that the emptier must empty from
+    every cup with fill at least $u_t-2$. Thus $u_{t+1} = u_t -1/2$: no cup
+    with fill less than $u_t-2$ could have become the fullest cup, and the
+    previous fullest cup has lost $1/2$ units of fill. 
+
+    The proof is identical for $L_t$.
+  \end{proof}
+
+  By Claim \ref{clm:smallthenbigger} we see that both $|U_t|$ and $|L_t|$ must
+  eventually exceed $n/2$ at some times $t_u, t_\ell \le 2T$, by the assumption
+  that the initial configuration is $T$-flat. Since by Claim
+  \ref{clm:dontlosestuff} $|U_{t+1}|\ge |U_t|$ and $|L_{t+1}| \ge |L_t|$ we
+  have that there is some round $t_0 =\max(t_u, t_\ell) \le 2T$ on which both
+  $|U_{t_0}|$ and $|L_{t_0}|$ exceed $n/2$. Then $U_{t_0} \cap L_{t_0} \neq
+  \varnothing$. Furthermore, the sets must intersect for all $t_0 \le t \le 2T$. 
+  In order for the sets to intersect it must be that the intervals
+  $[u_t-2-\Delta, u_t]$ and $[\ell_t, \ell_t+2+\Delta]$ intersect. Hence we have that 
+  $$\ell_t+2+\Delta \ge u_t-2-\Delta.$$ Since $u_t \ge 0$ and $\ell_t \le 0$
+  this implies that all cups have fill in $[-2(d+\Delta), 2(2+\Delta)]$.
 
 \end{proof}
-
-
-% First we establish the special case where the filler is purely greedy (i.e.
-% $0$-greedy-like). The extension to the general case will be easy.
-% \begin{proof}
-%   Let $l_t$ be anti-backlog on round $t$, $u_t$ be backlog on round $t$. Let
-%   $L_t$ be the set of cups on round $t$ with fill in $[l_t, l_t+1]$, and let
-%   $U_t$ be the set of cups on round $t$ with fill in $[u_t-1, u_t]$.
-
-%   We claim that $U_t \subset U_{t+1}$ because the emptier is greedy.
-%   Consider a cup $c\in U_t$.
-%   \begin{itemize}
-%     \item If $c$ is one of the $n/2$ fullest cups, then $\fil_{t+1}(c) =
-%       \fil_t(c) -1/2$, and $u_{t+1} \le \max(u_t-1/2, \fil(c)+1/2)$. We know
-%       that $\fil_{t+1}(c) \ge u_t -1 -1/2,$ and $\fil_{t+1}(c) \ge \fil_t(c) +
-%       1/2 -1$ so in either case of the $\max$ we have $c \in U_{t+1}$.
-%     \item On the other hand, if $c$ isn't one of the $n/2$ fullest cups, then
-%       $\fil_{t+1}(c) = \fil_t(c) + 1/2 \in [u_t-1/2, u_t+1/2]$, and $u_{t+1}\le
-%       u_t + 1/2 $ so also $c \in U_{t+1}$.
-%   \end{itemize}
-
-%   Hence we get that\footnote{The reasoning for $L_t$ is identical to the reasoning for $U_t$}
-%   $$U_{t+1} \subset U_t, \,\, L_{t+1} \subset L_t.$$
-
-%   Note that so long as $|U_t| \le n/2$ for all $c\in U_t$ we have
-%   $\fil_{t+1}(c) = \fil_t(c) - 1/2$. Combined with the fact that no cups ever
-%   exit $U_t$ after entering, and the restriction on the initial backlog, this
-%   implies that there is some $t_U \le 2T$, for which for $t\ge t_U$, $|U_t| >
-%   n/2$. By identical reasoning, there is a time $t_L \le 2T$, for which for $t
-%   \ge t_L$, $|L_t| > n/2$. Let $t_0 = \max(t_L, t_U)$. For times $t \ge t_0$ we
-%   must have $U_t \cap L_t \neq \varnothing$. Let a cup $c \in L_t \cap U_t$. We
-%   have $l_t \le \fil_t(c) \le l_t+1$ and $u_t-1 \le \fil_t(c) \le u_t$.
-%   Combined, this implies that $u_t - l_t \le 2$. Hence we have the fills of all
-%   the cups are in $[-2, 2]$.
-
-% \end{proof}
-
-% \begin{proof}
-%   The filler sets $p=n/2$, and equally distributes fill among the cups.
-%   As long as there is some cup with fill above $\Delta+1$ the emptier must
-%   empty from a cup with fill at least $1$. Thus, until all cups have fill below
-%   $\Delta+1$ the positive tilt of the set of cups decreases by $n/2$ every round.
-%   However, the positive tilt also increases, by at most $(n-1)/2$ (which is
-%   achieved if there is a single cup with negative fill). The net change in
-%   positive tilt is thus a decrease of at least $1/2$.
-%   It is impossible for the positive tilt to decrease by $1/2$ for more than
-%   $2T$ rounds, hence by some round $i \le 2T$ all cups will have fill at most
-%   $\Delta+1$.
-
-%   Furthermore the anti-backlog cannot have started any higher than $T$, and the
-%   fill of negative cups increases by $1/2$ each time.
-
-%   {\color{red}I'm pretty close here. More importantly, the proposition is true.
-%   At least so I believe. Maybe need to change the range to be a bit wider.}
-
-% \end{proof}
 
 \begin{proposition}
   \label{prop:obliviousBase}
