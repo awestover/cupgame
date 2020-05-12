@@ -59,7 +59,7 @@
 Call a cup configuration $T$\defn{-flat} if the fill of every cup is in the
 interval $[-T, T]$.
 
-An emptying strategy is said to be $(R, t)$-\defn{-flattenable} if, given a
+An emptying strategy is said to be $(R, t)$\defn{-flattenable} if, given a
 $T$-flat cup configuration, the emptier can, in running-time $t(T)$, obtain a
 $R$-flat configuration of cups. An emptying strategy is said to be
 \defn{flattenable} if it is $(R, t)$-flattenable for $R\le O(1)$ and for $t$
@@ -81,12 +81,16 @@ Intuitively, a $\Delta$-greedy-like emptier has a $\pm \Delta$ range within it
 is allowed to ``not be greedy". Note that a perfectly greedy emptier is
 $0$-greedy-like.
 
-We now prove that greedy-like emptiers are flattenable. This follows
-immediately from the following proposition:
+We now prove that $\Delta$-greedy-like emptiers (for $\Delta \le O(1)$) are flattenable: 
 \begin{proposition}
+  \label{prop:greedylikeisflat}
   Given a cup configuration that is $T$-flat, an oblivious filler can, in
   running time $2T$, achieve a $2(2+\Delta)$-flat configuration of cups against
-  a $\Delta$-greedy-like emptier.
+  a $\Delta$-greedy-like emptier. 
+
+  In particular, this implies that a $\Delta$-greedy-like emptier is
+  $(R,t)$-flattenable for $R = 2(2+\Delta)$ and $t$ the function $T\mapsto 2T$;
+  for $\Delta\le O(1)$, $\Delta$-greedy-like emptiers are flattenable.
 \end{proposition}
 
 \begin{proof}
@@ -117,15 +121,16 @@ immediately from the following proposition:
   \begin{proof}
     Consider a cup $c\in U_t$.
 
-    If $c$ is not emptied from, i.e. $\fil_{t+1}(c) = \fil_t(c)+1/2$, then
+    If $c$ is not emptied from, i.e. $\fil(c)$ has increased by $1/2$, then
     clearly $c \in U_{t+1}$, because backlog has increased by at most $1/2$, so
     the fill of $c$ must still be within $2+\Delta$ of the backlog on round $t+1$. 
 
-    On the other hand, if $c$ is emptied from, i.e. $\fil_{t+1}(c) = \fil_t(c) - 1/2$, we consider two cases.
+    On the other hand, if $c$ is emptied from, i.e. $\fil(c)$ has decreased by
+    $1/2$, we consider two cases.
     \begin{itemize}
-      \item If $\fil_t(c) \ge u_t-\Delta -1$, then, as $u_{t+1} \le u_t+1/2$, 
-        $$\fil_{t+1}(c) \ge u_t-\Delta-1 - 1/2\ge u_{t+1}-\Delta-2.$$
-      \item On the other hand, if $\fil_t(c) < u_t-\Delta-1$, then every cup
+      \item If $\fil_{S_t}(c) \ge u_t-\Delta -1$, then, as $u_{t+1} \le u_t+1/2$, 
+        $$\fil_{S_{t+1}}(c) \ge u_t-\Delta-1 - 1/2\ge u_{t+1}-\Delta-2.$$
+      \item On the other hand, if $\fil_{S_t}(c) < u_t-\Delta-1$, then every cup
         with fill in $[u_t-1, u_t]$ must have been emptied
         from. The fullest cup at round $t+1$ is the same as the fullest cup on
         round $t$, because the fills of all cups with fill in
@@ -133,7 +138,7 @@ immediately from the following proposition:
         $u_t-1$ had fill increase by more than $1/2$. Hence $u_{t+1} = u_t -1/2$.
         Because both the fill of $c$ and the backlog have decreased by the same
         amount, the distance between them is still at most $\Delta+2$, hence
-        $c\inU_{t+1}$.
+        $c\in U_{t+1}$.
     \end{itemize}
 
     The argument for $L_t \subseteq L_{t+1}$ is essentially identical.
@@ -168,7 +173,7 @@ immediately from the following proposition:
   In order for the sets to intersect it must be that the intervals
   $[u_t-2-\Delta, u_t]$ and $[\ell_t, \ell_t+2+\Delta]$ intersect. Hence we have that 
   $$\ell_t+2+\Delta \ge u_t-2-\Delta.$$ Since $u_t \ge 0$ and $\ell_t \le 0$
-  this implies that all cups have fill in $[-2(d+\Delta), 2(2+\Delta)]$.
+  this implies that all cups have fill in $[-2(2+\Delta), 2(2+\Delta)]$.
 
 \end{proof}
 
