@@ -1,6 +1,6 @@
 \documentclass[twocolumn]{article}[10pt]
 \usepackage[left=1in, right=1in, top=1in, bottom=1in]{geometry}
-\usepackage[subtle]{savetrees}
+\usepackage[moderate, mathspacing=normal]{savetrees}
 
 \usepackage{amsthm}
 \usepackage{amssymb}
@@ -69,7 +69,7 @@
   we call the \defn{variable-processor cup game}, in which the resources of the
   emptier and filler are variable. In particular, in the variable-processor cup
   game the filler is allowed to change $p$ at the beginning of each round. 
-  Although the modification to allow variable resources seems small, we will
+  Although the modification to allow variable resources seems small, we
   show that it drastically alters the outcome of the game.
 
   We construct a filling strategy that an adaptive filler can use to get
@@ -78,7 +78,8 @@
   $\Omega(n^{1-\epsilon})$ for any constant $\epsilon > 0$ in running time
   $2^{O(\log ^2 n)}$. Not only is this bound shockingly large, but the steep
   trade off-curve between running-time and backlog is very surprising: the time
-  required goes up from quasi-polynomial time to exponential time!
+  required to genuinely get a $1$ as the exponent instead of $1-\epsilon$ (e.g.
+  $0.999$) goes up from quasi-polynomial time to exponential time!
 
   Furthermore, we demonstrate that this lower bound on backlog is tight: 
   using a novel set of invariants we prove that a greedy emptier never lets
@@ -86,10 +87,8 @@
 
   We also investigate bounds on an oblivious filler. We show, using
   concentration bounds for random variables (Hoeffding's Inequality), that --
-  surprisingly -- an oblivious filler can achieve essentially the same lower
-  bounds as an adaptive filler. However, oblivious lower bounds are only
-  supposed to take $O(\poly(n))$ time, so we apply the strategies from the
-  adaptive case to a subset of the cups. Doing so, an oblivious
+  surprisingly -- an oblivious filler can use very similar techniques as the
+  adaptive filler to achieve very large backlog. In particular, an oblivious
   filler can achieve backlog $2^{\Omega(\sqrt{\log n})}$ in running time
   $O(\poly(n))$ with constant probability against any ``greedy-like" emptier.
 }
@@ -103,7 +102,9 @@ cups, the filler first distributes $p$ units of water among
 the $n$ cups with at most $1$ unit to any particular cup (without this
 restriction the filler can trivially achieve unbounded backlog by placing all
 of its fill in a single cup every round), and then the emptier 
-removes $1$ unit of water from each of $p$ cups.
+removes at most $1$ unit of water from each of $p$ cups\footnote{note that negative
+fill is not allowed, so if the emptier empties from a cup with fill below $1$
+the cups fill will become $0$.}.
 
 The cup game naturally arises in the study of processor-scheduling.
 The incoming water added by the filler represents work added to the system at
@@ -198,7 +199,7 @@ $2^{O(\log^2 n)}$ that achieves backlog $\Omega(n^{1-\epsilon})$ for any
 constant $\epsilon > 0$.
 
 In Section \ref{sec:adaptiveUpperBound} we prove a novel invariant: the average
-fill of the $k$ fullest cups is at most $n-k$. In particular this implies
+fill of the $k$ fullest cups is at most $2n-k$. In particular this implies
 (setting $k=1$) that backlog is $O(n)$. Thus, our analysis is tight.
 
 Section \ref{sec:oblivious} has similar macro-structure to Section
@@ -214,11 +215,17 @@ differs from the adaptive case.
 
 \section{Preliminaries}\label{sec:prelims}
 The cup game consists of a sequence of rounds. On the $t$-th round the state
-starts as $S_t$. The filler chooses the number of processors $p_t$ for the round. 
-Then the filler distributes $p_t$ units of water among the cups (with at most
-$1$ unit of water to any particular cup). After this, the game is in an intermediate
-state, which we call state $I_t$. Then the emptier chooses
-$p_t$ cups to empty $1$ unit of water from. This concludes the round; the state of the game is now $S_{t+1}$.
+starts as $S_t$. The filler chooses the number of processors $p_t$ for the
+round. Then the filler distributes $p_t$ units of water among the cups (with at
+most $1$ unit of water to any particular cup). After this, the game is in an
+intermediate state, which we call state $I_t$. Then the emptier chooses $p_t$
+cups to empty at most $1$ unit of water from. Note that if the fill of a cup
+that the emptier empties from is less than $1$ the emptier reduces the fill of
+this cup to $0$ by emptying from it; we say that the emptier \defn{zeros-out} a
+cup if it empties from a cup with fill less than $1$. Note that whenever the
+emptier zeros-out a cup the emptier has removed less fill than the filler has
+added; hence the average fill will increase. This concludes the round; the
+state of the game is now $S_{t+1}$.
 
 Denote the fill of a cup $c$ by $\fil(c)$. Let the \defn{positive tilt} of a cup $c$ be
 $\tilt(c) = \max(0, \fil(c))$, and let the positive tilt of a set $X$ of
@@ -231,24 +238,14 @@ cups sorted by fill at the given state, breaking ties arbitrarily but
 consistently. For example, the fullest cup at a state has rank $1$, and the
 least full cup has rank $n$.
 
-We adopt the convention of allowing for negative fill: i.e. regardless of the
-fills of the cups the emptier always empties exactly $1$ unit of water from
-$p$ cups. \footnote{
-  Allowing for cups to have negative fill makes the game strictly harder for
-  the filler, as it means that none of the emptier's emptying is ever wasted by
-  cups "zeroing-out". In variants of the cup game without negative fill, when
-  the emptier empties from a cup with fill less than $1$ the cups fill goes to
-  $0$. This however implies that the total mass of water removed by the emptier
-  is less than $p$. Our filling strategy does not rely on cups zeroing out to
-  achieve large backlog however, so the lower bounds hold regardless of our
-  choice of allowing or not allowing negative fill. 
-
-  On the other hand, the proof of the upper bound does depend on the fact that
-  cups never zero out. In particular, throughout the proof of the upper bound
-  we call the average fill of the cups $0$ and say that it never changes. We
-  chose to allow negative fill (which has no physical analog in work
-  scheduling) because it makes the problem more elegant.
-}
+Many of our lower bound proofs will adopt the convention of allowing for
+negative fill. This is because our results are used recursively, so this
+negative fill is really just fill below the average fill. Note that it is
+strictly easier for the filler to achieve high backlog when cups can zero out,
+because then some of the emptiers resources are wasted. On the other hand,
+during the upper-bound proof we show that a greedy emptier maintains the
+desired invariants even if cups zero-out. This is crucial as the game is harder
+for the emptier when cups can zero out.
 
 \section{Adaptive Filler Lower Bound}\label{sec:adaptive}
 \begin{proposition}
@@ -298,7 +295,7 @@ $p$ cups. \footnote{
 
   Then, there exists an adaptive filling strategy that achieves backlog $f'(n)$ satisfying
   $$f'(n) \ge (1-\delta)\sum_{\ell= 0}^{L} f((1-\delta)\delta^\ell n)$$
-  and $f'(n) \ge 1$, in the variable-processor cup game on $n\ge n_0$ cups.
+  and $f'(n) \ge 1$, in the variable-processor cup game on $n\ge n_0$ cups.\footnote{Note that $\delta$ must be chosen such that $(1-\delta)\delta^\ell n \in \mathbb{N}$ because it doesn't make sense to talk of ``fractional cups".}
 \end{lemma}
 \begin{proof}
   The basic idea of this analysis is as follows:
@@ -677,24 +674,22 @@ use concatenation of sets to denote unions, i.e. $AB = A\cup B$.\\
 We establish the following Lemma:
 
 \begin{lemma}
-  The greedy emptier maintains the invariant $$\mu_{S_t}(S_t([k])) \le n-k
+  The greedy emptier maintains the invariant $$\mu_{S_t}(S_t([k])) \le 2n-k
   \text{ for all } t\ge 1, k \in [n].$$ In particular, for $k=1$, this
-  says that the greedy emptier never lets backlog exceed $O(n)$.
+  implies that the greedy emptier never lets backlog exceed $O(n)$.
 \end{lemma}
 \begin{proof}
-First note that the invariant is trivial when $k=n$, as the average fill of the
-set of all cups is by definition $0$.
 
-We will prove the invariant by induction on $t$.
+We prove the invariant by induction on $t$.
 The invariant holds trivially for $t=1$ (the base case for the inductive proof): 
-the cups start empty so $\mu_{S_1}(S_1([k])) = 0 \le n-k$.
+the cups start empty so $\mu_{S_1}(S_1([k])) = 0 \le 2n-k$ for all $k \in [n]$.
 
-Fix a round $t \ge 1$, and any $k \in [n-1]$. We assume invariant for all
-values of $k\in[n]$ for state $S_t$ (we will only explicitly use two of the
+Fix a round $t \ge 1$, and any $k \in [n]$. We assume invariant for all
+values of $k' \in[n]$ for state $S_t$ (we will only explicitly use two of the
 invariants for each $k$, but the invariants that we need depend on the
 choice of $p_t$ by the filler, so we actually need all of them) and show that
 the invariant on the $k$ fullest cups holds on round $t+1$, i.e. that
-$$\mu_{S_{t+1}}(S_{t+1}([k])) \le n-k.$$
+$$\mu_{S_{t+1}}(S_{t+1}([k])) \le 2n-k.$$
 
 Note that because the emptier is greedy it always empties from the cups $I_t([p_t])$.
 Let $A$, with $a=|A|$, be $A = I_t([\min(k, p_t)]) \cap S_{t+1}([k])$; $A$
@@ -703,22 +698,27 @@ are among the $k$ fullest cups in $S_{t+1}$.
 Let $B$, with $b=|B|$, be $I_t([\min(k, p_t)]) \setminus A$; $B$ consists of
 the cups that are among the $k$ fullest cups in state $I_t$, are emptied from,
 and aren't among the $k$ fullest cups in $S_{t+1}$. 
-Let $C = I_t(a+b+[k-a])$, with $c=k-a = |C|$ (Note that $k-a\ge 0$ as $a+b \le k$). 
+Let $C = I_t(p_t+[k-a])$, with $c=k-a = |C|$.
 
+Note that $k-a\ge 0$ as $a+b \le k$, and also $|ABC| = k+b \le n$, because by
+definition the $b$ cups in $B$ must not be among the $k$ fullest cups in state
+$S_{t+1}$ so there are at least $k+b$ cups. 
 Note that $a+ b = \min(k, p_t)$. We also have that $A = I_t([a])$ and $B =
 I_t(a+[b])$, as every cup in $A$ must have higher fill than all cups in $B$ in
 order to remain above the cups in $B$ after $1$ unit of water is removed from
 all cups in $AB$.
-Further, note that $S_{t+1}([k]) = AC$ because, once the cups in $B$
-are emptied from, the cups in $B$ are not among the $k$ fullest cups, so the
-cups in $C$ take their places among the $k$ fullest cups.\\
-With these definitions made, we proceed to prove the Lemma.
+Further, note that $S_{t+1}([k]) = AC$ because once the cups in $B$
+are emptied from the cups in $B$ are not among the $k$ fullest cups, so the
+cups in $C$ take their places among the $k$ fullest cups.
 
-First we prove that without loss of generality $S_t([a+b]) = I_t([a+b])$; we
-call this fact the \defn{interchangeability of cups}.
+We now establish the following claim, which we call the \defn{interchangeability of cups}:
+\begin{clm}
+  \label{clm:interchangable}
+  Without loss of generality $$S_t([r]) = I_t([r])$$ for any rank $r \in [n]$.
+\end{clm}
 \begin{proof}
-  Say there are cups $x, y$ with $x\in S_t([a+b]) \setminus I_t([a+b]), y \in
-  I_t([a+b])\setminus S_t([a+b])$. Let the fills of cups $x,y$ at state $S_t$
+  Say there are cups $x, y$ with $x\in S_t([r]) \setminus I_t([r]), y \in
+  I_t([r])\setminus S_t([r])$. Let the fills of cups $x,y$ at state $S_t$
   be $f_x, f_y$; note that $f_x > f_y$. Let the amount of fill that the emptier
   adds to these cups be $\Delta_x, \Delta_y \le 1$; note that $f_x +\Delta_x <
   f_y + \Delta_y$.
@@ -729,8 +729,8 @@ $f_x-f_y+\Delta_x$ and $f_y-f_x + \Delta_y$ for cups $x,y$ respectively.
 This is valid as both fill amounts are at most $1$: $f_x-f_y+\Delta_x<\Delta_y
 \le 1$ and $f_y-f_x + \Delta_x < \Delta_x \le 1$.
 
-We can repeatedly apply this process to swap each cup in $I_t([a+b])\setminus
-S_t([a+b])$ into being one of the $a+b$ fullest cups in the new state $S_t'$.
+We can repeatedly apply this process to swap each cup in $I_t([r])\setminus
+S_t([r])$ into being one of the $a+b$ fullest cups in the new state $S_t'$.
 At the end of this process we will have some ``fake" state $S_t^f$. Note that
 $S_t^f$ must satisfy the invariants if $S_t$ satisfied the invariants, because
 our process can be thought of as just relabelling the cups; in particular
@@ -741,14 +741,60 @@ state $I_t$ we could equally well have come from state $S_t$ or state $S_t^f$.
 Thus we consider state $I_t$ to have come from state $S_t^f$.
 \end{proof}
 
-Now we proceed with the proof of the Lemma.\\
-First we consider the case $b=0$. If $b=0$, then $S_{t+1}([k]) = S_t([k])$. 
-The emptier has removed $a$ units of fill from the cups in $S_t([k])$
-(specifically the cups in $A$), and the filler has distributed at most $a$
-units of among the cups in $S_t([k])$. Thus the invariant holds:
-$$m_{S_{t+1}}(S_{t+1}([k])) \le m_{S_t}(S_t([k]))+a-a \le k(n-k).$$
+Now we proceed with the proof of the Lemma.
+\begin{clm}
+  If some cup in $A$ zeros out then invariant holds.
+\end{clm}
+\begin{proof}
+  Say a cup in $A$ zeroes out. Then 
+  $$m_{S_{t+1}}(A) \le (a-1)(2n-(a-1))$$
+  because the $a-1$ fullest cups must have satisfied the invariant on round
+  $S_t$, and $\fil_{S_{t+1}}(I_{t+1}(a)) = 0$.
+  Furthermore, the fill of all cups in $C$ must be at most $1$ in $I_t$ to be
+  less than the fill of the cup in $A$ that zeroed out.
 
-Now consider the case $b\neq 0$. Because $b>0$, and $a+b \le k$ we have that $a
+  Thus, 
+  $$m_{S_{t+1}}(S_{t+1}([k])) \le (a-1)(2n-(a-1))+k-a.$$
+  We claim that this is less than $a(2n-a)$. 
+  This follows from simple manipulation of the above expression:
+  \begin{align*}
+    &(a-1)(2n-(a-1))+k-a\\
+    &= a(2n-a) +a -2n+a-1 + k -a\\
+    &= a(2n-a) + (k-n) + (a-n) -1\\
+    &< a(2n-a)
+  \end{align*}
+  as desired.
+
+  As $k$ increases from $1$ to $n$, $k(2n-k)$ strictly increases (it is a
+  quadratic in $k$ that achieves its maximal value at $k=n$).
+  Thus $a(2n-a) \le k(2n-k)$ because $a\le k$.
+
+  And we have
+  $$m_{S_{t+1}}(S_{t+1}([k])) \le k(2n-k).$$
+\end{proof}
+
+\begin{clm}
+  If no cups in $A$ zero out and $b=0$ the invariant holds.
+\end{clm}
+\begin{proof}
+First we consider the case $b=0$. If $b=0$, then $S_{t+1}([k]) = S_t([k])$. 
+
+The emptier has removed $a$ units of fill from the cups in $S_t([k])$,
+specifically the cups in $A$. The filler cannot have added more than $k$ fill
+to these cups, because it can add at most $1$ fill to any given cup. Also, the
+filler cannot have added more than $p_t$ fill to the cups because this is the
+total amount of fill that the filler is allowed to add. Hence the filler adds
+at most $\min(p_t, k) = a+b=a+0=a$ fill to these cups.
+Thus the invariant holds:
+$$m_{S_{t+1}}(S_{t+1}([k])) \le m_{S_t}(S_t([k]))+a-a \le k(2n-k).$$
+
+\end{proof}
+
+\begin{clm}
+  If no cups in $A$ zero out and $b > 0$ the invariant holds.
+\end{clm}
+\begin{proof}
+Because $b>0$ and $a+b \le k$ we have that $a
 < k$, and $c = k-a > 0$. Recall that $S_{t+1}([k]) = AC$, so the mass of the
 $k$ fullest cups at $S_{t+1}$ is the mass of $AC$ at $S_t$ plus any water added
 to cups in $AC$ by the filler, minus any water removed from cups in $AC$ by the
@@ -771,7 +817,7 @@ invariants; the higher fill in $A$ \defn{pushes down} the fill that $C$ can
 have. By quantifying exactly how much higher fill in $A$ pushes down fill in
 $C$ we can achieve the desired inequality.
 We can upper bound $m_{S_t}(C)$ by 
-$$\frac{c}{b+c}m_{S_t}(BC) = (m_{S_t}(ABC) - m_{S_t}(A))\frac{c}{b+c}$$ because
+$$m_{S_t}(C) \le \frac{c}{b+c}m_{S_t}(BC) = (m_{S_t}(ABC) - m_{S_t}(A))\frac{c}{b+c}$$ because
 $\mu_{S_t}(C) \le \mu_{S_t}(B)$ without loss of generality by the
 interchangeability of cups.
 Thus we have 
@@ -791,37 +837,37 @@ where
 Note that the expression in Equation \ref{eqn:redistributeA} is monotonically
 increasing in both $\mu_{S_t}(ABC)$ and $\mu_{S_t}(A)$. 
 Thus, by numerically replacing both average fills with
-their extremal values ($n-|ABC|, n-|A|$) we upper bound $m_{S_t}(A) + m_{S_t}(C)$.
+their extremal values ($2n-|ABC|, 2n-|A|$) we upper bound $m_{S_t}(A) + m_{S_t}(C)$.
 At this point the inequality can be verified by straightforward algebra,
 however this is not elegant; instead, we combinatorially interpret the sum.
 
 We define a new ``fake" state $F$, which may not represent
 a valid configuration of cups (i.e. might not satisfy the invariants), where
-$\mu_F(A)=n-|A|$ and $\mu_F(ABC)=n-|ABC|$, in particular with all the cups in $A$
+$\mu_F(A)=2n-|A|$ and $\mu_F(ABC)=2n-|ABC|$, in particular with all the cups in $A$
 having identical fill, and all the cups in $BC$ having identical fill.
 We can think of $F$ as having come from a state where every cup has fill
-$\mu_F(ABC) = n-|ABC|$. To reach $F$ from this state where every cup has
+$\mu_F(ABC) = 2n-|ABC|$. To reach $F$ from this state where every cup has
 identical fill we must increase the fill of each cup in $A$ by some amount, and
 decrease the fill of each cup in $BC$ by an amount such that the mass added to
-$A$ is taken away from $BC$. To reach fill $\mu_F(A) = n-|A|$, the cups in $A$
-must have been increased by $|BC|$ from their previous fill of $n-|ABC|$.
+$A$ is taken away from $BC$. To reach fill $\mu_F(A) = 2n-|A|$, the cups in $A$
+must have been increased by $|BC|$ from their previous fill of $2n-|ABC|$.
 To equalize an increase in $\mu_{F}(A)$ of $|BC|$, we need a corresponding
 decrease in $\mu_{F}(BC)$ by $|A|$.
-That is, $$\mu_{F}(BC) = n-|ABC|-|A|.$$
+That is, $$\mu_{F}(BC) = 2n-|ABC|-|A|.$$
 Thus we have the following bound:
 \begin{align*}
   m_{S_t}(A) + m_{S_t}(C)& \\
 &\le m_{F}(A) + c\mu_{F}(BC) \tag{*}\\
-&\le a(n-a) + c(n-|ABC|-a) \\
-&\le (a+c)(n-a) - c(a+c+b) \\
-&\le (a+c)(n-a-c) - cb,
+&\le a(2n-a) + c(2n-|ABC|-a) \\
+&\le (a+c)(2n-a) - c(a+c+b) \\
+&\le (a+c)(2n-a-c) - cb,
 \end{align*}
 where (*) follows from Equation \ref{eqn:redistributeA}.
 }
 
 {\color{blue}
   Consider a new configuration of fills $F$ achieved by starting with state
-  $S_t$, and moving water from $BC$ into $A$ until $\mu_{F}(A) = n-|A|$.
+  $S_t$, and moving water from $BC$ into $A$ until $\mu_{F}(A) = 2n-|A|$.
   \footnote{Note that whether or not $F$ satisfies the invariants is irrelevant.}
   This transformation increases (strictly increases if and only if we move a
   non-zero amount of water) the mass in $AC$ because water in $BC$
@@ -837,30 +883,32 @@ where (*) follows from Equation \ref{eqn:redistributeA}.
   Hence we must have 
   $$\mu_F(ABC) - \mu_F(BC) \ge |A|.$$
   Thus 
-  $$\mu_F(BC) \le \mu_F(ABC) - |A| \le n-|ABC| -|A|.$$
+  $$\mu_F(BC) \le \mu_F(ABC) - |A| \le 2n-|ABC| -|A|.$$
 
   Thus we have the following bound:
   \begin{align*}
     m_{S_t}(A) + m_{S_t}(C)& \\
   &\le m_{F}(A) + c\mu_{F}(BC)\\
-  &\le a(n-a) + c(n-|ABC|-a) \\
-  &\le (a+c)(n-a) - c(a+c+b) \\
-  &\le (a+c)(n-a-c) - cb.
+  &\le a(2n-a) + c(2n-|ABC|-a) \\
+  &\le (a+c)(2n-a) - c(a+c+b) \\
+  &\le (a+c)(2n-a-c) - cb.
   \end{align*}
 }
 
 Recall that we were considering $b> 0$, and since $b>0$ we have that $c = k-a
 \ge b > 0$, i.e. $c \ge 1$. 
 Hence we have 
-$$m_{S_t}(A) + m_{S_t}(C) \le k(n-k) -b$$
+$$m_{S_t}(A) + m_{S_t}(C) \le k(2n-k) -b$$
 So 
-$$m_{S_t}(A) + m_{S_t}(C)+b \le k(n-k).$$
+$$m_{S_t}(A) + m_{S_t}(C)+b \le k(2n-k).$$
 As shown previously the left hand side of the above expression is an upper
 bound for $m_{S_{t+1}}([k])$.
 Hence the invariant holds.
+  
+\end{proof}
 
-The proof was for arbitrary $k$, so given that the invariants all hold at state
-$S_t$ they also must all hold at state $S_{t+1}$.
+We have shown the inductive hypothesis for arbitrary $k$, so given that the
+invariants all hold at state $S_t$ they also must all hold at state $S_{t+1}$.
 Thus, by induction we have the invariant for all rounds $t\in\mathbb{N}$.
 \end{proof}
 
