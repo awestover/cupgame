@@ -44,7 +44,7 @@
 \fancyfoot[R]{\thepage}
 \renewcommand{\headrulewidth}{0pt}
 
-\title{Oblivious Lower Bound: this time its for real}
+\title{Oblivious Lower Bound via Flattening}
 \date{\vspace{-5ex}}
 
 \author[1]{\small William Kuszmaul\thanks{Supported by a Hertz fellowship and a NSF GRFP fellowship}}
@@ -195,7 +195,8 @@ We now prove that $\Delta$-greedy-like emptiers (for $\Delta \le O(1)$) are flat
       of $B$. With constant probability we can attain a cup in $B$ with
       constant fill by this method, that we then swap into $A$. By a Chernoff
       bound we get a constant fraction of $A$, say $cn$ cups, to have fill at
-      least $h$ with exponentially good probability.
+      least $h$ with exponentially good probability. Between single-processor
+      cup games we flatten the cups.
     \item \textbf{Step 2:} Reduce the number of processors to $cn$, and raise
       the fill of $cn$ \emph{known} cups to fill $h'$. 
     \item \textbf{Step 3:} Recurse on the $nc$ cups that are known to have fill
@@ -206,12 +207,22 @@ By performing $\Omega(\log n)$ levels of recursion, achieving constant backlog
 $h'$ at each step (relative to the average fills), the filler achieves backlog
 $\Omega(\log n)$.
 
-We now provide a detailed description of the filling algorithm, to prove that
-the results claimed in Step 1 and Step 2 are attainable.
+In order to flatten a set of cups we must have a bound on the magnitude of the
+fills of the cups. We claim that without loss of generality no cup has fill
+larger in magnitude than $h\sqrt{n/\log\log n}$. If a cup has more than
+$h\sqrt{n/\log\log n}$ fill we call the cup \defn{overpowered}. If there ever
+is an overpowered cup then we are automatically done: the emptier has achieved
+$\poly(n)$ backlog and will maintain it for at least $\poly(n)$ rounds. If a
+cup ever has fill less than $-h\sqrt{n/\log\log n}$ then the absolute average
+fill must be large enough such that the absolute fill of this cup is at least
+$0$. Thus there is an overpowered cup. From now on we assume that there are no
+overpowered cups.
 
-To attain step 2, we smooth the non-anchor set.
+At the start of our procedure we flatten the cups. By assumption they start
+$h\sqrt{n/\log\log n}$-flat, and by Proposition \ref{prop:greedylikeisflat} we
+can make them $2(2+\Delta)$-flat.
 
-Now we detail how to achieve Step 1.
+We now describe how to achieve Step 1.
 
 We perform a series of \defn{swapping-process}, which are procedures that we
 use to get a new cup in $A$. A swapping-process is composed of a substructure,
@@ -233,6 +244,8 @@ probability that this results in the active set having a single cup at the end,
 with fill that has increased by at least $1/|B| + 1/(|B|-1) + \ldots + 1/1 \ge
 \ln |B|$ since the start of the round-block.
 
+Between each round block we do flattening. 
+
 On most round-blocks -- all but the $j$-th -- the filler does nothing with the
 cup that it achieves in the active set at the end of the single processor cup
 game. However, on the $j$-th round-block the filler swaps the winner of the
@@ -240,15 +253,12 @@ single processor cup game into the anchor set.
 
 \begin{clm} \label{clm:reg} 
   Let $q\ge \Omega(1)$ be an appropriately small constant ($q$ is a function of
-  $h\le O(1)$). In Case 1, with probability at least $1-e^{-nq^2/1024}$, we
+  $h\le O(1)$). With probability at least $1-e^{-nq^2/1024}$, we
   achieve fill at least $h$ in at least $nq/16$ of the cups in $A$ (i.e. a
-  constant fraction of the cups in $A$). In particular, this implies that we
-  achieve positive tilt $hnq/16 \ge \Omega(n)$ in $A$.
+  constant fraction of the cups in $A$). 
 \end{clm}
 \begin{proof}
-  Consider a swapping-process where the filler does not perform a
-  storing-operation where at least $1/2$ of the cups $c \in B$ have $\fil(c)
-  \ge -h$. Note that by assumption there are at least $n/4 - 3/2 \gamma$ such rounds.
+  The cups start $2(2+\Delta)$-flat.
  
   Say the emptier \defn{neglects} the anchor set in a round-block if on at
   least one round of the round-block the emptier does not empty from every
@@ -321,6 +331,15 @@ single processor cup game into the anchor set.
   exponentially small in $n$, as desired.
 
 \end{proof}
+
+Step 2 is easily achieved by setting $p=nc$ and uniformly distributing the
+fillers fill among a chosen set of $nc$ cups. The greedy nature of the emptier will
+force it to focus on the cups which must exist in $A$ with large positive fill.
+
+We succeed on the $\ell$-th level of recursion with probability at least
+$1-e^{-n z^\ell}$ for some constant $z$. The probability that we succeed on all
+of $\log n$ levels of recursion is therefore pretty good. You can get constant
+probability if you want.
   
 \end{proof}
 
