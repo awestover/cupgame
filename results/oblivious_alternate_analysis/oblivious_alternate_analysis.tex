@@ -55,57 +55,95 @@
 
 \begin{document}
 \maketitle
+\section{Oblivious Lower Bound}
+An important theorem that we use throughout our analysis is Hoeffding's Inequality:
+\begin{theorem}[Hoeffding's Inequality]
+  Let $X_i$ for $i=1,2,\ldots, k$ be independent bounded random variables with
+  $X_i \in [a,b]$ for all $i$. Then,
+  $$P\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
+  2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
+\end{theorem}
+Let $S$ be a finite population, let $X_i$ for $i=1,2\ldots, k$ be chosen
+uniformly at random from $S \setminus \{X_1,\ldots, X_{i-1}\}$, and let $Y_i$
+for $i=1,2,\ldots, k$ be chosen uniformly at random from $S$.
+Note that $\{X_1,\ldots, X_k\}$ represents a sample of $S$ chosen without
+replacement, whereas $\{Y_1,\ldots, Y_k\}$ represents a sample with
+replacement. Note that as the $Y_i$ are independent random variables
+Hoeffding's Inequality provides a bound on the probability of $\sum_{i=1}^k
+Y_i$ deviating from its mean by more than $t$.
+
+The same bound can be given on the probability of $\sum_{i=1}^k X_i$ deviating
+significantly from its mean, because the probability of $\sum_{i=1}^k X_i$
+deviating from it's expectation by more than $t$ is at most the probability of
+$\sum_{i=1}^k Y_i$ deviating from it's mean by $t$.
+Formally we can write this as 
+\begin{corollary}
+  \label{cor:hoeffdingwreplacement}
+  Let $S$ be a finite set with $\min(S) \ge a, \max(S) \le b$, and let $X_i$
+  for $i=1,2\ldots, k$ be chosen uniformly at random from $S \setminus
+  \{X_1,\ldots, X_{i-1}\}$.
+Then 
+  $$P\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
+  2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
+\end{corollary}
+
+Hoeffding proved Corollary \ref{cor:hoeffdingwreplacement} in his seminal work
+\cite{who62} (the result follows from his Theorem 4, combined with Hoeffding's
+Inequality for independent random variables).
+The intuition behind Corollary \ref{cor:hoeffdingwreplacement} is that samples
+drawn without replacement should be more tightly concentrated around the mean
+than samples drawn with replacement.
+
+Another important, yet very trivial, corollary of Hoeffding's Inequality is the
+Chernoff Bound (i.e. Hoeffding's Inequality applied to binary random
+variables):
+\begin{corollary}
+  \label{cor:chernoffbound}
+  Let $X_i$ for $i=1,2,\ldots, k$ be independent identically distributed binary
+  random variables (i.e. $X_i\in \{0,1\}$). Then 
+
+  $$P\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
+  2\exp\left(-2kt^2 \right) $$
+\end{corollary}
+
+We proceed with our analysis of oblivious lower bounds.
 
 Call a cup configuration $T$\defn{-flat} if the fill of every cup is in the
 interval $[-T, T]$.
 
-An emptying strategy is said to be $(R, t)$\defn{-flattenable} if, given a
-$T$-flat cup configuration, the emptier can, in running-time $t(T)$, obtain a
-$R$-flat configuration of cups. An emptying strategy is said to be
-\defn{flattenable} if it is $(R, t)$-flattenable for $R\le O(1)$ and for $t$
-such that $t(T) \le O(1)$ if $T\le O(1)$.
-
-In the randomized setting we are only able to prove lower bounds for backlog
-against flattenable emptiers; whether or not our results can be extended to a
-more general class of emptiers is an interesting open question. 
-
-However, this class of flattenable emtpiers is alredy of great interest. 
-In particular, we will show certain emptying strategies with properties similar
-to a greedy emptier are flattenable; in particular, we will show that a greedy
-emptier is flattenable.
-
 We call an emptier $\Delta$\defn{-greedy-like} if, when there are two cups
 $c_1, c_2$ with fills satisfying $\fil(c_1) > \fil(c_2) + \Delta$ the emptier
 never empties from $c_2$ without emptying from $c_1$ on the same round.
-Intuitively, a $\Delta$-greedy-like emptier has a $\pm \Delta$ range within it
+Intuitively, a $\Delta$-greedy-like emptier has a $\pm \Delta$ range where it
 is allowed to ``not be greedy". Note that a perfectly greedy emptier is
-$0$-greedy-like.
+$0$-greedy-like. We call an emptier \defn{greedy-like} if it is
+$\Delta$-greedy-like for $\Delta \le O(1)$.
 
-We now prove that $\Delta$-greedy-like emptiers (for $\Delta \le O(1)$) are flattenable: 
+In the randomized setting we are only able to prove lower bounds for backlog
+against greedy-like emptiers; whether or not our results can be extended to a
+more general class of emptiers is an interesting open question. 
+
+We now prove a crucial property of greedy-like emptiers: that they are \defn{flattenable}, i.e.:
 \begin{proposition}
   \label{prop:greedylikeisflat}
   Given a cup configuration that is $T$-flat, an oblivious filler can, in
   running time $2T$, achieve a $2(2+\Delta)$-flat configuration of cups against
   a $\Delta$-greedy-like emptier. 
-
-  In particular, this implies that a $\Delta$-greedy-like emptier is
-  $(R,t)$-flattenable for $R = 2(2+\Delta)$ and $t$ the function $T\mapsto 2T$;
-  for $\Delta\le O(1)$, $\Delta$-greedy-like emptiers are flattenable.
 \end{proposition}
 
 \begin{proof}
-  The filler's sets $p=n/2$ and distributes fill equally amongst
+  The filler sets $p=n/2$ and distributes fill equally amongst
   all cups at every round, in particular placing $1/2$ units of water in each cup.
   Let $\ell_t = \min_{c\in S_t} \fil_{S_t}(c)$, $u_t=\max_{c\in S_t} \fil_{S_t}(c)$. Let
-  $L_t$ be the set of cups $c$ with $\fil_{S_t}(c) \in \le l_t+2+\Delta$, and let
+  $L_t$ be the set of cups $c$ with $\fil_{S_t}(c) \le l_t+2+\Delta$, and let
   $U_t$ be the set of cups $c$ with $\fil_{S_t}(c) \ge u_t-2-\Delta$.
 
   There are two ways to think of $U_t$.
-  First we can consider $U_t$ as the union of intervals of length $1$,
+  First we can consider $U_t$ as capturing cups in the union of intervals of length $1$,
   $\Delta$, and $1$. Note the key property that if a cup with fill in
   $[u_t-\Delta-2, u_t-\Delta-1]$ is emptied from, then all cups with fills in 
   $[u_t-1, u_t]$ must be emptied from, because the emptier is $\Delta$-greedy-like.
-  On the other hand, we can consider $U_t$ as the union of $[u_t-2, u_t]$ and
+  On the other hand, we can consider $U_t$ as capturing cups with fill in the union of $[u_t-2, u_t]$ and
   $[u_t-\Delta-2, u_t-2]$. This is useful as the interval of width $\Delta$
   serves as a ``buffer". In particular, if there are more than $n/2$ cups
   outside of $U_t$ then all cups in $[u_t-2, u_t]$ must be emptied from because
@@ -177,170 +215,181 @@ We now prove that $\Delta$-greedy-like emptiers (for $\Delta \le O(1)$) are flat
 
 \end{proof}
 
+Given a $\Delta$-greedy-like filler, let $R_\Delta = 2(2+\Delta).$ By
+Proposition \ref{prop:greedylikeisflat}, if a filler is given a $T$-flat
+configuration of cups they can achieve a $R_\Delta$-flat configuration of cups.
+
+Now we are equipped to prove the following proposition:
 \begin{proposition}
   \label{prop:obliviousBase}
-  There exists an oblivious filling strategy in the variable-processor cup game
-  on $n$ cups that achieves backlog $\Omega(\log n)$ against a
-  $\Delta$-greedy-like emptier (where $\Delta \le O(1)$ is a constant known
-  to the filler), with constant probability.
+  There exists an oblivious filling strategy for the variable-processor cup
+  game on $n$ cups -- where $n \ge \Omega(1)$ is sufficiently large -- that,
+  given a $T$-flat configuration of cups with $T \le \poly(n)$, can achieve
+  backlog $\Omega(\log n)$ in running time $\poly(n)$ against a
+  $\Delta$-greedy-like emptier where $\Delta \le O(1)$ is a constant known to
+  the filler, with constant probability.
 \end{proposition}
 \begin{proof}
-    Let $A$, the \defn{anchor} set, be a subset of the cups chosen uniformly at
+  The filler starts by flattening all the cups, using the
+  flattening procedure detailed in Proposition
+  \ref{prop:greedylikeisflat}. 
+
+  Let $A$, the \defn{anchor} set, be a subset of the cups chosen uniformly at
   random from all subsets of size $n/2$ of the cups, and let $B$, the
   \defn{non-anchor} set, consist of the rest of the cups ($|B| = n/2$). Let $h
-  = 8\Delta + 8$, and let $h' = 2$. Our strategy is roughly as follows: 
+  = 8\Delta + 8$, and let $h' = 2$. Note that the average fill of $A$ and $B$
+  both must start as at least $-R_\Delta$ due to the flattening.
+
+  The filler's strategy is roughly as follows: 
   \begin{itemize}
-    \item \textbf{Step 1:} Make a constant fraction of cups in $A$ have fill at
-      least $h$ by playing single processor cup games on constant-size subsets
-      of $B$. With constant probability we can attain a cup in $B$ with
-      constant fill by this method, that we then swap into $A$. By a Chernoff
-      bound we get a constant fraction of $A$, say $cn$ cups, to have fill at
-      least $h$ with exponentially good probability. Between single-processor
-      cup games we flatten the cups.
-    \item \textbf{Step 2:} Reduce the number of processors to $cn$, and raise
-      the fill of $cn$ \emph{known} cups to fill $h'$. 
+    \item \textbf{Step 1:} Make a constant fraction of the cups in $A$ have
+      fill at least $h$ by playing single processor cup games on constant-size
+      subsets of $B$ and then swapping the cup within $B$ that has high fill,
+      with constant probability, into $A$. By a Chernoff bound this makes a
+      constant fraction of $A$, say $nc$ cups, have fill at least $h$ with
+      exponentially good probability. Between single-processor cup games the
+      filler flattens $B$.
+    \item \textbf{Step 2:} Reduce the number of processors to $nc$, and raise
+      the fill of $nc$ \emph{known} cups to fill $h'$. The emptier must first
+      empty from the cups with fill $h$ before emptying from the cups that
+      the filler is attempting to get fill $h'$ in.
     \item \textbf{Step 3:} Recurse on the $nc$ cups that are known to have fill
       at least $h'$.
   \end{itemize}
 
-By performing $\Omega(\log n)$ levels of recursion, achieving constant backlog
-$h'$ at each step (relative to the average fills), the filler achieves backlog
-$\Omega(\log n)$.
-
-In order to flatten a set of cups we must have a bound on the magnitude of the
-fills of the cups. We claim that without loss of generality no cup has fill
-larger in magnitude than $h\sqrt{n/\log\log n}$. If a cup has more than
-$h\sqrt{n/\log\log n}$ fill we call the cup \defn{overpowered}. If there ever
-is an overpowered cup then we are automatically done: the emptier has achieved
-$\poly(n)$ backlog and will maintain it for at least $\poly(n)$ rounds. If a
-cup ever has fill less than $-h\sqrt{n/\log\log n}$ then the absolute average
-fill must be large enough such that the absolute fill of this cup is at least
-$0$. Thus there is an overpowered cup. From now on we assume that there are no
-overpowered cups.
-
-At the start of our procedure we flatten the cups. By assumption they start
-$h\sqrt{n/\log\log n}$-flat, and by Proposition \ref{prop:greedylikeisflat} we
-can make them $2(2+\Delta)$-flat.
+By performing $\Omega(\log n)$ levels of recursion, increasing the fill by a
+constant amount at each level of recursion, the filler achieves backlog
+$\Omega(\log n)$. Say the probability of Step 1 succeeding is at least
+$1-e^{-nk}$. Then the probability that any of $(1/2)\log_{1/c} n$ levels of
+recursion fail is bounded above by (by the union bound)
+$$e^{-nk} + e^{-nck} + e^{-nc^2 k} + \cdots + e^{-nc^{\log_{1/c} \sqrt{n}} k} $$
+which is bounded above by 
+$$O\left(\frac{\log n}{e^{k\sqrt{n}}}\right)$$
+which, for sufficiently large $n$ can clearly be made constant.
+Hence the probability that every level of recursion succeeds is at least constant.
+Hence, once we show that Step 1 succeeds with the desired probability and that
+Step 2 is possible, we have that the entire process successfully achieves
+backlog $\Omega(\log n)$ with constant probability.
 
 We now describe how to achieve Step 1.
 
-We perform a series of \defn{swapping-process}, which are procedures that we
-use to get a new cup in $A$. A swapping-process is composed of a substructure,
-repeated many times, which we call a \defn{round-block}; a round-block is a set
-of rounds. At the beginning of a swapping-process we choose a round-block $j
-\in [n^2]$ uniformly at random from all the round-blocks. The swapping-process
-proceeds for $n^2$ round-blocks; on the $j$-th round-block we swap a cup into
-the anchor set.
+The filler performs a series of \defn{swapping-process}, which are procedures
+that the filler uses to get a new cup in $A$. A swapping-process is composed of
+a substructure, repeated many times, which we call a \defn{round-block}; a
+round-block is a set of rounds. A swapping-process will consists of $n\cdot
+c_\Delta$ round-blocks ($c_\Delta \le O(1)$ a function of $\Delta$ to be
+specified); at the beginning of each swapping-process the filler chooses a
+round-blocks $j$ uniformly at random from $[n\cdot c_\Delta]$. 
 
-On each of the $n^2$ round-blocks, the filler selects a random subset $C\subset
-B$ of the non-anchor cups and plays a single processor cup game on $C$. In this
-single-processor cup game the filler employs the classic adaptive strategy for
-achieving backlog $\Omega(\log |B|)$ on a set of $|B|$ cups, however modified
-because it is an oblivious filler. In particular, the filler's strategy in the
-single-processor cup games is to distribute water equally among an \defn{active
-set} of cups, and then after the emptier removes water from some cup the filler
-removes a random cup from the active set. There is at least constant
-probability that this results in the active set having a single cup at the end,
-with fill that has increased by at least $1/|B| + 1/(|B|-1) + \ldots + 1/1 \ge
-\ln |B|$ since the start of the round-block.
+For each round-block $i\in [n\cdot c_\Delta]$, the filler selects a random subset
+$D_i\subset B$ of the non-anchor cups and plays a single processor cup game on
+$D_i$. In this single-processor cup game the filler essentially employs the
+classic adaptive strategy for achieving backlog $\Omega(\log |B|)$ on a set of
+$|B|$ cups, with slight modifications for the fact that it is oblivious. In
+particular, the filler will only achieve this fill with constant probability.
+While doing this, the filler always places $1$ unit of fill in each cup in the
+anchor set. Note that the filler sets $p=n/2+1$.
 
-Between each round block we do flattening. 
+At the end of each round-block the filler applies the flattening procedure to
+flatten the non-anchor set. Note that this will not affect the running-time beyond a
+multiplicative factor (of, say, $3$). 
 
 On most round-blocks -- all but the $j$-th -- the filler does nothing with the
-cup that it achieves in the active set at the end of the single processor cup
-game. However, on the $j$-th round-block the filler swaps the winner of the
-single processor cup game into the anchor set.
+cup that it achieves with constant probability in its single processor cup
+game. However, on the $j$-th round-block the filler swaps the ``winner" of the
+single processor cup game into the anchor set (with constant probability there
+is a winner).
 
 \begin{clm} \label{clm:reg} 
-  Let $q\ge \Omega(1)$ be an appropriately small constant ($q$ is a function of
-  $h\le O(1)$). With probability at least $1-e^{-nq^2/1024}$, we
-  achieve fill at least $h$ in at least $nq/16$ of the cups in $A$ (i.e. a
-  constant fraction of the cups in $A$). 
+  With probability at least $1-e^{-O(n)}$, the filler achieves fill
+  at least $h$ in at least $nc = O(n)$ of the cups in $A$. 
 \end{clm}
 \begin{proof}
-  The cups start $2(2+\Delta)$-flat.
+  Consider a particular swapping-process. Let $j$, the round-block on which the
+  filler will perform the swap, be chosen uniformly randomly from $[n\cdot
+  c_\Delta]$ ($c_\Delta$ to be determined).
  
-  Say the emptier \defn{neglects} the anchor set in a round-block if on at
-  least one round of the round-block the emptier does not empty from every
-  anchor cup. By playing the single-processor cup game for $n^2$ round-blocks,
-  with only one round-block when we actually swap a cup into the anchor set, we
-  strongly disincentive the emptier from neglecting the anchor set on more
-  than a constant fraction of the round-blocks. 
+  Say the emptier \defn{neglects} the anchor set during a round-block if on at
+  least one round of the round-block the emptier does not empty from every cup
+  in the anchor set. By playing the single-processor cup game for many
+  round-blocks with only one round-block when the filler actually swaps a cup
+  into the anchor set, the filler prevents the emptier from neglecting the
+  anchor set too often.
 
-  The emptier must have some binary function, $I(i)$ that indicates whether or
-  not they will neglect the anchor set on round-block $i$ if the filler has not
-  already swapped. Note that the emptier will know when the filler perform a
-  swap, so whether or not the emptier neglects a round-block $i$ depends on
-  this information. However, $j$ is the only parameter of the swapping-process,
-  so there is no other information that the emptier can use to decide whether
-  or not to neglect a round-block, because on any round-block when we simply
-  redistribute water amongst the non-anchor cups we effectively have not
-  changed anything about the game state. 
+  The fill of any cup in the anchor set can clearly never exceed
+  $R_\Delta+\Delta$ because $B$ is $R_\Delta$-flat at the start of each
+  round-block (a cup with fill this high would necessarily be emptied from).
+  Let $\mu_\Delta = 2R_\Delta+\Delta$; the emptier can neglect the anchor set
+  no more than $(n/2)\mu_\Delta$ times. 
+  % might need to mess with the size of A and B a bit to make this more true...
+  Furthermore, the average fill of $B$ is thus always at least $-\mu_\Delta$.
+  As $B$ is $R_\Delta$-flat this also means that the fills of cups in $B$ at
+  the start of each round-block are at least $-\mu_\Delta-R_\Delta$.
 
-  If the emptier is willing to neglect the anchor set for at least $1/2$ of the
-  round-blocks, i.e. $\sum_{i=1}^{n^2} I(i) \ge n^2 / 2$, then with probability
-  at least $1/4$, $j \in ((3/4) n^2, n^2)$, in which case the emptier neglects
-  the anchor set on at least $n^2/4$ round-blocks ($I(k)$ must be $1$ for at
-  least $n^2/4$ of the first $(3/4)n^2$ round-blocks). Each time the emptier
-  neglects the anchor set the mass of the anchor set increases by at least $1$.
-  Thus the average fill of the anchor set will have increased by at least
-  $(n^2/2)/(n/2) \ge \Omega(n)$ over the entire swapping-process in this
-  case, implying that we achieve the desired backlog. 
+  On each round-block the filler chooses a random subset $D_i \subset B$ of
+  $\lceil e^{2h} \rceil$ cups. If the emptier does not neglect the anchor set
+  on round-block $i$ then the filler plays a legitimate single-processor cup
+  game on $n$ cups. The filler maintains an \defn{active-set} of cups, which is
+  a subset of $D_i$ initialized to $D_i$. On each round of the round-block the
+  filler distributes $1$ unit of fill equally among all cups in the active set.
+  Then the emptier removes fill from some cup in $B$. The filler chooses a
+  random cup to remove from the active set. The probability that the cup the
+  emptier emptied from is not in the active set after a random cup is removed
+  from the active set by the filler is at least constant. By the end of the
+  round-block the active-set will consist of a single cup. With constant
+  probability, in particular probability at least $$q_0 = 1/\lceil e^{2h}
+  \rceil!,$$ this cup has gained fill at least $\ln \lceil e^{2h} \rceil \ge
+  2h$. Recalling that the cups fill started as at least $-\mu_\Delta-R_\Delta$,
+  we have that this cup now has fill at least $2h-\mu_\Delta-R_\Delta$; by
+  design in choosing $h$ this quantity is at least $h$. 
 
-  Otherwise, there is at least a $1/2$ chance that the round-block $j$, which
-  is chosen uniformly at random from the round-blocks, when the filler performs
-  a swap into the anchor set occurs on a round-block with $I(j)=0$, indicating
-  that the emptier won't neglect the anchor set on round-block $j$. In this
-  case, the round-block was a legitimate single processor cup game on $C_j$,
-  the randomly chosen set of $\lceil e^{2h} \rceil$ cups on the $j$-th round.
-  Then we achieve fill increase $\ge 2h$ by the end of the round-block with
-  probability at least $1/\lceil e^{2h}\rceil!$ -- the probability that we
-  correctly guess the sequence of cups within the single processor cup game
-  that the emptier empties from. 
+  Now we shall choose $c_\Delta$, choosing it large enough such that with
+  constant probability there is some round-block on which the emptier doesn't
+  neglect the anchor set on which the filler succeeds.
 
-  The probability that the random set $C_j \subset B$ contains only cups that
-  are among the $n/4$ fullest cups in $B$ is $${n/2 \choose {\lceil e^{2h}
-  \rceil}} / {n \choose {\lceil e^{2h}\rceil}} = O(1).$$ Note that because, by
-  assumption, at least half of the cups $c \in B$ have $\fil(c) \ge -h$, then
-  the $n/4$ fullest cups in $B$ must have fill at least $-h$. If all cups $
-  c\in C_j$ have $\fil(c) \ge -h$, then the fill of the cup in the active set
-  at the end of the round-block is at least $-h + 2h = h$, if the filler
-  guesses the emptier's emptying sequence correctly.
+  We choose $$c_\Delta = 2\frac{1}{q_0}\mu_\Delta.$$ By having $n\cdot
+  c_\Delta$ round-blocks, we make it so that there should be at least
+  $n\mu_\Delta$ round-blocks on which the filler correctly guesses the
+  emptier's emptying sequence. Formally this is due to a Chernoff bound: the
+  expectation of the number of rounds when the filler correctly guesses the
+  emptier's emptying sequence is at least $2n\mu_\Delta$, and the probability
+  that it deviates from its expectation by more than $n\mu_\Delta$ is hence
+  exponentially small in $n$. As shown before, the emptier cannot neglect the
+  anchor set more than $(n/2)\mu_\Delta$ times. The filler correctly guesses
+  the emptiers emptying sequence on the $j$-th round-block. Conditioned on this
+  event, the $j$ is chosen uniformly randomly from all the round-blocks on
+  which the filler correctly guesses the emptiers emptying sequence. Since the
+  emptier can neglect the anchor set on at most half of these round-blocks
+  there is at least a $1/2$ chance that $j$ is chosen on a round-block where
+  the filler does not neglect the anchor set. Thus, overall, there is at least a
+  constant probability of 
 
-  Say that a swapping-process where at least half of the cups $c\in B$ have
-  $\fil(c) \ge -h$ \defn{succeeds} if $C_j$ is a subset of the $n/4$ fullest
-  cups in $B$, and if the filler correctly guesses the emptier's emptying
-  sequence. Note that if a swapping-process succeeds, then the filler is able
-  to swap a cup with fill at least $h$ into $A$. We have shown that there is a
-  constant probability of a given swapping-process succeeding. Let $X_i$ be the
-  binary random variable indicating whether or not the $i$-th swapping process
-  where the filler does not perform a storing-operation where at least half of
-  the cups $c\in B$ have $\fil(c) \ge -h$ succeeds. Let $q \ge \Omega(1)$ be
-  the probability of a swapping-process succeeding, i.e. $P(X_i=1)$. Note that
-  the random variables $X_i$ are clearly independent, and identically
-  distributed.
+  Say that a swapping-process \defn{succeeds} if the filler is able to swap a
+  cup with fill at least $h$ into $A$. We have shown that there is a constant
+  probability of a given swapping-process succeeding. Let $X_i$ be the binary
+  random variable indicating whether or not the $i$-th swapping process
+  succeeds. Let $q \ge \Omega(1)$ be the probability of a swapping-process
+  succeeding, i.e. $P(X_i=1)$. Note that the random variables $X_i$ are clearly
+  independent, and identically distributed.
 
-  Clearly $$\E\left[\sum_{i=1}^{n/8} X_i\right] = qn/8.$$ Note that we do not
-  use all the $X_i$; we know there must be at least $n/4 - 3/2 \gamma$
-  swapping-processes that do not consist of a storing-operation, but only use
-  $n/8$ of the $X_i$. We make this choice because the particular constants that
-  we get do not matter, and because it substantially simplifies the analysis.
+  Clearly $$\E\left[\sum_{i=1}^{n/4} X_i\right] = qn/4.$$ 
   By a Chernoff Bound (i.e. Hoeffding's Inequality applied to binary random variables),
-  $$P\left(\sum_{i=1}^{n/8} X_i\le nq/16\right) \le e^{-nq^2/1024}.$$ That is, the
-  probability that less than $nq/16$ of the anchor cups have fill at least $h$ is
+  $$P\left(\sum_{i=1}^{n/4} X_i\le nq/8\right) \le e^{-nq^2/128}.$$ That is, the
+  probability that less than $nq/8$ of the anchor cups have fill at least $h$ is
   exponentially small in $n$, as desired.
 
 \end{proof}
 
-Step 2 is easily achieved by setting $p=nc$ and uniformly distributing the
-fillers fill among a chosen set of $nc$ cups. The greedy nature of the emptier will
-force it to focus on the cups which must exist in $A$ with large positive fill.
+Hence Step 1 is possible.
 
-We succeed on the $\ell$-th level of recursion with probability at least
-$1-e^{-n z^\ell}$ for some constant $z$. The probability that we succeed on all
-of $\log n$ levels of recursion is therefore pretty good. You can get constant
-probability if you want.
-  
+Step 2 is easily achieved by setting $p=nc$ and uniformly distributing the
+fillers fill among a chosen set of $nc$ cups. The greedy nature of the emptier
+will force it to focus on the cups which must exist in $A$ with large positive
+fill until the new cups have sufficiently high fill. In particular, the fills
+of the cups in $nc$ must be at least $-\mu_\Delta-\Delta \ge -h$. After
+removing from the very full cups for $h+2$ rounds the fills of these new cups
+are clearly at least $2$.
+
 \end{proof}
 
 \begin{lemma}[The Oblivious Amplification Lemma]
@@ -356,6 +405,91 @@ probability if you want.
 \end{lemma}
 \begin{proof}
   
+\end{proof}
+
+\begin{corollary}
+  \label{cor:obliviousPoly}
+  There is an oblivious filling strategy for the variable-processor cup game on
+  $n$ cups that achieves backlog at least $2^{\Omega(\sqrt{\log n})}$ in
+  running time $O(n)$ with constant probability.
+\end{corollary}
+\begin{proof}
+  Given the Oblivious Amplification Lemma we could try to apply the same
+  strategy as outlined in the proof of Corollary \ref{cor:adaptivePoly} 
+  to achieve backlog $\Omega(n^{1-\epsilon})$ for constant $\epsilon >0$ in time $2^{O(\log^2 n)}$.
+  Because of our definition of an overpowered cup as a cup with fill at least
+  $\tilde{\Omega}(\sqrt{n})$, we can't get quite as close to linear as an
+  adaptive filer could. However, the more pressing problem is that of running
+  time: randomized algorithms are traditionally supposed to have polynomial-running time.
+  By artificially reducing $n$, i.e. ignoring some portion of the cups, we can
+  get an algorithm that achieves high backlog, but in polynomial time.
+  In particular, we want to choose a subset of $n'$ of the cups to focus on,
+  where $2^{O(\log^2 n')} = O(n)$. An appropriate choice is $n' = 2^{\sqrt{\log n}}$.
+
+  With $n'$ chosen, we apply the exact same strategy as given in the paragraph
+  in the proof of Corollary on the $2^{O(\log^2 n)}$-time construction for
+  achieving backlog $\Omega(n^{1-\epsilon})$ for constant $\epsilon >0$, but using
+  repeated application of the Oblivious Amplification Lemma rather than the
+  Adaptive Amplification Lemma, which yields the disclaimer that the backlog is
+  only achieved with constant probability.
+  Thus, we achieve backlog $\Omega(n')$ in running time $2^{O(\log^2
+  n')}$. By design, expressing this in terms of $n$ the filler achieves 
+  backlog $2^{\Omega(\sqrt{\log n})}$ in running time $O(n)$.
+
+  For completeness we -- briefly (as they are nearly identical) -- present the
+  ideas from Proposition \ref{prop:constructive_nepsil} in the randomized
+  context.
+
+  Fix constant $\epsilon > 0$ and choose appropriate constant $\delta$, as
+  mandated by Claim \ref{clm:validchoices}. Choose constant $c$, according to
+  an inequality to be specified later. We aim to achieve backlog
+  $c(n')^{1-\epsilon}$.
+  As before, we define a sequence of functions. First,
+  $$f_0(k) = 
+  \begin{cases} 
+    \lg k, & k\geq 1, \\
+    0 & \text{else.}
+  \end{cases}$$
+  Then, we define $f_i$ as the amplification of $f_{i-1}$ for $i \ge 1$, where
+  amplification is as defined in the Oblivious Amplification Lemma. 
+  However, this time the filling strategy $f_i$ achieves backlog $f_i(k)$ on
+  $k$ cups only with constant probability.
+  As before we define a sequence $g_i$ as 
+  $$ g_i = \begin{cases}
+    \lceil 1/\delta \rceil \gg 1,  & i = 0,\\
+    \lceil g_{i-1}/(1-\delta)\rceil -1 & i  \ge 1.
+  \end{cases} $$
+  Claim \ref{clm:fikinduction}, which states that 
+  $$f_i(k) \ge ck^{1-\epsilon} \text{ for all } k < g_i,$$
+  holds with no modifications required.
+
+  Again, because $g_i$ is increasing, we achieve the desired backlog
+  $c(n')^{1-\epsilon}$ in finite time. In particular, applying identical
+  arguments to those in Corollary \ref{cor:adaptivePoly}, we find that the
+  running time is $2^{O(\log^2 n')}$.
+
+  As stated earlier, by design of $n'$, this means we get backlog
+  $2^{\Omega(\sqrt{\log n})}$ in time $O(n)$.
+
+\end{proof}
+
+
+
+% this probably belongs somewhere in the corollary proof, which will be substantially more complex than I orignally anticipated, becasue Prop and Lemma need to take as input cups arrangements with flattness guarantees
+\begin{clm}
+  Without loss of generality the cup state is always $(h\sqrt{n/\lg\lg n})$-flat.
+\end{clm}
+\begin{proof}
+In order to flatten a set of cups we must have a bound on the magnitude of the
+fills of the cups. We claim that without loss of generality no cup has fill
+larger in magnitude than $h\sqrt{n/\log\log n}$. If a cup has more than
+$h\sqrt{n/\log\log n}$ fill we call the cup \defn{overpowered}. If there ever
+is an overpowered cup then we are automatically done: the emptier has achieved
+$\poly(n)$ backlog and will maintain it for at least $\poly(n)$ rounds. If a
+cup ever has fill less than $-h\sqrt{n/\log\log n}$ then the absolute average
+fill must be large enough such that the absolute fill of this cup is at least
+$0$. Thus there is an overpowered cup. From now on we assume that there are no
+overpowered cups.
 \end{proof}
 
 \end{document}
