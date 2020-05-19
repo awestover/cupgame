@@ -261,44 +261,49 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
   Let $h = \frac{1}{4}\ln (n/2)$ be the desired fill. Once a cup with fill at
   least $h$ is achieved the filler stops, the process completed.  
   Let $A$ consist of the $n/2$ fullest cups, and $B$ consist of the rest of the
-  cups (at any given state, so $A, B$ are implicitly functions of the round
-  $t$).
+  cups. Note that $A, B$ are implicitly functions of the round $t$.
 
   If the process is not yet complete, that is $\fil(c) < h$ for all cups $c$,
-  then $\tilt(A\cup B) < h\cdot n$. Assume for
-  sake of contradiction that there are more than $n/2$ cups $i$ with $\fil(c)
-  \le -2h$. The mass of those cups would be at most $-hn$, but there isn't
-  enough positive tilt to oppose this, a contradiction. Hence there are at most
-  $n/2$ cups $c$ with $\fil(c) \le -2h$. 
+  then $\tilt(A\cup B) < h\cdot n$. Assume for sake of contradiction that there
+  are more than $n/2$ cups $c$ with $\fil(c) \le -2h$. The mass of those cups
+  would be at most $-hn$ but the mass of the remaining cups cannot exceed
+  $hn/2$. This implies that average fill is negative when it is in fact $0$ by
+  definition, a contradiction. Hence there are at most $n/2$ cups $c$ with
+  $\fil(c) \le -2h$. 
 
-  We set the number of processors equal to $1$ and play a single processor cup
-  game on $n/2$ cups that have fill at least $-2h$ (which must exist) for $n/2
-  -1$ steps. We initialize our \defn{active set} --the set of cups that we
-  place fill in-- to be $A$. Note that that $\fil(c) \ge -2h$ for all cups $c\in
-  A$, as $A$ consists of the $n/2$ fullest cups. We will remove $1$ cup from
-  the active set at each step.
-  At each step the filler distributes water equally among the cups in its
+  The filler sets the number of processors equal to $1$ and plays a single
+  processor cup game on $n/2$ cups that each have fill at least $-2h$ (which
+  must exist) for $n/2 -1$ steps. Throughout this process the filler maintains
+  a set of cups called the \defn{active set}: the set of cups that the filler
+  will place fill in. The filler initializes the active set to be $A$. Note
+  that that $\fil(c) \ge -2h$ for all cups $c\in A$, as $A$ consists of the
+  $n/2$ fullest cups. The filler removes $1$ cup from the active set at each
+  step. At each step the filler distributes water equally among the cups in its
   active set. Then, the emptier will choose some cup to empty from. If this cup
-  is in the active set the filler removes it from the active set. Otherwise, the
-  filler chooses an arbitrary cup to remove from the active set.
+  is in the active set, the filler removes it from the active set. Otherwise,
+  the filler chooses an arbitrary cup to remove from the active set.
 
   After $n/2-1$ steps, the active set will consist of a single cup. This cup's
-  fill has increased by $1/(n/2) + 1/(n/2 - 1) + \cdots + 1/2 + 1/1
-  \ge \ln n/2 = 4h$. Thus such a cup has fill at least $2h$ now, so the
-  proposition is satisfied.
+  fill has increased by $1/(n/2) + 1/(n/2 - 1) + \cdots + 1/2 + 1/1 \ge \ln n/2
+  = 4h$. This cup's fill started as at least $-2h$. Thus this cup has fill at
+  least $2h$ now, as desired.
 \end{proof}
 
 \begin{lemma}[The Adaptive Amplification Lemma]\label{lem:adaptiveAmplification}
   Let $f$ be an adaptive filling strategy that achieves backlog $f(n)$ in the
   variable-processor cup game on $n$ cups (relative to average fill, with
   negative fill allowed).
-  Let $n_0 \in \mathbb{N}$ be a constant such that we can achieve backlog $1$ on $n_0$ cups.
-  Let $\delta\in(0,1)$ be a parameter, and let $L\in\mathbb{N}$ be a constant
+  Let $n_0 \in \mathbb{N}$ be a constant such that a filler can achieve backlog $1$
+  on $n_0$ cups ($n_0$ exists by Proposition \ref{prop:adaptiveBase}).
+  Let $\delta\in(0,1)$ be a parameter, and let $L\in\mathbb{N}$ be a parameter
   such that $n_0 \le (1-\delta)\delta^L n \le n_0/\delta$.
+  \footnote{Note that $n$ must be sufficiently large, and $\delta, L$ must be
+  chosen such that $(1-\delta)\delta^L n \in \mathbb{N}$ because it doesn't
+  make sense to talk of ``fractional cups".}
 
   Then, there exists an adaptive filling strategy that achieves backlog $f'(n)$ satisfying
   $$f'(n) \ge (1-\delta)\sum_{\ell= 0}^{L} f((1-\delta)\delta^\ell n)$$
-  and $f'(n) \ge 1$, in the variable-processor cup game on $n\ge n_0$ cups.\footnote{Note that $\delta$ must be chosen such that $(1-\delta)\delta^\ell n \in \mathbb{N}$ because it doesn't make sense to talk of ``fractional cups".}
+  in the variable-processor cup game on $n$ cups.
 \end{lemma}
 \begin{proof}
   The basic idea of this analysis is as follows:
@@ -319,28 +324,29 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
   n_\ell, |B| = (1-\delta)\cdot n_\ell$.
 
   We now elaborate on how to achieve Step 1.
-  Our filling strategy always places $1$ unit of water in each anchor cup. This
-  ensures that average fill in the anchor set is non-decreasing.
+  The filling strategy always places $1$ unit of water in each anchor cup. This
+  ensures that no cups in the anchor set ever have their fill decrease.
 
-  On the $\ell$-th level of recursion the filler uses the following
-  \defn{process} to achieve the desired average fill in $A$: repeatedly apply
-  $f$ to $B$, and then take the cup generated by $f$ within $B$ to have large
-  backlog and swap it with a cup in $A$; repeat until $A$ has the desired
-  average fill. Note that $$\mu(A) \cdot |A| +\mu(B)\cdot |B| = 0,$$ so
-  $$\mu(A) = - \mu(B) \cdot (1-\delta)/ \delta.$$
+  On the $\ell$-th level of recursion the filler uses the following procedure,
+  termed a \defn{swapping-process}, to achieve the desired average fill in $A$:
+  repeatedly apply $f$ to $B$, and then take the cup generated by $f$ within
+  $B$ with fill at least $f(|B|)$ and swap it with a cup in $A$; repeat until $A$ has
+  the desired average fill. Note that $$\mu(A) \cdot |A| +\mu(B)\cdot |B| =
+  0,$$ so $$\mu(A) = - \mu(B) \cdot (1-\delta)/ \delta.$$
 
   Thus, if at any point in the process $B$ has average fill lower than $-h_\ell
   \cdot \delta/(1-\delta)$, then $A$ has average fill at least $h_\ell$, so the
   process is finished. So long as $B$ has average fill at least $-h_\ell\cdot
   \delta/(1-\delta)$ we will apply $f$ to $B$.
   
-  It is somewhat complicated to apply $f$ to $B$ however, because we need to
+  It is somewhat complicated to apply $f$ to $B$ however, because we must
   guarantee that in the steps that the algorithm takes while applying $f$ the
-  emptier always empties the same amount of water from $B$ as the filler fills
-  $B$ with. This might not be the case if the emptier does not empty from each
-  anchor cup at each step. Say that the emptier \defn{neglects} the anchor set
-  on an application of $f$ if there is some step during the application of $f$
-  in which the emptier does not empty from some anchor cup.
+  amount of mass removed from $B$ by the emptier is the same as the amount of
+  mass added to $B$ by the filler. This might not be the case if the emptier
+  does not empty from each anchor cup at each step. We say that the emptier
+  \defn{neglects} the anchor set on an application of $f$ if there is some step
+  during the application of $f$ in which the emptier does not empty from some
+  anchor cup.
 
   We will apply $f$ to $B$ at most $h_\ell n_\ell\delta + 1$ times, and at the
   end of an application of $f$ we only swap the generated cup into $A$ if the
@@ -361,9 +367,6 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
   We achieve average fill $h_\ell$ in the anchor set for $L$ levels of
   recursion. Summing $h_\ell$ for $0\le \ell \le L$ yields the desired result.
 
-  Note that as $n\ge n_0$ we can always simply use Proposition
-  \ref{prop:adaptiveBase} to achieve backlog $1$. We will revert to this option
-  if it gives larger fill than we get by repeatedly applying $f$.
 \end{proof}
 
 \begin{corollary}
@@ -376,7 +379,7 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
   Fix $\epsilon \in (0,1/2)$, and let $c, \delta$ be parameters, with $c\in
   (0,1), 0 < \delta \ll 1/2$ -- these will depend on $\epsilon, n$.
   Say that we aim to achieve backlog at least $cn^{1-\epsilon}$.
-  Observe that if we apply the Amplification Lemma to the function satisfying
+  Observe that if we apply the Amplification Lemma to a function $f$ satisfying
   $f(k) \ge ck^{1-\epsilon}$ for $k \le g$ then for any $k_0$ with
   $k_0(1-\delta)\le g$ (which enforces $k_0 \le g/ (1-\delta)$) we have the
   following:
@@ -386,13 +389,13 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
   &= ck_0^{1-\epsilon} (1-\delta)^{2-\epsilon} \sum_{\ell=0}^L (\delta^\ell)^{1-\epsilon},
   \end{align*}
   where $L$ is the greatest integer such that $(1-\delta)\delta^Ln \ge n_0$
-  where $n_0$ is a constant such that we can achieve backlog $1$ on $n_0$ cups
+  where $n_0$ is a constant such that a filler can achieve backlog $1$ on $n_0$ cups
   (this definition is identical to the definition in the statement of Lemma
   \ref{lem:adaptiveAmplification}).
   Note that as $\delta$ will be very small, $\sum_{\ell=0}^L
   (\delta^L)^{1-\epsilon}$ is very well approximated by
   $1+\delta^{1-\epsilon}$, so we will not loose much by relaxing our lower
-  bound on $f'(k_0)$ to only use the first $2$ terms of the sum. Then we have 
+  bound on $f'(k_0)$ to only use the first $2$ terms of the sum. We have the looser bound
   $$f'(k_0) \ge ck_0^{1-\epsilon}(1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon}).$$
   Let 
   $$h(\delta) = (1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon}).$$
@@ -412,14 +415,16 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
   we have constructed from $f$ a new function $f'$ that satisfies the
   inequality $f'(k) \ge ck^{1-\epsilon}$ for $k\le g/(1-\delta)$, as opposed to
   only for $k \le g$ as in the case of $f$. 
-  \footnote{Note that although $f'(k) \ge ck^{1-\epsilon}$ holds for at least as many $k$
-    as $f(k) \ge c k^{1-\epsilon}$, it does not necessarily hold for strictly
-    more; in particular, if $\lfloor g/(1-\delta) \rfloor = g$ then the inequality on
-    $f'$ holds for no more $k$ than the inequality on $f$, as $f$ and $f'$ are
-    functions on $\mathbb{N}$. We have to be somewhat careful about the fact that
-    there are an integer number of cups.} 
+  \footnote{Note that although $f'(k) \ge ck^{1-\epsilon}$ holds for at least
+    as many $k$ as $f(k) \ge c k^{1-\epsilon}$, it does not necessarily hold
+    for strictly more; in particular, if $\lfloor g/(1-\delta) \rfloor = g$
+    then the inequality on $f'$ holds for no more $k$ than the inequality on
+    $f$, as $f$ and $f'$ are functions on $\mathbb{N}$. In general we have to
+    be somewhat careful about the fact that there are an integer number of cups
+    throughout this proof (this issue was deferred from earlier proofs to be
+  dealt with here).} 
   Then by repeatedly amplifying a function, we should be able to arbitrarily
-  extend the support, which would help us attain the desired backlog.
+  extend the support, which will allow us to attain the desired backlog.
 
   We now prove Claim \ref{clm:validchoices}.
   \begin{proof}
@@ -427,7 +432,7 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
   $$(1-\delta)^{2-\epsilon} = 1 - (2-\epsilon)\delta + O(\delta^2).$$
  
   So, to find a $\delta$ where $h(\delta) \ge 1$ it suffices -- note that, again, we choose
-  to neglect the $\delta^2$ term as it does not help us substantially because
+  to neglect the $\delta^2$ term as it does not strengthen the lower bound substantially because
   it is so small -- to find a $\delta$ with 
   $$(1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon}) \ge 1.$$
   Rearranging we have 
@@ -449,7 +454,8 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
   In addition to the constraint that $\delta$ must be small enough such that
   $h(\delta) \ge 1$, the only other constraint on $\delta$ is that $\delta$
   must be large enough that the sum from the Amplification Lemma has at least
-  two terms, i.e. such that $L \ge 1$.
+  two terms, i.e. such that $L \ge 1$. We need $L\ge 1$ because otherwise the
+  Amplification Lemma doesn't give a larger function.
   The condition $L \ge 1$ enforces 
   $$\delta(1-\delta)n \ge n_0. $$
   Recall that we choose $\delta < 1/2$, so $1-\delta > 1/2$. Thus to make
@@ -463,7 +469,7 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
   $\delta$. That is, $\delta$ is valid if and only if it satisfies
   \begin{equation}
     \label{eqn:deltainequality}
-       2n_0/n \le \delta \le  \frac{1}{(2(2-\epsilon))^{1/\epsilon}}.
+    \frac{2n_0}{n} \le \delta \le  \frac{1}{(2(2-\epsilon))^{1/\epsilon}}.
   \end{equation}
   To achieve the desired backlog of $\Omega(n)$ we can use $\epsilon =
   \gamma/\lg n$ for appropriate constant $\gamma$, as $$n^{1-\gamma/\lg n} =
@@ -474,27 +480,28 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
    2n_0/n \le \frac{1}{(2(2-\gamma/\lg n))^{(1/\gamma)\lg n}}.
   \end{equation}
   Note that 
-  $$(2(2-\gamma/\lg n))^{(1/\gamma)\lg n} \le 4^{(1/\gamma)\lg n} \le n^{2/\gamma}$$
-  Clearly by choosing e.g. $\gamma = 4$ we have the desired inequality.
+  $$(2(2-\gamma/\lg n))^{(1/\gamma)\lg n} \le 4^{(1/\gamma)\lg n} \le n^{2/\gamma}.$$
+  Thus, clearly by choosing e.g. $\gamma = 4$ we have the desired inequality.
   Inequality \ref{eqn:thatinequality} implies that there is a valid choice of
   $\delta$ when we chose $\epsilon = \gamma / \lg n$. When proving that we can
   achieve backlog $\Omega(n)$ we use $\epsilon = 4 / \lg n$, and $\delta =
-  O(1/n)$ satisfying Inequality \ref{eqn:deltainequality}, based on our choice
+  O(1/n)$ satisfying Inequality \ref{eqn:deltainequality} for our choice
   of $\epsilon$. When proving that we can achieve backlog
-  $\Omega(n^{1-\epsilon})$ for constant $\epsilon > 0$ we choose $\delta$ to be
-  a constant satisfying Inequality \ref{eqn:deltaUpperIneq}, and $\delta$, being constant, is
-  trivially not too small, hence satisfies Inequality \ref{eqn:deltaLowerBound}.
+  $\Omega(n^{1-\epsilon})$ for constant $\epsilon > 0$ we choose $\delta > 0$ to be
+  a constant satisfying Inequality \ref{eqn:deltaUpperIneq}, and $\delta$,
+  being constant, trivially satisfies Inequality \ref{eqn:deltaLowerBound}.
     
   \end{proof}
 
   Now we proceed to show that with the appropriate values of $\delta, \epsilon$ we
   can achieve a filling strategy that achieves backlog $cn^{1-\epsilon}$ on $n$ cups.
-  First we present a simple existential argument which asserts that a strategy
-  that achieves the desired backlog exists. Then we provide two constructive
-  arguments: one achieving backlog $\Omega(n)$ in running time $2^{O(n)}$,
-  the other achieving backlog $\Omega(n^{1-\epsilon})$ for constant $\epsilon>
-  0$ in running time $2^{O(\log^2 n)}$. Both constructive arguments rely on
-  repeated application of the Amplification Lemma.
+  First we present a simple existential argument to show that an algorithm
+  achieving backlog $\Omega(n^{1-\epsilon})$ for $\epsilon$ constant exists. Next we modify the
+  existential proof to achieve an algorithm achieving the same backlog, but in
+  bounded running time, specifically running time $2^{O(\log^2 n)}$.
+  Finally we present an algorithm where $\delta$ is set extremally; doing so,
+  along with other modifications of the approach, we can achieve backlog
+  $\Omega(n)$ in running time $2^{O(n)}$.
   
   \begin{proposition}
     There exists a filling algorithm that achieves backlog
@@ -502,16 +509,16 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
   \end{proposition}
   \begin{proof}
   Let $\epsilon > 0$ be constant. By Claim \ref{clm:validchoices}, there is a
-  valid constant setting of $\delta$; let $\delta \ll 1/2$ be appropriate
-  constant. Let $f^*$ be the supremum over all filling strategies of the
-  backlog achievable on $n$ cups. Then $f^*$ must be greater than or equal to
+  valid constant setting of $\delta$; let $\delta \ll 1/2$ be an appropriate
+  constant. Let $f^*(n)$ be the supremum over all filling strategies of the
+  backlog achievable on $n$ cups. Clearly $f^*$ must be greater than or equal to
   the amplification of $f^*$. Assume for contradiction that there is some least
   $n_*$ such that 
   $$\begin{cases}
     f^*(k)< ck^{1-\epsilon}, & k > n_*\\
-    f^*(k)> ck^{1-\epsilon}, & k < n_*
+    f^*(k)> ck^{1-\epsilon}, & k \le n_*
   \end{cases} $$
-  Note that $n_*(1-\delta)\delta \ge n_0$ by appropriate choice of constant
+  Note that $n_*(1-\delta)\delta \ge n_0/(1-\delta)$ by appropriate choice of constant
   $c$, and Proposition \ref{prop:adaptiveBase}, which states that we can get
   backlog $O(\log n_*)$ on $n_*$ cups\footnote{Note: this is where it is
   crucial that $\epsilon, \delta$ are constants.}.
@@ -522,7 +529,7 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
            &\ge cn_*^{1-\epsilon} h(\delta)\\
            &\ge cn_*^{1-\epsilon}
 \end{align*}
-which is a contradiction. Hence $f^*$ achieves backlog $cn^{1-\epsilon}$ for all $n$.
+which is a contradiction. Hence $f^*$ achieves backlog $cn^{1-\epsilon}$.
     
   \end{proof}
 
@@ -552,7 +559,7 @@ in finite running time. We again use constant $\epsilon > 0$ and appropriate con
     \lceil 1/\delta \rceil \gg 1,  & i = 0,\\
     \lceil g_{i-1}/(1-\delta)\rceil -1 & i  \ge 1
   \end{cases} $$
-  Note that is, $g_{i+1}$ is the greatest integer strictly less than $g_i/(1-\delta)$.
+  That is, $g_{i+1}$ is the greatest integer strictly less than $g_i/(1-\delta)$.
   Note that $ (1/\delta) / (1-\delta) > (1+\delta)/\delta = 1/\delta + 1.$
   Thus $g_1 = 1+ g_0$, and in general, $g_{i+1} > g_i$, because the difference
   $g_{i+1}-g_i$ can only grow as $i$ grows.
@@ -573,7 +580,7 @@ in finite running time. We again use constant $\epsilon > 0$ and appropriate con
   As our inductive hypothesis we assume Claim \ref{clm:fikinduction} for $f_i$;
   we aim to show that Claim \ref{clm:fikinduction} holds for $f_{i+1}$. Note
   the key property of $g_i$, that $g_{i+1}\cdot(1-\delta) < g_i$. Also note
-  that (without loss of generality) the $f_i$ are monotonically increasing
+  that (at least without loss of generality) the $f_i$ are monotonically increasing
   functions: given more cups we can always achieve higher fill than with fewer
   cups. Thus we have, for any $k<g_{i+1}$,
   \begin{align*}
@@ -591,9 +598,8 @@ in finite running time. We again use constant $\epsilon > 0$ and appropriate con
   Let the running time $f_{i_*}(n)$ be $T(n)$.
   Note that $f_{i_*}(n)$ must call $f_{i_*-1}(n(1-\delta)\delta^\ell)$ as many
   as $n(1-\delta)\delta^\ell$ times, for all $0 \le \ell\le L$. However, we
-  only use the terms of the sum where $\ell=0,1$, so we could use a modified
-  version of the Amplification Lemma in which we truncate the sum.
-  This we have the following (loose) recurrence bounding $T(n)$:
+  only need the terms of the sum where $\ell=0,1$, so we can take $L=1$.
+  Thus we have the following (loose) recurrence bounding $T(n)$:
   $$T(n) \le \delta n \cdot T(n(1-\delta)) + T(\delta n).$$
   We can upper bound this by
   $$n^{\frac{\log n}{\log (1/(1-\delta))}}.$$
