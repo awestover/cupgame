@@ -399,15 +399,18 @@ Hence the probability that every level of recursion succeeds is at least constan
   Let $f$ be an oblivious filling strategy that achieves backlog $f(n)$ in the
   variable-processor cup game on $n$ cups with constant probability (relative
   to average fill, with negative fill allowed), when given a $T$-flat
-  configuration of cups for specified $T \le \poly (n)$. Let $\delta \in (0,1)$
-  be a parameter. Let $L \le O(1)$ be an appropriate parameter. Let $c \le
-  O(1)$ be an appropriately small ($c\ll 1$) constant. Then, there exists an
-  adaptive filling strategy that, with constant probability, given a $T$-flat
-  configuration of cups with $T \le \poly(n)$ achieves backlog $$f'(n) \ge
-  (1-\delta)\sum_{\ell=0}^L f((1-\delta)(c\delta)^\ell n)$$ in the variable
-  processor cup game on $n$ cups in running time $\poly(n)$ against a
-  $\Delta$-greedy-like emptier for $\Delta \le O(1)$ a constant known to the
-  filler.
+  configuration of cups for specified $T \le \poly (n)$ against a
+  $\Delta$-greedy-like emptier for $\Delta$ a constant known to the filler. Let
+  $\delta \in (0,1)$ be a parameter. Let $L \le O(1)$ be an appropriate
+  parameter. Let $\eta \le O(1)$ be an appropriately small ($c\ll 1$) constant.
+  Then, there exists an adaptive filling strategy that, with constant
+  probability, given a $T$-flat configuration of cups with $T \le \poly(n)$
+  achieves backlog $$f'(n) \ge \frac{1}{2}(1-\delta)\sum_{\ell=0}^L
+  f((1-\delta)(\eta\delta)^\ell n)$$ in the variable processor cup game on $n$
+  cups in running time $\poly(n)$ against a $\Delta$-greedy-like emptier for
+  $\Delta \le O(1)$ a constant known to the filler.
+
+  {\color{red} either of the $1/2$ factor out front or the $\eta^\ell$ factor in the argument seems to be enough to completely kill the corollary. These seem not very avoiable though. So I guess work on fixing up the corollary to deal with it? hmm that seems impossible.}
 \end{lemma}
 \begin{proof}
   The filler starts by flattening all the cups, using the flattening procedure
@@ -416,7 +419,7 @@ Hence the probability that every level of recursion succeeds is at least constan
   Let $A$, the \defn{anchor} set, be a subset of the cups chosen uniformly at
   random from all subsets of size $n\delta$ of the cups, and let $B$, the
   \defn{non-anchor} set, consist of the rest of the cups ($|B| = n(1-\delta)$).
-  Let $n_\ell = n\delta^{\ell-1}, h_\ell = (1-\delta)f(n_\ell(1-\delta))$; the
+  Let $n_\ell = n(\delta\eta)^{\ell-1}, h_\ell = (1-\delta)f(n_\ell(1-\delta))$; the
   filler will achieve average fill $h_\ell$ on a set of $n_\ell\delta$ cups on
   the $\ell$-th level of its recursive process. Note that the average fill of
   $A$ and $B$ both must start as at least $-R_\Delta$ due to the flattening.
@@ -424,7 +427,13 @@ Hence the probability that every level of recursion succeeds is at least constan
   The filler's strategy is essentially as follows:
   \begin{itemize}
     \item \textbf{Step 1:} Apply $f$ to $B$ for each cup in $A$, and swap the resulting cup into $A$. 
-    \item \textbf{Step 2:} Reduce the number of processors to $p=n\delta$ and recurse on $A$.
+    \item \textbf{Step 2:} Reduce the number of processors to $p=n\delta\eta$
+      use the high fill in $n\delta\eta$ unknown cups, along with the
+      greedyness of the emptier to attain $n\delta\eta$ known cups with high
+      fill.{\color{red} ok, now apparently it looks like I have to stick an extra $1/2$
+      factor or something on the front of the amplification sum? yeah this
+    isn't gonna fly in the corollary proof.} 
+    \item \textbf{Step 3:} Recurse on this set of $n\delta\eta$ cups.
   \end{itemize}
 
   First we show how to achieve Step 1. 
@@ -460,9 +469,11 @@ Hence the probability that every level of recursion succeeds is at least constan
   By a Chernoff bound we then achieve a constant fraction of $A$ having fill
   increased by this amount with exponentially good probability.
 
-  For Step 2 we simply recurse on $A$. This achieves the desired backlog. The
+  Step 2 can be accomplished by the fact that the emptier is greedy-like. {\color{red} give more details}
+
+  For Step 3 the filler simply recurses. This clearly achieves the desired backlog. The
   probability of any layer of recursion failing is bounded above by 
-  $$\sum_{\ell=0}^L e^{-nq (c\delta)^\ell}$$
+  $$\sum_{\ell=0}^L e^{-nq (\eta\delta)^\ell}$$
   for appropriate constant $q$.
   Clearly for appropriate choices of constants this can be made to be constant.
 
