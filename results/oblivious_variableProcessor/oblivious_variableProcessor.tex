@@ -128,7 +128,8 @@ We now prove a crucial property of greedy-like emptiers: that they are \defn{fla
   \label{prop:greedylikeisflat}
   Given a cup configuration that is $T$-flat, an oblivious filler can, in
   running time $2T$, achieve a $2(2+\Delta)$-flat configuration of cups against
-  a $\Delta$-greedy-like emptier. 
+  a $\Delta$-greedy-like emptier, where fill is meausred relative to average
+  fill (i.e. with negative fill allowed). 
 \end{proposition}
 
 \begin{proof}
@@ -164,11 +165,10 @@ We now prove a crucial property of greedy-like emptiers: that they are \defn{fla
     the fill of $c$ must still be within $2+\Delta$ of the backlog on round $t+1$. 
 
     On the other hand, if $c$ is emptied from, i.e. $\fil(c)$ has decreased by
-    $1/2$, we consider two cases.
-    \begin{itemize}
-      \item If $\fil_{S_t}(c) \ge u_t-\Delta -1$, then, as $u_{t+1} \le u_t+1/2$, 
-        $$\fil_{S_{t+1}}(c) \ge u_t-\Delta-1 - 1/2\ge u_{t+1}-\Delta-2.$$
-      \item On the other hand, if $\fil_{S_t}(c) < u_t-\Delta-1$, then every cup
+    $1/2$, we consider two cases.\\
+    \textbf{Case 1:} If $\fil_{S_t}(c) \ge u_t-\Delta -1$, then, as $u_{t+1} \le u_t+1/2$, 
+      $$\fil_{S_{t+1}}(c) \ge u_t-\Delta-1 - 1/2\ge u_{t+1}-\Delta-2.$$
+    \textbf{Case 2:} On the other hand, if $\fil_{S_t}(c) < u_t-\Delta-1$, then every cup
         with fill in $[u_t-1, u_t]$ must have been emptied
         from. The fullest cup at round $t+1$ is the same as the fullest cup on
         round $t$, because the fills of all cups with fill in
@@ -176,9 +176,7 @@ We now prove a crucial property of greedy-like emptiers: that they are \defn{fla
         $u_t-1$ had fill increase by more than $1/2$. Hence $u_{t+1} = u_t -1/2$.
         Because both the fill of $c$ and the backlog have decreased by the same
         amount, the distance between them is still at most $\Delta+2$, hence
-        $c\in U_{t+1}$.
-    \end{itemize}
-
+        $c\in U_{t+1}$.\\
     The argument for $L_t \subseteq L_{t+1}$ is essentially identical.
   \end{proof}
 
@@ -225,9 +223,9 @@ Now we are equipped to prove the following proposition:
   There exists an oblivious filling strategy for the variable-processor cup
   game on $n$ cups -- where $n \ge \Omega(1)$ is sufficiently large -- that,
   given a $T$-flat configuration of cups with $T \le \poly(n)$, can achieve
-  backlog $\Omega(\log n)$ in running time $\poly(n)$ against a
-  $\Delta$-greedy-like emptier where $\Delta \le O(1)$ is a constant known to
-  the filler, with constant probability.
+  backlog $\Omega(\log n)$ (relative to average fill with negative fill
+  allowed) in running time $\poly(n)$ against a $\Delta$-greedy-like emptier
+  where $\Delta \le O(1)$ is a constant known to the filler, with constant probability.
 \end{proposition}
 \begin{proof}
   The filler starts by flattening all the cups, using the
@@ -237,7 +235,7 @@ Now we are equipped to prove the following proposition:
   Let $A$, the \defn{anchor} set, be a subset of the cups chosen uniformly at
   random from all subsets of size $n/2$ of the cups, and let $B$, the
   \defn{non-anchor} set, consist of the rest of the cups ($|B| = n/2$). Let $h
-  = 8\Delta + 8$, and let $h' = 2$. Note that the average fill of $A$ and $B$
+  = 16\Delta + 16$, and let $h' = 2$. Note that the average fill of $A$ and $B$
   both must start as at least $-R_\Delta$ due to the flattening.
 
   The filler's strategy is roughly as follows: 
@@ -256,20 +254,6 @@ Now we are equipped to prove the following proposition:
     \item \textbf{Step 3:} Recurse on the $nc$ cups that are known to have fill
       at least $h'$.
   \end{itemize}
-
-By performing $\Omega(\log n)$ levels of recursion, increasing the fill by a
-constant amount at each level of recursion, the filler achieves backlog
-$\Omega(\log n)$. Say the probability of Step 1 succeeding is at least
-$1-e^{-nk}$. Then the probability that any of $(1/2)\log_{1/c} n$ levels of
-recursion fail is bounded above by (by the union bound)
-$$e^{-nk} + e^{-nck} + e^{-nc^2 k} + \cdots + e^{-nc^{\log_{1/c} \sqrt{n}} k} $$
-which is bounded above by 
-$$O\left(\frac{\log n}{e^{k\sqrt{n}}}\right)$$
-which, for sufficiently large $n$ can clearly be made constant.
-Hence the probability that every level of recursion succeeds is at least constant.
-Hence, once we show that Step 1 succeeds with the desired probability and that
-Step 2 is possible, we have that the entire process successfully achieves
-backlog $\Omega(\log n)$ with constant probability.
 
 We now describe how to achieve Step 1.
 
@@ -321,8 +305,10 @@ is a winner).
   round-block (a cup with fill this high would necessarily be emptied from).
   Let $\mu_\Delta = 2R_\Delta+\Delta$; the emptier can neglect the anchor set
   no more than $(n/2)\mu_\Delta$ times. 
-  % might need to mess with the size of A and B a bit to make this more true...
+  {\color{red} might need to mess with the size of A and B a bit to make this more true... }
   Furthermore, the average fill of $B$ is thus always at least $-\mu_\Delta$.
+  {\color{red} actually this isn't quite true, the average fill sinks a (very)
+  little bit (a very small constant)}.
   As $B$ is $R_\Delta$-flat this also means that the fills of cups in $B$ at
   the start of each round-block are at least $-\mu_\Delta-R_\Delta$.
 
@@ -362,7 +348,7 @@ is a winner).
   emptier can neglect the anchor set on at most half of these round-blocks
   there is at least a $1/2$ chance that $j$ is chosen on a round-block where
   the filler does not neglect the anchor set. Thus, overall, there is at least a
-  constant probability of 
+  constant probability of achieving fill $h$ in a cup in $A$.
 
   Say that a swapping-process \defn{succeeds} if the filler is able to swap a
   cup with fill at least $h$ into $A$. We have shown that there is a constant
@@ -383,28 +369,103 @@ is a winner).
 Hence Step 1 is possible.
 
 Step 2 is easily achieved by setting $p=nc$ and uniformly distributing the
-fillers fill among a chosen set of $nc$ cups. The greedy nature of the emptier
-will force it to focus on the cups which must exist in $A$ with large positive
-fill until the new cups have sufficiently high fill. In particular, the fills
-of the cups in $nc$ must be at least $-\mu_\Delta-\Delta \ge -h$. After
-removing from the very full cups for $h+2$ rounds the fills of these new cups
-are clearly at least $2$.
+fillers fill among a chosen set $S$ of $nc$ cups. The greedy nature of the
+emptier will force it to focus on the cups which must exist in $A$ with large
+positive fill until the cups in $S$ have sufficiently high fill. In particular,
+the fills of the cups in $S$ must start as at least $-\mu_\Delta - \Delta \ge
+-h/2$ by design in choosing $h$. After removing from the very full cups for
+$\lceil h/2+h' \rceil$ rounds the fills of these new cups are clearly at least
+$h'$. Note that throughout this process the emptier cannot have emptied from
+the cups in $S$ until they attained fill $h'$ because there would be $p=nc$
+cups at least $\lceil h/2+h' \rceil \ge h' + \Delta$ by design in choice of $h$.
+
+Step 3, which is to recurse, is of course possible. 
+By performing $\Omega(\log n)$ levels of recursion, increasing the fill by a
+constant amount at each level of recursion, the filler achieves backlog
+$\Omega(\log n)$. Say the probability of Step 1 succeeding is at least
+$1-e^{-nk}$. Then the probability that any of $(1/2)\log_{1/c} n$ levels of
+recursion fail is bounded above by (by the union bound)
+$$e^{-nk} + e^{-nck} + e^{-nc^2 k} + \cdots + e^{-nc^{\log_{1/c} \sqrt{n}} k} $$
+which is bounded above by 
+$$O\left(\frac{\log n}{e^{k\sqrt{n}}}\right)$$
+which, for sufficiently large $n$ can clearly be made constant.
+Hence the probability that every level of recursion succeeds is at least constant.
 
 \end{proof}
 
+{\color{blue} thought: constant probability is nice, but maybe not enough? We really have much better than constant probability, if we used this to our advantage we might be able to get rid of the extra $c$ multiplicative factor, which I suspect is going to wreck the corollary.}
 \begin{lemma}[The Oblivious Amplification Lemma]
-   \label{lem:obliviousAmplification}
+  \label{lem:obliviousAmplification}
   Let $f$ be an oblivious filling strategy that achieves backlog $f(n)$ in the
   variable-processor cup game on $n$ cups with constant probability (relative
-  to average fill, with negative fill allowed). Let $\delta \in (0,1)$ be a
-  parameter. Then, there exists an adaptive filling strategy that, with
-  constant probability, either achieves backlog $$f'(n) \ge
-  (1-\delta)\Big(f((1-\delta)n) + f((1-\delta)\delta n)\Big)$$ or achieves
-  backlog $\Omega(\poly(n))$ in the variable processor cup game on $n$
-  cups.
+  to average fill, with negative fill allowed), when given a $T$-flat
+  configuration of cups for specified $T \le \poly (n)$. Let $\delta \in (0,1)$
+  be a parameter. Let $L \le O(1)$ be an appropriate parameter. Let $c \le
+  O(1)$ be an appropriately small ($c\ll 1$) constant. Then, there exists an
+  adaptive filling strategy that, with constant probability, given a $T$-flat
+  configuration of cups with $T \le \poly(n)$ achieves backlog $$f'(n) \ge
+  (1-\delta)\sum_{\ell=0}^L f((1-\delta)(c\delta)^\ell n)$$ in the variable
+  processor cup game on $n$ cups in running time $\poly(n)$ against a
+  $\Delta$-greedy-like emptier for $\Delta \le O(1)$ a constant known to the
+  filler.
 \end{lemma}
 \begin{proof}
-  
+  The filler starts by flattening all the cups, using the flattening procedure
+  detailed in Proposition \ref{prop:greedylikeisflat}. 
+
+  Let $A$, the \defn{anchor} set, be a subset of the cups chosen uniformly at
+  random from all subsets of size $n\delta$ of the cups, and let $B$, the
+  \defn{non-anchor} set, consist of the rest of the cups ($|B| = n(1-\delta)$).
+  Let $n_\ell = n\delta^{\ell-1}, h_\ell = (1-\delta)f(n_\ell(1-\delta))$; the
+  filler will achieve average fill $h_\ell$ on a set of $n_\ell\delta$ cups on
+  the $\ell$-th level of its recursive process. Note that the average fill of
+  $A$ and $B$ both must start as at least $-R_\Delta$ due to the flattening.
+
+  The filler's strategy is essentially as follows:
+  \begin{itemize}
+    \item \textbf{Step 1:} Apply $f$ to $B$ for each cup in $A$, and swap the resulting cup into $A$. 
+    \item \textbf{Step 2:} Reduce the number of processors to $p=n\delta$ and recurse on $A$.
+  \end{itemize}
+
+  First we show how to achieve Step 1. 
+  The filler's strategy will be to always place $1$ fill in each cup in the
+  anchor-set, while applying $f$ to $B$.
+  As always, we cannot directly apply $f$ to $B$ because we must ensure that
+  the emptier is using the appropriate amount of resources.
+
+  For each cup in $A$ the filler performs a procedure called a
+  \defn{swapping-process}, which consists of a sub-structure repeated many
+  times that we call a \defn{round-block}. Each round-block consists of an
+  \defn{attempt} to apply $f$. We say that the emptier \defn{neglects} the
+  anchor set on a round-block if there is at least $1$ round on which the
+  emptier does not empty from each cup in the anchor set. The mass of the
+  anchor set increases by at least $1$ on each round-block that the anchor set
+  is neglected. This cannot happen more than $n\delta(2R_\Delta + \Delta) =
+  n\delta\mu_\Delta$ times. Thus, by making each swapping-process consist of
+  $2n\delta\mu_\Delta$ round-blocks, and then choosing a single round-block
+  among these (uniformly at random) to swap a cup in to $A$, we guarantee that
+  with probability at least $1/2$ this round occurs on a round when the emptier
+  does not neglect the anchor set. On this round $f$ is legitimately applied,
+  and it succeeds with some constant probability. At the end of each
+  round-block the filler flattens $B$, so that $f$ is receiving as input a
+  flattened set of cups as needed. Over the course of this process the average
+  fill of $B$ will decrease a bit. In the most extreme case $f$ may have
+  succeeded up to $\delta n$ times, in which case the mass transfered from $B$
+  to $A$ would be $\delta n f((1-\delta) n)$. In order for their to be an
+  increase in the difference of the average fills of $A$ and $B$ by this amount
+  $B$ would have had to contribute $|A|/n = \delta$ of the difference, with $A$
+  contributing $|B|/n=(1-\delta)$ of the difference. Hence the average fill of
+  $A$ would have actually only increased by $(1-\delta) f((1-\delta)n)$.
+  {\color{red} the whole preceding part is a little bit sketchy.}
+  By a Chernoff bound we then achieve a constant fraction of $A$ having fill
+  increased by this amount with exponentially good probability.
+
+  For Step 2 we simply recurse on $A$. This achieves the desired backlog. The
+  probability of any layer of recursion failing is bounded above by 
+  $$\sum_{\ell=0}^L e^{-nq (c\delta)^\ell}$$
+  for appropriate constant $q$.
+  Clearly for appropriate choices of constants this can be made to be constant.
+
 \end{proof}
 
 \begin{corollary}
@@ -415,16 +476,17 @@ are clearly at least $2$.
 \end{corollary}
 \begin{proof}
   Given the Oblivious Amplification Lemma we could try to apply the same
-  strategy as outlined in the proof of Corollary \ref{cor:adaptivePoly} 
-  to achieve backlog $\Omega(n^{1-\epsilon})$ for constant $\epsilon >0$ in time $2^{O(\log^2 n)}$.
-  Because of our definition of an overpowered cup as a cup with fill at least
-  $\tilde{\Omega}(\sqrt{n})$, we can't get quite as close to linear as an
-  adaptive filer could. However, the more pressing problem is that of running
-  time: randomized algorithms are traditionally supposed to have polynomial-running time.
-  By artificially reducing $n$, i.e. ignoring some portion of the cups, we can
-  get an algorithm that achieves high backlog, but in polynomial time.
-  In particular, we want to choose a subset of $n'$ of the cups to focus on,
-  where $2^{O(\log^2 n')} = O(n)$. An appropriate choice is $n' = 2^{\sqrt{\log n}}$.
+  strategy as outlined in the proof of Corollary \ref{cor:adaptivePoly} to
+  achieve backlog $\Omega(n^{1-\epsilon})$ for constant $\epsilon >0$ in time
+  $2^{O(\log^2 n)}$. Because of our definition of an overpowered cup as a cup
+  with fill at least $\tilde{\Omega}(\sqrt{n})$, we can't get quite as close to
+  linear as an adaptive filer could. However, the more pressing problem is that
+  of running time: randomized algorithms are traditionally supposed to have
+  polynomial-running time. By artificially reducing $n$, i.e. ignoring some
+  portion of the cups, we can get an algorithm that achieves high backlog, but
+  in polynomial time. In particular, we want to choose a subset of $n'$ of the
+  cups to focus on, where $2^{O(\log^2 n')} = O(n)$. An appropriate choice is
+  $n' = 2^{\sqrt{\log n}}$.
 
   With $n'$ chosen, we apply the exact same strategy as given in the paragraph
   in the proof of Corollary on the $2^{O(\log^2 n)}$-time construction for

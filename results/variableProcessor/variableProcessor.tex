@@ -302,12 +302,12 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
 \end{lemma}
 \begin{proof}
   The basic idea of this analysis is as follows:
-  \begin{enumerate}
-    \item Using $f$ repeatedly, achieve average fill at least $(1-\delta)
+  \begin{itemize}
+    \item \textbf{Step 1:} Using $f$ repeatedly, achieve average fill at least $(1-\delta)
       f(n(1-\delta))$ in a set of $n\delta$ cups. 
-    \item Reduce the number of processors to $n\delta$.
-    \item Recurse on the $n\delta$ cups with high average fill.
-  \end{enumerate}
+    \item \textbf{Step 2:} Reduce the number of processors to $n\delta$, and
+      recurse on the $n\delta$ cups with high average fill.
+  \end{itemize}
 
   Let $A$, the \defn{anchor set}, be initialized to consist of the $n\delta$
   fullest cups, and let $B$ the \defn{non-anchor set} be initialized to consist
@@ -916,56 +916,56 @@ Thus, by induction we have the invariant for all rounds $t\in\mathbb{N}$.
 \end{proof}
 
 
-\section{Oblivious Filler Lower Bound}\label{sec:oblivious}
-An important theorem that we use throughout our analysis is Hoeffding's Inequality:
-\begin{theorem}[Hoeffding's Inequality]
-  Let $X_i$ for $i=1,2,\ldots, k$ be independent bounded random variables with
-  $X_i \in [a,b]$ for all $i$. Then,
-  $$P\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
-  2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
-\end{theorem}
-Let $S$ be a finite population, let $X_i$ for $i=1,2\ldots, k$ be chosen
-uniformly at random from $S \setminus \{X_1,\ldots, X_{i-1}\}$, and let $Y_i$
-for $i=1,2,\ldots, k$ be chosen uniformly at random from $S$.
-Note that $\{X_1,\ldots, X_k\}$ represents a sample of $S$ chosen without
-replacement, whereas $\{Y_1,\ldots, Y_k\}$ represents a sample with
-replacement. Note that as the $Y_i$ are independent random variables
-Hoeffding's Inequality provides a bound on the probability of $\sum_{i=1}^k
-Y_i$ deviating from its mean by more than $t$.
+% \section{Oblivious Filler Lower Bound}\label{sec:oblivious}
+% An important theorem that we use throughout our analysis is Hoeffding's Inequality:
+% \begin{theorem}[Hoeffding's Inequality]
+%   Let $X_i$ for $i=1,2,\ldots, k$ be independent bounded random variables with
+%   $X_i \in [a,b]$ for all $i$. Then,
+%   $$P\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
+%   2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
+% \end{theorem}
+% Let $S$ be a finite population, let $X_i$ for $i=1,2\ldots, k$ be chosen
+% uniformly at random from $S \setminus \{X_1,\ldots, X_{i-1}\}$, and let $Y_i$
+% for $i=1,2,\ldots, k$ be chosen uniformly at random from $S$.
+% Note that $\{X_1,\ldots, X_k\}$ represents a sample of $S$ chosen without
+% replacement, whereas $\{Y_1,\ldots, Y_k\}$ represents a sample with
+% replacement. Note that as the $Y_i$ are independent random variables
+% Hoeffding's Inequality provides a bound on the probability of $\sum_{i=1}^k
+% Y_i$ deviating from its mean by more than $t$.
 
-The same bound can be given on the probability of $\sum_{i=1}^k X_i$ deviating
-significantly from its mean, because the probability of $\sum_{i=1}^k X_i$
-deviating from it's expectation by more than $t$ is at most the probability of
-$\sum_{i=1}^k Y_i$ deviating from it's mean by $t$.
-Formally we can write this as 
-\begin{corollary}
-  \label{cor:hoeffdingwreplacement}
-  Let $S$ be a finite set with $\min(S) \ge a, \max(S) \le b$, and let $X_i$
-  for $i=1,2\ldots, k$ be chosen uniformly at random from $S \setminus
-  \{X_1,\ldots, X_{i-1}\}$.
-Then 
-  $$P\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
-  2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
-\end{corollary}
+% The same bound can be given on the probability of $\sum_{i=1}^k X_i$ deviating
+% significantly from its mean, because the probability of $\sum_{i=1}^k X_i$
+% deviating from it's expectation by more than $t$ is at most the probability of
+% $\sum_{i=1}^k Y_i$ deviating from it's mean by $t$.
+% Formally we can write this as 
+% \begin{corollary}
+%   \label{cor:hoeffdingwreplacement}
+%   Let $S$ be a finite set with $\min(S) \ge a, \max(S) \le b$, and let $X_i$
+%   for $i=1,2\ldots, k$ be chosen uniformly at random from $S \setminus
+%   \{X_1,\ldots, X_{i-1}\}$.
+% Then 
+%   $$P\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
+%   2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
+% \end{corollary}
 
-Hoeffding proved Corollary \ref{cor:hoeffdingwreplacement} in his seminal work
-\cite{who62} (the result follows from his Theorem 4, combined with Hoeffding's
-Inequality for independent random variables).
-The intuition behind Corollary \ref{cor:hoeffdingwreplacement} is that samples
-drawn without replacement should be more tightly concentrated around the mean
-than samples drawn with replacement.
+% Hoeffding proved Corollary \ref{cor:hoeffdingwreplacement} in his seminal work
+% \cite{who62} (the result follows from his Theorem 4, combined with Hoeffding's
+% Inequality for independent random variables).
+% The intuition behind Corollary \ref{cor:hoeffdingwreplacement} is that samples
+% drawn without replacement should be more tightly concentrated around the mean
+% than samples drawn with replacement.
 
-Another important, yet very trivial, corollary of Hoeffding's Inequality is the
-Chernoff Bound (i.e. Hoeffding's Inequality applied to binary random
-variables):
-\begin{corollary}
-  \label{cor:chernoffbound}
-  Let $X_i$ for $i=1,2,\ldots, k$ be independent identically distributed binary
-  random variables (i.e. $X_i\in \{0,1\}$). Then 
+% Another important, yet very trivial, corollary of Hoeffding's Inequality is the
+% Chernoff Bound (i.e. Hoeffding's Inequality applied to binary random
+% variables):
+% \begin{corollary}
+%   \label{cor:chernoffbound}
+%   Let $X_i$ for $i=1,2,\ldots, k$ be independent identically distributed binary
+%   random variables (i.e. $X_i\in \{0,1\}$). Then 
 
-  $$P\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
-  2\exp\left(-2kt^2 \right) $$
-\end{corollary}
+%   $$P\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
+%   2\exp\left(-2kt^2 \right) $$
+% \end{corollary}
 
 % Call an emptying strategy $\Delta$\defn{-greedy-like} if it satisfies the
 % following property: for any cup $c$, if there are
