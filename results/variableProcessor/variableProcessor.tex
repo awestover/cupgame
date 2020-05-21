@@ -296,12 +296,12 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
   Let $n_0 \in \mathbb{N}$ be a constant such that a filler can achieve backlog $1$
   on $n_0$ cups ($n_0$ exists by Proposition \ref{prop:adaptiveBase}).
   Let $\delta\in(0,1)$ be a parameter, and let $L\in\mathbb{N}$ be a parameter
-  such that $n_0 \le (1-\delta)\delta^L n \le n_0/\delta$.
+  such that $n_0 \le (1-\delta)\delta^L$.
   \footnote{Note that $n$ must be sufficiently large, and $\delta, L$ must be
   chosen such that $(1-\delta)\delta^L n \in \mathbb{N}$ because it doesn't
   make sense to talk of ``fractional cups".}
 
-  Then, there exists an adaptive filling strategy that achieves backlog $f'(n)$ satisfying
+  Then, there exists an adaptive filling strategy that achieves backlog 
   $$f'(n) \ge (1-\delta)\sum_{\ell= 0}^{L} f((1-\delta)\delta^\ell n)$$
   in the variable-processor cup game on $n$ cups.
 \end{lemma}
@@ -520,7 +520,7 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
   \end{cases} $$
   Note that $n_*(1-\delta)\delta \ge n_0/(1-\delta)$ by appropriate choice of constant
   $c$, and Proposition \ref{prop:adaptiveBase}, which states that we can get
-  backlog $O(\log n_*)$ on $n_*$ cups\footnote{Note: this is where it is
+  backlog $\Omega(\log n_*)$ on $n_*$ cups\footnote{Note: this is where it is
   crucial that $\epsilon, \delta$ are constants.}.
   Because $f^*$ satisfies the Amplification Lemma we have:
 \begin{align*}
@@ -535,7 +535,7 @@ which is a contradiction. Hence $f^*$ achieves backlog $cn^{1-\epsilon}$.
 
   \begin{proposition}
     \label{prop:constructive_nepsil}
-    We can construct a filling strategy that achieves backlog
+    There is a filling strategy that achieves backlog
     $\Omega(n^{1-\epsilon})$ for constant $\epsilon > 0$ in time $2^{O(\log^2 n)}$.
   \end{proposition}
   \begin{proof}
@@ -593,8 +593,37 @@ in finite running time. We again use constant $\epsilon > 0$ and appropriate con
   \end{proof}
 
   Note that $g_{i+1} \ge g_i + 1$ so by continuing this process we eventually
-  reach some $f_{i_*}$ such that $f_{i_*}(n) \ge cn^{1-\epsilon}$.
-  Note that $i_* \le n$.
+  reach some $f_{i_*}$ such that $f_{i_*}(n) \ge cn^{1-\epsilon}$; trivially
+  $i_* \le n$. In fact we can show $i_* \le O(\log n)$. The recurrence is
+  almost simply the geometric sequence $g_i = g_{i-1}/(1-\delta)$ with
+  $g_0=1/\delta$, for which it is trivially true that $g_i = 1/\delta
+  (1/(1-\delta))^i$, hence we would have $g_{\log_{1/(1-\delta)} n} = n\cdot 1/\delta > n$ as
+  desired. The actual sequence is not quite this large. The sequence is lower
+  bounded by the sequence $g_i'$ defined as $g_0'=1/\delta, g_i' = g_{i-1}' /
+  (1-\delta) -1$. Even the sequence $g_i'$ grows exponentially though, hence
+  only a logarithmic recursion depth is necessary. In particular, $g_i'$ satisfies
+  $$g_i' = \frac{1/\delta}{(1-\delta)^i} - \frac{1/(1-\delta)^{i-1}-1}{1/(1-\delta)-1},$$
+  which simplifies to
+  $$g_i' = \frac{1}{(1-\delta)^i} + \frac{1-\delta}{\delta}.$$
+  Thus $g_{\log_{1/(1-\delta)} n}'$, and hence also $g_{\log_{1/(1-\delta)} n}$
+  both are at least $n$, as desired.
+
+  However, we have not addressed the issue that the number of cups must be an
+  integer! Although it is relatively clear that this will not affect the
+  asymptotic results, we briefly carefully address this here. Luckily, by
+  careful choice of $\delta$ and a slight (constant factor) reduction of $n$ we can get the
+  argument to work. In particular, let $\psi$ be the smallest natural such that
+  $1/2^\psi < \delta$; define $\delta' = 1/2^\psi$. Let $\tau$ be the integer
+  such that $2^{\tau \psi} \le n < 2^\psi 2^{\tau \psi}$; define $n' =
+  2^{\tau\psi}$. Note that $O(n') = O(n)$ as $n'$ is at worst a factor of
+  $2^\psi$ less than $n$, but $\delta$ being constant implies that $\psi$ is
+  also constant. Note that $$\tau = \Big\lfloor \frac{\lg n}{\psi} \Big\rfloor \ge \Omega(\log n).$$
+  Thus, we have that $n'(\delta')^{i_1}(1-\delta')^{i_2} \in \mathbb{N}$ for any
+  integers $i_1,i_2$ satisfying $i_1+i_2 \le \tau$, which means that $i_1,i_2\ge \Omega(\log n)$ is possible.
+  Now we can genuinely guarantee that throughout the levels of recursive application of
+  the Amplification Lemma -- of which there will be at most $O(\log n)$-- the
+  number of cups is always an integer. 
+
   Let the running time $f_{i_*}(n)$ be $T(n)$.
   Note that $f_{i_*}(n)$ must call $f_{i_*-1}(n(1-\delta)\delta^\ell)$ as many
   as $n(1-\delta)\delta^\ell$ times, for all $0 \le \ell\le L$. However, we
@@ -607,14 +636,11 @@ in finite running time. We again use constant $\epsilon > 0$ and appropriate con
   achieve the desired backlog. This gives running time
   $$T(n) \le ((1+\delta) n)^{O(\log n)} \le 2^{O(\lg^2 n)}$$
   as desired.
-  {\color{red} ok, technically I'm ignoring integer problems in saying lets
-  only do $O(\lg n)$ levels of recursion, it'll be enough. I should prove it.
-But for $\delta$ constant it seems pretty obvious.}
     
   \end{proof}
 
   \begin{proposition}
-    We can construct a filling algorithm that achieves backlog $\Omega(n)$ in
+    There is a filling strategy that achieves backlog $\Omega(n)$ in
     time $2^{O(n)}$.
   \end{proposition}
   \begin{proof}
@@ -642,7 +668,7 @@ But for $\delta$ constant it seems pretty obvious.}
 
     The sum evaluates to 
     $$\frac{(1-\delta)^2}{\delta}$$
-    which, if we chose $\delta = 1/n$, becomes $\Omega(n)$.
+    which, if we chose $\delta = O(1/n)$, becomes $\Omega(n)$.
 
     The running time satisfies the recurrence 
     $$T(n) = \delta n T((1-\delta)n) + O(1)$$
@@ -653,16 +679,16 @@ But for $\delta$ constant it seems pretty obvious.}
     Recalling that $\delta = O(1/n)$ this becomes 
     $$2^{O(n)}.$$
 
-
-    % Solving this inequality yields
-    % $$\epsilon \ge \frac{2 \ln(n) - W(\frac{1}{2} n^2 \ln n)}{\ln n}$$
-    % where $W$ is the Lambert-W function, i.e. the inverse of the function $z\mapsto ze^z$.
-    % Note that as $n\to \infty$ smaller and smaller values of $\epsilon$ are permissible.
-
-    % Note that the Lambert-W function satisfies $W(x) = \ln x -\ln\ln x + o(1)$.
-    % Using this, we can get a very loose lower bound of $\Omega(n^{1-2/\ln n})$,
-    % although of course the expression with the $W$ in it is a better lower bound.
-    
+    We can even express this strategy more simply.
+    Explicitly choosing $\delta = n_0/n$, we apply our function recursively to
+    $n-n_0$ cups $n_0$ times to achieve fill $(1-n_0/n)f(n-n_0)$ in a set of
+    $n_0$ cups, and then we apply the strategy from Proposition
+    \ref{prop:adaptiveBase} to these cups. Hence the backlog achieved satisfies the recurrence
+    $$f(n) = (1-n_0/n)f(n-n_0) + 1.$$
+    Solving the recurrence, if we expand out $\Omega(n)$ terms then we get a sum of $\Omega(n)$ as desired.
+    The recurrence for running time is 
+    $$T(n) = n_0T(n-n_0)+1.$$
+    Solving, we again get $2^{O(n)}$.
   \end{proof}
 
 
