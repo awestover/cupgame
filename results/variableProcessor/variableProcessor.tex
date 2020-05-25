@@ -954,7 +954,7 @@ An important theorem that we use throughout our analysis is Hoeffding's Inequali
 \begin{theorem}[Hoeffding's Inequality]
   Let $X_i$ for $i=1,2,\ldots, k$ be independent bounded random variables with
   $X_i \in [a,b]$ for all $i$. Then,
-  $$P\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
+  $$\Pr\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
   2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
 \end{theorem}
 Let $S$ be a finite population, let $X_i$ for $i=1,2\ldots, k$ be chosen
@@ -977,7 +977,7 @@ Formally we can write this as
   for $i=1,2\ldots, k$ be chosen uniformly at random from $S \setminus
   \{X_1,\ldots, X_{i-1}\}$.
 Then 
-  $$P\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
+  $$\Pr\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
   2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
 \end{corollary}
 
@@ -996,14 +996,14 @@ variables):
   Let $X_i$ for $i=1,2,\ldots, k$ be independent identically distributed binary
   random variables (i.e. $X_i\in \{0,1\}$). Then 
 
-  $$P\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
+  $$\Pr\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
   2\exp\left(-2kt^2 \right) $$
 \end{corollary}
 
 We proceed with our analysis of oblivious lower bounds.
 
-Call a cup configuration $T$\defn{-flat} if the fill of every cup is in the
-interval $[-T, T]$.
+Call a cup configuration $M$\defn{-flat} if the fill of every cup is in the
+interval $[-M, M]$.
 
 We call an emptier $\Delta$\defn{-greedy-like} if, when there are two cups
 $c_1, c_2$ with fills satisfying $\fil(c_1) > \fil(c_2) + \Delta$ the emptier
@@ -1020,10 +1020,10 @@ more general class of emptiers is an interesting open question.
 We now prove a crucial property of greedy-like emptiers: that they are \defn{flattenable}, i.e.:
 \begin{proposition}
   \label{prop:greedylikeisflat}
-  Given a cup configuration that is $T$-flat, an oblivious filler can, in
-  running time $2T$, achieve a $2(2+\Delta)$-flat configuration of cups against
-  a $\Delta$-greedy-like emptier, where fill is meausred relative to average
-  fill (i.e. with negative fill allowed). 
+  Given a cup configuration that is $M$-flat, an oblivious filler can, in
+  running time $2M$, achieve a $2(2+\Delta)$-flat configuration of cups against
+  a $\Delta$-greedy-like emptier, (where fill is measured relative to average
+  fill, with negative fill allowed). 
 \end{proposition}
 
 \begin{proof}
@@ -1094,12 +1094,12 @@ We now prove a crucial property of greedy-like emptiers: that they are \defn{fla
   \end{proof}
 
   By Claim \ref{clm:smallthenbigger} we see that both $|U_t|$ and $|L_t|$ must
-  eventually exceed $n/2$ at some times $t_u, t_\ell \le 2T$, by the assumption
-  that the initial configuration is $T$-flat. Since by Claim
+  eventually exceed $n/2$ at some times $t_u, t_\ell \le 2M$, by the assumption
+  that the initial configuration is $M$-flat. Since by Claim
   \ref{clm:dontlosestuff} $|U_{t+1}|\ge |U_t|$ and $|L_{t+1}| \ge |L_t|$ we
-  have that there is some round $t_0 =\max(t_u, t_\ell) \le 2T$ on which both
+  have that there is some round $t_0 =\max(t_u, t_\ell) \le 2M$ on which both
   $|U_{t_0}|$ and $|L_{t_0}|$ exceed $n/2$. Then $U_{t_0} \cap L_{t_0} \neq
-  \varnothing$. Furthermore, the sets must intersect for all $t_0 \le t \le 2T$. 
+  \varnothing$. Furthermore, the sets must intersect for all $t_0 \le t \le 2M$. 
   In order for the sets to intersect it must be that the intervals
   $[u_t-2-\Delta, u_t]$ and $[\ell_t, \ell_t+2+\Delta]$ intersect. Hence we have that 
   $$\ell_t+2+\Delta \ge u_t-2-\Delta.$$ Since $u_t \ge 0$ and $\ell_t \le 0$
@@ -1108,18 +1108,20 @@ We now prove a crucial property of greedy-like emptiers: that they are \defn{fla
 \end{proof}
 
 Given a $\Delta$-greedy-like filler, let $R_\Delta = 2(2+\Delta).$ By
-Proposition \ref{prop:greedylikeisflat}, if a filler is given a $T$-flat
+Proposition \ref{prop:greedylikeisflat}, if a filler is given a $M$-flat
 configuration of cups they can achieve a $R_\Delta$-flat configuration of cups.
 
 Now we are equipped to prove the following proposition:
 \begin{proposition}
   \label{prop:obliviousBase}
+  Let $H \le O(1)$, $M \le \poly(n)$, $\Delta \le O(1)$, $n \ge \Omega(1)$ at
+  least a sufficiently large constant. 
+
   There exists an oblivious filling strategy for the variable-processor cup
-  game on $n$ cups -- where $n \ge \Omega(1)$ is sufficiently large -- that,
-  given a $T$-flat configuration of cups with $T \le \poly(n)$, can achieve
-  backlog $\Omega(\log n)$ (relative to average fill with negative fill
-  allowed) in running time $\poly(n)$ against a $\Delta$-greedy-like emptier
-  where $\Delta \le O(1)$ is a constant known to the filler, with constant probability.
+  game on $n$ cups that can achieve backlog $H$ in a $M$-flat configuration of
+  cups (relative to average fill with negative fill allowed) in running time
+  $\poly(n)$ against a $\Delta$-greedy-like emptier, with probability at least
+  $$1-2^{-\Omega(n)}.$$
 \end{proposition}
 \begin{proof}
   The filler starts by flattening all the cups, using the
@@ -1149,15 +1151,14 @@ Now we are equipped to prove the following proposition:
       at least $h'$.
   \end{itemize}
 
-We now describe how to achieve Step 1.
-
-The filler performs a series of \defn{swapping-process}, which are procedures
-that the filler uses to get a new cup in $A$. A swapping-process is composed of
-a substructure, repeated many times, which we call a \defn{round-block}; a
-round-block is a set of rounds. A swapping-process will consists of $n\cdot
-c_\Delta$ round-blocks ($c_\Delta \le O(1)$ a function of $\Delta$ to be
-specified); at the beginning of each swapping-process the filler chooses a
-round-blocks $j$ uniformly at random from $[n\cdot c_\Delta]$. 
+To achieve Step 1 the filler performs a series of \defn{swapping-process},
+which are procedures that the filler uses to get a new cup --hopefully with
+high fill-- in $A$. A swapping-process is composed of a substructure, repeated
+many times, which we call a \defn{round-block}; a round-block is a set of
+rounds. A swapping-process will consists of $n\cdot c_\Delta$ round-blocks
+($c_\Delta = \Theta(1)$ a function of $\Delta$ to be specified); at the beginning
+of each swapping-process the filler chooses a round-blocks $j$ uniformly at
+random from $[n\cdot c_\Delta]$. 
 
 For each round-block $i\in [n\cdot c_\Delta]$, the filler selects a random subset
 $D_i\subset B$ of the non-anchor cups and plays a single processor cup game on
@@ -1170,7 +1171,7 @@ anchor set. Note that the filler sets $p=n/2+1$.
 
 At the end of each round-block the filler applies the flattening procedure to
 flatten the non-anchor set. Note that this will not affect the running-time beyond a
-multiplicative factor (of, say, $3$). 
+multiplicative factor (of e.g. $3$). 
 
 On most round-blocks -- all but the $j$-th -- the filler does nothing with the
 cup that it achieves with constant probability in its single processor cup
@@ -1179,8 +1180,8 @@ single processor cup game into the anchor set (with constant probability there
 is a winner).
 
 \begin{clm} \label{clm:reg} 
-  With probability at least $1-e^{-O(n)}$, the filler achieves fill
-  at least $h$ in at least $nc = O(n)$ of the cups in $A$. 
+  With probability at least $1-2^{-\Omega(n)}$, the filler achieves fill
+  at least $h$ in at least $nc = \Theta(n)$ of the cups in $A$. 
 \end{clm}
 \begin{proof}
   Consider a particular swapping-process. Let $j$, the round-block on which the
@@ -1249,12 +1250,12 @@ is a winner).
   probability of a given swapping-process succeeding. Let $X_i$ be the binary
   random variable indicating whether or not the $i$-th swapping process
   succeeds. Let $q \ge \Omega(1)$ be the probability of a swapping-process
-  succeeding, i.e. $P(X_i=1)$. Note that the random variables $X_i$ are clearly
+  succeeding, i.e. $\Pr(X_i=1)$. Note that the random variables $X_i$ are clearly
   independent, and identically distributed.
 
   Clearly $$\E\left[\sum_{i=1}^{n/4} X_i\right] = qn/4.$$ 
   By a Chernoff Bound (i.e. Hoeffding's Inequality applied to binary random variables),
-  $$P\left(\sum_{i=1}^{n/4} X_i\le nq/8\right) \le e^{-nq^2/128}.$$ That is, the
+  $$\Pr\left(\sum_{i=1}^{n/4} X_i\le nq/8\right) \le e^{-nq^2/128}.$$ That is, the
   probability that less than $nq/8$ of the anchor cups have fill at least $h$ is
   exponentially small in $n$, as desired.
 
@@ -1274,70 +1275,68 @@ the cups in $S$ until they attained fill $h'$ because there would be $p=nc$
 cups at least $\lceil h/2+h' \rceil \ge h' + \Delta$ by design in choice of $h$.
 
 Step 3, which is to recurse, is of course possible. 
-By performing $\Omega(\log n)$ levels of recursion, increasing the fill by a
-constant amount at each level of recursion, the filler achieves backlog
-$\Omega(\log n)$. Say the probability of Step 1 succeeding is at least
-$1-e^{-nk}$. Then the probability that any of $(1/2)\log_{1/c} n$ levels of
-recursion fail is bounded above by (by the union bound)
-$$e^{-nk} + e^{-nck} + e^{-nc^2 k} + \cdots + e^{-nc^{\log_{1/c} \sqrt{n}} k} $$
-which is bounded above by 
-$$O\left(\frac{\log n}{e^{k\sqrt{n}}}\right)$$
-which, for sufficiently large $n$ can clearly be made constant.
-Hence the probability that every level of recursion succeeds is at least constant.
+By performing $H$ levels of recursion, increasing the fill by $h' = 2$ and
+reducing the problem size by a factor of $c$ at each
+level of recursion, the filler achieves backlog at least $2H$. 
+Say the probability of Step 1 succeeding is at least
+$1-e^{-nk}$. Then (by the union bound) the probability that any of $H$ levels of
+recursion fail is bounded above by 
+$$e^{-nk} + e^{-nck} + e^{-nc^2 k} + \cdots + e^{-nc^H k} \le 2^{-\Omega(n)}.$$
+Hence the probability that every level of recursion succeeds is at least $1-2^{-\Omega(n)}$.
 
 \end{proof}
 
-{\color{blue} thought: constant probability is nice, but maybe not enough? We really have much better than constant probability, if we used this to our advantage we might be able to get rid of the extra $c$ multiplicative factor, which I suspect is going to wreck the corollary.}
 \begin{lemma}[The Oblivious Amplification Lemma]
-  \label{lem:obliviousAmplification}
-  Let $f$ be an oblivious filling strategy that achieves backlog $f(n)$ in the
-  variable-processor cup game on $n$ cups with constant probability (relative
-  to average fill, with negative fill allowed), when given a $T$-flat
-  configuration of cups for specified $T \le \poly (n)$ against a
-  $\Delta$-greedy-like emptier for $\Delta$ a constant known to the filler. Let
-  $\delta \in (0,1)$ be a parameter. Let $L \le O(1)$ be an appropriate
-  parameter. Let $\eta \le O(1)$ be an appropriately small ($c\ll 1$) constant.
-  Then, there exists an adaptive filling strategy that, with constant
-  probability, given a $T$-flat configuration of cups with $T \le \poly(n)$
-  achieves backlog $$f'(n) \ge \frac{1}{2}(1-\delta)\sum_{\ell=0}^L
-  f((1-\delta)(\eta\delta)^\ell n)$$ in the variable processor cup game on $n$
-  cups in running time $\poly(n)$ against a $\Delta$-greedy-like emptier for
-  $\Delta \le O(1)$ a constant known to the filler.
+  \label{lem:obliviousAmplification} 
+  Let $\Delta \le O(1)$, $M, M' \ge R_\Delta$, $q \ge \Omega(1)$, $f$ be an
+  oblivious filling strategy that achieves backlog $f(n)$ (relative to average
+  fill with negative fill allowed) in the variable-processor cup game on $n$
+  cups with probability at least $1-2^{-qn}$ in running time $T(n) \le
+  \poly(n)$ when given a $M$-flat configuration, against a $\Delta$-greedy-like
+  emptier.
 
-  {\color{red} either of the $1/2$ factor out front or the $\eta^\ell$ factor
-  in the argument seems to be enough to completely kill the corollary. These
-seem not very available though. So I guess work on fixing up the corollary to
-deal with it? hmm that seems impossible.}
+  Let $0< \delta \ll 1/2$, $L\in \mathbb{N}$, and $\eta \in \mathbb{N}$ ($\eta$
+  chosen sufficiently large as a function of $\delta, \Delta$), be appropriate constant
+  parameters. Let $0 \ll \phi<1$ be a constant which will be defined in terms
+  of $\eta$ satisfying $\lim_{\eta \to \infty} \phi = 1$. 
+
+  There exists an oblivious filling strategy that achieves backlog $$f'(n) \ge
+  \phi \cdot (1-\delta)\sum_{\ell=0}^L f((1-\delta)\delta^\ell n)$$ in the
+  variable processor cup game on $n$ cups given a $M'$-flat configuration of
+  cups in running time $$T'(n) \le O(M') + (\delta L) n^{\eta+1}
+  T((1-\delta)n)$$ against a $\Delta$-greedy-like emptier with probability at
+  least $$1-2^{-\Omega(n)}.$$
 \end{lemma}
 \begin{proof}
+  The proof is quite similar to the proof of Lemma
+  \ref{lem:adaptiveAmplification}, but more complicated because the filler's
+  strategy must be randomized.
+
   The filler starts by flattening all the cups, using the flattening procedure
   detailed in Proposition \ref{prop:greedylikeisflat}. 
 
   Let $A$, the \defn{anchor} set, be a subset of the cups chosen uniformly at
   random from all subsets of size $n\delta$ of the cups, and let $B$, the
   \defn{non-anchor} set, consist of the rest of the cups ($|B| = n(1-\delta)$).
-  Let $n_\ell = n(\delta\eta)^{\ell-1}, h_\ell = (1-\delta)f(n_\ell(1-\delta))$; the
+  Let $n_\ell = n\delta^{\ell-1}, h_\ell = (1-\delta)f(n_\ell(1-\delta))$; the
   filler will achieve average fill $h_\ell$ on a set of $n_\ell\delta$ cups on
   the $\ell$-th level of its recursive process. Note that the average fill of
   $A$ and $B$ both must start as at least $-R_\Delta$ due to the flattening.
 
   The filler's strategy is essentially as follows:
   \begin{itemize}
-    \item \textbf{Step 1:} Apply $f$ to $B$ for each cup in $A$, and swap the resulting cup into $A$. 
-    \item \textbf{Step 2:} Reduce the number of processors to $p=n\delta\eta$
-      use the high fill in $n\delta\eta$ unknown cups, along with the greedy nature of
-       the emptier to attain $n\delta\eta$ known cups with high
-      fill.{\color{red} ok, now apparently it looks like I have to stick an extra $1/2$
-      factor or something on the front of the amplification sum? yeah this
-    isn't gonna fly in the corollary proof.} 
-    \item \textbf{Step 3:} Recurse on this set of $n\delta\eta$ cups.
+    \item \textbf{Step 1:} Using $f$ repeatedly, achieve fill
+      $(1-\delta)f(n(1-\delta))$ in cups in the non-anchor set and then swap
+      these cups into the anchor set.  
+    \item \textbf{Step 2:} Decrease the number of processors to $p=\delta n$
+      and recurse on the anchor set.
   \end{itemize}
 
   First we show how to achieve Step 1. 
   The filler's strategy will be to always place $1$ fill in each cup in the
-  anchor-set, while applying $f$ to $B$.
-  As always, we cannot directly apply $f$ to $B$ because we must ensure that
-  the emptier is using the appropriate amount of resources.
+  anchor-set while applying $f$ to $B$.
+  As always, the filler cannot directly apply $f$ to $B$; the filler must ensure that
+  the emptier is using the appropriate amount of resources on $B$.
 
   For each cup in $A$ the filler performs a procedure called a
   \defn{swapping-process}, which consists of a sub-structure repeated many
@@ -1348,14 +1347,17 @@ deal with it? hmm that seems impossible.}
   anchor set increases by at least $1$ on each round-block that the anchor set
   is neglected. This cannot happen more than $n\delta(2R_\Delta + \Delta) =
   n\delta\mu_\Delta$ times. Thus, by making each swapping-process consist of
-  $2n\delta\mu_\Delta$ round-blocks, and then choosing a single round-block
+  $n^{\eta}$ round-blocks (note: we do $n^{\eta}$ round-blocks on all levels of
+  recursion, everything else changes to $n_\ell$ but not this) and then
+  choosing a single round-block
   among these (uniformly at random) to swap a cup in to $A$, we guarantee that
-  with probability at least $1/2$ this round occurs on a round when the emptier
-  does not neglect the anchor set. On this round $f$ is legitimately applied,
-  and it succeeds with some constant probability. At the end of each
-  round-block the filler flattens $B$, so that $f$ is receiving as input a
+  with probability at least $\delta\mu_\Delta/n^\eta$ this round-block occurs
+  on a round-block when the emptier
+  does not neglect the anchor set. On this round-block $f$ is legitimately
+  applied, and succeeds with probability at least $1-2^{-qn}$ . At the end of
+  each round-block the filler flattens $B$, so that $f$ is receiving as input a
   flattened set of cups as needed. Over the course of this process the average
-  fill of $B$ will decrease a bit. In the most extreme case $f$ may have
+  fill of $B$ will decrease a little. In the most extreme case $f$ may have
   succeeded up to $\delta n$ times, in which case the mass transfered from $B$
   to $A$ would be $\delta n f((1-\delta) n)$. In order for their to be an
   increase in the difference of the average fills of $A$ and $B$ by this amount
@@ -1363,16 +1365,56 @@ deal with it? hmm that seems impossible.}
   contributing $|B|/n=(1-\delta)$ of the difference. Hence the average fill of
   $A$ would have actually only increased by $(1-\delta) f((1-\delta)n)$.
   {\color{red} the whole preceding part is a little bit sketchy.}
-  By a Chernoff bound we then achieve a constant fraction of $A$ having fill
-  increased by this amount with exponentially good probability.
 
-  Step 2 can be accomplished by the fact that the emptier is greedy-like. {\color{red} give more details}
+  For Step 2 the filler simply recurses. 
+  The run-time bound is clear: The initial smoothing takes time $O(M')$, and
+  after that, at each level of recursion for each cup in the anchor set the
+  filler applies $f$ to the non-anchor set $n^\eta$ times. Hence the running
+  time due to this is 
+  $$\sum_{\ell=0}^L (\delta^\ell n\delta) n^\eta T((1-\delta)\delta^\ell n).$$
+  This is quite complicated, a simpler bound suffices; bounding each term in
+  the sum with the first term, which is clearly the largest, we have
+  $$T'(n) \le O(M') + (L\delta)n^{\eta+1} T((1-\delta)n).$$
 
-  For Step 3 the filler simply recurses. This clearly achieves the desired backlog. The
-  probability of any layer of recursion failing is bounded above by 
-  $$\sum_{\ell=0}^L e^{-nq (\eta\delta)^\ell}$$
-  for appropriate constant $q$.
-  Clearly for appropriate choices of constants this can be made to be constant.
+  It is almost clear that the desired backlog is achieved; if every swapping
+  process succeeded then we would achieve fill $(1-\delta)
+  f((1-\delta)\delta^\ell n)$ in each cup in the anchor set at each level of
+  recursion hence achieving backlog $$(1-\delta)\sum_{\ell=0}^L
+  f((1-\delta)\delta^\ell n)$$ overall. However each swapping process has some
+  (very small) probability of failing; we computed probability of failure this
+  to be at most $\delta \mu_\Delta / n^\eta.$ Consider the probability that
+  more than a constant fraction $w = \Theta(1)$ of the $s = \sum_{\ell=0}^L
+  n\delta^{\ell+1}$ swapping-processes fail. Let $X_i$ be the random variable
+  indicating whether the $i$-th swapping-process succeeds (note: this is
+  swapping-processes on all levels of recursion), and let $X=\sum_{i=1}^s X_i$.
+  Clearly $\E[X] = s(1-\delta\mu_\Delta/n^\eta)$. Success of the
+  swapping-processes are not independent events: a swapping-process is in-fact
+  more likely to succeed given that previous swapping-processes have failed.
+  Hence we can upper bound the probability of more than a $w$-fraction of the
+  swapping-processes failing by a Chernoff Bound: $$\Pr\left(\frac{1}{s}X \ge
+  \frac{1}{s}\E[X] - w/2\right) \ge 1-2e^{-s w^2/2} \ge 1-2^{\Omega(n)}$$ By
+  appropriately large choice for $\eta \le O(1)$, $$\delta\mu_\Delta /n^\eta
+  \le w/2$$ no matter how small $w \ge \Omega(1)$ is chosen. In particular this
+  implies that $\Pr[X \ge s(1-w)] \ge 1-2^{\Omega(n)}$.
+
+  Now we will define $\phi$ such that success of $s(1-w)$ of the
+  swapping-processes guarantees backlog $$\phi \cdot (1-\delta) \sum_{\ell=0}^L
+  f(n(1-\delta)\delta^\ell).$$ In the worst case the failed swapping-processes
+  bring very negative cups into the anchor-set, potentially as negative as
+  $-\delta f((1-\delta)\delta^\ell n)$ on the $\ell$-th level of recursion.
+  However, clearly this is equivalent to removing at most $2$ cups worth of
+  mass from the anchor set. Overall we thus remove at most $2w$ cups worth of
+  mass from the anchor set. Hence choosing $\phi = 1-2w$ works.
+
+  In order to achieve this backlog however, not only does the filler need to be
+  able to swap over $s(1-w)$ cups on rounds where the emptier neglects the
+  anchor set, but no applications of $f$ can fail; failure happens with
+  probability $2^{-n(1-\delta)\delta^\ell q}$ for an application of $f$ to
+  $n(1-\delta)\delta^\ell$ cups. Taking a union bound over the $\poly(n)$
+  applications of $f$ clearly still gets probability failure at most
+  $2^{-\Omega(n)}$.
+
+  Thus overall the filler succeeds with at least probability $1-2^{-\Omega(n)}$.
 
 \end{proof}
 
@@ -1443,8 +1485,6 @@ deal with it? hmm that seems impossible.}
 
 \end{proof}
 
-
-
 % this probably belongs somewhere in the corollary proof, which will be
 % substantially more complex than I originally anticipated, because Prop and
 % Lemma need to take as input cups arrangements with flatness guarantees
@@ -1463,7 +1503,6 @@ fill must be large enough such that the absolute fill of this cup is at least
 $0$. Thus there is an overpowered cup. From now on we assume that there are no
 overpowered cups.
 \end{proof}
-
 
 % \begin{proposition}
 %   \label{prop:obliviousBase}
