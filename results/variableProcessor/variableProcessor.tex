@@ -363,11 +363,13 @@ for the emptier when cups can zero out.
 
 \begin{theorem}
   \label{thm:adaptivePoly}
-  There are adaptive filling strategies for the variable-processor cup game on
-  $n$ cups that achieve backlog $\Omega(n)$ in time $2^{O(n)}$ and backlog
-  $\Omega(n^{1-\epsilon})$ for any constant $\epsilon > 0$ in time $2^{O(\log^2 n)}$.
+  There is an adaptive filling strategy for the variable-processor cup game on
+  $n$ cups that achieves backlog $\Omega(n^{1-\epsilon})$ for any constant
+  $\epsilon > 0$ of our choice in running time $2^{\log^2 n}$.
+
+  There is also an adaptive filling strategy for achieving backlog $\Omega(n)$ in running-time $2^{O(n)}$.
 \end{theorem}
-\begin{proof}$ $\\
+\begin{proof}
   Fix $\epsilon \in (0,1/2)$, and let $c, \delta$ be parameters, with $c\in
   (0,1), 0 < \delta \ll 1/2$ -- these will depend on $\epsilon, n$.
   Say that we aim to achieve backlog at least $cn^{1-\epsilon}$.
@@ -380,14 +382,11 @@ for the emptier when cups can zero out.
   &(1-\delta)\sum_{\ell=0}^L c (((1-\delta)\delta^\ell)k_0)^{1-\epsilon}\\
   &= ck_0^{1-\epsilon} (1-\delta)^{2-\epsilon} \sum_{\ell=0}^L (\delta^\ell)^{1-\epsilon},
   \end{align*}
-  where $L$ is the greatest integer such that $(1-\delta)\delta^Ln \ge n_0$
-  where $n_0$ is a constant such that a filler can achieve backlog $1$ on $n_0$ cups
-  (this definition is identical to the definition in the statement of Lemma
-  \ref{lem:adaptiveAmplification}).
-  Note that as $\delta$ will be very small, $\sum_{\ell=0}^L
-  (\delta^L)^{1-\epsilon}$ is very well approximated by
-  $1+\delta^{1-\epsilon}$, so we will not loose much by relaxing our lower
-  bound on $f'(k_0)$ to only use the first $2$ terms of the sum. We have the looser bound
+  for appropriate choice of $L$.
+  We will choose $\delta$ to be very small, so $\sum_{\ell=0}^L
+  (\delta^L)^{1-\epsilon}$ is well approximated by
+  $1+\delta^{1-\epsilon}$, and thus we don't lose much by relaxing our lower
+  bound on $f'(k_0)$ to only using $L=1$ (i.e. taking two terms of the sum). We have the bound
   $$f'(k_0) \ge ck_0^{1-\epsilon}(1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon}).$$
   Let 
   $$h(\delta) = (1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon}).$$
@@ -396,14 +395,18 @@ for the emptier when cups can zero out.
   \begin{clm}
     \label{clm:validchoices}
     There exists an appropriate choice of $\delta$ that is small enough such
-    that $h(\delta) >1$ and large enough such that $L \ge 1$, when $\epsilon$
-    is chosen to be $4/\lg n$, or a positive constant. In particular, if
-    $\epsilon$ is chosen to be $4/\lg n$ then we will choose $\delta \le
-    O(1/n)$, and if $\epsilon$ is chosen to be a positive constant then we will
-    choose $\delta \le O(1)$.
+    that $h(\delta) \ge 1$ and large enough such that $(1-\delta)\delta n \ge
+    n_0$, when $\epsilon$ is chosen to be $4/\lg n$, or a positive constant. 
+
+    In particular, if $\epsilon$ is chosen to be $4/\lg n$ then we will choose
+    $\delta =\Theta(1/n)$, and if $\epsilon$ is chosen to be a positive
+    constant then we will choose $\delta = \Theta(1)$.
   \end{clm}
 
-  Note that if $h(\delta)\ge 1$, then $f'(k_0) \ge c k_0^{1-\epsilon}$, meaning
+  Note that in order for $L =1$ to make sense it must be that
+  $n(1-\delta)\delta n \ge n_0$, or else this term from the sum would be
+  contributing essentially $0$ backlog to the sum.
+  If $L=1$ and if $h(\delta)\ge 1$, then $f'(k_0) \ge c k_0^{1-\epsilon}$, meaning
   we have constructed from $f$ a new function $f'$ that satisfies the
   inequality $f'(k) \ge ck^{1-\epsilon}$ for $k\le g/(1-\delta)$, as opposed to
   only for $k \le g$ as in the case of $f$. 
@@ -415,17 +418,18 @@ for the emptier when cups can zero out.
     be somewhat careful about the fact that there are an integer number of cups
     throughout this proof (this issue was deferred from earlier proofs to be
   dealt with here).} 
-  Then by repeatedly amplifying a function, we should be able to arbitrarily
-  extend the support, which will allow us to attain the desired backlog.
-
+  Thus by repeatedly amplifying a function, we should be able to arbitrarily
+  extend the region where the function satisfies the desired inequality, which
+  will allow us to attain the desired backlog.
   We now prove Claim \ref{clm:validchoices}.
   \begin{proof}
+    First we show that making $h(\delta) > 1$ is possible.
   Consider the Taylor series for $(1-\delta)^{2-\epsilon}$ about $\delta = 0$:
   $$(1-\delta)^{2-\epsilon} = 1 - (2-\epsilon)\delta + O(\delta^2).$$
  
-  So, to find a $\delta$ where $h(\delta) \ge 1$ it suffices -- note that, again, we choose
-  to neglect the $\delta^2$ term as it does not strengthen the lower bound substantially because
-  it is so small -- to find a $\delta$ with 
+  So, to find a $\delta$ where $h(\delta) \ge 1$ it suffices -- note that we
+  choose to neglect the $\delta^2$ term as it does not strengthen the lower
+  bound substantially -- to find a $\delta$ with
   $$(1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon}) \ge 1.$$
   Rearranging we have 
   $$\delta^{1-\epsilon} \ge (2-\epsilon)\delta + (2-\epsilon)\delta^{2-\epsilon}.$$
@@ -433,22 +437,22 @@ for the emptier when cups can zero out.
   $\delta^{1-\epsilon}$ will be much greater than $\delta$ or
   $\delta^{2-\epsilon}$.
   However it will be beneficial to have a more explicit criterion for possible
-  choices of $\delta$ in terms of $\epsilon$. To get this, we enforce a much
-  stronger inequality on $\delta^{1-\epsilon}$ by vastly overestimating
-  $\delta^{2-\epsilon}$ as $\delta$. Surprisingly even with this overestimate
-  we are still able to get the desired value of $\epsilon$ to work, as we will demonstrate later.
-  We have,
+  choices of $\delta$ in terms of $\epsilon$. To get this, we enforce a 
+  stronger inequality on $\delta^{1-\epsilon}$ by overestimating
+  $\delta^{2-\epsilon}$ as $\delta$. 
+  Then, $\delta$ satisfying
   \begin{equation}
     \label{eqn:deltaUpperIneq}
-    \delta \le \frac{1}{(2(2-\epsilon))^{1/\epsilon}}. 
+    \delta \le \frac{1}{(2(2-\epsilon))^{1/\epsilon}}
   \end{equation}
+  will make $h(\delta) \ge 1.$
 
   In addition to the constraint that $\delta$ must be small enough such that
   $h(\delta) \ge 1$, the only other constraint on $\delta$ is that $\delta$
-  must be large enough that the sum from the Amplification Lemma has at least
+  must be large enough that the sum from the Amplification Lemma can have at least
   two terms, i.e. such that $L \ge 1$. We need $L\ge 1$ because otherwise the
   Amplification Lemma doesn't give a larger function.
-  The condition $L \ge 1$ enforces 
+  That is, we want
   $$\delta(1-\delta)n \ge n_0. $$
   Recall that we choose $\delta < 1/2$, so $1-\delta > 1/2$. Thus to make
   $\delta$ sufficiently big it suffices to chose $\delta$ with 
@@ -636,51 +640,91 @@ in finite running time. We again use constant $\epsilon > 0$ and appropriate con
     time $2^{O(n)}$.
   \end{proposition}
   \begin{proof}
-  We describe a simple filling strategy that gives the desired backlog. Let
-  $n_0 \le O(1)$ be a constant such that we can achieve backlog $1$ on $n_0$
-  cups, and note that this is possible by Proposition \ref{prop:adaptiveBase}.
-  We construct a function that achieves large backlog on $n$ cups.
-  To achieve large backlog on $n$ cups we first recursively apply our function to
-  $(1-\delta)n$ cups repeatedly (for each of the $\delta n$ cups that we are
-  attempting to get high fill in), as described in the proof of the
-  Amplification Lemma, and transfer over the cups that we get. Then we achieve backlog $1$ on
-  the $\delta n$ cups whose average fill has been increased. The backlog we
-  achieve satisfies the following recurrence:
-  $$f(n) \ge \begin{cases}
-    (1-\delta)f((1-\delta)n) + 1, & \text{if } n\delta(1-\delta) > n_0\\
-    0, \text{ else.}
-  \end{cases}$$
-  Let $(1-\delta)^c = \delta$, let $\delta^2 n < n_0 < (1-\delta)^{2c-1} n$ by
-  our choice of $\delta = O(1/n)$.
-    We can get backlog 
-    $$\sum_{i=1}^c (1-\delta)^i. $$
-    To see this, consider a binary tree representing our algorithm. At every
-    branch we both proceed to recurse on a $1-\delta$ fraction of the cups, and
-    achieve backlog $1$ on a $\delta$ fraction of the cups.
+  % We describe a simple filling strategy that gives the desired backlog. Let
+  % $n_0 \le O(1)$ be a constant such that we can achieve backlog $1$ on $n_0$
+  % cups, and note that this is possible by Proposition \ref{prop:adaptiveBase}.
+  % We construct a function that achieves large backlog on $n$ cups.
+  % To achieve large backlog on $n$ cups we first recursively apply our function to
+  % $(1-\delta)n$ cups repeatedly (for each of the $\delta n$ cups that we are
+  % attempting to get high fill in), as described in the proof of the
+  % Amplification Lemma, and transfer over the cups that we get. Then we achieve backlog $1$ on
+  % the $\delta n$ cups whose average fill has been increased. The backlog we
+  % achieve satisfies the following recurrence:
+  % $$f(n) \ge \begin{cases}
+  %   (1-\delta)f((1-\delta)n) + 1, & \text{if } n\delta(1-\delta) > n_0\\
+  %   0, \text{ else.}
+  % \end{cases}$$
+  % Let $(1-\delta)^c = \delta$, let $\delta^2 n < n_0 < (1-\delta)^{2c-1} n$ by
+  % our choice of $\delta = \Theta(1/n)$.
+  %   We can get backlog 
+  %   $$\sum_{i=1}^c (1-\delta)^i. $$
+  %   To see this, consider a binary tree representing our algorithm. At every
+  %   branch we both proceed to recurse on a $1-\delta$ fraction of the cups, and
+  %   achieve backlog $1$ on a $\delta$ fraction of the cups.
 
-    The sum evaluates to 
-    $$\frac{(1-\delta)^2}{\delta}$$
-    which, if we chose $\delta = O(1/n)$, becomes $\Omega(n)$.
+  %   The sum evaluates to 
+  %   $$\frac{(1-\delta)^2}{\delta}$$
+  %   which, if we chose $\delta = \Theta(1/n)$, becomes $\Omega(n)$.
 
-    The running time satisfies the recurrence 
-    $$T(n) = \delta n T((1-\delta)n) + O(1)$$
-    because to achieve backlog $f(n)$ we must achieve backlog
-    $f((1-\delta)n)$ $\delta n$ times, and then achieve backlog $1$ on the
-    remaining cups. Solving this recurrence yields that the running time is
-    $$\frac{(\delta n)^c - 1}{\delta n - 1}.$$
-    Recalling that $\delta = O(1/n)$ this becomes 
-    $$2^{O(n)}.$$
+  %   The running time satisfies the recurrence 
+  %   $$T(n) = \delta n T((1-\delta)n) + O(1)$$
+  %   because to achieve backlog $f(n)$ we must achieve backlog
+  %   $f((1-\delta)n)$ $\delta n$ times, and then achieve backlog $1$ on the
+  %   remaining cups. Solving this recurrence yields that the running time is
+  %   $$\frac{(\delta n)^c - 1}{\delta n - 1}.$$
+  %   Recalling that $\delta = O(1/n)$ this becomes 
+  %   $$2^{O(n)}.$$
 
-    We can even express this strategy more simply.
-    Explicitly choosing $\delta = n_0/n$, we apply our function recursively to
-    $n-n_0$ cups $n_0$ times to achieve fill $(1-n_0/n)f(n-n_0)$ in a set of
-    $n_0$ cups, and then we apply the strategy from Proposition
-    \ref{prop:adaptiveBase} to these cups. Hence the backlog achieved satisfies the recurrence
-    $$f(n) = (1-n_0/n)f(n-n_0) + 1.$$
-    Solving the recurrence, if we expand out $\Omega(n)$ terms then we get a sum of $\Omega(n)$ as desired.
+    % We can even express this strategy more simply.
+
+    We now describe an algorithm $f$ that achieves backlog 
+    $$f(k) = \begin{cases}
+      \left(1-\frac{n_0}{k}\right)f(k-n_0) + 1, &k \ge 2n_0\\
+      1,  &n_0\le k < 2n_0 \\
+      0, &k< n_0.
+    \end{cases}$$
+    Clearly our strategy is possible for $k<2n_0$ by Proposition \ref{prop:obliviousBase}.
+    Assuming that our algorithm works for $k<mn_0$ we can extend it to work for
+    $k<(m+1)n_0$ by considering the amplification of our algorithm using $\delta = n_0/n$.
+    By induction our algorithm thus works for all $n$.
+
+    Expanding the recurrence, we find that our algorithm achieves backlog 
+    $$f(n) = 1+ 1-\frac{n_0}{n} + 1-\frac{n_0}{n-n_0} + 1-\frac{n_0}{n-2n_0} + \cdots $$
+    Clearly 
+    $$f(n) \ge n - n_0 \log n \ge \Omega(n).$$
+
     The recurrence for running time is 
-    $$T(n) = n_0T(n-n_0)+1.$$
-    Solving, we again get $2^{O(n)}$.
+    $$T(n) = n_0T(n-n_0)+O(1).$$
+    Clearly $T(n) = 2^{O(n)}$.
+
+    This algorithm can be interpreted very simply. To achieve large backlog on
+    $n$ cups we create an anchor set $A$ of $n_0$ cups and a set $B$ of $n-n_0$
+    cups; We recursively apply our strategy to $B$ for each cup in $A$. In
+    order for the average fill difference between $A$ and $B$ to be $f(n-n_0)$,
+    $\mu(A)$ must rise by $\frac{n-n_0}{n}$ of this difference whereas $\mu(B)$
+    must sink by $\frac{n_0}{n}$ of this difference. Hence we achieve average
+    fill $\frac{n-n_0}{n}f(n-n_0)$ in $A$. Then, using the strategy from
+    Proposition \ref{prop:adaptiveBase} we can achieve backlog $1$ on these
+    cups. The Amplification Lemma makes this argument rigorous.
+
+    % Our strategy achieves backlog $f(n)$ on $n$ cups. We consider our strategy
+    % to be it's own Amplification with $\delta = n_0/n$. In particular, this
+    % means that we apply $f$ to $n-n_0$ cups $n_0$ times, and achieve a cup with
+    % fill at least $\left(1-\frac{n_0}{n}\right)f(n-n_0)$ with each application of $f$. 
+    % Then, we recurse on the set of $n_0$ cups with high average fill, and achieve backlog at least $1$ on them.
+    % Hence the backlog that we achieve over all satisfies the recurrence 
+
+    % Our strategy for achieving backlog $f$ is to split the cups into a set of
+    % the $n_0$ fullest cups and the other $n-n_0$ cups. We apply 
+    % , we apply our function recursively to
+    % $n-n_0$ cups $n_0$ times to achieve fill $(1-n_0/n)f(n-n_0)$ in a set of
+    % $n_0$ cups, and then we apply the strategy from Proposition
+    % \ref{prop:adaptiveBase} to these cups. Hence the backlog achieved satisfies the recurrence
+    % $$f(n) = (1-n_0/n)f(n-n_0) + 1.$$
+    % Solving the recurrence, if we expand out $\Omega(n)$ terms then we get a sum of $\Omega(n)$ as desired.
+    % The recurrence for running time is 
+    % $$T(n) = n_0T(n-n_0)+1.$$
+    % Solving, we again get $2^{O(n)}$.
   \end{proof}
 
 
