@@ -702,17 +702,18 @@ at state $S$ (e.g. $S=S_t$ or $S=I_t$).\footnote{Note that in the lower bound
   state at which the properties were measured. In those proofs it was
 sufficiently clear to leave the state implicit. However, in this section the
 state is crucial, and needs to be explicit in the notation.}
-Let $S_t(\{r_1, \ldots, r_m\})$ and $I_t(\{r_1,\ldots, r_m\})$ denote the cups
-of ranks $r_1, r_2, \ldots, r_m$ at states $S_t$ and $I_t$ respectively.
+Let $S(\{r_1, \ldots, r_m\})$ denote the cups of ranks $r_1, r_2, \ldots, r_m$ at state $S$.
 Let $[n] = \{1,2,\ldots, n\}$, let $i+[n] = \{i+1, i+2, \ldots, i+n\}$. We will
-use concatenation of sets to denote unions, i.e. $AB = A\cup B$.\\
-We establish the following Lemma:
+use concatenation of sets to denote unions, i.e. $AB = A\cup B$. The
+\defn{greedy emptier} always empties from the $p$ fullest cups. \\
+We establish the following Theorem:
 
-\begin{lemma}
-  The greedy emptier maintains the invariant $$\mu_{S_t}(S_t([k])) \le 2n-k
-  \text{ for all } t\ge 1, k \in [n].$$ In particular, for $k=1$, this
-  implies that the greedy emptier never lets backlog exceed $O(n)$.
-\end{lemma}
+\begin{theorem}
+  In the variable-processor cup game on $n$ cups, the greedy emptier maintains
+  the invariant $$\mu_{S_t}(S_t([k])) \le 2n-k \text{ for all } t\ge 1, k \in
+  [n].$$ In particular, for $k=1$, this implies that the greedy emptier never
+  lets backlog exceed $O(n)$.
+\end{theorem}
 \begin{proof}
 
 We prove the invariant by induction on $t$.
@@ -733,7 +734,7 @@ are among the $k$ fullest cups in $S_{t+1}$.
 Let $B$, with $b=|B|$, be $I_t([\min(k, p_t)]) \setminus A$; $B$ consists of
 the cups that are among the $k$ fullest cups in state $I_t$, are emptied from,
 and aren't among the $k$ fullest cups in $S_{t+1}$. 
-Let $C = I_t(p_t+[k-a])$, with $c=k-a = |C|$.
+Let $C = I_t(a+b+[k-a])$, with $c=k-a = |C|$.
 
 Note that $k-a\ge 0$ as $a+b \le k$, and also $|ABC| = k+b \le n$, because by
 definition the $b$ cups in $B$ must not be among the $k$ fullest cups in state
@@ -765,7 +766,7 @@ This is valid as both fill amounts are at most $1$: $f_x-f_y+\Delta_x<\Delta_y
 \le 1$ and $f_y-f_x + \Delta_x < \Delta_x \le 1$.
 
 We can repeatedly apply this process to swap each cup in $I_t([r])\setminus
-S_t([r])$ into being one of the $a+b$ fullest cups in the new state $S_t'$.
+S_t([r])$ into being one of the $r$ fullest cups in the new state $S_t'$.
 At the end of this process we will have some ``fake" state $S_t^f$. Note that
 $S_t^f$ must satisfy the invariants if $S_t$ satisfied the invariants, because
 our process can be thought of as just relabelling the cups; in particular
@@ -776,12 +777,12 @@ state $I_t$ we could equally well have come from state $S_t$ or state $S_t^f$.
 Thus we consider state $I_t$ to have come from state $S_t^f$.
 \end{proof}
 
-Now we proceed with the proof of the Lemma.
+Now we proceed with the proof of the theorem.
 \begin{clm}
   If some cup in $A$ zeros out then invariant holds.
 \end{clm}
 \begin{proof}
-  Say a cup in $A$ zeroes out. Then 
+  Say a cup in $A$ zeros out. Then 
   $$m_{S_{t+1}}(A) \le (a-1)(2n-(a-1))$$
   because the $a-1$ fullest cups must have satisfied the invariant on round
   $S_t$, and $\fil_{S_{t+1}}(I_{t+1}(a)) = 0$.
@@ -812,8 +813,7 @@ Now we proceed with the proof of the Lemma.
   If no cups in $A$ zero out and $b=0$ the invariant holds.
 \end{clm}
 \begin{proof}
-First we consider the case $b=0$. If $b=0$, then $S_{t+1}([k]) = S_t([k])$. 
-
+If $b=0$, then $S_{t+1}([k]) = S_t([k])$. 
 The emptier has removed $a$ units of fill from the cups in $S_t([k])$,
 specifically the cups in $A$. The filler cannot have added more than $k$ fill
 to these cups, because it can add at most $1$ fill to any given cup. Also, the
@@ -852,7 +852,7 @@ invariants; the higher fill in $A$ \defn{pushes down} the fill that $C$ can
 have. By quantifying exactly how much higher fill in $A$ pushes down fill in
 $C$ we can achieve the desired inequality.
 We can upper bound $m_{S_t}(C)$ by 
-$$m_{S_t}(C) \le \frac{c}{b+c}m_{S_t}(BC) = (m_{S_t}(ABC) - m_{S_t}(A))\frac{c}{b+c}$$ because
+$$m_{S_t}(C) \le \frac{c}{b+c}m_{S_t}(BC) = \frac{c}{b+c}(m_{S_t}(ABC) - m_{S_t}(A))$$ because
 $\mu_{S_t}(C) \le \mu_{S_t}(B)$ without loss of generality by the
 interchangeability of cups.
 Thus we have 
