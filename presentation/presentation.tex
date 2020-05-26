@@ -40,6 +40,7 @@
 
 \newtheorem{proposition}{Proposition}
 \newtheorem{defin}{Definition}
+\newtheorem{conj}{Conjecture}
 
 \usepackage{hyperref}
 
@@ -198,19 +199,24 @@ the filler is allowed to change $p$.
 
 \vspace{1cm}
 Although the modification to allow variable resources seems small, we will
-show that it drastically alters the outcome of the game.
+show that it drastically alters the outcome of the game. We prove very surprising bounds on backlog.
+\end{frame}
+
+\begin{frame}[t]{Negative Fill}
+  In lower bound proofs we allow negative fill
+  \begin{itemize}
+    \item This allows for measuring fill relative to average fill
+    \item This is important for the recursive nature of our strategies 
+    \item The game is strictly easier for the filler if cups can zero out
+  \end{itemize}
 \end{frame}
 
 \begin{frame}[t]{Amplification Lemma}
   \begin{lemma}
-    Given a filling strategy for achieving backlog $f(n)$ on $n$ cups, we can construct a new filling strategy that achieves backlog 
+    Given a strategy $f$, we can construct a new strategy that achieves backlog 
     $$f'(n) \ge (1-\delta)\sum_{\ell=0}^L f((1-\delta)\delta^\ell n)$$
-    for any parameter $\delta$ with $0 < \delta \ll 1/2$ of our choice, where $L$
-    is the largest integer such that we can achieve backlog $1$ on
-    $(1-\delta)\delta^Ln$ cups.%, i.e. $L = \frac{\log n + O(1)}{\log 1/\delta}$.
+    for appropriate parameters $L\in\mathbb{N}, 0<\delta\ll 1/2$.
   \end{lemma}
-  Remark: WLOG the number of cups in the recursive calls is an integer.
-  
 \end{frame}
 
 \begin{frame}[t]{Amplification Lemma Intuition}
@@ -220,33 +226,27 @@ show that it drastically alters the outcome of the game.
 
 \begin{frame}[t]{Proof Sketch of Amplification Lemma}
   \begin{itemize}
-    \item Let $A$ be the $\delta n$ fullest cups and $B$ be the $(1-\delta)n$ other cups.
-    \item By repeatedly applying $f$ to each cup in $B$, and transferring over
-      the cup generated in $B$ with backlog $f((1-\delta)n)$ to $A$, while maintaining the fill of cups in $A$, we make
-      $\mu (A) - \mu (B) \ge f((1-\delta)n)$. This is accomplished while
-      maintaining $\mu(A\cup B)$. The mass of $A$ is guaranteed to be obve
-      $a\mu(A\cup B)$ by the same amount that the mass of $B$ is guaranteed to
-      be depressed from $b\mu(A\cup B)$, thus fraction of the difference that
-      $\mu(A)$ gets is $|B|/|A\cup B| = (1-\delta)$. So $\mu(A)$ is at least
-      $(1-\delta)f((1-\delta)n)$ above $\mu(A\cup B)$.
-    \item We then recursively apply this procedure to $A$. Summing over $\ell = 0,1, \ldots, L$ we have the desired result.
+    \item $A$ starts as the $\delta n$ fullest cups, $B$ as the $(1-\delta)n$ other cups.
+    \item Repeatedly apply $f$ to $B$ and swap the cup with fill increased by $f(|B|)$ into $A$. 
+    \item Decrease $p$ to $|A|$ and recurse on $A$.
   \end{itemize} 
-
-  Note: we are ignoring a lot of details here, e.g. ensuring that we actually are playing a cup game on $B$ when applying $f$ to it.
 \end{frame}
 
 \begin{frame}[t]{Lower Bound against Adaptive Filler}
-  Setting $\delta = O(1/n)$ -- which is quite extremal -- and recursively using
-  the Amplification Lemma we prove:
-  \begin{corollary}
-    The filler can achieve backlog $\Omega(n)$ in running-time $2^{O(n)}$.
-  \end{corollary}
-  Using $\delta \le O(1)$ and a somewhat similar argument we get almost as good
-  backlog in quasi-polynomial time:
-  \begin{corollary}
-    The filler can achieve backlog $\Omega(n^{1-\epsilon})$ for constant
+  By repeated amplification, using $\delta=\Theta(1)$, we get: 
+  \begin{theorem}
+    There is an adaptive filling strategy that achieves
+    backlog $\Omega(n^{1-\epsilon})$ for constant
     $\epsilon > 0$ of our choice in running-time $2^{O(\log^2 n)}$.
-  \end{corollary}
+  \end{theorem}
+\end{frame}
+
+\begin{frame}[t]{Lower Bound against Adaptive Filler}
+  Setting $\delta = \Theta(1/n)$ -- which is quite extremal -- and recursively using
+  the Amplification Lemma we prove:
+  \begin{theorem}
+    There is an adaptive filling strategy that achieves backlog $\Omega(n)$ in running-time $2^{O(n)}$.
+  \end{theorem}
 \end{frame}
 
 \begin{frame}[t]{Lower Bound Intuitively}
@@ -264,29 +264,77 @@ show that it drastically alters the outcome of the game.
 
   \begin{theorem}
     A greedy emptier maintains the invariant:
-    $$\mu_k(S_t) \le n-k.$$
+    $$\mu_k(S_t) \le 2n-k.$$
   \end{theorem}
 
   \vspace{0.3cm}
   In particular this implies that backlog is $$O(n).$$
 
   \vspace{0.3cm}
-  Note: this matches our lowerbound!
-  
+  Note: this matches our lower bound!
 \end{frame}
 
-\begin{frame}[t]{Strategy Even Works with Oblivious filler!}
-  Using Hoeffding's Concentration Inequality\footnote{\tiny\color{blue} Wassily
-  Hoeffding. Probability inequalities for sums of bounded random variables.
-Journal of the American Statistical Association, page 28, 1962.}, we can
-surprisingly prove the same lower-bound for an Oblivious filler as for an
-Adaptive filler, although only against \defn{greedy-like} emptiers.
+\begin{frame}[t]{Upper Bound Proof Idea}
+  Extremal fill configuration:
+  \vspace{0.5cm}
+  \includegraphics[width=\linewidth]{upperbound/upperboundpf.eps}
+\end{frame}
+
+\begin{frame}[t]{Lower Bound Against Oblivious Filler}
+  Classically the emptier can do much better (e.g. $\log\log n$ vs $\log n$
+  backlog) in the randomized setting.
+
+  \vspace{0.5cm}
+
+  In the variable-processor cup game--shockingly--an oblivious filler can
+  achieve an identical lower bound for games of length $2^{\polylog(n)}$ 
+  with probability at least $1-2^{-\polylog(n)}$, although only against \defn{greedy-like} emptiers.
+\end{frame}
+
+\begin{frame}[t]{Oblivious Filler: Constant Fill}
+  Getting constant fill in a \emph{known} cup is hard now. Strategy:
+  \begin{itemize}
+    \item Play lots of single-processor cup games on constant numbers of cups
+      blindly. Each succeeds with some constant probability.
+    \item By a Chernoff Bound, with \emph{exponentially} good probability, i.e.
+      $1-2^{-\Omega(n)}$, at least a constant fraction, say $nc$, of the single-processor
+      cup games succeed.
+    \item Set $p=nc$.
+    \item Exploiting the greedy-like nature of the emptier fill a set of $nc$
+      known cups while the emptier is forced to focus on the set of $nc$ with
+      high fill.
+    \item Recurse for a constant number of levels on the $nc$ cups with known high fill. 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Oblivious Amplification Lemma}
+Almost identical to the Adaptive Amplification Lemma!
+  \begin{lemma}
+    Given a strategy $f$, we can construct a new strategy that achieves backlog 
+    $$f'(n) \ge \phi \cdot (1-\delta)\sum_{\ell=0}^L f((1-\delta)\delta^\ell n)$$
+    for appropriate parameters $L\in\mathbb{N}, 0<\delta\ll 1/2$ and constant $\phi \in (0,1)$ of our choice.
+  \end{lemma}
+  Note that the Lemma is actually substantially more complicated than this: There are conditions
+  on the starting configurations, everything succeeds with
+  certain probabilities, the emptier must be greedy-like, we aren't discussing run-time here, and more.
+\end{frame}
+
+\begin{frame}[t]{Lower Bound Against Oblivious Filler}
+  By a similar argument as for the adaptive case we have:
+  \begin{theorem}
+    There is an oblivious filling strategy that achieves backlog
+    $\Omega(n^{1-\epsilon})$ for constant $\epsilon > 0$ with probability at
+    least $1-2^{-\polylog(n)}$ in running time $2^{O(\log^2 n)}$.
+  \end{theorem}
+  Note that for the union bound to guarantee the appropriate probability the
+  base case in our recursive argument has to be larger in the oblivious case
+  than the adaptive case, but this doesn't harm our backlog result.
 \end{frame}
 
 \begin{frame}[t]{Open Questions}
   \begin{itemize}
-    \item Can we extend the Oblivious lower-bound construction to work against a broader class of emptiers?
     \item Can we extend the Oblivious lower-bound construction to work against arbitrary emptiers?
+    \item Are there shorter more simple constructions?
   \end{itemize}
 \end{frame}
 
