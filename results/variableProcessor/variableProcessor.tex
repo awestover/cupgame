@@ -65,32 +65,34 @@
   of the cup game is important for applications in processor scheduling, buffer
   management in networks, quality of service guarantees, and deamortization.
 
-  We investigate a new variant of the classic multi-processor cup game, which
+  We investigate a new variant of the classic $p$-processor cup game, which
   we call the \defn{variable-processor cup game}, in which the resources of the
   emptier and filler are variable. In particular, in the variable-processor cup
   game the filler is allowed to change $p$ at the beginning of each round. 
   Although the modification to allow variable resources seems small, we
-  show that it drastically alters the outcome of the game.
+  show that it drastically alters the game.
 
-  We construct a filling strategy that an adaptive filler can use to get
-  backlog $\Omega(n)$ in running time $2^{O(n)}$. We also construct a filling
-  strategy that an adaptive filler can use to get backlog
-  $\Omega(n^{1-\epsilon})$ for any constant $\epsilon > 0$ in running time
-  $2^{O(\log ^2 n)}$. Not only is this bound shockingly large, but the steep
-  trade off-curve between running-time and backlog is very surprising: the time
-  required to genuinely get a $1$ as the exponent instead of $1-\epsilon$ (e.g.
-  $0.999$) goes up from quasi-polynomial time to exponential time!
+  We construct an adaptive filling strategy that achieves backlog
+  $\Omega(n^{1-\epsilon})$ for any constant $\epsilon >0$ of our choice in
+  running time $2^{\log^2 n}$. This is enormous compared to the upper
+  bound of $O(\log n)$ that holds in the classic $p$-processor cup game!
+  We also present a simple adaptive filling strategy that is able to actually
+  achieve backlog $\Omega(n)$ in extremely long games: it has running time
+  $2^{O(n)}.$
 
   Furthermore, we demonstrate that this lower bound on backlog is tight: 
   using a novel set of invariants we prove that a greedy emptier never lets
   backlog exceed $O(n)$.
 
-  We also investigate bounds on an oblivious filler. We show, using
-  concentration bounds for random variables (Hoeffding's Inequality), that --
-  surprisingly -- an oblivious filler can use very similar techniques as the
-  adaptive filler to achieve very large backlog. In particular, an oblivious
-  filler can achieve backlog $2^{\Omega(\sqrt{\log n})}$ in running time
-  $O(\poly(n))$ with constant probability against any ``greedy-like" emptier.
+  We also investigate oblivious filling strategies. 
+  We are able to derive exactly the same lower bound as in the adaptive case
+  for games of length $2^{O(\log^2 n)}$: namely an oblivious filler can achieve
+  backlog $\Omega(n^{1-\epsilon})$ for $\epsilon > 0$ a constant of our choice,
+  with probability at least $1-2^{-\polylog(n)}$. 
+  This result only holds against a certain class of emptiers however:
+  ``greedy-like" emptiers. A lower bound against greedy-like emptiers is very
+  interesting; for instance, greedy-like emptiers are used in the upper bound proof.
+
 }
 
 \section{Introduction}\label{sec:intro}
@@ -102,20 +104,20 @@ cups, the filler first distributes $p$ units of water among
 the $n$ cups with at most $1$ unit to any particular cup (without this
 restriction the filler can trivially achieve unbounded backlog by placing all
 of its fill in a single cup every round), and then the emptier 
-removes at most $1$ unit of water from each of $p$ cups\footnote{note that negative
+removes at most $1$ unit of water from each of $p$ cups\footnote{Note that negative
 fill is not allowed, so if the emptier empties from a cup with fill below $1$
-the cups fill will become $0$.}.
+that cup's fill becomes $0$.}.
 
 The cup game naturally arises in the study of processor-scheduling.
 The incoming water added by the filler represents work added to the system at
-time steps. At each time step after the new work comes in each of $p$
-processors must be allocated to a task, which they will achieve $1$ unit of
+time steps. At each time step after the new work comes in, each of $p$
+processors must be allocated to a task which they will achieve $1$ unit of
 progress on before the next time step. The assignment of processors to tasks is
 modeled by the emptier deciding which cups to empty from. The backlog of
 the system is the largest amount of work left on any given task. To model this,
 in the cup game, the \defn{backlog} of the cups is defined to be the fill of
 the fullest cup at a given state. 
-It is important to know bounds on how large backlog can get.
+In analyzing the cup game we aim to prove upper and lower bounds on backlog.
 
 \paragraph{Previous Work}
 The bounds on backlog are well known for the case where $p=1$, i.e. the
@@ -129,24 +131,24 @@ never lets backlog exceed $O(\log \log n)$, and a filler can achieve backlog
 $\Omega(\log\log n)$.
 
 Recently Kuszmaul has achieved bounds on the case where $p>1$, i.e. the
-\defn{multi-processor cup game} \cite{wku20}. Kuszmaul showed that in the 
-$p$-processor cup game on $n$ cups a greedy emptier never lets backlog exceed
+\defn{multi-processor cup game} \cite{wku20}. Kuszmaul showed that, in the 
+$p$-processor cup game on $n$ cups, a greedy emptier never lets backlog exceed
 $O(\log n)$. He also proved a lower bound of $\Omega(\log (n-p))$. Recently we
-showed a lower bound of $\Omega(\log n - \log (n-p))$. Combined these bounds
+showed a lower bound of $\Omega(\log n - \log (n-p))$. Combined, these bounds
 imply a lower bound of $\Omega(\log n)$.
 Kuszmaul also established an upper bound of $O(\log\log n + \log p)$ against
-oblivious fillers, and a lower bound of $\Omega(\log\log n)$ (note that tight
-bounds on backlog against an oblivious filler are not yet known for large $p$).
+oblivious fillers, and a lower bound of $\Omega(\log\log n)$. Note that tight
+bounds on backlog against an oblivious filler are not yet known for large $p$.
 
 \paragraph{Our Variant}
-We investigate a variant of the vanilla multi-processor cup game which we call
+We investigate a variant of the classic $p$-processor cup game which we call
 the \defn{variable-processor cup game}. In the variable-processor cup game the
 filler is allowed to change $p$ (the total amount of water that the filler
 adds, and the emptier removes, from the cups per round) at the beginning of
 each round. Note that we do not allow the resources of the filler and emptier
 to vary separately; just like in the classic cup game we take the resources of
 the filler and emptier to be identical.
-Although this restriction may seem artificial, it is crucial; if
+This restriction is crucial; if
 the filler has more resources than the emptier, then
 the filler could trivially achieve unbounded backlog, as average fill will
 increase by at least some positive constant at each round.
@@ -159,78 +161,69 @@ disadvantage but also mean that the filler can ``anchor" fewer cups\footnote{A
 useful part of many filling algorithms is maintaining an ``anchor" set of
 ``anchored" cups. The filler always places $1$ unit of water in each anchored
 cup. This ensures that the fill of an anchored cup never decreases after it is
-placed in the anchor set.}. We hoped that the variable-processor cup game could
+placed in the anchor set.}. Furthermore, at any fixed value of $p$ upper bounds
+have been proven. For instance, regardless of $p$ a greedy emptier prevents an
+adaptive filler from having backlog greater than $O(\log n)$. Switching between
+different values of $p$, all of which the filler cannot individually get
+backlog larger than $O(\log n)$ is not obviously going to help the filler achieve larger backlog.
+We hoped that the variable-processor cup game could
 be simulated in the vanilla multi-processor cup game, because the extra
 ability given to the filler does not seem very strong. 
 
-% We invented the new version of the cup game arose as we tried to get a bound of
-% $\Omega(\log p)$ backlog in the multi-processor game against an oblivious
-% filler, which would combine with previous results to give us a lower bound that
-% matches our upper bound: $O(\log\log n + \log p)$ \cite{wku20}. In Proposition
-% \ref{prop:obliviousBase} we prove that there is an oblivious filling strategy
-% in the variable-processor cup game on $n$ cups that achieve backlog
-% $\Omega(\log n)$ as desired. \footnote{Note that we have $\Omega(\log n)$ in
-%   this proposition instead of $\Omega(\log p)$ because the filler can increase
-%   the number of processors, so it increases the number of processors to $n-1$
-%   to start. A nearly identical construction could be used to show that backlog
-%   $\Omega(\log p_{\max})$ can be achieved, where the number of processors
-%   starts at $p_{\max}$ and the filler does not ever increase the number of
-%   processors. However, using $p_{\max} = n$ is natural in the
-% variable-processor cup game, so we do not consider the game with the
-% restriction that the filler can not increase the number of processors above
-% some $p_{\max} < n$.}
 However, we show that attempts at simulating the variable-processor cup
 game are futile because the variable-processor cup game
-is--surprisingly--vastly different from the multi-processor cup game. 
+is vastly different from the multi-processor cup game. 
 
 \paragraph{Outline and Results}
 In Section \ref{sec:prelims} we establish the conventions and notations we will
 use to discuss the variable-processor cup game. 
 
 In Section \ref{sec:adaptive} we provide an inductive
-proof of a lower bound on backlog in Corollary \ref{cor:adaptivePoly}.
-The base case of the argument is a direct consequence of Proposition
-\ref{prop:adaptiveBase}, and the inductive step follows from the ``Adaptive
-Amplification Lemma" (Lemma \ref{lem:adaptiveAmplification}). Corollary
-\ref{cor:adaptivePoly} gives a lower bound of $\Omega(n)$ on backlog. Corollary
-\ref{cor:adaptivePoly} provides two algorithms: one algorithm with running time
-$2^{O(n)}$ that achieves backlog $\Omega(n)$, and another with running time
-$2^{O(\log^2 n)}$ that achieves backlog $\Omega(n^{1-\epsilon})$ for any
-constant $\epsilon > 0$.
+proof of a lower bound on backlog with an adaptive filler. Theorem 
+\ref{thm:adaptivePoly} states that a filler can achieve backlog
+$\Omega(n^{1-\epsilon})$ for any constant $\epsilon > 0$ in quasi-polynomial
+running time. Theorem \ref{thm:adaptivePoly} also provides an extremal strategy
+that achieves backlog $\Omega(n)$ in incredibly long games: it has exponential
+running time.
 
-In Section \ref{sec:adaptiveUpperBound} we prove a novel invariant: the average
-fill of the $k$ fullest cups is at most $2n-k$. In particular this implies
-(setting $k=1$) that backlog is $O(n)$. Thus, our analysis is tight.
+In Section \ref{sec:adaptiveUpperBound} we prove a novel invariant maintained
+by the greedy emptier. In particular Theorem \ref{thm:invariant} establishes
+that a greedy emptier keeps the average fill of the $k$ fullest cups at most
+$2n-k$. In particular this implies (setting $k=1$) that a greedy emptier
+prevents backlog from exceeding $O(n)$. 
 
-Section \ref{sec:oblivious} has similar macro-structure to Section
-\ref{sec:adaptive}: We lower bound backlog in Corollary
-\ref{cor:obliviousPoly}, using Proposition \ref{prop:obliviousBase} as the base
-case of the inductive argument and the ``Oblivious Amplification Lemma" (Lemma
-\ref{lem:obliviousAmplification}) to facilitate the inductive step. Corollary
-\ref{cor:obliviousPoly} gives the lower bound $2^{\Omega(\sqrt{\log n})}$ on
-backlog, against a ``greedy-like" emptier. In particular the corollary asserts
-that we can achieve this backlog in time $O(\poly(n))$. Note that the
-restriction on runtime of the filler is the main way in which this bound
-differs from the adaptive case.
+The lower bound and upper bound agree; our analysis is tight for adaptive fillers!
+
+In Section \ref{sec:oblivious} we prove a lower bound on backlog with an oblivious filler. 
+Theorem \ref{thm:obliviousPoly} states that an oblivious filler can achieve
+backlog $\Omega(n^{1-\epsilon})$ for any constant $\epsilon > 0$ in
+quasi-polynomial time with probability at least $1-2^{-\polylog(n)}$.
+Theorem \ref{thm:obliviousPoly} only applies to a certain class of emptiers:
+``greedy-like emptiers". Nonetheless, this class of emptiers is very
+interesting; it contains the emptiers that are used in upper bound proofs.
+It is shocking that randomization doesn't help the emptier in this game;
+usually the lower bound for backlog in the randomized version of a cup game is
+$\log$ of the backlog in the deterministic setting!
 
 \section{Preliminaries}\label{sec:prelims}
-The cup game consists of a sequence of rounds. On the $t$-th round the state
+The cup game consists of a sequence of rounds. On the $t$-th round, the state
 starts as $S_t$. The filler chooses the number of processors $p_t$ for the
 round. Then the filler distributes $p_t$ units of water among the cups (with at
 most $1$ unit of water to any particular cup). After this, the game is in an
 intermediate state, which we call state $I_t$. Then the emptier chooses $p_t$
 cups to empty at most $1$ unit of water from. Note that if the fill of a cup
 that the emptier empties from is less than $1$ the emptier reduces the fill of
-this cup to $0$ by emptying from it; we say that the emptier \defn{zeros-out} a
+this cup to $0$ by emptying from it; we say that the emptier \defn{zeros out} a
 cup if it empties from a cup with fill less than $1$. Note that whenever the
-emptier zeros-out a cup the emptier has removed less fill than the filler has
+emptier zeros out a cup the emptier has removed less fill than the filler has
 added; hence the average fill will increase. This concludes the round; the
 state of the game is now $S_{t+1}$.
 
 Denote the fill of a cup $c$ by $\fil(c)$. Let the \defn{positive tilt} of a cup $c$ be
-$\tilt(c) = \max(0, \fil(c))$, and let the positive tilt of a set $X$ of
-cups be $\tilt(X) = \sum_{c\in X} \tilt(c)$. Let the \defn{mass} of a set of cups $X$
-be $m(X) = \sum_{c\in X} \fil(c)$. Denote the average fill of a set of cups $X$
+$\tilt(c) = \max(0, \fil(c))$. Let the \defn{mass} of a set of cups $X$
+be $m(X) = \sum_{c\in X} \fil(c)$. 
+Let the positive tilt of a set $X$ of cups be $\tilt(X) = \sum_{c\in X} \tilt(c)$. 
+Denote the average fill of a set of cups $X$
 by $\mu(X)$. Note that $\mu(X) |X| = m(X)$.
 
 Let the \defn{rank} of a cup at a given state be its position in a list of the
@@ -243,8 +236,8 @@ negative fill. This is because our results are used recursively, so this
 negative fill is really just fill below the average fill. Note that it is
 strictly easier for the filler to achieve high backlog when cups can zero out,
 because then some of the emptiers resources are wasted. On the other hand,
-during the upper-bound proof we show that a greedy emptier maintains the
-desired invariants even if cups zero-out. This is crucial as the game is harder
+during the upper bound proof we show that a greedy emptier maintains the
+desired invariants even if cups zero out. This is crucial as the game is harder
 for the emptier when cups can zero out.
 
 When measuring fill relative to average fill, we will reference the actual --
@@ -369,12 +362,12 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
 
 \end{proof}
 
-\begin{corollary}
-  \label{cor:adaptivePoly}
+\begin{theorem}
+  \label{thm:adaptivePoly}
   There are adaptive filling strategies for the variable-processor cup game on
   $n$ cups that achieve backlog $\Omega(n)$ in time $2^{O(n)}$ and backlog
   $\Omega(n^{1-\epsilon})$ for any constant $\epsilon > 0$ in time $2^{O(\log^2 n)}$.
-\end{corollary}
+\end{theorem}
 \begin{proof}$ $\\
   Fix $\epsilon \in (0,1/2)$, and let $c, \delta$ be parameters, with $c\in
   (0,1), 0 < \delta \ll 1/2$ -- these will depend on $\epsilon, n$.
@@ -709,6 +702,7 @@ use concatenation of sets to denote unions, i.e. $AB = A\cup B$. The
 We establish the following Theorem:
 
 \begin{theorem}
+  \label{thm:invariant}
   In the variable-processor cup game on $n$ cups, the greedy emptier maintains
   the invariant $$\mu_{S_t}(S_t([k])) \le 2n-k \text{ for all } t\ge 1, k \in
   [n].$$ In particular, for $k=1$, this implies that the greedy emptier never
@@ -1419,14 +1413,14 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
 
 \end{proof}
 
-\begin{corollary}
-  \label{cor:obliviousPoly}
+\begin{theorem}
+  \label{thm:obliviousPoly}
   There is an oblivious filling strategy for the variable-processor cup game on
   $n$ cups that achieves backlog at least $\Omega(n^{1-\epsilon})$ for any
   constant $\epsilon >0$ in running time $2^{O(\log^2 n)}$ with probability at least $1-2^{-\Omega(n)}$.
-\end{corollary}
+\end{theorem}
 \begin{proof}
-  The proof is quite similar to that of Corollary \ref{cor:adaptivePoly},
+  The proof is quite similar to that of Corollary \ref{thm:adaptivePoly},
   except we do not achieve the extremal backlog $\Omega(n)$ due to its
   extremely long running time being so long as to make our probabilities not
   good enough. Nonetheless it is quite remarkable that the filler is still able to 
@@ -1436,7 +1430,7 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
 
   We aim to achieve backlog $cn^{1-\epsilon}$ for $\epsilon >  0$ a constant of
   our choice, and $0< c \ll 1$ an appropriate constant that we will choose.
-  As in the proof of Corollary \ref{cor:obliviousPoly} we achieve large backlog
+  As in the proof of Corollary \ref{thm:obliviousPoly} we achieve large backlog
   by repeated amplification of a base case. 
 
   The base case is given by Proposition \ref{prop:obliviousBase}. However,
@@ -1513,7 +1507,7 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
   As $n_b \le \polylog(n)$ this is still $\Omega(n^{1-\epsilon})$ as desired.
 
   Hence the desired backlog is achieved. For a resolving of the integer issues,
-  see the proof of Corollary \ref{cor:adaptivePoly}.
+  see the proof of Corollary \ref{thm:adaptivePoly}.
 
   By identical analysis to before we get running-time $2^{O(\log^2 n)}$.
   As stated previously, the probability result is guaranteed by a union bound,
@@ -1836,7 +1830,7 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
 Many important open questions remain open. Can our oblivious cup game results
 be improved, e.g. by expanding them to apply to a broader class of emptiers?
 Can the classic oblivious multi-processor cup-game be tightly analyzed?
-Who knows.
+These are interesting questions.
 
 \bibliographystyle{plain}
 \bibliography{paper}
