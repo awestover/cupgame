@@ -554,7 +554,7 @@ in finite running time. We again use constant $\epsilon > 0$ and appropriate con
   Amplification Lemma (Lemma \ref{lem:adaptiveAmplification}):
   we construct $f_{i+1}$ as the amplification of $f_{i}$. 
 
-  Define a sequence $g_i \in \mathbb{N}^\infty$ with 
+  Define a sequence $g_i$ with 
   $$ g_i = \begin{cases}
     \lceil 1/\delta \rceil \gg 1,  & i = 0,\\
     \lceil g_{i-1}/(1-\delta)\rceil -1 & i  \ge 1
@@ -1295,10 +1295,9 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
   \poly(n)$ when given a $M$-flat configuration, against a $\Delta$-greedy-like
   emptier.
 
-  Let $0< \delta \ll 1/2$, $L\in \mathbb{N}$, and $\eta \in \mathbb{N}$ ($\eta$
-  chosen sufficiently large as a function of $\delta, \Delta$), be appropriate constant
-  parameters. Let $0 \ll \phi<1$ be a constant which will be defined in terms
-  of $\eta$ satisfying $\lim_{\eta \to \infty} \phi = 1$. 
+  Let $0< \delta \ll 1/2$, $L\in \mathbb{N}$, $\eta \in \mathbb{N}$ be constant
+  parameters, appropriately chosen. Let $1/2 \ll \phi<1$ be a constant
+  parameter chosen as close to $1$ as desired. 
 
   There exists an oblivious filling strategy that achieves backlog $$f'(n) \ge
   \phi \cdot (1-\delta)\sum_{\ell=0}^L f((1-\delta)\delta^\ell n)$$ in the
@@ -1405,6 +1404,8 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
   However, clearly this is equivalent to removing at most $2$ cups worth of
   mass from the anchor set. Overall we thus remove at most $2w$ cups worth of
   mass from the anchor set. Hence choosing $\phi = 1-2w$ works.
+  Noting that the constant $w > 0$ was arbitrary we have that $\phi$ can be
+  made any constant arbitrarily close to $1$.
 
   In order to achieve this backlog however, not only does the filler need to be
   able to swap over $s(1-w)$ cups on rounds where the emptier neglects the
@@ -1421,88 +1422,122 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
 \begin{corollary}
   \label{cor:obliviousPoly}
   There is an oblivious filling strategy for the variable-processor cup game on
-  $n$ cups that achieves backlog at least $2^{\Omega(\sqrt{\log n})}$ in
-  running time $O(n)$ with constant probability.
+  $n$ cups that achieves backlog at least $\Omega(n^{1-\epsilon})$ for any
+  constant $\epsilon >0$ in running time $2^{O(\log^2 n)}$ with probability at least $1-2^{-\Omega(n)}$.
 \end{corollary}
 \begin{proof}
-  Given the Oblivious Amplification Lemma we could try to apply the same
-  strategy as outlined in the proof of Corollary \ref{cor:adaptivePoly} to
-  achieve backlog $\Omega(n^{1-\epsilon})$ for constant $\epsilon >0$ in time
-  $2^{O(\log^2 n)}$. Because of our definition of an overpowered cup as a cup
-  with fill at least $\tilde{\Omega}(\sqrt{n})$, we can't get quite as close to
-  linear as an adaptive filer could. However, the more pressing problem is that
-  of running time: randomized algorithms are traditionally supposed to have
-  polynomial-running time. By artificially reducing $n$, i.e. ignoring some
-  portion of the cups, we can get an algorithm that achieves high backlog, but
-  in polynomial time. In particular, we want to choose a subset of $n'$ of the
-  cups to focus on, where $2^{O(\log^2 n')} = O(n)$. An appropriate choice is
-  $n' = 2^{\sqrt{\log n}}$.
+  The proof is quite similar to that of Corollary \ref{cor:adaptivePoly},
+  except we do not achieve the extremal backlog $\Omega(n)$ due to its
+  extremely long running time being so long as to make our probabilities not
+  good enough. Nonetheless it is quite remarkable that the filler is still able to 
+  achieve $\poly(n)$ backlog, and in fact the same asymptotic backlog as the
+  adaptive filler when the games are restricted to the reasonable length of
+  $2^{O(\log^2 n)}$.
 
-  With $n'$ chosen, we apply the exact same strategy as given in the paragraph
-  in the proof of Corollary on the $2^{O(\log^2 n)}$-time construction for
-  achieving backlog $\Omega(n^{1-\epsilon})$ for constant $\epsilon >0$, but using
-  repeated application of the Oblivious Amplification Lemma rather than the
-  Adaptive Amplification Lemma, which yields the disclaimer that the backlog is
-  only achieved with constant probability.
-  Thus, we achieve backlog $\Omega(n')$ in running time $2^{O(\log^2
-  n')}$. By design, expressing this in terms of $n$ the filler achieves 
-  backlog $2^{\Omega(\sqrt{\log n})}$ in running time $O(n)$.
+  We aim to achieve backlog $cn^{1-\epsilon}$ for $\epsilon >  0$ a constant of
+  our choice, and $0< c \ll 1$ an appropriate constant that we will choose.
+  As in the proof of Corollary \ref{cor:obliviousPoly} we achieve large backlog
+  by repeated amplification of a base case. 
 
-  For completeness we -- briefly (as they are nearly identical) -- present the
-  ideas from Proposition \ref{prop:constructive_nepsil} in the randomized
-  context.
+  The base case is given by Proposition \ref{prop:obliviousBase}. However,
+  unlike in the adaptive case, we cannot do the base case on a constant size
+  subset of the cups: this would destroy our probability of success. Recalling
+  that the running time of the algorithm is going to be $2^{\polylog(n)}$ it
+  seems reasonable to want to union bound over $2^{\polylog(n)}$ events. Hence
+  the probability of failure needs to also be at most $2^{-\polylog(n)}$.
+  Hence as our base case we use a $\polylog(n)$ size subset of the cups. 
+  Let $n_b = \polylog(n)$ be the size of our base case.
 
-  Fix constant $\epsilon > 0$ and choose appropriate constant $\delta$, as
-  mandated by Claim \ref{clm:validchoices}. Choose constant $c$, according to
-  an inequality to be specified later. We aim to achieve backlog
-  $c(n')^{1-\epsilon}$.
-  As before, we define a sequence of functions. First,
-  $$f_0(k) = 
-  \begin{cases} 
-    \lg k, & k\geq 1, \\
-    0 & \text{else.}
-  \end{cases}$$
-  Then, we define $f_i$ as the amplification of $f_{i-1}$ for $i \ge 1$, where
-  amplification is as defined in the Oblivious Amplification Lemma. 
-  However, this time the filling strategy $f_i$ achieves backlog $f_i(k)$ on
-  $k$ cups only with constant probability.
-  As before we define a sequence $g_i$ as 
-  $$ g_i = \begin{cases}
-    \lceil 1/\delta \rceil \gg 1,  & i = 0,\\
-    \lceil g_{i-1}/(1-\delta)\rceil -1 & i  \ge 1.
-  \end{cases} $$
-  Claim \ref{clm:fikinduction}, which states that 
-  $$f_i(k) \ge ck^{1-\epsilon} \text{ for all } k < g_i,$$
-  holds with no modifications required.
+  Our base case strategy is 
+  $$
+  f_0(k)=
+  \begin{cases}
+    2, & k > n_b\\
+    0, & k \le n_b
+  \end{cases}.$$
+  This is possible by Proposition \ref{prop:obliviousBase}.
+  Then we construct $f_{i+1}$ as the amplification of $f_i$ using Lemma \ref{lem:obliviousAmplification}.
 
-  Again, because $g_i$ is increasing, we achieve the desired backlog
-  $c(n')^{1-\epsilon}$ in finite time. In particular, applying identical
-  arguments to those in Corollary \ref{cor:adaptivePoly}, we find that the
-  running time is $2^{O(\log^2 n')}$.
+  Define $g_i$ as 
+  $$
+  g_i =
+  \begin{cases}
+    1/\delta, & i=0\\
+    g_{i-1}/(1-\delta), & i\ge 1 
+  \end{cases}.$$
 
-  As stated earlier, by design of $n'$, this means we get backlog
-  $2^{\Omega(\sqrt{\log n})}$ in time $O(n)$.
+  \begin{clm}
+    \label{clm:fikinductionagain}
+    $f_i(k \cdot n_b) \ge ck^{1-\epsilon}$ for all $k < g_i$.
+  \end{clm}
+  We prove Claim \ref{clm:fikinductionagain} by induction. Clearly by
+  appropriate choice of $c$ the base case is satisfied.
 
+  Assume the claim for $f_i$, consider $f_{i+1}$. For any $k < g_{i-1}/(1-\delta)$ we have
+  \begin{align*}
+    f_{i+1}(k\cdot n_b) & \\
+                  &\ge \phi\cdot(1-\delta)\sum_{\ell=0}^L f_i((1-\delta)\delta^\ell k\cdot n_b)\\
+                  &\ge \phi\cdot(1-\delta)\sum_{\ell=0}^L c ((1-\delta)\delta^\ell k)^{1-\epsilon}\\
+                  &\ge ck^{1-\epsilon} \phi\cdot(1-\delta)^{2-\epsilon}\sum_{\ell=0}^L (\delta^\ell)^{1-\epsilon}\\
+                  &\ge ck^{1-\epsilon} \phi\cdot(1-\delta)^{2-\epsilon}( 1+\delta^{1-\epsilon}).
+  \end{align*}
+
+  Now we must prove the following claim, which is nearly identical to Claim
+  \ref{clm:validchoices}, but slightly complicated by the $\phi$ factor out front:
+  \begin{clm}
+    Let 
+    $$h(\delta, \phi) = \phi\cdot (1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon})$$
+    There exists constant choices of $\delta, \phi$ such that $h(\delta, \phi) > 1$.
+  \end{clm}
+  \begin{proof}
+    As before we lower bound $h$ by 
+    $$h(\delta, \phi) \ge \phi \cdot (1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon}).$$
+    Recall from before that 
+    $$(1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon}) -1$$ is positive for
+    $\delta \in (0, 1/(2(2-\epsilon))^{1/\epsilon})$. Choosing $\delta$ as the
+    midpoint of this interval, $(1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon})$
+    is some value strictly larger than $1$, say $1+z$. Then
+    choosing $$\phi = \frac{1+z/2}{1+z}$$
+    guarantees that $h(\delta, \phi) = 1+z/2 > 1$ as desired.
+  \end{proof}
+
+  Now we can complete the proof of Claim \ref{clm:fikinductionagain}, 
+  \begin{align*}
+    f_{i+1}(k) & \\
+               &\ge ck^{1-\epsilon} h(\delta, \phi)\\
+               &\ge ck^{1-\epsilon}.
+  \end{align*}
+
+  Recursing for $O(\log n)$ levels of recursion is sufficient to achieve a function $f$ with 
+  $$f(n) \ge c(n/n_b^{1-\epsilon}$$
+  As $n_b \le \polylog(n)$ this is still $\Omega(n^{1-\epsilon})$ as desired.
+
+  Hence the desired backlog is achieved. For a resolving of the integer issues,
+  see the proof of Corollary \ref{cor:adaptivePoly}.
+
+  By identical analysis to before we get running-time $2^{O(\log^2 n)}$.
+  As stated previously, the probability result is guaranteed by a union bound,
+  so we have probability at least $1-2^{-\polylog(n)}$ of success.
 \end{proof}
 
 % this probably belongs somewhere in the corollary proof, which will be
 % substantially more complex than I originally anticipated, because Prop and
 % Lemma need to take as input cups arrangements with flatness guarantees
-\begin{clm}
-  Without loss of generality the cup state is always $(h\sqrt{n/\lg\lg n})$-flat.
-\end{clm}
-\begin{proof}
-In order to flatten a set of cups we must have a bound on the magnitude of the
-fills of the cups. We claim that without loss of generality no cup has fill
-larger in magnitude than $h\sqrt{n/\log\log n}$. If a cup has more than
-$h\sqrt{n/\log\log n}$ fill we call the cup \defn{overpowered}. If there ever
-is an overpowered cup then we are automatically done: the emptier has achieved
-$\poly(n)$ backlog and will maintain it for at least $\poly(n)$ rounds. If a
-cup ever has fill less than $-h\sqrt{n/\log\log n}$ then the absolute average
-fill must be large enough such that the absolute fill of this cup is at least
-$0$. Thus there is an overpowered cup. From now on we assume that there are no
-overpowered cups.
-\end{proof}
+% \begin{clm}
+%   Without loss of generality the cup state is always $(h\sqrt{n/\lg\lg n})$-flat.
+% \end{clm}
+% \begin{proof}
+% In order to flatten a set of cups we must have a bound on the magnitude of the
+% fills of the cups. We claim that without loss of generality no cup has fill
+% larger in magnitude than $h\sqrt{n/\log\log n}$. If a cup has more than
+% $h\sqrt{n/\log\log n}$ fill we call the cup \defn{overpowered}. If there ever
+% is an overpowered cup then we are automatically done: the emptier has achieved
+% $\poly(n)$ backlog and will maintain it for at least $\poly(n)$ rounds. If a
+% cup ever has fill less than $-h\sqrt{n/\log\log n}$ then the absolute average
+% fill must be large enough such that the absolute fill of this cup is at least
+% $0$. Thus there is an overpowered cup. From now on we assume that there are no
+% overpowered cups.
+% \end{proof}
 
 % \begin{proposition}
 %   \label{prop:obliviousBase}
@@ -1798,7 +1833,10 @@ overpowered cups.
 % \end{proof}
 
 \section{Conclusion}
-Many important open questions remain open.
+Many important open questions remain open. Can our oblivious cup game results
+be improved, e.g. by expanding them to apply to a broader class of emptiers?
+Can the classic oblivious multi-processor cup-game be tightly analyzed?
+Who knows.
 
 \bibliographystyle{plain}
 \bibliography{paper}
