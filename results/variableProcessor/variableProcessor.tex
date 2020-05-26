@@ -94,6 +94,7 @@
   interesting; for instance, greedy-like emptiers are used in the upper bound proof.
 
 }
+\thispagestyle{fancy}
 
 \section{Introduction}\label{sec:intro}
 \paragraph{Definition and Motivation}
@@ -232,23 +233,27 @@ consistently. For example, the fullest cup at a state has rank $1$, and the
 least full cup has rank $n$.
 
 Many of our lower bound proofs will adopt the convention of allowing for
-negative fill. This is because our results are used recursively, so this
-negative fill is really just fill below the average fill. Note that it is
-strictly easier for the filler to achieve high backlog when cups can zero out,
-because then some of the emptiers resources are wasted. On the other hand,
+negative fill. We call this the \defn{negative-fill variable-processor cup
+game}. Specifically, in the negative-fill variable-processor cup game, when the
+emptier empties from a cup its fill always decreases by exactly $1$: there is
+no zeroing out. Negative-fill can be interpreted as fill below some average
+fill. Measuring fill like this is important however, as our lower bound results
+are used recursively, building on the average fill already achieved. Note that
+it is strictly easier for the filler to achieve high backlog when cups can zero
+out, because then some of the emptiers resources are wasted. On the other hand,
 during the upper bound proof we show that a greedy emptier maintains the
 desired invariants even if cups zero out. This is crucial as the game is harder
 for the emptier when cups can zero out.
 
-When measuring fill relative to average fill, we will reference the actual --
-i.e. non-relative -- fills by calling them \defn{absolute} fills.
+% When measuring fill relative to average fill, we will reference the actual --
+% i.e. non-relative -- fills by calling them \defn{absolute} fills.
 
 \section{Adaptive Filler Lower Bound}\label{sec:adaptive}
 \begin{proposition}
 \label{prop:adaptiveBase}
-  There exists an adaptive filling strategy for the variable-processor cup game
-  on $n$ cups that achieves backlog at least $\frac{1}{4}\ln (n/2)$, where fill
-  is relative to the average fill of the cups, with negative fill allowed.
+  There exists an adaptive filling strategy for the negative-fill
+  variable-processor cup game on $n$ cups that achieves backlog at least
+  $\frac{1}{4}\ln (n/2)$.
 \end{proposition}
 \begin{proof}
   Let $h = \frac{1}{4}\ln (n/2)$ be the desired fill. Once a cup with fill at
@@ -284,19 +289,15 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
 
 \begin{lemma}[The Adaptive Amplification Lemma]\label{lem:adaptiveAmplification}
   Let $f$ be an adaptive filling strategy that achieves backlog $f(n)$ in the
-  variable-processor cup game on $n$ cups (relative to average fill, with
-  negative fill allowed).
-  Let $n_0 \in \mathbb{N}$ be a constant such that a filler can achieve backlog $1$
-  on $n_0$ cups ($n_0$ exists by Proposition \ref{prop:adaptiveBase}).
-  Let $\delta\in(0,1)$ be a parameter, and let $L\in\mathbb{N}$ be a parameter
-  such that $n_0 \le (1-\delta)\delta^L$.
+  negative-fill variable-processor cup game on $n$ cups.
+  Let $\delta\in(0,1)$ be a parameter, and let $L\in\mathbb{N}$ be a parameter.
   \footnote{Note that $n$ must be sufficiently large, and $\delta, L$ must be
   chosen such that $(1-\delta)\delta^L n \in \mathbb{N}$ because it doesn't
   make sense to talk of ``fractional cups".}
 
   Then, there exists an adaptive filling strategy that achieves backlog 
   $$f'(n) \ge (1-\delta)\sum_{\ell= 0}^{L} f((1-\delta)\delta^\ell n)$$
-  in the variable-processor cup game on $n$ cups.
+  in the negative-fill variable-processor cup game on $n$ cups.
 \end{lemma}
 \begin{proof}
   The basic idea of this analysis is as follows:
@@ -330,20 +331,19 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
   Thus, if at any point in the process $B$ has average fill lower than $-h_\ell
   \cdot \delta/(1-\delta)$, then $A$ has average fill at least $h_\ell$, so the
   process is finished. So long as $B$ has average fill at least $-h_\ell\cdot
-  \delta/(1-\delta)$ we will apply $f$ to $B$.
+  \delta/(1-\delta)$ the filler will applies $f$ to $B$.
   
   It is somewhat complicated to apply $f$ to $B$ however, because we must
-  guarantee that in the steps that the algorithm takes while applying $f$ the
-  amount of mass removed from $B$ by the emptier is the same as the amount of
-  mass added to $B$ by the filler. This might not be the case if the emptier
-  does not empty from each anchor cup at each step. We say that the emptier
-  \defn{neglects} the anchor set on an application of $f$ if there is some step
-  during the application of $f$ in which the emptier does not empty from some
-  anchor cup.
+  guarantee that the emptier removes the same mass from $B$ as the filler adds on
+  all rounds during the filler's application of $f$ to $B$.
+  This might not be the case if the emptier does not empty from each anchor cup
+  at each step. We say that the emptier \defn{neglects} the anchor set on an
+  application of $f$ if there is some step during the application of $f$ in
+  which the emptier does not empty from some anchor cup.
 
-  We will apply $f$ to $B$ at most $h_\ell n_\ell\delta + 1$ times, and at the
-  end of an application of $f$ we only swap the generated cup into $A$ if the
-  emptier has not neglected the anchor set during the application of $f$.
+  The filler applies $f$ to $B$ at most $h_\ell n_\ell\delta + 1$ times. 
+  At the end of an application of $f$ the filler swaps the generated cup into $A$ only if the
+  emptier has not neglected the anchor set during this application of $f$.
 
   Note that each time the emptier neglects the anchor set the mass of the
   anchor set increases by $1$. If the emptier neglects the anchor set $h_\ell
@@ -351,14 +351,13 @@ i.e. non-relative -- fills by calling them \defn{absolute} fills.
   more than $h_\ell$, so the desired average fill is achieved in the anchor set.
 
   Otherwise, there must have been an application of $f$ for which the emptier
-  did not neglect the anchor set. We only swap a cup into the anchor set if
-  this is the case. In this case we achieve fill 
+  did not neglect the anchor set. In this case the filler achieves fill 
   $$-h_\ell \cdot \delta/(1-\delta) + f(n_\ell (1-\delta)) = (1-\delta)f(n_\ell
   (1-\delta)) = h_\ell$$
-  in a non-anchor cup, and swap it with the smallest cup in the anchor set.
+  in some non-anchor cup, and swaps it with the least full cup in the anchor set.
 
-  We achieve average fill $h_\ell$ in the anchor set for $L$ levels of
-  recursion. Summing $h_\ell$ for $0\le \ell \le L$ yields the desired result.
+  The filler achieves average fill $h_\ell$ in the anchor set for $L$ levels of
+  recursion. Summing $h_\ell$ for $0\le \ell \le L$ yields the desired backlog.
 
 \end{proof}
 
@@ -1016,8 +1015,7 @@ We now prove a crucial property of greedy-like emptiers: that they are \defn{fla
   \label{prop:greedylikeisflat}
   Given a cup configuration that is $M$-flat, an oblivious filler can, in
   running time $2M$, achieve a $2(2+\Delta)$-flat configuration of cups against
-  a $\Delta$-greedy-like emptier, (where fill is measured relative to average
-  fill, with negative fill allowed). 
+  a $\Delta$-greedy-like emptier, in the negative-fill variable-processor cup game on $n$ cups.
 \end{proposition}
 
 \begin{proof}
@@ -1111,11 +1109,10 @@ Now we are equipped to prove the following proposition:
   Let $H \le O(1)$, $M \le \poly(n)$, $\Delta \le O(1)$, $n \ge \Omega(1)$ at
   least a sufficiently large constant. 
 
-  There exists an oblivious filling strategy for the variable-processor cup
-  game on $n$ cups that can achieve backlog $H$ in a $M$-flat configuration of
-  cups (relative to average fill with negative fill allowed) in running time
-  $\poly(n)$ against a $\Delta$-greedy-like emptier, with probability at least
-  $$1-2^{-\Omega(n)}.$$
+  There exists an oblivious filling strategy for the negative-fill
+  variable-processor cup game on $n$ cups that can achieve backlog $H$ on a
+  $M$-flat configuration of cups in running time $\poly(n)$ against a
+  $\Delta$-greedy-like emptier, with probability at least $$1-2^{-\Omega(n)}.$$
 \end{proposition}
 \begin{proof}
   The filler starts by flattening all the cups, using the
@@ -1283,11 +1280,10 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
 \begin{lemma}[The Oblivious Amplification Lemma]
   \label{lem:obliviousAmplification} 
   Let $\Delta \le O(1)$, $M, M' \ge R_\Delta$, $q \ge \Omega(1)$, $f$ be an
-  oblivious filling strategy that achieves backlog $f(n)$ (relative to average
-  fill with negative fill allowed) in the variable-processor cup game on $n$
-  cups with probability at least $1-2^{-qn}$ in running time $T(n) \le
-  \poly(n)$ when given a $M$-flat configuration, against a $\Delta$-greedy-like
-  emptier.
+  oblivious filling strategy that achieves backlog $f(n)$ in the negative-fill
+  variable-processor cup game on $n$ cups with probability at least $1-2^{-qn}$
+  in running time $T(n) \le \poly(n)$ when given a $M$-flat configuration,
+  against a $\Delta$-greedy-like emptier.
 
   Let $0< \delta \ll 1/2$, $L\in \mathbb{N}$, $\eta \in \mathbb{N}$ be constant
   parameters, appropriately chosen. Let $1/2 \ll \phi<1$ be a constant
@@ -1295,7 +1291,7 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
 
   There exists an oblivious filling strategy that achieves backlog $$f'(n) \ge
   \phi \cdot (1-\delta)\sum_{\ell=0}^L f((1-\delta)\delta^\ell n)$$ in the
-  variable processor cup game on $n$ cups given a $M'$-flat configuration of
+  negative-fill variable-processor cup game on $n$ cups given a $M'$-flat configuration of
   cups in running time $$T'(n) \le O(M') + (\delta L) n^{\eta+1}
   T((1-\delta)n)$$ against a $\Delta$-greedy-like emptier with probability at
   least $$1-2^{-\Omega(n)}.$$
@@ -1420,7 +1416,7 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
   constant $\epsilon >0$ in running time $2^{O(\log^2 n)}$ with probability at least $1-2^{-\Omega(n)}$.
 \end{theorem}
 \begin{proof}
-  The proof is quite similar to that of Corollary \ref{thm:adaptivePoly},
+  The proof is quite similar to that of Theorem \ref{thm:adaptivePoly},
   except we do not achieve the extremal backlog $\Omega(n)$ due to its
   extremely long running time being so long as to make our probabilities not
   good enough. Nonetheless it is quite remarkable that the filler is still able to 
@@ -1430,7 +1426,7 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
 
   We aim to achieve backlog $cn^{1-\epsilon}$ for $\epsilon >  0$ a constant of
   our choice, and $0< c \ll 1$ an appropriate constant that we will choose.
-  As in the proof of Corollary \ref{thm:obliviousPoly} we achieve large backlog
+  As in the proof of Theorem \ref{thm:obliviousPoly} we achieve large backlog
   by repeated amplification of a base case. 
 
   The base case is given by Proposition \ref{prop:obliviousBase}. However,
@@ -1507,7 +1503,7 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
   As $n_b \le \polylog(n)$ this is still $\Omega(n^{1-\epsilon})$ as desired.
 
   Hence the desired backlog is achieved. For a resolving of the integer issues,
-  see the proof of Corollary \ref{thm:adaptivePoly}.
+  see the proof of Theorem \ref{thm:adaptivePoly}.
 
   By identical analysis to before we get running-time $2^{O(\log^2 n)}$.
   As stated previously, the probability result is guaranteed by a union bound,
