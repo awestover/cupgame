@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70212" creator="Ipe 7.2.12">
-<info created="D:20200511152007" modified="D:20200526173412"/>
+<info created="D:20200511152007" modified="D:20200527150241"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -318,5 +318,7 @@ h
 </path>
 <text matrix="1 0 0 1 -8 -8" transformations="translations" pos="156 500" stroke="black" type="label" width="18.174" height="11.955" depth="0" valign="baseline" size="LARGE" style="math">\delta n</text>
 <text matrix="1 0 0 1 -24 0" transformations="translations" pos="320 524" stroke="black" type="label" width="59.303" height="12.896" depth="4.29" valign="baseline" size="LARGE" style="math">(1-\delta)n</text>
+<text matrix="1 0 0 1 -12 -32" transformations="translations" pos="160 480" stroke="black" type="label" width="18.194" height="16.938" depth="0" valign="baseline" size="Huge" style="math">A</text>
+<text matrix="1 0 0 1 156 -32" transformations="translations" pos="160 480" stroke="black" type="label" width="19.689" height="16.938" depth="0" valign="baseline" size="Huge" style="math">B</text>
 </page>
 </ipe>
