@@ -174,7 +174,7 @@ red,densely dashed,every mark/.append style={solid,fill=red!80!black},mark=diamo
   \textbf{If $a$ is one of the $k$ fullest cups in $S_{t+1}$:}
   $$\mu_k(S_{t+1}) \le \mu_k(S_t).$$
   \textbf{Otherwise:}
-  $$\mu_k(S_{t+1}) = \mu_{k+1}(I_t) \le \mu_{k+1}(S_{t+1}) + \frac{1}{k+1}.$$
+  $$\mu_k(S_{t+1}) \le \mu_{k+1}(I_t) \le \mu_{k+1}(S_{t+1}) + \frac{1}{k+1}.$$
 \end{frame}
 
 % \begin{frame}[t]{Previous work on Cup Games}
@@ -303,6 +303,12 @@ that it drastically changes the game.
   \vspace{0.5cm}
 
   But not in the variable-processor cup game!
+
+  \vspace{0.5cm}
+  In the variable-processor cup game, an oblivious filler do essentially just
+  as well as teh adaptive filler, although we only are able to analyze it with
+  \defn{greedy-like emptiers}. 
+
   % In the variable-processor cup game--shockingly--an oblivious filler can
   % achieve an identical lower bound for games of length $2^{\polylog(n)}$ 
   % with probability at least $1-2^{-\polylog(n)}$, although only against \defn{greedy-like} emptiers.
