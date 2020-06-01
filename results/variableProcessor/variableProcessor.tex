@@ -296,7 +296,7 @@ for the emptier when cups can zero out.
   Then, there exists an adaptive filling strategy that achieves backlog 
   $$f'(n) \ge (1-\delta)\sum_{\ell= 0}^{L} f((1-\delta)\delta^\ell n)$$
   in the negative-fill variable-processor cup game on $n$ cups in running time 
-  $$T'(n) \le L n^2 T((1-\delta)n).$$
+  $$T'(n) \le (L+1)n^2 T((1-\delta)n).$$
 \end{lemma}
 \begin{proof}
   First we motivate the lemma's name: \defn{The Amplification Lemma}. Let
@@ -381,7 +381,7 @@ for the emptier when cups can zero out.
   called $f$ on a set of size $(1-\delta)n$ as many as $n^2$ times. This
   contributes $n^2 T((1-\delta)n)$ to the running time. Terms at other levels
   of recursion are at most this, so the entire running time can be upper bounded by 
-  $$T'(n) \le L n^2 T((1-\delta)n)$$
+  $$T'(n) \le (L+1) n^2 T((1-\delta)n)$$
   as desired.
 
 \end{proof}
@@ -512,21 +512,7 @@ for the emptier when cups can zero out.
     
   \end{proof}
 
-  Now we proceed to show that with the appropriate values of $\delta, \epsilon$ we
-  can achieve a filling strategy that achieves backlog $cn^{1-\epsilon}$ on $n$ cups.
-  First we present a simple existential argument to show that an algorithm
-  achieving backlog $\Omega(n^{1-\epsilon})$ for $\epsilon$ constant exists. Next we modify the
-  existential proof to achieve an algorithm achieving the same backlog, but in
-  bounded running time, specifically running time $2^{O(\log^2 n)}$.
-  Finally we present an algorithm where $\delta$ is set extremally; doing so,
-  along with other modifications of the approach, we can achieve backlog
-  $\Omega(n)$ in running time $2^{O(n)}$.
-  
-  \begin{proposition}
-    There exists an adaptive filling strategy that achieves backlog
-    $\Omega(n^{1-\epsilon})$ for any constant $\epsilon > 0$.
-  \end{proposition}
-  \begin{proof}
+  Now we can easily non-constructively show that backlog $\Omega(n^{1-\epsilon})$ can be achieved.
   Let $\epsilon > 0$ be constant. By Claim \ref{clm:validchoices}, there is a
   valid constant setting of $\delta$; let $\delta \ll 1/2$ be an appropriate
   constant. Let $f^*(n)$ be the supremum over all filling strategies of the
@@ -549,15 +535,7 @@ for the emptier when cups can zero out.
            &\ge cn_*^{1-\epsilon}
 \end{align*}
 which is a contradiction. Hence $f^*$ achieves backlog $cn^{1-\epsilon}$.
-    
-  \end{proof}
 
-  \begin{proposition}
-    \label{prop:constructive_nepsil}
-    There is an adaptive filling strategy that achieves backlog
-    $\Omega(n^{1-\epsilon})$ for constant $\epsilon > 0$ in time $2^{O(\log^2 n)}$.
-  \end{proposition}
-  \begin{proof}
 It is desirable to have an algorithm for achieving this backlog with bounded
 running time; we now modify the existential argument to make it constructive, 
 which yields an algorithm for achieving backlog $cn^{1-\epsilon}$ on $n$ cups 
@@ -650,7 +628,6 @@ in quasi-polynomial running time. We again use constant $\epsilon > 0$ and appro
   achieve the desired backlog. This gives running time
   $$T(n) \le (2n^2)^{O(\log n)} \le 2^{O(\log^2 n)}$$
   as desired.
-  \end{proof}
 
 \end{proof}
 
