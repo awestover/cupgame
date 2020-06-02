@@ -314,8 +314,8 @@ Modification may seem small, but it drastically alters the game
 \begin{frame}[t]{Upper Bound Proof Sketch}
   Induct on $t$. Fix $k$. Define sets of cups:\\
   \begin{itemize}
-    \item $A$: emptied from, $S_t$ $k$ fullest cups, $S_{t+1}$ $k$ fullest cups
-    \item $B$: emptied from, $S_{t}$ $k$ fullest cups, \textbf{not} $S_{t+1}$ $k$ fullest cups
+    \item $A$: (emptied from) $\cap$ ($k$ fullest in $S_t$) $\cap$ ($k$ fullest in $S_{t+1}$)
+    \item $B$: (emptied from) $\cap$ ($k$ fullest in $S_t$) $\cap$ (\textbf{not} $k$ fullest in $S_{t+1}$)
     \item $C$: $AC$ is the $k$ fullest cups in $S_{t+1}$
   \end{itemize}
   $\mu_k(S_{t+1})$ is largest if fill from $BC$ is pushed into $A$
