@@ -69,7 +69,7 @@ red,densely dashed,every mark/.append style={solid,fill=red!80!black},mark=diamo
 \newcommand{\citefont}[1]{{\tiny \textcolor{Gray}{#1}}}
 \setbeamerfont{footnote}{size=\tiny}
 
-\title{The Variable Processor Cup Game}
+\title{The Variable-Processor Cup Game}
 \author{Alek Westover}
 \institute{Belmont High School}
 \date{June 7, 2020}
@@ -95,9 +95,8 @@ red,densely dashed,every mark/.append style={solid,fill=red!80!black},mark=diamo
   \includegraphics[width=\linewidth]{workScheduling/workScheduling.eps}
 \end{frame}
 
-\begin{frame}[t]{Previous Work --- $p=1$}
-
-  Single-processor cup game
+\begin{frame}[t]{Previous Work}
+  Multi-processor cup game: \footnote{[William Kuszmaul. Achieving optimal backlog in the vanilla multi-processor cup game. SIAM, 2020.]}
 
   Adaptive filler:
   \begin{itemize}
@@ -105,39 +104,7 @@ red,densely dashed,every mark/.append style={solid,fill=red!80!black},mark=diamo
     \item $O(\log n)$ upper bound
   \end{itemize}
 
-  Oblivious filler (can't see emptier's actions):
-  \footnote{[M. Bender, M. Farach-Colton, and W. Kuszmaul. Achieving optimal backlog in multi-processor cup games. In Proceedings of the 51st Annual ACM Symposium on Theory of Computing (STOC), 2019.]}
-  \begin{itemize}
-    \item $\Omega(\log\log n)$ lower bound
-    \item $O(\log\log n)$ upper bound (with good probability in short games)
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[t]{Previous Work --- Restricted Versions}
-  Cup flushing game (emptier can completely empty cups):\footnote{[P. F. Dietz and R. Raman. Persistence, amortization and randomization. In Proceedings of the Second An- nual ACM-SIAM Symposium on Discrete Algorithms (SODA), pages 78–88, 1991.]}
-\begin{itemize}
-  \item $\Omega(\log \log n)$ lower bound
-  \item $O(\log \log n)$ upper bound
-\end{itemize}
-
-Bamboo Garden Trimming (filler always adds same amount):\footnote{[Bilò, Davide, Luciano Gualà, Stefano Leucci, Guido Proietti, and Giacomo Scornavacca. "Cutting Bamboo Down to Size." arXiv preprint arXiv:2005.00168 (2020).]}
-\begin{itemize}
-  \item $2$ lower bound
-  \item $2$ upper bound
-\end{itemize}
-
-% Cups are nodes in a graph, moves restricted based on graph structure.
-
-\end{frame}
-
-\begin{frame}[t]{Previous Work --- $p>1$}
-  Multi-processor cup game: \footnote{[William Kuszmaul. Achieving optimal backlog in the vanilla multi-processor cup game. SIAM, 2020.]}
-  \begin{itemize}
-    \item $\Omega(\log n)$ lower bound
-    \item $O(\log n)$ upper bound
-  \end{itemize}
-
-  Multi-processor cup game with \defn{oblivious} filler: \footnote{[William Kuszmaul. Achieving optimal backlog in the vanilla multi-processor cup game. SIAM, 2020.]}
+  Oblivious filler: (can't see what the emptier does)
   \begin{itemize}
     \item $\Omega(\log\log n)$ lower bound
     \item $O(\log\log n + \log p)$ upper bound (with good probability in short games)
@@ -196,11 +163,12 @@ Modification seems small...
     least $1-2^{-\polylog(n)}$ in running time $2^{O(\log^2 n)}$ against a greedy-like emptier.
   \end{theorem}
 
-  $\Delta$-greedy-like emptier:
+  \defn{$\Delta$-greedy-like emptier}:
 
-  \includegraphics[width=0.3\linewidth]{greedyLike/notallowed.eps}
-  \includegraphics[width=0.3\linewidth]{greedyLike/allowed.eps}
-  \includegraphics[width=0.3\linewidth]{greedyLike/alsoallowed.eps}
+  \includegraphics[width=0.22\linewidth]{greedyLike/notallowed.eps}
+  \includegraphics[width=0.22\linewidth]{greedyLike/allowed.eps}
+  \includegraphics[width=0.22\linewidth]{greedyLike/alsoallowed.eps}
+  \includegraphics[width=0.22\linewidth]{greedyLike/anotherallowed.eps}
 
 \end{frame}
 
@@ -428,6 +396,45 @@ Modification seems small...
     \item Variants with semi-clairvoyance have been studied.
   \end{itemize}
 \end{frame}
+
+\begin{frame}[t]{Previous Work --- $p=1$}
+
+  Single-processor cup game
+
+  Adaptive filler:
+  \begin{itemize}
+    \item $\Omega(\log n)$ lower bound
+    \item $O(\log n)$ upper bound
+  \end{itemize}
+
+  Oblivious filler (can't see emptier's actions):
+  \footnote{[M. Bender, M. Farach-Colton, and W. Kuszmaul. Achieving optimal backlog in multi-processor cup games. In Proceedings of the 51st Annual ACM Symposium on Theory of Computing (STOC), 2019.]}
+  \begin{itemize}
+    \item $\Omega(\log\log n)$ lower bound
+    \item $O(\log\log n)$ upper bound (with good probability in short games)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Previous Work --- Restricted Versions}
+  Cup flushing game (emptier can completely empty cups):\footnote{[P. F. Dietz and R. Raman. Persistence, amortization and randomization. In Proceedings of the Second An- nual ACM-SIAM Symposium on Discrete Algorithms (SODA), pages 78–88, 1991.]}
+\begin{itemize}
+  \item $\Omega(\log \log n)$ lower bound
+  \item $O(\log \log n)$ upper bound
+\end{itemize}
+
+Bamboo Garden Trimming (filler always adds same amount):\footnote{[Bilò, Davide, Luciano Gualà, Stefano Leucci, Guido Proietti, and Giacomo Scornavacca. "Cutting Bamboo Down to Size." arXiv preprint arXiv:2005.00168 (2020).]}
+\begin{itemize}
+  \item $2$ lower bound
+  \item $2$ upper bound
+\end{itemize}
+
+Cups are nodes in a graph, moves restricted based on graph structure. $D$ is the diameter of the graph.
+\begin{itemize}
+  \item $\Omega(D)$ lower bound
+  \item $O(D)$ upper bound
+\end{itemize}
+\end{frame}
+
 
 \begin{frame}[t]{Our Variant}
   \begin{definition}
