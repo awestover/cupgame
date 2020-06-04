@@ -79,7 +79,7 @@
   bound of $O(\log n)$ that holds in the classic $p$-processor cup game!
   We also present a simple adaptive filling strategy that is able to
   achieve backlog $\Omega(n)$ in extremely long games: it has running time
-  $2^{O(n)}.$
+  $O(n!).$
 
   Furthermore, we demonstrate that this lower bound on backlog is tight: 
   using a novel set of invariants we prove that a greedy emptier never lets
@@ -180,9 +180,9 @@ In Section \ref{sec:adaptive} we provide an inductive
 proof of a lower bound on backlog with an adaptive filler. Theorem 
 \ref{thm:adaptivePoly} states that a filler can achieve backlog
 $\Omega(n^{1-\epsilon})$ for any constant $\epsilon > 0$ in quasi-polynomial
-running time. Proposition \ref{prop:expoTimeAlg} also provides an extremal strategy
-that achieves backlog $\Omega(n)$ in incredibly long games: it has exponential
-running time.
+running time. Proposition \ref{prop:factorialTimeAlg} also provides an extremal strategy
+that achieves backlog $\Omega(n)$ in incredibly
+long games: it has $O(n!)$ running time.
 
 In Section \ref{sec:upperBound} we prove a novel invariant maintained
 by the greedy emptier. In particular Theorem \ref{thm:invariant} establishes
@@ -632,14 +632,15 @@ in quasi-polynomial running time. We again use constant $\epsilon > 0$ and appro
 \end{proof}
 
 Now we provide a very simple construction that can achieve backlog $\Omega(n)$
-in exponentially long games. Although the running time is very large, it is
+in very long games. Although the running time is very large, it is
 still an interesting result. Further, it can be interpreted as the same
 argument as in Theorem \ref{thm:adaptivePoly} but with an extremal setting of
 $\delta$ to $\Theta(1/n)$.
 
 \begin{proposition}
-  \label{prop:expoTimeAlg}
-  There is an adaptive filling strategy that achieves backlog $\Omega(n)$ in time $2^{O(n)}$.
+  \label{prop:factorialTimeAlg}
+  There is an adaptive filling strategy that
+  achieves backlog $\Omega(n)$ in time $O(n!)$.
 \end{proposition}
 \begin{proof}
 % We describe a simple filling strategy that gives the desired backlog. Let
@@ -692,8 +693,8 @@ $\delta$ to $\Theta(1/n)$.
   $$f(n) \ge n - n_0 \log n \ge \Omega(n).$$
 
   The recurrence for running time is 
-  $$T(n) = n_0T(n-n_0)+O(1).$$
-  Clearly $T(n) = 2^{O(n)}$.
+  $$T(n) = n \cdot n_0T(n-n_0)+O(1).$$
+  Clearly $T(n) = O(n!)$.
 
   This algorithm can be interpreted very simply. To achieve large backlog on
   $n$ cups we create an anchor set $A$ of $n_0$ cups and a set $B$ of $n-n_0$

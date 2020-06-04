@@ -173,7 +173,7 @@ Modification seems small...
 \end{frame}
 \begin{frame}[t]{Adaptive Filler Lower Bound}
   \begin{theorem}
-    There is an adaptive filling strategy that achieves backlog $$\Omega(n)$$ in running-time $$2^{O(n)}.$$
+    There is an adaptive filling strategy that achieves backlog $$\Omega(n)$$ in running-time $$O(n!).$$
   \end{theorem}
 \end{frame}
 \begin{frame}[t]{Upper Bound}
@@ -198,7 +198,9 @@ Modification seems small...
 
   $\Delta$-greedy-like emptier:
 
-  \includegraphics[width=0.3\linewidth]{greedyLike/greedyLike.eps}
+  \includegraphics[width=0.3\linewidth]{greedyLike/notallowed.eps}
+  \includegraphics[width=0.3\linewidth]{greedyLike/allowed.eps}
+  \includegraphics[width=0.3\linewidth]{greedyLike/alsoallowed.eps}
 
 \end{frame}
 
@@ -213,10 +215,13 @@ Modification seems small...
     Given a strategy for achieving backlog $f(n)$ on $n$ cups, we can construct a new strategy that achieves backlog 
     $$f'(n) \ge (1-\delta)\sum_{\ell=0}^L f((1-\delta)\delta^\ell n)$$
     for appropriate parameters $L\in\mathbb{N}, 0<\delta\ll 1/2$.
+
+    And, if the running time of $f(n)$ is $T(n)$ the running time of $f'(n)$ satisfies
+    $$T'(n) \le (L+1)n^2 T(n(1-\delta)).$$
   \end{lemma}
 \end{frame}
 
-\begin{frame}[t]{Amplification Lemma Proof Sketch}
+\begin{frame}[t]{Proof Meta-Structure}
   \begin{itemize}
     \item $A$ starts as the $\delta n$ fullest cups, $B$ as the $(1-\delta)n$ other cups.
     \item Repeatedly apply $f$ to $B$ and swap generated cup into $A$. 
@@ -224,6 +229,42 @@ Modification seems small...
   \end{itemize} 
   \vspace{0.5cm}
   \includegraphics[width=\linewidth]{amplificationImgs/delta_one_minus_delta.eps}
+\end{frame}
+
+\begin{frame}[t]{Amplification Lemma Proof Sketch}
+  \begin{overprint}
+    \onslide<1> \includegraphics[width=\linewidth]{amppf/ani0.eps}
+    \onslide<2> \includegraphics[width=\linewidth]{amppf/neglect0.eps}
+    \onslide<3> \includegraphics[width=\linewidth]{amppf/neglect1.eps}
+    \onslide<4> \includegraphics[width=\linewidth]{amppf/ani1.eps}
+    \onslide<5> \includegraphics[width=\linewidth]{amppf/ani2.eps}
+    \onslide<6> \includegraphics[width=\linewidth]{amppf/ani3.eps}
+    \onslide<7> \includegraphics[width=\linewidth]{amppf/ani4.eps}
+    \onslide<8> \includegraphics[width=\linewidth]{amppf/ani5.eps}
+    \onslide<9> \includegraphics[width=\linewidth]{amppf/ani6.eps}
+    \onslide<10> \includegraphics[width=\linewidth]{amppf/ani7.eps}
+    \onslide<11> \includegraphics[width=\linewidth]{amppf/ani8.eps}
+    \onslide<12> \includegraphics[width=\linewidth]{amppf/ani8.eps}
+  \end{overprint}
+  \begin{overprint}
+    \onslide<1> Instantiate $A$ and $B$
+    \onslide<2> Will try to apply $f$ to $B$ while placing $1$ fill in each cup in $A$. 
+    \onslide<3> If the emptier doesn't empty from each cup in $A$ (we say it \defn{neglects} $A$) then the average fill of $A$ rises!
+    \onslide<4> If emptier doesn't neglect $A$ filler can apply $f$ to $B$
+    \onslide<5> this gets a cup with high fill in $B$: swap it into $A$
+    \onslide<6> Note: swaps increase average fill of $A$, decrease average fill of $B$.
+    \onslide<7> Apply $f$ to $B$ again
+    \onslide<8> If emptier doesn't neglect $A$ we have a high cup in $B$ again
+    \onslide<9> Swap this cup into $A$.
+    \onslide<10> After repeating this process for
+    each cup in $A$, the difference of the average
+    fills of $A$ and $B$ is at least $f(|B|)$; $A$
+    accounts for $|B|/n$ of this difference. Thus
+    average fill of $A$ has increased by at least
+    $(1-\delta)f((1-\delta)n)$
+    \onslide<11> Recurse on $A$ for $L$ levels of recursion. Problem size shrinks by a factor of $\delta$ each time. 
+    \onslide<12> $$f'(n) \ge (1-\delta)\sum_{\ell=0}^L f((1-\delta)\delta^\ell n)$$
+  \end{overprint}
 \end{frame}
 
 \begin{frame}[t]{Adaptive Filler Lower Bound}
@@ -240,7 +281,7 @@ Modification seems small...
   Extremal strategy:\\
   By repeated amplification using $\delta=\Theta(1/n)$ we get: 
   \begin{theorem}
-    There is an adaptive filling strategy that achieves backlog $\Omega(n)$ in running-time $2^{O(n)}$.
+    There is an adaptive filling strategy that achieves backlog $\Omega(n)$ in running-time $O(n!)$.
   \end{theorem}
   \vspace{0.5cm}
   \includegraphics[width=0.45\linewidth]{amplificationImgs/expo_cor.eps}
@@ -446,7 +487,7 @@ Modification may seem small, but it drastically alters the game
   Extremal strategy:\\
   By repeated amplification using $\delta=\Theta(1/n)$ we get: 
   \begin{theorem}
-    There is an adaptive filling strategy that achieves backlog $\Omega(n)$ in running-time $2^{O(n)}$.
+    There is an adaptive filling strategy that achieves backlog $\Omega(n)$ in running-time $O(n!)$.
   \end{theorem}
   \vspace{0.5cm}
   \includegraphics[width=0.45\linewidth]{amplificationImgs/expo_cor.eps}
