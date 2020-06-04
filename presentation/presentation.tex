@@ -297,43 +297,6 @@ Modification seems small...
   Filler can allocate resources continuously
 \end{frame}
 
-\begin{frame}[t]{goals}
-  \begin{itemize}
-    \item Emptier tries to \emph{minimize} backlog\\
-    \item Filler tries to \emph{maximize} backlog
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[t]{Why is the Cup Game Important?}
-  Models \defn{work scheduling}:
-  \begin{itemize}
-    \item Cups represent tasks
-    \item At each time step:
-      \begin{itemize}
-        \item new work comes in distributed among the tasks (\emph{filler})
-        \item must allocate processors to work on tasks (\emph{emptier})
-      \end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}[t]{Analysis of the cup game}
-  Prove \defn{lower bounds}
-  \begin{itemize}
-    \item Exhibit a filling strategy that achieves large backlog (against any emptier)
-  \end{itemize}
-  Prove \defn{upper bounds} 
-  \begin{itemize}
-    \item Exhibit an emptying strategy that prevents backlog from growing large (against any filler) 
-  \end{itemize}
-
-  \vspace{1cm}
-  Quick example: Single-processor cup game:
-  \begin{itemize}
-    \item $\Omega(\log n)$ lower bound
-    \item $O(\log n)$ upper bound
-  \end{itemize}
-\end{frame}
-
 \begin{frame}[t]{Single-Processor Lower Bound}
   \textbf{Filling strategy}: \\Distribute water equally amongst cups not yet emptied from.
   \vspace{0.3cm}
@@ -448,7 +411,8 @@ Cups are nodes in a graph, moves restricted based on graph structure. $D$ is the
   \end{definition}
 
 \vspace{1cm}
-Modification may seem small, but it drastically alters the game
+Modification may seem small, but it drastically
+alters the game!
 
 \end{frame}
 
