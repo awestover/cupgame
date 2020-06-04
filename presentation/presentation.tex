@@ -180,12 +180,12 @@ Modification seems small...
 
 \begin{frame}[t]{Amplification Lemma}
   \begin{lemma}
-    Given a strategy for achieving backlog $f(n)$ on $n$ cups, we can construct a new strategy that achieves backlog 
-    $$f'(n) \ge (1-\delta)\sum_{\ell=0}^L f((1-\delta)\delta^\ell n)$$
+    Given a strategy $f$ for achieving backlog $f(n)$ on $n$ cups, we can construct a new strategy $f$' that achieves backlog 
+    $$f'(n) \ge (1-\delta)\sum_{\ell=0}^L f(n\delta^\ell(1-\delta))$$
     for appropriate parameters $L\in\mathbb{N}, 0<\delta\ll 1/2$.
 
-    And, if the running time of $f(n)$ is $T(n)$ the running time of $f'(n)$ satisfies
-    $$T'(n) \le (L+1)n^2 T(n(1-\delta)).$$
+    If the running time of $f(n)$ is $T(n)$ the running time of $f'(n)$ satisfies
+    $$T'(n) \le n\sum_{\ell=0}^L n\delta^\ell T(n\delta^\ell(1-\delta)).$$
   \end{lemma}
 \end{frame}
 
@@ -216,27 +216,32 @@ Modification seems small...
   \end{overprint}
   \begin{overprint}
     \onslide<1> Instantiate $A$ and $B$
-    \onslide<2> Will try to apply $f$ to $B$ while placing $1$ fill in each cup in $A$. 
-    \onslide<3> If the emptier doesn't empty from each cup in $A$ (we say it \defn{neglects} $A$) then the average fill of $A$ rises!
+    \onslide<2> Filling Strategy: Place $1$ fill in each cup in $A$, try to apply $f$ to $B$. 
+    \onslide<3> If the emptier \defn{neglects} $A$
+    then the average fill of $A$ rises! \\We
+    repeat our strategy many times; if the emptier
+    neglects $A$ too many times we get the desired
+    backlog in $A$.
     \onslide<4> If emptier doesn't neglect $A$ filler can apply $f$ to $B$
-    \onslide<5> this gets a cup with high fill in $B$: swap it into $A$
+    \onslide<5> Get a cup with high fill in $B$, swap it into $A$
     \onslide<6> Note: swaps increase average fill of $A$, decrease average fill of $B$.
     \onslide<7> Apply $f$ to $B$ again
-    \onslide<8> If emptier doesn't neglect $A$ we have a high cup in $B$ again
+    \onslide<8> Swap cup into $A$ again
     \onslide<9> Swap this cup into $A$.
-    \onslide<10> After repeating this process for
-    each cup in $A$, the difference of the average
-    fills of $A$ and $B$ is at least $f(|B|)$; $A$
-    accounts for $|B|/n$ of this difference. Thus
-    average fill of $A$ has increased by at least
-    $(1-\delta)f((1-\delta)n)$
-    \onslide<11> Recurse on $A$ for $L$ levels of recursion. Problem size shrinks by a factor of $\delta$ each time. 
-    \onslide<12> $$f'(n) \ge (1-\delta)\sum_{\ell=0}^L f((1-\delta)\delta^\ell n)$$
+    \onslide<10> Eventually average fill of $A$ is at least $(1-\delta)f(n(1-\delta)).$
+    % After repeating this process for
+    % each cup in $A$, the difference of the average
+    % fills of $A$ and $B$ is at least $f(|B|)$; $A$
+    % accounts for $|B|/n$ of this difference. Thus
+    % average fill of $A$ has increased by at least
+    % $(1-\delta)f((1-\delta)n)$
+    \onslide<11> Recurse on $A$ for $L$ levels of recursion. \\Problem size shrinks by a factor of $\delta$ each time. 
+    \onslide<12> $$f'(n) \ge (1-\delta)\sum_{\ell=0}^L f(n\delta^\ell(1-\delta))$$
   \end{overprint}
 \end{frame}
 
 \begin{frame}[t]{Adaptive Filler Lower Bound}
-  Let $\epsilon > 0$ be any constant. Then there is some $\delta=\Theta(1)$ such that by repeated amplification we get: 
+  Let $\epsilon > 0$ be any constant. There exists an appropriate $\delta=\Theta(1)$ such that by repeated amplification we get: 
   \begin{theorem}
     There is an adaptive filling strategy that achieves
     backlog $\Omega(n^{1-\epsilon})$  in running-time $2^{O(\log^2 n)}$.

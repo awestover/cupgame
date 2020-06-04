@@ -294,9 +294,12 @@ for the emptier when cups can zero out.
   make sense to talk of ``fractional cups".}
 
   Then, there exists an adaptive filling strategy that achieves backlog 
-  $$f'(n) \ge (1-\delta)\sum_{\ell= 0}^{L} f((1-\delta)\delta^\ell n)$$
+  $$f'(n) \ge (1-\delta)\sum_{\ell= 0}^{L} f(n\delta^\ell(1-\delta))$$
   in the negative-fill variable-processor cup game on $n$ cups in running time 
-  $$T'(n) \le (L+1)n^2 T((1-\delta)n).$$
+  \begin{align*}
+    T'(n) &\le n\sum_{\ell=0}^L n\delta^\ell T(n\delta^\ell(1-\delta)) \\
+  &\le (L+1)n^2 T((1-\delta)n).
+  \end{align*}
 \end{lemma}
 \begin{proof}
   First we motivate the lemma's name: \defn{The Amplification Lemma}. Let
@@ -402,7 +405,7 @@ for the emptier when cups can zero out.
   following:
   \begin{align*}
   f'(k_0)\ge&\\
-  &(1-\delta)\sum_{\ell=0}^L c (((1-\delta)\delta^\ell)k_0)^{1-\epsilon}\\
+  &(1-\delta)\sum_{\ell=0}^L c (k_0\delta^\ell(1-\delta))^{1-\epsilon}\\
   &= ck_0^{1-\epsilon} (1-\delta)^{2-\epsilon} \sum_{\ell=0}^L (\delta^\ell)^{1-\epsilon},
   \end{align*}
   for appropriate choice of $L$.
@@ -418,7 +421,7 @@ for the emptier when cups can zero out.
   \begin{clm}
     \label{clm:validchoices}
     There exists an appropriate choice of $\delta$ that is small enough such
-    that $h(\delta) \ge 1$ and large enough such that $(1-\delta)\delta n \ge
+    that $h(\delta) \ge 1$ and large enough such that $n\delta(1-\delta) \ge
     n_0$, when $\epsilon$ is chosen to be $4/\lg n$, or a positive constant. 
 
     In particular, if $\epsilon$ is chosen to be $4/\lg n$ then we will choose
@@ -476,7 +479,7 @@ for the emptier when cups can zero out.
   two terms, i.e. such that $L \ge 1$. We need $L\ge 1$ because otherwise the
   Amplification Lemma doesn't give a larger function.
   That is, we want
-  $$\delta(1-\delta)n \ge n_0. $$
+  $$n\delta(1-\delta) \ge n_0. $$
   Recall that we choose $\delta < 1/2$, so $1-\delta > 1/2$. Thus to make
   $\delta$ sufficiently big it suffices to chose $\delta$ with 
   \begin{equation}
@@ -530,7 +533,7 @@ for the emptier when cups can zero out.
   Because $f^*$ satisfies the Amplification Lemma we have:
 \begin{align*}
   f^*(n_*) & \\
-           &\ge (1-\delta)\sum_{\ell=0}^L f^*((1-\delta)\delta^\ell n_*) \\
+           &\ge (1-\delta)\sum_{\ell=0}^L f^*(n_*\delta^\ell(1-\delta)) \\
            &\ge cn_*^{1-\epsilon} h(\delta)\\
            &\ge cn_*^{1-\epsilon}
 \end{align*}
@@ -582,7 +585,7 @@ in quasi-polynomial running time. We again use constant $\epsilon > 0$ and appro
   cups. Thus we have, for any $k<g_{i+1}$,
   \begin{align*}
     f_{i+1}(k) &\\
-    &\ge (1-\delta)\sum_{\ell=0}^L f_i((1-\delta)\delta^\ell k)\\
+    &\ge (1-\delta)\sum_{\ell=0}^L f_i(k\delta^\ell(1-\delta))\\
     &\ge ck^{1-\epsilon}h(\delta)\\
     &\ge ck^{1-\epsilon},
   \end{align*}
@@ -1412,7 +1415,7 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
   parameter chosen as close to $1$ as desired. 
 
   There exists an oblivious filling strategy that achieves backlog $$f'(n) \ge
-  \phi \cdot (1-\delta)\sum_{\ell=0}^L f((1-\delta)\delta^\ell n)$$ in the
+  \phi \cdot (1-\delta)\sum_{\ell=0}^L f(n\delta^\ell(1-\delta))$$ in the
   negative-fill variable-processor cup game on $n$ cups given a $M'$-flat configuration of
   cups in running time $$T'(n) \le O(M') + (\delta L) n^{\eta+1}
   T((1-\delta)n)$$ against a $\Delta$-greedy-like emptier with probability at
@@ -1489,7 +1492,7 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
   process succeeded then we would achieve fill $(1-\delta)
   f((1-\delta)\delta^\ell n)$ in each cup in the anchor set at each level of
   recursion hence achieving backlog $$(1-\delta)\sum_{\ell=0}^L
-  f((1-\delta)\delta^\ell n)$$ overall. However each swapping process has some
+  f(n\delta^\ell(1-\delta))$$ overall. However each swapping process has some
   (very small) probability of failing; we computed probability of failure this
   to be at most $\delta \mu_\Delta / n^\eta.$ Consider the probability that
   more than a constant fraction $w = \Theta(1)$ of the $s = \sum_{\ell=0}^L
@@ -1508,7 +1511,7 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
 
   Now we will define $\phi$ such that success of $s(1-w)$ of the
   swapping-processes guarantees backlog $$\phi \cdot (1-\delta) \sum_{\ell=0}^L
-  f(n(1-\delta)\delta^\ell).$$ In the worst case the failed swapping-processes
+  f(n\delta^\ell(1-\delta)).$$ In the worst case the failed swapping-processes
   bring very negative cups into the anchor-set, potentially as negative as
   $-\delta f((1-\delta)\delta^\ell n)$ on the $\ell$-th level of recursion.
   However, clearly this is equivalent to removing at most $2$ cups worth of
@@ -1520,8 +1523,8 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
   In order to achieve this backlog however, not only does the filler need to be
   able to swap over $s(1-w)$ cups on rounds where the emptier neglects the
   anchor set, but no applications of $f$ can fail; failure happens with
-  probability $2^{-n(1-\delta)\delta^\ell q}$ for an application of $f$ to
-  $n(1-\delta)\delta^\ell$ cups. Taking a union bound over the $\poly(n)$
+  probability $2^{-n\delta^\ell(1-\delta) q}$ for an application of $f$ to
+  $n\delta^\ell(1-\delta)$ cups. Taking a union bound over the $\poly(n)$
   applications of $f$ clearly still gets probability failure at most
   $2^{-\Omega(n)}$.
 
@@ -1588,8 +1591,8 @@ Hence the probability that every level of recursion succeeds is at least $1-2^{-
   Assume the claim for $f_i$, consider $f_{i+1}$. For any $k < g_{i-1}/(1-\delta)$ we have
   \begin{align*}
     f_{i+1}(k\cdot n_b) & \\
-                  &\ge \phi\cdot(1-\delta)\sum_{\ell=0}^L f_i((1-\delta)\delta^\ell k\cdot n_b)\\
-                  &\ge \phi\cdot(1-\delta)\sum_{\ell=0}^L c ((1-\delta)\delta^\ell k)^{1-\epsilon}\\
+                  &\ge \phi\cdot(1-\delta)\sum_{\ell=0}^L f_i((k\cdot n_b)\delta^\ell (1-\delta))\\
+                  &\ge \phi\cdot(1-\delta)\sum_{\ell=0}^L c (k\delta^\ell(1-\delta))^{1-\epsilon}\\
                   &\ge ck^{1-\epsilon} \phi\cdot(1-\delta)^{2-\epsilon}\sum_{\ell=0}^L (\delta^\ell)^{1-\epsilon}\\
                   &\ge ck^{1-\epsilon} \phi\cdot(1-\delta)^{2-\epsilon}( 1+\delta^{1-\epsilon}).
   \end{align*}
