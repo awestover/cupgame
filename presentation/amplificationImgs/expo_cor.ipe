@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70212" creator="Ipe 7.2.12">
-<info created="D:20200511153740" modified="D:20200511154524"/>
+<info created="D:20200511153740" modified="D:20200604222520"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -254,14 +254,14 @@ h
 <page>
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
-<path layer="alpha" stroke="black" pen="fat">
+<path layer="alpha" matrix="1 0 0 1 0 8" stroke="black" pen="fat">
 160 432 m
 160 428 l
 336 428 l
 336 432 l
 h
 </path>
-<path stroke="black" pen="fat">
+<path matrix="1 0 0 1 0 4" stroke="black" pen="fat">
 160 416 m
 160 412 l
 304 412 l
@@ -317,12 +317,12 @@ h
 176 304 l
 h
 </path>
-<path stroke="black" pen="fat">
+<path matrix="1 0 0 1 0 8" stroke="black" pen="fat">
 320 432 m
 320 428 l
 320 428 l
 </path>
-<path stroke="black" pen="fat">
+<path matrix="1 0 0 1 0 4" stroke="black" pen="fat">
 288 416 m
 288 412 l
 </path>
@@ -359,73 +359,64 @@ h
 172 304 m
 172 300 l
 </path>
-<path stroke="turquoise" pen="fat">
-304 456 m
-328 432 l
-328 432 l
-</path>
-<path stroke="turquoise" pen="fat">
-304 456 m
-240 432 l
-</path>
-<path stroke="turquoise" pen="fat">
+<path matrix="1.75 0 0 1.25 -168 -100" stroke="darkgreen" pen="fat">
 240 432 m
 224 416 l
 224 416 l
 </path>
-<path stroke="turquoise" pen="fat">
+<path matrix="0.785714 0 0 1.25 63.4286 -100" stroke="darkgreen" pen="fat">
 240 432 m
 296 416 l
 </path>
-<path stroke="turquoise" pen="fat">
+<path matrix="1 0 0 1.25 0 -100" stroke="darkgreen" pen="fat">
 224 416 m
 216 400 l
 216 400 l
 </path>
-<path stroke="turquoise" pen="fat">
+<path matrix="1 0 0 1.25 0 -100" stroke="darkgreen" pen="fat">
 224 416 m
 280 400 l
 </path>
-<path stroke="turquoise" pen="fat">
+<path stroke="darkgreen" pen="fat">
 216 400 m
 208 384 l
 208 384 l
 </path>
-<path stroke="turquoise" pen="fat">
+<path stroke="darkgreen" pen="fat">
 216 400 m
 264 384 l
 </path>
-<path stroke="turquoise" pen="fat">
+<path stroke="darkgreen" pen="fat">
 208 384 m
 196 368 l
 196 368 l
 </path>
-<path stroke="turquoise" pen="fat">
+<path stroke="darkgreen" pen="fat">
 208 384 m
 248 368 l
 </path>
-<path stroke="turquoise" pen="fat">
+<path stroke="darkgreen" pen="fat">
 196 368 m
 188 352 l
 </path>
-<path stroke="turquoise" pen="fat">
+<path stroke="darkgreen" pen="fat">
 196 368 m
 232 352 l
 232 352 l
 </path>
-<path stroke="turquoise" pen="fat">
+<path stroke="darkgreen" pen="fat">
 188 352 m
 176 336 l
 </path>
-<path stroke="turquoise" pen="fat">
+<path stroke="darkgreen" pen="fat">
 188 352 m
 216 336 l
 </path>
-<path stroke="turquoise" pen="fat">
+<path stroke="darkgreen" pen="fat">
 176 336 m
 172 320 l
 </path>
-<path stroke="turquoise" pen="fat">
+<path stroke="darkgreen" pen="fat">
 176 336 m
 200 320 l
 </path>
@@ -437,16 +428,42 @@ h
 172 304 m
 172 300 l
 </path>
-<path stroke="turquoise" pen="fat">
+<path stroke="darkgreen" pen="fat">
 172 320 m
 168 304 l
 </path>
+<path matrix="1 0 0 1 0 4" stroke="black" pen="fat">
+352 456 m
+360 456 l
+</path>
+<path matrix="1 0 0 1.02564 0 -7.69231" stroke="black" pen="fat">
+356 456 m
+356 300 l
+</path>
 <path stroke="black" pen="fat">
+352 300 m
+360 300 l
+</path>
+<text transformations="translations" pos="368 368" stroke="black" type="label" width="49.886" height="18.564" depth="6.18" valign="baseline" size="Huge" style="math">\Theta(n)</text>
+<text matrix="1 0 0 1 -140 0" transformations="translations" pos="304 464" stroke="black" type="label" width="23.196" height="6.921" depth="3.54" valign="baseline" style="math">f_{n/n_0}</text>
+<text matrix="1 0 0 1 -140 -20" transformations="translations" pos="304 464" stroke="black" type="label" width="33.393" height="6.921" depth="3.54" valign="baseline" style="math">f_{n/n_0 -1}</text>
+<text matrix="1 0 0 1 -140 -40" transformations="translations" pos="304 464" stroke="black" type="label" width="33.393" height="6.921" depth="3.54" valign="baseline" style="math">f_{n/n_0 -2}</text>
+<text matrix="1 0 0 1 -4 -4" transformations="translations" pos="168 408" stroke="black" type="label" width="2.767" height="14.999" depth="0" valign="baseline">\vdots</text>
+<path matrix="1 0 0 1 0 4" stroke="black" pen="fat">
 160 456 m
 160 452 l
 336 452 l
 336 456 l
 h
+</path>
+<path matrix="0.6875 0 0 0.833333 87 80" stroke="darkgreen" pen="fat">
+304 456 m
+240 432 l
+</path>
+<path matrix="1.37143 0 0 0.833333 -121.829 80" stroke="darkgreen" pen="fat">
+304 456 m
+328 432 l
+328 432 l
 </path>
 </page>
 </ipe>

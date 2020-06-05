@@ -88,15 +88,16 @@ red,densely dashed,every mark/.append style={solid,fill=red!80!black},mark=diamo
   \begin{overprint}
     \onslide<5> {
       \begin{itemize}
-        \item filler: wants high backlog 
-        \item emptier: wants low backlog
+        \item Filler: wants high backlog 
+        \item Emptier: wants low backlog
       \end{itemize}
-      In this talk we take the side of the filler (so high backlog is good) 
+      In this talk we take the side of the filler
+      (we want high backlog)
     }
   \end{overprint}
 \end{frame}
 
-\begin{frame}[t]{Example Application: Work Scheduling}
+\begin{frame}[t]{Important Application: Work Scheduling}
   \begin{center}
   \includegraphics[width=0.36\linewidth]{ps-ef/ps-ef.png}
   \includegraphics[width=0.62\linewidth]{ps-ef/work_scheduling.png}
@@ -104,14 +105,26 @@ red,densely dashed,every mark/.append style={solid,fill=red!80!black},mark=diamo
   \includegraphics[width=\linewidth]{workScheduling/workScheduling.eps}
 \end{frame}
 
-\begin{frame}[t]{Previous Work \footnote{[William Kuszmaul. Achieving optimal backlog in the vanilla multi-processor cup game. SODA, 2020.]}\textsuperscript{,}\footnote{[M. Bender, M. Farach-Colton, and W. Kuszmaul. Achieving optimal backlog in multi-processor cup games. In Proceedings of the 51st Annual ACM Symposium on Theory of Computing (STOC), 2019.]}}
+\begin{frame}[t]{Previous Work \footnote{[C. L.
+  Liu. Scheduling algorithms for multiprocessors
+  in a hard real-time environment. JPL Space
+  Programs Summary,
+  1969.]}\textsuperscript{,}\footnote{[William
+  Kuszmaul. Achieving optimal backlog in the
+  vanilla multi-processor cup game. SODA,
+  2020.]}\textsuperscript{,}\footnote{[M. Bender,
+  M. Farach-Colton, and W. Kuszmaul. Achieving
+  optimal backlog in multi-processor cup games. In
+  Proceedings of the 51st Annual ACM Symposium on
+  Theory of Computing (STOC), 2019.]}}
+
   \defn{Adaptive filler}: can see emptier's actions
   \begin{theorem}
     With an adaptive filler optimal backlog is
     $\Theta(\log n)$.
   \end{theorem}
 
-  \defn{Oblivious filler}: can \textbf{not} see emptier's actions
+  \defn{Oblivious filler}: can \textbf{not} see emptier's actions (``blindfolded")
   \begin{theorem}
     With an oblivious filler optimal backlog is between $\Omega(\log \log n)$ and $O(\log\log n + \log p)$ (with high probability in short games).
   \end{theorem}
@@ -135,19 +148,24 @@ Modification seems small...
 % that it drastically changes the game. 
 \end{frame}
 
-\begin{frame}[c]{Our Result}
-  The variable-processor cup game is \emph{fundamentally different} than the $p$-processor cup game!
+\begin{frame}[t]{Our Result}
+  \Large
+  The variable-processor cup game and the
+  $p$-processor cup game are \emph{fundamentally
+  different}! 
 \end{frame}
 
 \begin{frame}[t]{Adaptive Filler Lower Bound on Backlog}
   \begin{theorem}
     There is an adaptive filling strategy that achieves
-    backlog $$\Omega(n^{1-\epsilon})$$ for any constant $\epsilon >0$ in running-time $$2^{O(\log^2 n)}.$$
+    backlog $$\Omega(n^{1-\epsilon})$$ for any
+    constant $\epsilon >0$ in running time $$2^{O(\log^2 n)}.$$
   \end{theorem}
 \end{frame}
 \begin{frame}[t]{Adaptive Filler Lower Bound on Backlog}
   \begin{theorem}
-    There is an adaptive filling strategy that achieves backlog $$\Omega(n)$$ in running-time $$O(n!).$$
+    There is an adaptive filling strategy that
+    achieves backlog $$\Omega(n)$$ in running time $$O(n!).$$
   \end{theorem}
 \end{frame}
 \begin{frame}[t]{Upper Bound on Backlog}
@@ -187,9 +205,11 @@ Modification seems small...
 
 \begin{frame}[t]{Amplification Lemma}
   \begin{lemma}
-    Given a strategy $f$ for achieving backlog $f(n)$ on $n$ cups, we can construct a new strategy $f$' that achieves backlog 
+    Given a strategy $f$ for achieving backlog
+    $f(n)$ on $n$ cups, we can construct a new
+    strategy $f$' that achieves backlog 
     $$f'(n) \ge (1-\delta)\sum_{\ell=0}^L f(n\delta^\ell(1-\delta))$$
-    for appropriate parameters $L\in\mathbb{N}, 0<\delta\ll 1/2$.
+    for parameters $L\in\mathbb{N}, 0<\delta\ll 1/2$.
 
     If the running time of $f(n)$ is $T(n)$ the running time of $f'(n)$ satisfies
     $$T'(n) \le n\sum_{\ell=0}^L n\delta^\ell T(n\delta^\ell(1-\delta)).$$
@@ -235,7 +255,9 @@ Modification seems small...
     \onslide<7> Apply $f$ to $B$ again
     \onslide<8> Swap cup into $A$ again
     \onslide<9> Swap this cup into $A$.
-    \onslide<10> Eventually average fill of $A$ is at least $(1-\delta)f(n(1-\delta)).$
+    \onslide<10> Eventually average fill of $A$ is
+    at least $(1-\delta)f(n(1-\delta))$. \\Average
+    fill of $B$ is $-(\delta) f(n(1-\delta)).$
     % After repeating this process for
     % each cup in $A$, the difference of the average
     % fills of $A$ and $B$ is at least $f(|B|)$; $A$
@@ -248,23 +270,26 @@ Modification seems small...
 \end{frame}
 
 \begin{frame}[t]{Adaptive Filler Lower Bound}
-  Let $\epsilon > 0$ be any constant. There exists an appropriate $\delta=\Theta(1)$ such that by repeated amplification we get: 
+  Let $\epsilon > 0$ be any constant. There exists
+  $\delta=\Theta(1)$ such that by repeated amplification we get: 
   \begin{theorem}
     There is an adaptive filling strategy that achieves
-    backlog $\Omega(n^{1-\epsilon})$  in running-time $2^{O(\log^2 n)}$.
+    backlog $\Omega(n^{1-\epsilon})$  in running time $2^{O(\log^2 n)}$.
   \end{theorem}
-  \vspace{0.5cm}
-  \includegraphics[width=0.7\linewidth]{amplificationImgs/quasipoly_cor.eps}
+  \begin{center}
+  \includegraphics[width=0.9\linewidth]{amplificationImgs/quasipoly_cor.eps}
+  \end{center}
 \end{frame}
 
-\begin{frame}[t]{Adaptive Filler Lower Bound}
-  Extremal strategy:\\
+\begin{frame}[t]{Extremal Adaptive Filler Lower Bound}
   By repeated amplification using $\delta=\Theta(1/n)$ we get: 
   \begin{theorem}
-    There is an adaptive filling strategy that achieves backlog $\Omega(n)$ in running-time $O(n!)$.
+    There is an adaptive filling strategy that
+    achieves backlog $\Omega(n)$ in running time $O(n!)$.
   \end{theorem}
-  \vspace{0.5cm}
-  \includegraphics[width=0.45\linewidth]{amplificationImgs/expo_cor.eps}
+  \begin{center}
+  \includegraphics[width=0.65\linewidth]{amplificationImgs/expo_cor.eps}
+  \end{center}
 \end{frame}
 
 \begin{frame}[t]{Open Questions}
@@ -288,20 +313,26 @@ Modification seems small...
 \end{center}
 \end{frame}
 
-\begin{frame}[t]{What is the Cup Game?}
-  \begin{definition}
-  \defn{$p$-processor cup-game} on $n$ cups: \\
-  multi-round game. every round:
+\begin{frame}[t]{Upper Bound Proof Sketch}
+  Induct on $t$. Fix $k$. Define sets of cups:\\
   \begin{itemize}
-    \item \defn{filler} adds water
-    \item \defn{emptier} removes water
+    \item $A$: (emptied from) $\cap$ ($k$ fullest in $S_t$) $\cap$ ($k$ fullest in $S_{t+1}$)
+    \item $B$: (emptied from) $\cap$ ($k$ fullest in $S_t$) $\cap$ (\textbf{not} $k$ fullest in $S_{t+1}$)
+    \item $C$: $AC$ is the $k$ fullest cups in $S_{t+1}$
   \end{itemize}
-  \end{definition}
+  $\mu_k(S_{t+1})$ is largest if fill from $BC$ is pushed into $A$
 
-  \vspace{0.4cm}
-  Note: \\
-  Emptier must allocate resources discretely\\
-  Filler can allocate resources continuously
+  \vspace{0.25cm}
+  \includegraphics[width=\linewidth]{upperbound/upperboundpf.eps}
+\end{frame}
+
+\begin{frame}[t]{Negative Fill}
+  In lower bound proofs we allow \defn{negative fill}
+  \begin{itemize}
+    \item Measure fill relative to average fill
+    \item Important for recursion 
+    \item Strictly easier for the filler if cups can zero out
+  \end{itemize}
 \end{frame}
 
 \begin{frame}[t]{Single-Processor Lower Bound}
@@ -408,107 +439,6 @@ Cups are nodes in a graph, moves restricted based on graph structure. $D$ is the
 \end{itemize}
 \end{frame}
 
-
-\begin{frame}[t]{Our Variant}
-  \begin{definition}
-    \defn{Variable-Processor Cup Game}: \\
-    Each round filler can change $p$ 
-  \end{definition}
-
-\vspace{1cm}
-Modification may seem small, but it drastically
-alters the game!
-
-\end{frame}
-
-\begin{frame}[c]{}
-\begin{center}
-\Huge Adaptive Filler\\ Lower Bound
-\end{center}
-\end{frame}
-
-\begin{frame}[t]{Negative Fill}
-  In lower bound proofs we allow \defn{negative fill}
-  \begin{itemize}
-    \item Measure fill relative to average fill
-    \item Important for recursion 
-    \item Strictly easier for the filler if cups can zero out
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[t]{Amplification Lemma}
-  \begin{lemma}
-    Given a strategy for achieving backlog $f(n)$ on $n$ cups, we can construct a new strategy that achieves backlog 
-    $$f'(n) \ge (1-\delta)\sum_{\ell=0}^L f((1-\delta)\delta^\ell n)$$
-    for appropriate parameters $L\in\mathbb{N}, 0<\delta\ll 1/2$.
-  \end{lemma}
-\end{frame}
-
-\begin{frame}[t]{Amplification Lemma Proof Sketch}
-  \begin{itemize}
-    \item $A$ starts as the $\delta n$ fullest cups, $B$ as the $(1-\delta)n$ other cups.
-    \item Repeatedly apply $f$ to $B$ and swap generated cup into $A$. 
-    \item Decrease $p$, recurse on $A$.
-  \end{itemize} 
-  \vspace{0.5cm}
-  \includegraphics[width=\linewidth]{amplificationImgs/delta_one_minus_delta.eps}
-\end{frame}
-
-\begin{frame}[t]{Adaptive Filler Lower Bound}
-  Let $\epsilon > 0$ be any constant. Then there is some $\delta=\Theta(1)$ such that by repeated amplification we get: 
-  \begin{theorem}
-    There is an adaptive filling strategy that achieves
-    backlog $\Omega(n^{1-\epsilon})$  in running-time $2^{O(\log^2 n)}$.
-  \end{theorem}
-  \vspace{0.5cm}
-  \includegraphics[width=0.7\linewidth]{amplificationImgs/quasipoly_cor.eps}
-\end{frame}
-
-\begin{frame}[t]{Adaptive Filler Lower Bound}
-  Extremal strategy:\\
-  By repeated amplification using $\delta=\Theta(1/n)$ we get: 
-  \begin{theorem}
-    There is an adaptive filling strategy that achieves backlog $\Omega(n)$ in running-time $O(n!)$.
-  \end{theorem}
-  \vspace{0.5cm}
-  \includegraphics[width=0.45\linewidth]{amplificationImgs/expo_cor.eps}
-\end{frame}
-
-\begin{frame}[c]{}
-  \begin{center}
-    \Huge Upper Bound 
-  \end{center}
-\end{frame}
-
-\begin{frame}[t]{Upper Bound}
-  We prove a novel set of invariants:
-
-  \begin{theorem}
-    A greedy emptier maintains the invariant:
-    $$\mu_k(S_t) \le 2n-k.$$
-  \end{theorem}
-
-  \begin{corollary}
-  A greedy emptier never lets backlog exceed $$O(n).$$
-  \end{corollary}
-
-  \vspace{0.3cm}
-  Note: this matches our lower bound!
-\end{frame}
-
-\begin{frame}[t]{Upper Bound Proof Sketch}
-  Induct on $t$. Fix $k$. Define sets of cups:\\
-  \begin{itemize}
-    \item $A$: (emptied from) $\cap$ ($k$ fullest in $S_t$) $\cap$ ($k$ fullest in $S_{t+1}$)
-    \item $B$: (emptied from) $\cap$ ($k$ fullest in $S_t$) $\cap$ (\textbf{not} $k$ fullest in $S_{t+1}$)
-    \item $C$: $AC$ is the $k$ fullest cups in $S_{t+1}$
-  \end{itemize}
-  $\mu_k(S_{t+1})$ is largest if fill from $BC$ is pushed into $A$
-
-  \vspace{0.25cm}
-  \includegraphics[width=\linewidth]{upperbound/upperboundpf.eps}
-\end{frame}
-
 \begin{frame}[c]{}
   \begin{center}
     \Huge Oblivious Filler \\
@@ -578,7 +508,7 @@ Almost identical to the Adaptive Amplification Lemma!
   \begin{lemma}
     Given a strategy $f$ for achieving backlog $f(n)$ on $n$ cups, we can construct a new strategy that achieves backlog 
     $$f'(n) \ge \phi \cdot (1-\delta)\sum_{\ell=0}^L f((1-\delta)\delta^\ell n)$$
-    for appropriate parameters $L\in\mathbb{N}, 0<\delta\ll 1/2$ and constant $\phi \in (0,1)$ of our choice against a greedy-like emptier.
+    for parameters $L\in\mathbb{N}, 0<\delta\ll 1/2$ and constant $\phi \in (0,1)$ of our choice against a greedy-like emptier.
   \end{lemma}
 
   (Note: Lemma is actually more complicated than this.)

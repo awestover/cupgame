@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70212" creator="Ipe 7.2.12">
-<info created="D:20200511154346" modified="D:20200511154346"/>
+<info created="D:20200511154346" modified="D:20200604224149"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -254,21 +254,21 @@ h
 <page>
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
-<path layer="alpha" stroke="black" pen="fat">
+<path layer="alpha" matrix="1 0 0 1 0 8" stroke="black" pen="fat">
 176 720 m
 176 716 l
 336 716 l
 336 720 l
 h
 </path>
-<path stroke="black" pen="fat">
+<path matrix="1 0 0 1 0 4" stroke="black" pen="fat">
 176 704 m
 176 700 l
 272 700 l
 272 704 l
 h
 </path>
-<path stroke="black" pen="fat">
+<path matrix="1 0 0 1 0 4" stroke="black" pen="fat">
 272 704 m
 272 700 l
 336 700 l
@@ -380,73 +380,89 @@ h
 288 656 l
 h
 </path>
-<path stroke="blue" pen="fat">
+<path matrix="1 0 0 1.25 4 -172" stroke="darkgreen" pen="fat">
 260 720 m
 236 704 l
 236 704 l
 </path>
-<path stroke="blue" pen="fat">
+<path matrix="1.1 0 0 1.125 -19.6 -84" stroke="darkgreen" pen="fat">
 236 704 m
 220 688 l
 196 672 l
 </path>
-<path stroke="blue" pen="fat">
+<path stroke="darkgreen" pen="fat">
 196 672 m
 188 656 l
 </path>
-<path stroke="blue" pen="fat">
+<path stroke="darkgreen" pen="fat">
 188 656 m
 184 640 l
 </path>
-<path stroke="blue" pen="fat">
+<path stroke="darkgreen" pen="fat">
 196 672 m
 208 656 l
 </path>
-<path stroke="blue" pen="fat">
+<path stroke="darkgreen" pen="fat">
 220 688 m
 228 672 l
 </path>
-<path stroke="blue" pen="fat">
+<path stroke="darkgreen" pen="fat">
 256 688 m
 248 672 l
 </path>
-<path stroke="blue" pen="fat">
+<path stroke="darkgreen" pen="fat">
 228 672 m
 220 656 l
 220 656 l
 220 656 l
 </path>
-<path stroke="blue" pen="fat">
+<path stroke="darkgreen" pen="fat">
 228 672 m
 236 656 l
 </path>
-<path stroke="blue" pen="fat">
+<path matrix="0.909091 0 0 1.25 27.6364 -172" stroke="darkgreen" pen="fat">
 260 720 m
 304 704 l
 </path>
-<path stroke="blue" pen="fat">
+<path matrix="0.8 0 0 1.25 51.2 -172" stroke="darkgreen" pen="fat">
 236 704 m
 256 688 l
 </path>
-<path stroke="blue" pen="fat">
+<path matrix="1 0 0 1.25 0 -172" stroke="darkgreen" pen="fat">
 304 704 m
 296 688 l
 </path>
-<path stroke="blue" pen="fat">
+<path matrix="1 0 0 1.25 0 -172" stroke="darkgreen" pen="fat">
 304 704 m
 328 688 l
 </path>
-<path stroke="blue" pen="fat">
+<path stroke="darkgreen" pen="fat">
 296 688 m
 284 672 l
 </path>
-<path stroke="blue" pen="fat">
+<path stroke="darkgreen" pen="fat">
 296 688 m
 312 672 l
 </path>
-<path stroke="blue" pen="fat">
+<path stroke="darkgreen" pen="fat">
 284 672 m
 280 656 l
 </path>
+<path stroke="black" pen="fat">
+352 720 m
+360 720 l
+</path>
+<path stroke="black" pen="fat">
+356 720 m
+356 640 l
+</path>
+<path stroke="black" pen="fat">
+352 640 m
+360 640 l
+</path>
+<text matrix="1 0 0 1 0 -4" transformations="translations" pos="364 680" stroke="black" type="label" width="57.83" height="12.896" depth="4.29" valign="baseline" size="LARGE" style="math">\Theta(\log n)</text>
+<text matrix="1 0 0 1 -4 8" transformations="translations" pos="184 728" stroke="black" type="label" width="48.943" height="3.455" depth="5.29" valign="baseline" size="tiny" style="math">f_{(\log_{1/(1-\delta)} n)}</text>
+<text matrix="1 0 0 1 -4 -12" transformations="translations" pos="184 728" stroke="black" type="label" width="57.729" height="3.455" depth="5.29" valign="baseline" size="tiny" style="math">f_{(\log_{1/(1-\delta)} n)-1} </text>
+<text matrix="1 0 0 1 -4 -36" transformations="translations" pos="184 728" stroke="black" type="label" width="2.006" height="14.557" depth="0" valign="baseline" size="tiny" style="math">\vdots</text>
 </page>
 </ipe>
