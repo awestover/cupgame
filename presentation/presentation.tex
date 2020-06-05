@@ -83,32 +83,39 @@ red,densely dashed,every mark/.append style={solid,fill=red!80!black},mark=diamo
     \onslide<1> \includegraphics[width=\linewidth]{initDef/initDef0.eps}
     \onslide<2> \includegraphics[width=\linewidth]{initDef/initDef1.eps}
     \onslide<3> \includegraphics[width=\linewidth]{initDef/initDef2.eps}
-    \onslide<4> \includegraphics[width=\linewidth]{initDef/initDef3.eps}
+    \onslide<4-> \includegraphics[width=\linewidth]{initDef/initDef3.eps}
+  \end{overprint}
+  \begin{overprint}
+    \onslide<5> {
+      \begin{itemize}
+        \item filler: wants high backlog 
+        \item emptier: wants low backlog
+      \end{itemize}
+      In this talk we take the side of the filler (so high backlog is good) 
+    }
   \end{overprint}
 \end{frame}
 
-\begin{frame}[t]{Why is the Cup Game Important?}
-  \vspace{1cm}
-  \defn{work scheduling}:
-  \vspace{1cm}
-
+\begin{frame}[t]{Example Application: Work Scheduling}
+  \begin{center}
+  \includegraphics[width=0.36\linewidth]{ps-ef/ps-ef.png}
+  \includegraphics[width=0.62\linewidth]{ps-ef/work_scheduling.png}
+  \end{center}
   \includegraphics[width=\linewidth]{workScheduling/workScheduling.eps}
 \end{frame}
 
-\begin{frame}[t]{Previous Work}
-  Multi-processor cup game: \footnote{[William Kuszmaul. Achieving optimal backlog in the vanilla multi-processor cup game. SIAM, 2020.]}
+\begin{frame}[t]{Previous Work \footnote{[William Kuszmaul. Achieving optimal backlog in the vanilla multi-processor cup game. SODA, 2020.]}\textsuperscript{,}\footnote{[M. Bender, M. Farach-Colton, and W. Kuszmaul. Achieving optimal backlog in multi-processor cup games. In Proceedings of the 51st Annual ACM Symposium on Theory of Computing (STOC), 2019.]}}
+  \defn{Adaptive filler}: can see emptier's actions
+  \begin{theorem}
+    With an adaptive filler optimal backlog is
+    $\Theta(\log n)$.
+  \end{theorem}
 
-  Adaptive filler:
-  \begin{itemize}
-    \item $\Omega(\log n)$ lower bound
-    \item $O(\log n)$ upper bound
-  \end{itemize}
+  \defn{Oblivious filler}: can \textbf{not} see emptier's actions
+  \begin{theorem}
+    With an oblivious filler optimal backlog is between $\Omega(\log \log n)$ and $O(\log\log n + \log p)$ (with high probability in short games).
+  \end{theorem}
 
-  Oblivious filler: (can't see what the emptier does)
-  \begin{itemize}
-    \item $\Omega(\log\log n)$ lower bound
-    \item $O(\log\log n + \log p)$ upper bound (with good probability in short games)
-  \end{itemize}
 \end{frame}
 
 \begin{frame}[t]{This Talk}
@@ -132,31 +139,31 @@ Modification seems small...
   The variable-processor cup game is \emph{fundamentally different} than the $p$-processor cup game!
 \end{frame}
 
-\begin{frame}[t]{Adaptive Filler Lower Bound}
+\begin{frame}[t]{Adaptive Filler Lower Bound on Backlog}
   \begin{theorem}
     There is an adaptive filling strategy that achieves
     backlog $$\Omega(n^{1-\epsilon})$$ for any constant $\epsilon >0$ in running-time $$2^{O(\log^2 n)}.$$
   \end{theorem}
 \end{frame}
-\begin{frame}[t]{Adaptive Filler Lower Bound}
+\begin{frame}[t]{Adaptive Filler Lower Bound on Backlog}
   \begin{theorem}
     There is an adaptive filling strategy that achieves backlog $$\Omega(n)$$ in running-time $$O(n!).$$
   \end{theorem}
 \end{frame}
-\begin{frame}[t]{Upper Bound}
+\begin{frame}[t]{Upper Bound on Backlog}
+  \begin{corollary}
+  A greedy emptier never lets backlog exceed $$O(n).$$
+  \end{corollary}
+  This matches our lower bound!
+  \vspace{0.5cm}
+
+  Corollary follows from more general theorem:
   \begin{theorem}
     A greedy emptier maintains the invariant: 
     $$\text{Average fill of $k$ fullest cups } \le 2n-k.$$
   \end{theorem}
-
-  \begin{corollary}
-  A greedy emptier never lets backlog exceed $$O(n).$$
-  \end{corollary}
-
-  \vspace{0.3cm}
-  This matches our lower bound!
 \end{frame}
-\begin{frame}[t]{Oblivious Filler Lower Bound}
+\begin{frame}[t]{Oblivious Filler Lower Bound on Backlog}
   \begin{theorem}
     There is an oblivious filling strategy that achieves backlog
     $$\Omega(n^{1-\epsilon})$$ for constant $\epsilon > 0$ with probability at
@@ -349,9 +356,7 @@ Modification seems small...
 
 \begin{frame}[t]{Previous work on Cup Games}
   \begin{itemize}
-    \item The Single-Processor cup game ($p=1$) has been tightly analyed with
-      \defn{oblivious} and \defn{adaptive} fillers (i.e. fillers that can't and
-      can observe the emtpier's actions).
+    \item The Single-Processor cup game ($p=1$) has been tightly analyzed with \defn{oblivious} and \defn{adaptive} fillers (i.e. fillers that can't and can observe the emptier's actions).
     \item The Multi-Processor cup game ($p>1$) is substantially more difficult. With an adaptive filler:
       \begin{itemize}
         \item Kuszmaul established upper bound of $O(\log n)$.\footnote{\tiny\color{blue}William Kuszmaul. Achieving optimal backlog in the vanilla multi-processor cup game. SIAM, 2020.}
