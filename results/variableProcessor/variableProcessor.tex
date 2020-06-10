@@ -359,7 +359,11 @@ for the emptier when cups can zero out.
   Otherwise, there must have been an application of $f$ for which the emptier
   did not neglect the anchor set. In this case the filler achieves fill 
   $$-h \cdot \delta/(1-\delta) + f(n (1-\delta)) = (1-\delta)f(n (1-\delta)) = h$$
-  in some non-anchor cup, and swaps it with the least full cup in the anchor set.
+  in some non-anchor cup, and swaps it with the least full cup in
+  the anchor set. Note that by swapping this cup with the least
+  full cup of the anchor set we guarantee that the swap does not
+  decrease the average fill of $A$, so long as the process is not
+  complete yet (i.e. so long as $A$ has average fill below $h$).
 
   The filler then recurses, and achieves a set of $n\delta^{\ell}$
   cups with average fill increased by
