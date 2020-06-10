@@ -238,7 +238,7 @@ no zeroing out. Negative-fill can be interpreted as fill below some average
 fill. Measuring fill like this is important however, as our lower bound results
 are used recursively, building on the average fill already achieved. Note that
 it is strictly easier for the filler to achieve high backlog when cups can zero
-out, because then some of the emptiers resources are wasted. On the other hand,
+out, because then some of the emptier's resources are wasted. On the other hand,
 during the upper bound proof we show that a greedy emptier maintains the
 desired invariants even if cups zero out. This is crucial as the game is harder
 for the emptier when cups can zero out.
@@ -247,62 +247,52 @@ for the emptier when cups can zero out.
 % i.e. non-relative -- fills by calling them \defn{absolute} fills.
 
 \section{Adaptive Filler Lower Bound}\label{sec:adaptive}
+
+In this section, we give a $2^{\polylog n}$-time filling strategy that achieves backlog $n^{1 - \epsilon}$ for any positive constant $\epsilon$. 
+We also give a $O(n!)$-time filling strategy that achieves backlog $\Omega(n)$.
+
+We begin by modifying the proof of the classic lower bound for the single-processor cup game to work with a cup configuration that includes negative fills; allowing for negative fills will be important when applying the result in later constructions. 
 \begin{proposition}
 \label{prop:adaptiveBase}
-  There exists an adaptive filling strategy for the negative-fill
-  variable-processor cup game on $n$ cups that achieves backlog at least
-  $\frac{1}{4}\ln (n/2)$.
+  Consider an instance of the negative-fill $1$-processor cup game on $n$ cups, and let the cups start in any state where the average fill is $0$. There is an $O(n)$-step adaptive filling strategy that achieves backlog at least
+  $\frac{1}{4}(\ln (n/2) - 1)$.
 \end{proposition}
 \begin{proof}
-  Let $h = \frac{1}{4}\ln (n/2)$ be the desired fill. Once a cup with fill at
-  least $h$ is achieved the filler stops, the process completed.  
-  Let $A$ consist of the $n/2$ fullest cups, and $B$ consist of the rest of the
-  cups. Note that $A, B$ are implicitly functions of the round $t$.
+  Let $h = \frac{1}{4}(\ln (n/2) -1)$ be the desired fill. Once a cup with fill at
+  least $h$ is achieved the filler stops, and the algorithm is done.  
+  
+  We claim that, at the beginning of the game, either the algorithm is already done, or there are at least $n / 2$ cups containing fills greater than $-2h$.
+  If the filling process is not yet complete then $\fil(c) < h$ for all cups $c$, and thus the mass in cups with non-negative fills is less than $hn$. 
+  Assume for contradiction that at least $n / 2$ cups 
+  have fills $-2h$ or smaller. The mass of those cups
+  is less than or equal to $-hn$. Since the mass of cups with non-negative fills is less than $hn$, it follows that the total mass of cups is negative, a contradiction. 
 
-  If the process is not yet complete, that is $\fil(c) < h$ for all cups $c$,
-  then $\tilt(A\cup B) < h\cdot n$. Assume for sake of contradiction that there
-  are more than $n/2$ cups $c$ with $\fil(c) \le -2h$. The mass of those cups
-  would be at most $-hn$ but the mass of the remaining cups cannot exceed
-  $hn/2$. This implies that average fill is negative when it is in fact $0$ by
-  definition, a contradiction. Hence there are at most $n/2$ cups $c$ with
-  $\fil(c) \le -2h$. 
-
-  The filler sets the number of processors equal to $1$ and plays a single
-  processor cup game on $n/2$ cups that each have fill at least $-2h$ (which
-  must exist) for $n/2 -1$ steps. Throughout this process the filler maintains
-  a set of cups called the \defn{active set}: the set of cups that the filler
-  will place fill in. The filler initializes the active set to be $A$. Note
-  that that $\fil(c) \ge -2h$ for all cups $c\in A$, as $A$ consists of the
-  $n/2$ fullest cups. The filler removes $1$ cup from the active set at each
-  step. At each step the filler distributes water equally among the cups in its
-  active set. Then, the emptier will choose some cup to empty from. If this cup
-  is in the active set, the filler removes it from the active set. Otherwise,
-  the filler chooses an arbitrary cup to remove from the active set.
-
-  After $n/2-1$ steps, the active set will consist of a single cup. This cup's
-  fill has increased by $1/(n/2) + 1/(n/2 - 1) + \cdots + 1/2 + 1/1 \ge \ln n/2
-  = 4h$. This cup's fill started as at least $-2h$. Thus this cup has fill at
-  least $2h$ now, as desired.
+  We now describe the filler's strategy. If, at the beginning of the game, the algorithm is not already done,
+  then at least $n / 2$ cups must have fills greater than $-2h$. At the beginning of the algorithm, $n / 2$ such cups are labeled as \defn{active cups}. 
+  In each of step of the algorithm, the filler distributes $1$ unit of water evenly among the active cups. The emptier then removes water from some cup $j$. Finally, the filler reduces the number of active cups by $1$, removing cup $j$ if it was active, and otherwise removing an arbitrary cup. Now consider the state of the final active cup after $n / 2  - 1$ steps. This cup's
+  fill has increased by $1/(n/2) + 1/(n/2 - 1) + \cdots + 1/2 \ge \ln (n/2) -1
+  = 4h$. This cup's fill started as at least $-2h$. Thus this cup now has fill at
+  least $2h$, as desired.
 \end{proof}
 
+Next we prove the key Lemma of this section, which we will use recursively to achieve $\poly(n)$ backlog.
 \begin{lemma}[Adaptive Amplification Lemma]\label{lem:adaptiveAmplification}
-  Let $f$ be an adaptive filling strategy that achieves backlog $f(n) \le n$ in the
-  negative-fill variable-processor cup game on $n$ cups in running time $T(n)$.
-  Let $\delta\in(0,1)$ be a parameter, and let $L\in\mathbb{N}$ be a parameter.
-  \footnote{Note that $n$ must be sufficiently large, and $\delta, L$ must be
-  chosen such that $(1-\delta)\delta^L n \in \mathbb{N}$ because it doesn't
-  make sense to talk of ``fractional cups".}
+{\color{red} TODO: domain sets}
+    % "domain set " for f and f'. 
+  Let $f$ be an adaptive filling strategy that achieves backlog $f(n) \le n$ in the negative-fill variable-processor cup game on $n$ cups in running time $T(n)$, starting from any initial cup state where the average fill is $0$.
+  Let $\delta\in(0,1), L\in \mathbb{N}$ be parameters such that  $(1-\delta)\delta^L n \in \mathbb{N}$.
 
   Then, there exists an adaptive filling strategy that achieves backlog 
   $$f'(n) \ge (1-\delta)\sum_{\ell= 0}^{L} f(n\delta^\ell(1-\delta))$$
   in the negative-fill variable-processor cup game on $n$ cups in running time 
   \begin{align*}
     T'(n) &\le n\sum_{\ell=0}^L n\delta^\ell T(n\delta^\ell(1-\delta)) \\
-  &\le (L+1)n^2 T((1-\delta)n).
+  &\le (L+1)n^2 T((1-\delta)n),
   \end{align*}
+  starting from any initial cup state where the average fill is $0$.
 \end{lemma}
-\begin{proof}
-  Before proving this lemma, which we call the
+
+Before proving this lemma, which we call the
   \defn{Amplification Lemma}, we briefly motivate it. 
   We call $f'$, the function created by the Amplification
   Lemma, the \defn{amplification} of $f$.
@@ -312,7 +302,8 @@ for the emptier when cups can zero out.
   long sequence of functions $f_i$ with $f_{i+1}$ the
   amplification of $f_i$, we eventually get a function for
   achieving $\poly(n)$ backlog.
-
+  
+\begin{proof}[Proof of Amplification Lemma]
   The basic idea of the proof is as follows:\\
   \textbf{Step 1:} Using $f$ repeatedly, achieve average fill at least
   $(1-\delta) f(n(1-\delta))$ in a set of $n\delta$ cups. \\
@@ -326,69 +317,52 @@ for the emptier when cups can zero out.
 
   We now describe how to achieve Step 1.
   The filling strategy always places $1$ unit of water in each anchor cup. This
-  ensures that no cups in the anchor set ever have their fill decrease.
-  The filler uses the following procedure,
-  termed a \defn{swapping-process}, to achieve the desired average fill in $A$:
-  repeatedly apply $f$ to $B$, and then take the cup generated by $f$ within
-  $B$ with fill at least $f(|B|)$ and swap it with a cup in $A$; repeat until $A$ has
-  the desired average fill. Note that $$\mu(A) \cdot |A| + \mu(B)\cdot |B| =
-  0,$$ so $$\mu(A) = - \mu(B) \cdot (1-\delta)/ \delta.$$
+  ensures that no cups in the anchor set ever have their fill decrease. If the emptier wishes to keep the average fill of the anchor cups from increasing, then emptier must empty from every anchor cup on each step. If the emptier fails to do this on a given step, then we say that the emptier has \defn{neglected} the anchor cups. 
 
+  We say that the filler \defn{applies $f$ to $B$} if it follows the filling strategy $f$ on $B$ while placing $1$ unit of water in each anchor cup. An application of $f$ to $B$ is said to be \defn{successful} if $A$ is never neglected during the application of $f$ to $B$. In order to achieve Step 1, the filler uses the following procedure, termed a \defn{swapping-process}, to achieve the desired average fill in $A$: repeatedly apply $f$ to $B$, until a successful application occurs, and then take the cup generated by $f$ within $B$ on this successful application with fill at least $\mu(B) + f(|B|)$ and swap it with the least full cup in $A$; repeat until $A$ has the desired average fill. If the average fill in $A$ ever reaches $h$, then the algorithm immediately halts (even if it is in the middle of a swapping-process) and is complete.
+  
+  Note that $$\mu(A) \cdot |A| + \mu(B)\cdot |B| =
+  0,$$ so $$\mu(A) = - \mu(B) \cdot (1-\delta)/ \delta.$$ 
   Thus, if at any point in the process $B$ has average fill lower than $-h
   \cdot \delta/(1-\delta)$, then $A$ has average fill at least $h$, so the
-  process is finished. So long as $B$ has average fill at least $-h\cdot
-  \delta/(1-\delta)$ the filler will applies $f$ to $B$.
-  
-  It is somewhat complicated to apply $f$ to $B$ however, because we must
-  guarantee that the emptier removes the same mass from $B$ as the filler adds on
-  all rounds during the filler's application of $f$ to $B$.
-  This might not be the case if the emptier does not empty from each anchor cup
-  at each step. We say that the emptier \defn{neglects} the anchor set on an
-  application of $f$ if there is some step during the application of $f$ in
-  which the emptier does not empty from some anchor cup.
-
-  The filler applies $f$ to $B$ at most $h n \delta + 1$ times. 
-  At the end of an application of $f$ the filler swaps the generated cup into $A$ only if the
-  emptier has not neglected the anchor set during this application of $f$.
-
-  Note that each time the emptier neglects the anchor set the mass of the
+  process is finished. Thus we can assume in our analysis that $B$ has average fill at least 
+  \begin{equation}
+  -h\cdot\delta/(1-\delta).
+  \label{eq:Batleast}
+  \end{equation}
+  We will now show that during each swapping process, the filler applies $f$ to $B$ at most $h n \delta + 1$ times. 
+  Each time the emptier neglects the anchor set, the mass of the
   anchor set increases by $1$. If the emptier neglects the anchor set $h
   n\delta + 1$ times, then the average fill in the anchor set increases by
-  more than $h$, so the desired average fill is achieved in the anchor set.
+  more than $h$, so the desired average fill is achieved in the anchor set. Thus the swapping process consists of at most $hn\delta + 1$ applications of $f$.  
 
-  Otherwise, there must have been an application of $f$ for which the emptier
-  did not neglect the anchor set. In this case the filler achieves fill 
-  $$-h \cdot \delta/(1-\delta) + f(n (1-\delta)) = (1-\delta)f(n (1-\delta)) = h$$
-  in some non-anchor cup, and swaps it with the least full cup in
-  the anchor set. Note that by swapping this cup with the least
-  full cup of the anchor set we guarantee that the swap does not
-  decrease the average fill of $A$, so long as the process is not
-  complete yet (i.e. so long as $A$ has average fill below $h$).
-
-  The filler then recurses, and achieves a set of $n\delta^{\ell}$
-  cups with average fill increased by
-  $(1-\delta)f(n\delta^\ell(1-\delta))$ on the $\ell$-th level of
-  recursion (we $0$-index the levels of recursion). Summing for
+  Consider the fill of a cup $c$ swapped into $A$ at the end of a swapping-process.
+  Cup $c$'s fill is at least $\mu(B) + f(|B|)$, which by \eqref{eq:Batleast} is at least
+  $$-h \cdot \delta/(1-\delta) + f(n (1-\delta)) = (1-\delta)f(n (1-\delta)) = h.$$
+  Thus the algorithm for Step 1 succeeds within $|A| = \delta n$ swapping-processes, 
+  since at the end of the $|A|$-th swapping process every cup in $A$ has fill at least $h$. 
+  
+  The filler then recurses on the cups $A$, and continues like this for $L + 1$ total 
+  levels of recursion. On the $\ell$-th level of
+  recursion (we $0$-index the levels of recursion) the algorithm focuses on $n\delta^{\ell}$ cups and increases their average fill by at least $(1-\delta)f(n\delta^\ell(1-\delta))$. Summing for
   $L+1$ levels of recursion, we get backlog 
-  $$(1-\delta)\sum_{\ell=0}^L f(n\delta^\ell(1-\delta))$$ 
+  $$(1-\delta)\sum_{\ell=0}^L f(n\delta^\ell(1-\delta)),$$ 
   as desired.
 
-  Now we analyze the running time of $f'$.
+  Now we analyze the running time of our filling strategy $f'$.
   Note that on the first level of recursion $f'$
-  called $f$ on a set of size $(1-\delta)n$ as many as $hn\delta +1$ times. 
+  calls $f$ on a set of size $(1-\delta)n$ as many as $hn\delta +1$ times. 
   Recalling that $h < n$ we have that this contributes no more
   than $n\cdot n\delta T(n(1-\delta))$ to the running time. 
   Summing the corresponding quantity for all $L+1$ levels of recursion gives
   $$T'(n) \le n\sum_{\ell=0}^Ln\delta^\ell T(n\delta^\ell
   (1-\delta)). $$
 
-  It turns out not to harm the running time asymptotically to
-  take a simpler looser bound obtained by bounding the terms in
-  the sum by the first term in the sum:
+  If we simply bound each term in the above sum by the first term in the sum, then we arrive at, 
   $$T'(n) \le (L+1) n^2 T((1-\delta)n).$$
-
 \end{proof}
 
+Now, we show that by recursively using the Amplification Lemma we can achieve backlog $\poly(n)$.
 \begin{theorem}
   \label{thm:adaptivePoly}
   There is an adaptive filling strategy for the variable-processor cup game on
