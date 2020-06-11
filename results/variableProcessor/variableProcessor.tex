@@ -449,55 +449,10 @@ can achieve backlog $\poly(n)$.
   $\epsilon > 0$ of our choice in running time $2^{O(\log^2 n)}$.
 \end{theorem}
 \begin{proof}
-  Take constant $\epsilon \in (0,1/2)$. Let $c, \delta$ be parameters, with $c\in
-  (0,1), 0 < \delta \ll 1/2$ -- these will depend on $\epsilon$.
+  Take constant $\epsilon \in (0,1/2)$. Let $c, \delta$ be
+  parameters, with $c\in (0,1), 0 < \delta \ll 1/2$ -- these will
+  be chosen later; their values depend on $\epsilon$.
   Say that we aim to achieve backlog at least $cn^{1-\epsilon}$.
-
-  Say that we have a filling $\alg_f$ that achieves backlog $f$
-  satisfying $f(k) \ge ck^{1-\epsilon}$ for all $k\le g$ in the
-  domain set $D_{L, \delta}^i$ (for some fixed $L,i$). Consider the amplification
-  $\alg_{f'}$ of $\alg_f$. If there is some $k_0 \le
-  g/(1-\delta)$ with $k_0 \in D^{i+1}_{L, \delta}$ 
-  \footnote{Note that $k_0$ might not exist; this discussion is
-  for motivational purposes at the moment.}, then we have:
-  \begin{align*}
-    f'(k_0)&\ge (1-\delta)\sum_{\ell=0}^L c (k_0\delta^\ell(1-\delta))^{1-\epsilon}\\
-  &= ck_0^{1-\epsilon} (1-\delta)^{2-\epsilon} \sum_{\ell=0}^L
-  (\delta^\ell)^{1-\epsilon}.
-  \end{align*}
-  We will choose $\delta$ very small; thus, terms of this sum
-  with high powers of $\delta$ contribute very little to the
-  backlog achieved by $\alg_{f'}$. This motivates the choice
-  $L=1$. With this choice of $L$ our bound on $f'(k_0)$ becomes
-  \begin{align*}
-    f'(k_0) &\ge ck_0^{1-\epsilon}(1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon})\\
-            &\ge ck_0^{1-\epsilon}(1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon})\\
-            &= ck_0^{1-\epsilon}(1+\delta^{1-\epsilon}-(2-\epsilon)\delta-(2-\epsilon)\delta^{2-\epsilon}).
-  \end{align*}
-  The $\delta^{1-\epsilon}$ dominates the other (higher) powers
-  of $\delta$ as $\delta \to 0$, so clearly there is a choice of
-  $\delta = \Theta(1)$ making 
-  $$f'(k_0) \ge ck_0.$$
-  For instance, we can choose any constant $\delta$ satisfying
-  \begin{equation}
-    \delta \le
-    (2(2-\epsilon))^{-1/\epsilon}.\label{eqn:validdeltas}
-  \end{equation}
-
-  Thus, given an algorithm $\alg_f$ for achieving backlog
-  $ck^{1-\epsilon}$ that works for $k \le g$, the amplification
-  of $\alg_f$ achieves $f'(k) \ge ck^{1-\epsilon}$ for a larger
-  value of $k$. By iterating this process we can arbitrarily
-  expand the region on which our algorithm achieves backlog
-  $ck^{1-\epsilon}$, so long as there are always valid choices for $k_0$
-  at each step, i.e. $k_0$ in the correct domain set subject to
-  the inequality $k_0 \le g/(1-\delta)$. Note that we have not
-  yet established that valid choices of $k_0$ ever exist.
-
-We now roughly describe how to use repeated amplification to
-achieving backlog $cn^{1-\epsilon}$ on $n$ cups in
-quasi-polynomial running time. We use constant $\epsilon >
-0$ and constant $\delta$ satisfying \eqref{eqn:validdeltas}.
 
   By Proposition \ref{prop:adaptiveBase} there exists a constant
   $n_0$ (e.g. $1000$) such that a filler can achieve backlog $1$
@@ -506,15 +461,20 @@ quasi-polynomial running time. We use constant $\epsilon >
   \ge 1$ for all $k\ge n_0$. The domain set of $f_0$ is
   $\mathbb{N} = D^0_{1, \delta}$.
 
-  Then we recursively construct $\alg_{f_{i+1}}$ as the
-  amplification of $\alg_{f_{i}}$. 
+  Next, using the Amplification Lemma we recursively construct
+  $\alg_{f_{i+1}}$ as the amplification of $\alg_{f_{i}}$. 
+  We use $L=1$ in the Amplification
+  Lemma, i.e. we only perform $2$ levels of recursion; this is a
+  reasonable choice as high powers of $\delta$ like $\delta^2$
+  will be very small by our choice of $\delta$ to be small. 
 
   Define a sequence $g_i$ with 
   $$ g_i = \begin{cases}
     \lceil 1/\delta \rceil \gg 1,  & i = 0,\\
     \lceil g_{i-1}/(1-\delta)\rceil -1 & i  \ge 1
   \end{cases} $$
-  That is, $g_{i+1}$ is the greatest integer strictly less than $g_i/(1-\delta)$.
+  That is, $g_{i+1}$ is the greatest integer strictly less than
+  $g_i/(1-\delta)$.
   Note that $ (1/\delta) / (1-\delta) > (1+\delta)/\delta = 1/\delta + 1.$
   Thus $g_1 = 1+ g_0$, and in general, $g_{i+1} > g_i$, because the difference
   $g_{i+1}-g_i$ can only grow as $i$ grows.
@@ -522,40 +482,106 @@ quasi-polynomial running time. We use constant $\epsilon >
   We claim the following regarding this construction:
   \begin{clm}
     \label{clm:fikinduction}
-    $$f_i(k) \ge ck^{1-\epsilon} \text{ for all } k < g_i.$$
+    $$f_i(k) \ge ck^{1-\epsilon} \text{ for all }
+    k\in D^i_{1,\delta} \text{ with } k< g_i.$$
   \end{clm}
   \begin{proof}
   We prove Claim \ref{clm:fikinduction} by induction on $i$.
-  Claim \ref{clm:fikinduction} is true in the base case of $f_0$ by taking $c$
-  sufficiently small, in particular small enough that $f_0(k) \ge
-  ck^{1-\epsilon}$ holds for $k < g_0$.\footnote{Note: this is where it is
-    crucial that $\epsilon, \delta$ are constants.}
-  As our inductive hypothesis we assume Claim \ref{clm:fikinduction} for $f_i$;
-  we aim to show that Claim \ref{clm:fikinduction} holds for $f_{i+1}$. Note
-  the key property of $g_i$, that $g_{i+1}\cdot(1-\delta) < g_i$. Also note
-  that (at least without loss of generality) the $f_i$ are monotonically increasing
-  functions: given more cups we can always achieve higher fill than with fewer
-  cups. Thus we have, for any $k<g_{i+1}$,
-  $$f_{i+1}(k) \ge (1-\delta)\sum_{\ell=0}^1 f_i(k\delta^\ell(1-\delta))\ge ck^{1-\epsilon},$$
-  as desired. 
+  Claim \ref{clm:fikinduction} is true in the base case of $f_0$
+  by taking $c$ sufficiently small, in particular small enough
+  that $f_0(k) \ge ck^{1-\epsilon}$ holds for $k <
+  g_0$.\footnote{Note: this is where it is crucial that
+  $\epsilon$ and $\delta$ are constants.}
+  As our inductive hypothesis we assume Claim
+  \ref{clm:fikinduction} for $f_i$; we aim to show that Claim
+  \ref{clm:fikinduction} holds for $f_{i+1}$. Note the key
+  property of $g_i$, that $g_{i+1}\cdot(1-\delta) < g_i$. Also
+  note that (at least without loss of generality) the $f_i$ are
+  monotonically increasing
+  functions: given more cups we can always achieve higher fill
+  than with fewer cups. Thus we have that for any $k\in
+  D^{i+1}_{1,\delta}$ with $k<g_{i+1}$,
+  \begin{align*}
+    f_{i+1}(k) &\ge (1-\delta)\sum_{\ell=0}^1 f_i(k\delta^\ell(1-\delta))\\
+    &\ge (1-\delta)\sum_{\ell=0}^1 c (k\delta^\ell(1-\delta))^{1-\epsilon}\\
+    &= ck_0^{1-\epsilon} (1-\delta)^{2-\epsilon} (1+\delta^{1-\epsilon})\\
+    &\ge ck_0^{1-\epsilon}(1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon})\\
+    &= ck_0^{1-\epsilon}(1+\delta^{1-\epsilon}-(2-\epsilon)\delta-(2-\epsilon)\delta^{2-\epsilon}).
+  \end{align*}
+  The $\delta^{1-\epsilon}$ dominates the other terms with higher
+  powers of $\delta$ for sufficiently small $\delta$, so clearly there is a
+  choice of $\delta = \Theta(1)$ making $$f_{i+1}(k) \ge
+  ck^{1-\epsilon}.$$
+  For instance, we can choose any constant $\delta$ satisfying
+  $$\delta \le (2(2-\epsilon))^{-1/\epsilon}.$$
+
   \end{proof}
 
-  Note that $g_{i+1} \ge g_i + 1$ so by continuing this process we eventually
-  reach some $f_{i_*}$ such that $f_{i_*}(n) \ge cn^{1-\epsilon}$; trivially
-  $i_* \le n$. In fact we can show $i_* \le O(\log n)$. The recurrence is
-  almost simply the geometric sequence $g_i = g_{i-1}/(1-\delta)$ with
-  $g_0=1/\delta$, for which it is trivially true that $g_i =
-  (1/\delta) (1/(1-\delta))^i$, hence we would have
-  $g_{\log_{1/(1-\delta)} n} = n\cdot 1/\delta > n$ as
-  desired. The actual sequence is not quite this large. The sequence is lower
-  bounded by the sequence $g_i'$ defined as $g_0'=1/\delta, g_i' = g_{i-1}' /
-  (1-\delta) -1$. Even the sequence $g_i'$ grows exponentially though, hence
-  only a logarithmic recursion depth is necessary. In particular, $g_i'$ satisfies
-  $$g_i' = \frac{1/\delta}{(1-\delta)^i} - \frac{1/(1-\delta)^{i-1}-1}{1/(1-\delta)-1},$$
-  which simplifies to
-  $$g_i' = \frac{1}{(1-\delta)^i} + \frac{1-\delta}{\delta}.$$
-  Thus $g_{\log_{1/(1-\delta)} n}'$, and hence also $g_{\log_{1/(1-\delta)} n}$
-  both are at least $n$, as desired.
+%   Say that we have a filling $\alg_f$ that achieves backlog $f$
+%   satisfying $f(k) \ge ck^{1-\epsilon}$ for all $k\le g$ in the
+%   domain set $D_{L, \delta}^i$ (for some fixed $L,i$). Consider the amplification
+%   $\alg_{f'}$ of $\alg_f$. If there is some $k_0 \le
+%   g/(1-\delta)$ with $k_0 \in D^{i+1}_{L, \delta}$ 
+%   \footnote{Note that $k_0$ might not exist; this discussion is
+%   for motivational purposes at the moment.}, then we have:
+%   \begin{align*}
+%     f'(k_0)&\ge (1-\delta)\sum_{\ell=0}^L c (k_0\delta^\ell(1-\delta))^{1-\epsilon}\\
+%   &= ck_0^{1-\epsilon} (1-\delta)^{2-\epsilon} \sum_{\ell=0}^L
+%   (\delta^\ell)^{1-\epsilon}.
+%   \end{align*}
+%   We will choose $\delta$ very small; thus, terms of this sum
+%   with high powers of $\delta$ contribute very little to the
+%   backlog achieved by $\alg_{f'}$. This motivates the choice
+%   $L=1$. With this choice of $L$ our bound on $f'(k_0)$ becomes
+%   \begin{align*}
+%     f'(k_0) &\ge ck_0^{1-\epsilon}(1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon})\\
+%             &\ge ck_0^{1-\epsilon}(1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon})\\
+%             &= ck_0^{1-\epsilon}(1+\delta^{1-\epsilon}-(2-\epsilon)\delta-(2-\epsilon)\delta^{2-\epsilon}).
+%   \end{align*}
+%   The $\delta^{1-\epsilon}$ dominates the other (higher) powers
+%   of $\delta$ as $\delta \to 0$, so clearly there is a choice of
+%   $\delta = \Theta(1)$ making 
+%   $$f'(k_0) \ge c(k_0)^{1-\epsilon}.$$
+%   For instance, we can choose any constant $\delta$ satisfying
+%   \begin{equation}
+%     \delta \le
+%     (2(2-\epsilon))^{-1/\epsilon}.\label{eqn:validdeltas}
+%   \end{equation}
+
+%   Thus, given an algorithm $\alg_f$ for achieving backlog
+%   $ck^{1-\epsilon}$ that works for $k \le g$, the amplification
+%   of $\alg_f$ achieves $f'(k) \ge ck^{1-\epsilon}$ for a larger
+%   value of $k$. By iterating this process we can arbitrarily
+%   expand the region on which our algorithm achieves backlog
+%   $ck^{1-\epsilon}$, so long as there are always valid choices for $k_0$
+%   at each step, i.e. $k_0$ in the correct domain set subject to
+%   the inequality $k_0 \le g/(1-\delta)$. Note that we have not
+%   yet established that valid choices of $k_0$ ever exist.
+
+% We now roughly describe how to use repeated amplification to
+% achieving backlog $cn^{1-\epsilon}$ on $n$ cups in
+% quasi-polynomial running time. We use constant $\epsilon >
+% 0$ and constant $\delta$ satisfying \eqref{eqn:validdeltas}.
+
+
+  Note that $g_{i+1} \ge g_i + 1$ so by continuing this process
+  we eventually reach some $f_{i_*}$ such that $f_{i_*}(n) \ge
+  cn^{1-\epsilon}$; trivially $i_* \le n$. In fact we can show
+  $i_* \le O(\log n)$, i.e. that $g_i$ exhibits exponential
+  growth. The recurrence is almost simply the geometric sequence
+  $g_i = g_{i-1}/(1-\delta)$ with $g_0=1/\delta$, for which it is
+  trivially true that $g_i = (1/\delta) (1/(1-\delta))^i$, hence
+  we would have $g_{(\log_{\frac{1}{1-\delta}} n)} = n\cdot 1/\delta > n$
+  as desired. The actual sequence is not quite this large. The
+  sequence is lower bounded by the sequence $g_i'$ defined as
+  $g_0'=1/\delta, g_i' = g_{i-1}' / (1-\delta) -1$. Even the
+  sequence $g_i'$ grows exponentially though, hence only a
+  logarithmic recursion depth is necessary. In particular, $g_i'$
+  satisfies $$g_i' = \frac{1/\delta}{(1-\delta)^i} -
+  \frac{1/(1-\delta)^{i-1}-1}{1/(1-\delta)-1},$$ which simplifies
+  to $$g_i' = \frac{1}{(1-\delta)^i} + \frac{1-\delta}{\delta}.$$
+  Thus $g_{(\log_{\frac{1}{1-\delta}} n)}'$, and hence also
+  $g_{(\log_{\frac{1}{1-\delta}} n)}$ both are at least $n$, as desired.
 
   However, we have not addressed the issue that the number of cups must be an
   integer! Although it is relatively clear that this will not affect the
