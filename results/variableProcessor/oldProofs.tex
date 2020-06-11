@@ -370,3 +370,110 @@ good probability.
   \ref{prop:obliviousBase} to apply to non-greedy-like emptiers is an important
   open question.
 \end{proof}
+
+
+
+
+%%%  proving that the choice epsilon =1/n is valid
+%%% I think I don't need this because it's obvious that it's all
+%%% good in the inequality and I'm going to have to fix the
+%%% domain set stuff anyways
+
+\begin{clm}
+  \label{clm:validchoices}
+  There exists $\delta$ that is small enough to make $h(\delta)
+  \ge 1$ and large enough to make $n\delta(1-\delta) \ge
+  n_0$, when $\epsilon$ is chosen to be $4/\lg n$, or a positive constant. 
+
+  In particular, if $\epsilon$ is chosen to be $4/\lg n$ then we will choose
+  $\delta =\Theta(1/n)$, and if $\epsilon$ is chosen to be a positive
+  constant then we will choose $\delta = \Theta(1)$.
+\end{clm}
+
+Note that in order for $L =1$ to make sense it must be that
+$n(1-\delta)\delta n \ge n_0$, or else this term from the sum would be
+contributing essentially $0$ backlog to the sum.
+If $L=1$ and if $h(\delta)\ge 1$, then $f'(k_0) \ge c k_0^{1-\epsilon}$, meaning
+we have constructed from $f$ a new function $f'$ that satisfies the
+inequality $f'(k) \ge ck^{1-\epsilon}$ for $k\le g/(1-\delta)$, as opposed to
+only for $k \le g$ as in the case of $f$. 
+\footnote{Note that although $f'(k) \ge ck^{1-\epsilon}$ holds for at least
+  as many $k$ as $f(k) \ge c k^{1-\epsilon}$, it does not necessarily hold
+  for strictly more; in particular, if $\lfloor g/(1-\delta) \rfloor = g$
+  then the inequality on $f'$ holds for no more $k$ than the inequality on
+  $f$, as $f$ and $f'$ are functions on $\mathbb{N}$. In general we have to
+  be somewhat careful about the fact that there are an integer number of cups
+  throughout this proof (this issue was deferred from earlier proofs to be
+dealt with here).} 
+Thus by repeatedly amplifying a function, we should be able to arbitrarily
+extend the region where the function satisfies the desired inequality, which
+will allow us to attain the desired backlog.
+We now prove Claim \ref{clm:validchoices}.
+\begin{proof}
+  First we show that making $h(\delta) > 1$ is possible.
+Consider the Taylor series for $(1-\delta)^{2-\epsilon}$ about $\delta = 0$:
+$$(1-\delta)^{2-\epsilon} = 1 - (2-\epsilon)\delta + O(\delta^2).$$
+
+So, to find a $\delta$ where $h(\delta) \ge 1$ it suffices -- note that we
+choose to neglect the $\delta^2$ term as it does not strengthen the lower
+bound substantially -- to find a $\delta$ with
+$$(1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon}) \ge 1.$$
+Rearranging we have 
+$$\delta^{1-\epsilon} \ge (2-\epsilon)\delta + (2-\epsilon)\delta^{2-\epsilon}.$$
+This clearly is true for sufficiently small $\delta$, as
+$\delta^{1-\epsilon}$ will be much greater than $\delta$ or
+$\delta^{2-\epsilon}$.
+However it will be beneficial to have a more explicit criterion for possible
+choices of $\delta$ in terms of $\epsilon$. To get this, we enforce a 
+stronger inequality on $\delta^{1-\epsilon}$ by overestimating
+$\delta^{2-\epsilon}$ as $\delta$. 
+Then, $\delta$ satisfying
+\begin{equation}
+  \label{eqn:deltaUpperIneq}
+  \delta \le \frac{1}{(2(2-\epsilon))^{1/\epsilon}}
+\end{equation}
+will make $h(\delta) \ge 1.$
+
+In addition to the constraint that $\delta$ must be small enough such that
+$h(\delta) \ge 1$, the only other constraint on $\delta$ is that $\delta$
+must be large enough that the sum from the Amplification Lemma can have at least
+two terms, i.e. such that $L \ge 1$. We need $L\ge 1$ because otherwise the
+Amplification Lemma doesn't give a larger function.
+That is, we want
+$$n\delta(1-\delta) \ge n_0. $$
+Recall that we choose $\delta < 1/2$, so $1-\delta > 1/2$. Thus to make
+$\delta$ sufficiently big it suffices to chose $\delta$ with 
+\begin{equation}
+  \label{eqn:deltaLowerBound}
+  \delta \ge 2n_0/n.
+\end{equation}
+Any choice of $\delta$ that is sufficiently large to make $L \ge 1$ and
+simultaneously small enough to make $h(\delta) \ge 1$ is a valid choice of
+$\delta$. That is, $\delta$ is valid if and only if it satisfies
+\begin{equation}
+  \label{eqn:deltainequality}
+  \frac{2n_0}{n} \le \delta \le  \frac{1}{(2(2-\epsilon))^{1/\epsilon}}.
+\end{equation}
+To achieve the desired backlog of $\Omega(n)$ we can use $\epsilon =
+\gamma/\lg n$ for appropriate constant $\gamma$, as $$n^{1-\gamma/\lg n} =
+n/2^\gamma = \Omega(n).$$
+We show that there is a valid choice of $\gamma$ such that the
+following inequality is satisfied:
+\begin{equation}
+  \label{eqn:thatinequality}
+ 2n_0/n \le \frac{1}{(2(2-\gamma/\lg n))^{(1/\gamma)\lg n}}.
+\end{equation}
+Note that 
+$$(2(2-\gamma/\lg n))^{(1/\gamma)\lg n} \le 4^{(1/\gamma)\lg n} \le n^{2/\gamma}.$$
+Thus, clearly by choosing e.g. $\gamma = 4$ we have the desired inequality.
+Inequality \ref{eqn:thatinequality} implies that there is a valid choice of
+$\delta$ when we chose $\epsilon = \gamma / \lg n$. When proving that we can
+achieve backlog $\Omega(n)$ we use $\epsilon = 4 / \lg n$, and $\delta =
+O(1/n)$ satisfying Inequality \ref{eqn:deltainequality} for our choice
+of $\epsilon$. When proving that we can achieve backlog
+$\Omega(n^{1-\epsilon})$ for constant $\epsilon > 0$ we choose $\delta > 0$ to be
+a constant satisfying Inequality \ref{eqn:deltaUpperIneq}, and $\delta$,
+being constant, trivially satisfies Inequality \ref{eqn:deltaLowerBound}.
+  
+\end{proof}
+
