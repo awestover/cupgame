@@ -495,11 +495,11 @@ can achieve backlog $\poly(n)$.
   As our inductive hypothesis we assume Claim
   \ref{clm:fikinduction} for $f_i$; we aim to show that Claim
   \ref{clm:fikinduction} holds for $f_{i+1}$. Note the key
-  property of $g_i$, that $g_{i+1}\cdot(1-\delta) < g_i$. Also
-  note that (at least without loss of generality) the $f_i$ are
-  monotonically increasing
-  functions: given more cups we can always achieve higher fill
-  than with fewer cups. Thus we have that for any $k\in
+  property of $g_i$, that $g_{i+1}\cdot(1-\delta) < g_i$. 
+  % Also note that (at least without loss of generality) the $f_i$
+  % are monotonically increasing functions: given more cups we can
+  % always achieve higher fill than with fewer cups. 
+  Thus we have that for any $k\in
   D^{i+1}_{1,\delta}$ with $k<g_{i+1}$,
   \begin{align*}
     f_{i+1}(k) &\ge (1-\delta)\sum_{\ell=0}^1 f_i(k\delta^\ell(1-\delta))\\
@@ -517,75 +517,27 @@ can achieve backlog $\poly(n)$.
 
   \end{proof}
 
-%   Say that we have a filling $\alg_f$ that achieves backlog $f$
-%   satisfying $f(k) \ge ck^{1-\epsilon}$ for all $k\le g$ in the
-%   domain set $D_{L, \delta}^i$ (for some fixed $L,i$). Consider the amplification
-%   $\alg_{f'}$ of $\alg_f$. If there is some $k_0 \le
-%   g/(1-\delta)$ with $k_0 \in D^{i+1}_{L, \delta}$ 
-%   \footnote{Note that $k_0$ might not exist; this discussion is
-%   for motivational purposes at the moment.}, then we have:
-%   \begin{align*}
-%     f'(k_0)&\ge (1-\delta)\sum_{\ell=0}^L c (k_0\delta^\ell(1-\delta))^{1-\epsilon}\\
-%   &= ck_0^{1-\epsilon} (1-\delta)^{2-\epsilon} \sum_{\ell=0}^L
-%   (\delta^\ell)^{1-\epsilon}.
-%   \end{align*}
-%   We will choose $\delta$ very small; thus, terms of this sum
-%   with high powers of $\delta$ contribute very little to the
-%   backlog achieved by $\alg_{f'}$. This motivates the choice
-%   $L=1$. With this choice of $L$ our bound on $f'(k_0)$ becomes
-%   \begin{align*}
-%     f'(k_0) &\ge ck_0^{1-\epsilon}(1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon})\\
-%             &\ge ck_0^{1-\epsilon}(1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon})\\
-%             &= ck_0^{1-\epsilon}(1+\delta^{1-\epsilon}-(2-\epsilon)\delta-(2-\epsilon)\delta^{2-\epsilon}).
-%   \end{align*}
-%   The $\delta^{1-\epsilon}$ dominates the other (higher) powers
-%   of $\delta$ as $\delta \to 0$, so clearly there is a choice of
-%   $\delta = \Theta(1)$ making 
-%   $$f'(k_0) \ge c(k_0)^{1-\epsilon}.$$
-%   For instance, we can choose any constant $\delta$ satisfying
-%   \begin{equation}
-%     \delta \le
-%     (2(2-\epsilon))^{-1/\epsilon}.\label{eqn:validdeltas}
-%   \end{equation}
-
-%   Thus, given an algorithm $\alg_f$ for achieving backlog
-%   $ck^{1-\epsilon}$ that works for $k \le g$, the amplification
-%   of $\alg_f$ achieves $f'(k) \ge ck^{1-\epsilon}$ for a larger
-%   value of $k$. By iterating this process we can arbitrarily
-%   expand the region on which our algorithm achieves backlog
-%   $ck^{1-\epsilon}$, so long as there are always valid choices for $k_0$
-%   at each step, i.e. $k_0$ in the correct domain set subject to
-%   the inequality $k_0 \le g/(1-\delta)$. Note that we have not
-%   yet established that valid choices of $k_0$ ever exist.
-
-% We now roughly describe how to use repeated amplification to
-% achieving backlog $cn^{1-\epsilon}$ on $n$ cups in
-% quasi-polynomial running time. We use constant $\epsilon >
-% 0$ and constant $\delta$ satisfying \eqref{eqn:validdeltas}.
-
-
-  Note that $g_{i+1} \ge g_i + 1$ so by continuing this process
-  we eventually reach some $f_{i_*}$ such that $f_{i_*}(n) \ge
-  cn^{1-\epsilon}$; trivially $i_* \le n$. In fact we can show
-  $i_* \le O(\log n)$, i.e. that $g_i$ exhibits exponential
-  growth. The recurrence is almost simply the geometric sequence
-  $g_i = g_{i-1}/(1-\delta)$ with $g_0=1/\delta$, for which it is
-  trivially true that $g_i = (1/\delta) (1/(1-\delta))^i$, hence
-  we would have $g_{(\log_{\frac{1}{1-\delta}} n)} = n\cdot 1/\delta > n$
-  as desired. The actual sequence is not quite this large. The
-  sequence is lower bounded by the sequence $g_i'$ defined as
-  $g_0'=1/\delta, g_i' = g_{i-1}' / (1-\delta) -1$. Even the
-  sequence $g_i'$ grows exponentially though, hence only a
-  logarithmic recursion depth is necessary. In particular, $g_i'$
-  satisfies $$g_i' = \frac{1/\delta}{(1-\delta)^i} -
-  \frac{1/(1-\delta)^{i-1}-1}{1/(1-\delta)-1},$$ which simplifies
-  to $$g_i' = \frac{1}{(1-\delta)^i} + \frac{1-\delta}{\delta}.$$
+  Recall that $g_{i+1} \ge g_i + 1$ so by continuing this process
+  we eventually reach some $g_{i_*}$ such that $g_{i_*} \ge n$;
+  trivially $i_* \le n$. In fact we can show $i_* \le O(\log n)$,
+  i.e. that $g_i$ exhibits exponential growth. To show this, we
+  analyze a new sequence $g_i'$ that is a lower bound for $g_i$,
+  i.e. such that $g_i \ge g_i'$. Define
+  $g_i'$ as $g_0'=1/\delta, g_i' = g_{i-1}' / (1-\delta) -1$;
+  $g_i'$ satisfies 
+  \begin{align*}
+    g_i' &= \frac{1/\delta}{(1-\delta)^i} -
+    \frac{1/(1-\delta)^{i-1}-1}{1/(1-\delta)-1} \\
+        &= \frac{1}{(1-\delta)^i} + \frac{1-\delta}{\delta}.
+  \end{align*}
   Thus $g_{(\log_{\frac{1}{1-\delta}} n)}'$, and hence also
   $g_{(\log_{\frac{1}{1-\delta}} n)}$ both are at least $n$, as desired.
+  Let $i_* = \log_{\frac{1}{1-\delta}} n.$
 
-  However, we have not addressed the issue that the number of cups must be an
-  integer! Although it is relatively clear that this will not affect the
-  asymptotic results, we briefly carefully address this here. Luckily, by
+  We are not quite done however, because it is not necessarily
+  true that there exists $k \in D^{i_*}_{1,\delta}$ with $k = n.$
+  In fact it's not even true! But it turns out that we can get
+  $\Theta(n)$ which is good enough. By
   careful choice of $\delta$ and a slight (constant factor) reduction of $n$ we can get the
   argument to work. In particular, let $\psi$ be the smallest natural such that
   $1/2^\psi < \delta$; define $\delta' = 1/2^\psi$. Let $\tau$ be the integer
@@ -600,7 +552,7 @@ can achieve backlog $\poly(n)$.
   the Amplification Lemma -- of which there will be at most $O(\log n)$-- the
   number of cups is always an integer. 
 
-  Let the running time $f_{i_*}(n)$ be $T(n)$. From the Amplification Lemma we have 
+  Let the running time of $f_{i_*}(n)$ be $T(n)$. From the Amplification Lemma we have 
   following recurrence bounding $T(n)$ (setting $L=1$):
   $$T(n) \le 2n^2 \cdot T(n(1-\delta)).$$
   Continuing for $O(\log n)$ levels of recursion is sufficient to
