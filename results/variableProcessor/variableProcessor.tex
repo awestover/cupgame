@@ -553,20 +553,27 @@ can achieve backlog $\poly(n)$.
   the Amplification Lemma -- of which there will be at most $O(\log n)$-- the
   number of cups is always an integer. 
 
-  {\color{red} %more legit version of the above argument
+  {\color{red} % more legit version of the above argument
+  In order for this to work we slightly modify $n$ and $\delta$.
   Let $\psi$ be the smallest natural such that
   $1/2^\psi < \delta$; define $\delta' = 1/2^\psi$. Let $\tau$ be the integer
   such that $2^{\tau \psi} \le n < 2^\psi 2^{\tau \psi}$; define $n' =
   2^{\tau\psi}$. Note that $n' = \Theta(n)$ as $n'$ is at worst a factor of
   $2^\psi$ less than $n$, but $\delta$ being constant implies that $\psi$ is
-  also constant. Note that $$\tau = \Big\lfloor \frac{\lg
-  n}{\psi} \Big\rfloor \ge \Theta(\log n).$$
+  also constant. Note that $$\tau = \Big\lfloor \frac{\lg n}{\psi} \Big\rfloor \ge \Theta(\log n).$$
 
   Consider $D^i_{1, \delta'}$. It contains everything of the form
   $2^{2i \psi} w$ for $w\in\mathbb{N}$.
 
-  so um your base case is way bigger than I said it was, 
-  but it's like fine cuz we just need constant fill in the base case.
+  Um so the minimum element of a domain grows by a factor of
+  $2^{2\psi}$ every time, whereas the set of values where the
+  function achieves the desired backlog only grows by a factor of 
+  $1/(1-1/2^\psi)$ every time.
+
+  So that seems like a huge problem. 
+
+  The base case needs to be constant size, so we can't cheat or anything.
+
   }
 
   Let the running time of $f_{i_*}(n)$ be $T(n)$. From the Amplification Lemma we have 
