@@ -334,7 +334,12 @@ get a filling strategy for achieving $\poly(n)$ backlog.
   
 \begin{proof}[Proof of Amplification Lemma]
 
-If $f(n) \ge (1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$ then the algorithm simply does $\alg_f$, which achieves the desired backlog in the desired running time. In the rest of the proof, we assume that $f(n) \le (1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$.
+The algorithm defaults to using $\alg_f$ if $f(n) \ge
+(1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$; in this
+case using $\alg_f$
+achieves the desired backlog in the desired running time. In the
+rest of the proof, we describe our strategy for achieving backlog
+$(1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$. 
 
   Let $A$, the \defn{anchor set}, be initialized to consist of
   the $\ceil{n\delta}$ fullest cups, and let $B$ the \defn{non-anchor set} be initialized to consist
@@ -445,7 +450,9 @@ can achieve backlog $n^{1 - \epsilon}$.
 
   By \cref{prop:adaptiveBase} there exists a constant
   $n_0$ such that a filler can achieve backlog $1$
-  on $n_0$ cups (e.g., $n_0 = 1000$ works). Let $\alg_{f_0}$ by the filling strategy described in \cref{prop:adaptiveBase}, where $f_0(k)
+  on $n_0$ cups (e.g., $n_0 = 1000$ works). Let $\alg_{f_0}$ by
+  the filling strategy described in \cref{prop:adaptiveBase},
+  where $f_0(k)
   \ge 1$ for all $k\ge n_0$. 
 
   Next, using the Amplification Lemma we recursively construct
@@ -470,8 +477,16 @@ can achieve backlog $n^{1 - \epsilon}$.
   We prove \cref{clm:fikinduction} by induction on $i$.
   For $i=0$, the base case, \eqref{eqn:fikinduction} can
   be made true by taking $c$ and $\delta$ sufficiently small.
-  In particular, we we choose $c$ small enough such that 
-  $c n_0^{1-\epsilon} -1 \le 0$, which implies \eqref{eqn:fikinduction} holds for $k \in [n_0]$ by monotonicity of $ck^{1-\epsilon}-1$; we also choose $\delta$ small enough so that $g_0 \ge n_0$ and we choose $c$ small enough such that $c g_0^{1-\epsilon} -1 \le f_0(g_0) = 1$, so that by monotonicity of $ck^{1-\epsilon} -1$ we have \eqref{eqn:fikinduction} for $k \in [n_0, g_0]$. \footnote{Note that for the base case it is important that $\epsilon$ and $\delta$ are constants, that way $c$ is also a constant.}
+  In particular, we we choose $c=\Theta(1)$ small enough to make 
+  $c n_0^{1-\epsilon} -1 \le 0$, which implies
+  \eqref{eqn:fikinduction} holds for $k \in [n_0]$ by
+  monotonicity of $ck^{1-\epsilon}-1$; we also choose $\delta$
+  small enough to make $g_0 \ge n_0$, and we choose $c$ small
+  enough to make $c g_0^{1-\epsilon} -1 \le f_0(g_0) = 1$, which
+  implies \eqref{eqn:fikinduction} holds for $k\in [n_0, g_0]$ by
+  monotonicity of $ck^{1-\epsilon}-1$. \footnote{Note
+  that it is important here that $\epsilon$ and
+  $\delta$ are constants, that way $c$ is also a constant.}
 
   As our inductive hypothesis we assume
   \eqref{eqn:fikinduction} for $f_i$; we aim to show that 
@@ -480,38 +495,40 @@ can achieve backlog $n^{1 - \epsilon}$.
   Consider any $k\in [g_{i+1}]$. First we deal with the trivial
   case where $k \le g_0$. In this case 
   $$f_{i+1}(k) \ge f_i(k) \ge \cdots \ge f_0(k) \ge ck^{1-\epsilon} -1.$$
+
   Now we consider the case where $k \ge g_0$.
+  Since $f_{i+1}$ is the amplification of $f_i$ we have
+  $$f_{i+1}(k) \ge (1-\delta) f_i(\floor{(1-\delta)k}) + f_i(\ceil{\delta k}).$$
+  By our inductive hypothesis, which applies as $\ceil{\delta k}\le g_i, \floor{k\cdot (1-\delta)} \le g_i$, we have
+  $$f_{i+1}(k) \ge (1-\delta) (c \cdot\floor{(1-\delta)k}^{1-\epsilon}-1) + c\ceil{\delta k}^{1-\epsilon} - 1. $$
+  Dropping the floor and ceiling, incurring a $-1$ for dropping the floor, we have
+  $$f_{i+1}(k) \ge (1-\delta) (c \cdot ((1-\delta)k-1)^{1-\epsilon}-1) + c (\delta k)^{1-\epsilon} - 1.$$
+  Because $(x-1)^{1-\epsilon} \ge x^{1-\epsilon} -1$, due to the
+  fact that $x\mapsto x^{1-\epsilon}$ is a sub-linear
+  sub-additive function, we have 
+  $$f_{i+1}(k) \ge (1-\delta) c \cdot (((1-\delta)k)^{1-\epsilon}-2) + c(\delta k)^{1-\epsilon}-1.$$
+  Moving the $ck^{1-\epsilon}$ to the front we have
+  $$ f_{i+1}(k) \ge ck^{1-\epsilon} \cdot\left((1-\delta)^{2-\epsilon} + \delta^{1-\epsilon} - 2(1-\delta)/k^{1-\epsilon} \right) -1.$$
+  Because $(1-\delta)^{2-\epsilon} \ge 1-(2-\epsilon)\delta$, which follows by inspection of the first three terms of the Taylor Series of $(1-\delta)^{2-\epsilon}$, we have
+  $$f_{i+1}(k) \ge ck^{1-\epsilon} \cdot\left(1-(2-\epsilon)\delta + \delta^{1-\epsilon} - 2(1-\delta)/k^{1-\epsilon} \right)-1.$$
+  By choosing $\delta< 1/2$ we make $-2(1-\delta) \ge -1$, so we have
+  $$f_{i+1}(k) \ge ck^{1-\epsilon} \cdot\left(1-(2-\epsilon)\delta + \delta^{1-\epsilon} - 1/k^{1-\epsilon} \right) -1.$$
+  Because $-1/k^{1-\epsilon} \ge -1/g_0^{1-\epsilon} \ge
+  -(\delta/4)^{1-\epsilon} \ge -\delta^{1-\epsilon}/2$, which follows from our choice of $g_0 = \ceil{4/\delta}$ and the restriction
+  $\epsilon<1/2$, we have
+  $$f_{i+1}(k) \ge ck^{1-\epsilon} \cdot\left(1-(2-\epsilon)\delta + \delta^{1-\epsilon} - (1/2)\delta^{1-\epsilon} \right)-1.$$
+  Finally, combining terms we have
+  $$f_{i+1}(k) \ge  ck^{1-\epsilon} \cdot\left(1-(2-\epsilon)\delta + (1/2)\delta^{1-\epsilon}\right)-1. $$
 
-  Thus we have that for $k\in [g_{i+1}]$,
-  \begin{align*}
-    f_{i+1}(k) &\ge (1-\delta) f_i(\floor{(1-\delta)k}) + f_i(\ceil{\delta k})  \\ 
-    &\ge (1-\delta) (c \cdot\floor{(1-\delta)k}^{1-\epsilon}-1) + c\ceil{\delta k}^{1-\epsilon} - 1  \\ 
-    &\ge (1-\delta) c \cdot (((1-\delta)k-1)^{1-\epsilon}-1) + c(\delta k)^{1-\epsilon}-1 \\ 
-    &\ge (1-\delta) c \cdot (((1-\delta)k)^{1-\epsilon}-2) + c(\delta k)^{1-\epsilon}-1 \\ 
-    &= ck^{1-\epsilon} \cdot\left((1-\delta)^{2-\epsilon} + \delta^{1-\epsilon} - 2(1-\delta)/k^{1-\epsilon} \right) -1\\ 
-    &\ge ck^{1-\epsilon} \cdot\left(1-(2-\epsilon)\delta + \delta^{1-\epsilon} - 2(1-\delta)/k^{1-\epsilon} \right)-1\\ 
-    &\ge ck^{1-\epsilon} \cdot\left(1-(2-\epsilon)\delta + \delta^{1-\epsilon} - 1/k^{1-\epsilon} \right) -1\\ 
-    &\ge ck^{1-\epsilon} \cdot\left(1-(2-\epsilon)\delta + \delta^{1-\epsilon} - (1/2)\delta^{1-\epsilon} \right)-1\\ 
-    &= ck^{1-\epsilon} \cdot\left(1-(2-\epsilon)\delta + (1/2)\delta^{1-\epsilon}\right)-1 
-  \end{align*}
-
-  Here are the justifications for each of these manipulations: 
-  \begin{enumerate}
-    \item $f_{i+1}$ is the amplification of $f_i$
-    \item Our inductive hypothesis; note that $\floor{k\cdot (1-\delta)}$ is small enough that we can use it in $f_i$
-    \item Drop floor and ceiling; incur a $-1$ for dropping the floor
-    \item $(x-1)^{1-\epsilon} \ge x^{1-\epsilon} -1$
-    \item Move $ck^{1-\epsilon}$ to the front
-    \item $(1-\delta)^{2-\epsilon} \ge 1-(2-\epsilon)\delta$ by inspection of the first three terms of the Taylor Series of $(1-\delta)^{2-\epsilon}$
-    \item $-2(1-\delta) \ge -1$ because $\delta < 1/2$
-    \item $1/k^{1-\epsilon} \le 1/g_0^{1-\epsilon} \le \delta^{1-\epsilon}/2$  % CHECK IF ITS le or ge
-    \item Combine $\delta^{1-\epsilon}$ terms
-  \end{enumerate}
-  % make all equations of the form f_{i+1}(k) \ge 
-  % Since, blank, we have next equation.
-
-  Because $\delta^{1-\epsilon}$ dominates $\delta$ for sufficiently small $\delta$, there is a choice of constant $\delta$ such that $$f_{i+1}(k) \ge ck^{1-\epsilon}-1,$$
-  completing the proof. We remark that the choices of $c, \delta$ are the same for every $i$ in the inductive proof, and depend only on $\epsilon$. 
+  Because $\delta^{1-\epsilon}$ dominates $\delta$ for
+  sufficiently small $\delta$, there is a choice of
+  $\delta=\Theta(1)$ such that $1-(2-\epsilon)\delta +
+  (1/2)\delta^{1-\epsilon} \ge 1$. Taking $\delta$ to be this
+  small we have,
+  $$f_{i+1}(k) \ge ck^{1-\epsilon}-1,$$
+  completing the proof. We remark that the choices of $c, \delta$
+  are the same for every $i$ in the inductive proof, and depend
+  only on $\epsilon$. 
   \end{proof}
 
   We claim that $g_i$ grows exponentially, so after recursing
