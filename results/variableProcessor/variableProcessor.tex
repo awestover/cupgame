@@ -539,15 +539,15 @@ can achieve backlog $n^{1 - \epsilon}$.
   We lower bound the sequence $g_i$ with another sequence $g_i'$
   defined as 
   $$g_i'=\begin{cases}
-    1/\delta + 1, & i=0\\
+    4/\delta, & i=0\\
     g_{i-1}' / (1-\delta) -1, & i> 0.
   \end{cases}$$
   Solving this recurrence, we find 
-  $$g_i' = \frac{3-\delta}{(1-\delta)^i},$$
+  $$g_i' = \frac{4-(1-\delta)^2}{\delta} \frac{1}{(1-\delta)^i}
+  \ge \frac{1}{(1-\delta)^i},$$
   which clearly exhibits exponential growth. 
-  In particular, $g_{(\log_{\frac{1}{1-\delta}} n)}'$, and hence also
-  $g_{(\log_{\frac{1}{1-\delta}} n)}$, is at least $n$, as desired.
-  Let $i_* = \log_{\frac{1}{1-\delta}} n.$
+  In particular, let $i_* = \log_{1/(1-\delta)} n$. Then,
+  $$ g_{i_*} \ge g_{i_*}' \ge n,$$ as desired.
 
   Let the running time of $f_{i_*}(n)$ be $T(n)$. From the Amplification Lemma we have 
   following recurrence bounding $T(n)$:
@@ -575,21 +575,29 @@ different levels of recursion as opposed to in the proof of
   achieves backlog $\Omega(n)$ in time $O(n!)$.
 \end{proposition}
 \begin{proof}
-  We construct an algorithm $f$ that achieves backlog 
-  $$f(k) = \begin{cases}
-    \left(1-\frac{n_0}{k}\right)f(k-n_0) + 1, &k \ge 2n_0\\
-    1,  &n_0\le k < 2n_0 \\
-    0, &k< n_0.
-  \end{cases}$$
-  Clearly our strategy is possible for $k<2n_0$ by 
-  \cref{prop:adaptiveBase}.
-  Assuming that our algorithm works for $k<mn_0$ we can extend it to work for
-  $k<(m+1)n_0$ by considering the amplification of our algorithm using $\delta = n_0/k$.
-  By induction our algorithm thus works for all $k$.
+  We start, as in the proof of \cref{thm:adaptivePoly}, with an
+  algorithm $\alg_{f_{n_0}}$ (note that we index these functions
+  starting at $n_0$ rather than $0$ for convenience) for
+  achieving backlog $f_{n_0}(k) \ge 1$ on $k\ge n_0$ cups, which is
+  possible by \cref{prop:adaptiveBase}. Let $\alg_{f_{n_0+k}}$
+  for $k\in [n_0-1]$ be the same as $\alg_{f_0}$.
+  For $i \ge 2n_0$ we construct $\alg_{f_i}$ as the
+  amplification of $\alg_{f_{i-n_0}}$ using the
+  Amplification Lemma with parameter $\delta = n_0/i$. 
 
-  Expanding the recurrence, we find that our algorithm achieves backlog 
-  $$f(n) = 1+ 1-\frac{n_0}{n} + 1-\frac{2n_0}{n} + 1-\frac{3n_0}{n} + \cdots .$$
-  Expanding for $\Theta(n)$ levels, we get $$f(n) \ge \Omega(n).$$
+  Clearly the sequence of functions $f_i$ satisfies
+  $$f_i(i) \ge \left(1-\frac{n_0}{i}\right) f_{i-n_0}(i-n_0) + 1$$
+  for all $i\ge 2n_0$.
+
+  Let $i_* = \floor{n/(2n_0)}$, let $m = n\bmod n_0$. We can see by inspection, or by
+  inductively analyzing the sequence
+  $$f_{m}(m), f_{n_0 + m}(n_0+m), f_{2n_0 + m}(2n_0+m), \ldots,$$
+  that $\alg_{f_{i_*}(n)}$ achieves backlog 
+  $$1+ 1-\frac{n_0}{n} + 1-\frac{2n_0}{n} +
+  1-\frac{3n_0}{n} + \cdots + 1-\frac{1}{2}.$$
+  Each of the $\Theta(n)$ terms in this sum are at least $1/2$, so
+  we have
+  $$f_{i_*}(n) \ge \Omega(n).$$
 
   The recurrence for running time is 
   $$T(n) = n \cdot n_0T(n-n_0)+O(1).$$
