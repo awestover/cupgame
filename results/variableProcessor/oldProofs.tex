@@ -477,3 +477,43 @@ being constant, trivially satisfies Inequality \ref{eqn:deltaLowerBound}.
   
 \end{proof}
 
+%% WLOG in thm 1, kind of broken
+
+We are not quite done however, because it is not necessarily
+true that there exists $k \in D^{i_*}_{1,\delta}$ with $k = n.$
+In fact it's not even true! But it turns out that we can get
+$\Theta(n)$ which is good enough. By
+careful choice of $\delta$ and a slight (constant factor) reduction of $n$ we can get the
+argument to work. In particular, let $\psi$ be the smallest natural such that
+$1/2^\psi < \delta$; define $\delta' = 1/2^\psi$. Let $\tau$ be the integer
+such that $2^{\tau \psi} \le n < 2^\psi 2^{\tau \psi}$; define $n' =
+2^{\tau\psi}$. Note that $n' = \Theta(n)$ as $n'$ is at worst a factor of
+$2^\psi$ less than $n$, but $\delta$ being constant implies that $\psi$ is
+also constant. Note that $$\tau = \Big\lfloor \frac{\lg
+n}{\psi} \Big\rfloor \ge \Theta(\log n).$$
+Thus, we have that $n'(\delta')^{i_1}(1-\delta')^{i_2} \in \mathbb{N}$ for any
+integers $i_1,i_2$ satisfying $i_1+i_2 \le \tau$, which means
+that $i_1,i_2= \Theta(\log n)$ is possible.
+Now we can genuinely guarantee that throughout the levels of recursive application of
+the Amplification Lemma -- of which there will be at most $O(\log n)$-- the
+number of cups is always an integer. 
+
+{\color{red} % more legit version of the above argument
+In order for this to work we slightly modify $n$ and $\delta$.
+Let $\psi$ be the smallest natural such that
+$1/2^\psi < \delta$; define $\delta' = 1/2^\psi$. Let $\tau$ be the integer
+such that $2^{\tau \psi} \le n < 2^\psi 2^{\tau \psi}$; define $n' =
+2^{\tau\psi}$. Note that $n' = \Theta(n)$ as $n'$ is at worst a factor of
+$2^\psi$ less than $n$, but $\delta$ being constant implies that $\psi$ is
+also constant. Note that $$\tau = \Big\lfloor \frac{\lg n}{\psi} \Big\rfloor \ge \Theta(\log n).$$
+
+Consider $D^i_{1, \delta'}$. It contains everything of the form
+$2^{2i \psi} w$ for $w\in\mathbb{N}$.
+
+Um so the minimum element of a domain grows by a factor of
+$2^{2\psi}$ every time, whereas the set of values where the
+function achieves the desired backlog only grows by a factor of 
+$1/(1-1/2^\psi)$ every time.
+So that seems like a huge problem. 
+The base case needs to be constant size, so we can't cheat or anything.
+}

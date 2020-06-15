@@ -17,7 +17,7 @@
 \DeclareMathOperator{\img}{Im}
 \DeclareMathOperator{\polylog}{\text{polylog}}
 \DeclareMathOperator{\poly}{\text{poly}}
-\DeclareMathOperator{\st}{\text{ such that }}
+
 \DeclareMathOperator{\fil}{\text{fill}}
 \DeclareMathOperator{\alg}{\text{alg}}
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
@@ -402,7 +402,7 @@ get a filling strategy for achieving $\poly(n)$ backlog.
   $$-h \cdot \frac{\delta}{1-\delta} + f(\floor{n (1-\delta)}) =
   (1-\delta)f(\floor{n (1-\delta)}) = h.$$ 
   Thus the algorithm for Step 1 succeeds within $|A| =
-  \delta n$ swapping-processes, since at the end of the $|A|$-th
+  \ceil{\delta n}$ swapping-processes, since at the end of the $|A|$-th
   swapping process every cup in $A$ has fill at least $h$, or
   the algorithm halted before $|A|$ swapping-processes because it
   already achieved $\mu(A) \ge h$. 
@@ -422,7 +422,7 @@ get a filling strategy for achieving $\poly(n)$ backlog.
   Now we analyze the running time of the filling strategy
   $\alg_{f'}$. First, recall that in Step 1 $\alg_{f'}$ calls $\alg_f$ on a
   set of size $\floor{(1-\delta)n}$ as many as $hn\delta +1$ times.
-  Because we mandated that $h < n$, Step 1 contributes no more
+  Because we mandate that $h < n$, Step 1 contributes no more
   than $(n\cdot n\delta) \cdot T(|B|)$ to the running time.
   Step 2 requires applying $\alg_f$ to $|A|$ cups one time, and hence
   contributes $T(|A|)$ to the running time. Summing these we have
@@ -455,8 +455,8 @@ can achieve backlog $\poly(n)$.
 
   Define a sequence $g_i$ with 
   $$ g_i = \begin{cases}
-    1/\delta,  & i = 0,\\
-    g_{i-1}/(1-\delta) & i \ge 1
+    \ceil{1/\delta},  & i = 0,\\
+    \floor{g_{i-1}/(1-\delta)} & i \ge 1
   \end{cases} $$
 
   We claim the following regarding this construction:
@@ -473,8 +473,9 @@ can achieve backlog $\poly(n)$.
   For $i=0$, the base case, \eqref{eqn:fikinduction} can
   be made true by taking $c$ and $\delta$ sufficiently small.
   In particular, $c$ must be small enough
-  that $cg_0^{1-\epsilon} -1 < f_0(n_0)$ implying 
-  $$c \le \frac{f_0(n_0)+1}{g_0^{1-\epsilon}} = \frac{2}{g_0^{1-\epsilon}} = 2\delta^{1-\epsilon}.$$
+  that $cg_0^{1-\epsilon} -1 < f_0(g_0)$ implying, as $\delta$
+  will be chosen small enough so that $g_0 = \ceil{1/\delta} \ge n_0$, that
+  $$c \le \frac{f_0(g_0)+1}{g_0^{1-\epsilon}} = \frac{2}{g_0^{1-\epsilon}} = \frac{2}{\ceil{\delta}^{1-\epsilon}}.$$
   By monotonicity of $ck^{1-\epsilon}-1$ this is enough to imply
   $f_0(k) \ge ck^{1-\epsilon} -1$ holds
   for $k\in [n_0, g_0]$. We also make sure that $c$ is small
@@ -487,7 +488,7 @@ can achieve backlog $\poly(n)$.
   As our inductive hypothesis we assume
   \eqref{eqn:fikinduction} for $f_i$; we aim to show that 
   \eqref{eqn:fikinduction} holds for $f_{i+1}$. Note that, by
-  design of $g_i$, if $k \in \le g_{i+1}$ then $k\cdot (1-\delta) \in g_i$.
+  design of $g_i$, if $k \le g_{i+1}$ then $\floor{k\cdot (1-\delta)} \le g_i$.
   Consider any $k\in [g_{i+1}]$. First we deal with the trivial
   case where $k \le g_0$. In this case 
   $$f_{i+1}(k) \ge f_i(k) \ge \cdots \ge f_0(k) \ge ck^{1-\epsilon} -1.$$
@@ -528,67 +529,23 @@ can achieve backlog $\poly(n)$.
 
   \end{proof}
 
-  Clearly $g_{i}$ grows exponentially; in particular $$g_i = \frac{1/\delta}{(1-\delta)^i}.$$
-  Let $i_* = \log_{\frac{1}{1-\delta}} n.$ We have that $g_{i_*} \ge n$.
-  Note that $\alg_{f_{i_*}}$ achieves backlog $f(n) \ge cn^{1-\epsilon}-1$ on $n$ cups.
-  % Recall that $g_{i+1} \ge g_i + 1$ so by continuing this process
-  % we eventually reach some $g_{i_*}$ such that $g_{i_*} \ge n$;
-  % trivially $i_* \le n$. In fact we can show $i_* \le O(\log n)$,
-  % i.e. that $g_i$ exhibits exponential growth. To show this, we
-  % analyze a new sequence $g_i'$ that is a lower bound for $g_i$,
-  % i.e. such that $g_i \ge g_i'$. Define
-  % $g_i'$ as $g_0'=1/\delta, g_i' = g_{i-1}' / (1-\delta) -1$;
-  % $g_i'$ satisfies 
-  % \begin{align*}
-  %   g_i' &= \frac{1/\delta}{(1-\delta)^i} -
-  %   \frac{1/(1-\delta)^{i-1}-1}{1/(1-\delta)-1} \\
-  %       &= \frac{1}{(1-\delta)^i} + \frac{1-\delta}{\delta}.
-  % \end{align*}
-  % Thus $g_{(\log_{\frac{1}{1-\delta}} n)}'$, and hence also
-  % $g_{(\log_{\frac{1}{1-\delta}} n)}$ both are at least $n$, as desired.
-  % Let $i_* = \log_{\frac{1}{1-\delta}} n.$
-
-  % We are not quite done however, because it is not necessarily
-  % true that there exists $k \in D^{i_*}_{1,\delta}$ with $k = n.$
-  % In fact it's not even true! But it turns out that we can get
-  % $\Theta(n)$ which is good enough. By
-  % careful choice of $\delta$ and a slight (constant factor) reduction of $n$ we can get the
-  % argument to work. In particular, let $\psi$ be the smallest natural such that
-  % $1/2^\psi < \delta$; define $\delta' = 1/2^\psi$. Let $\tau$ be the integer
-  % such that $2^{\tau \psi} \le n < 2^\psi 2^{\tau \psi}$; define $n' =
-  % 2^{\tau\psi}$. Note that $n' = \Theta(n)$ as $n'$ is at worst a factor of
-  % $2^\psi$ less than $n$, but $\delta$ being constant implies that $\psi$ is
-  % also constant. Note that $$\tau = \Big\lfloor \frac{\lg
-  % n}{\psi} \Big\rfloor \ge \Theta(\log n).$$
-  % Thus, we have that $n'(\delta')^{i_1}(1-\delta')^{i_2} \in \mathbb{N}$ for any
-  % integers $i_1,i_2$ satisfying $i_1+i_2 \le \tau$, which means
-  % that $i_1,i_2= \Theta(\log n)$ is possible.
-  % Now we can genuinely guarantee that throughout the levels of recursive application of
-  % the Amplification Lemma -- of which there will be at most $O(\log n)$-- the
-  % number of cups is always an integer. 
-
-  % {\color{red} % more legit version of the above argument
-  % In order for this to work we slightly modify $n$ and $\delta$.
-  % Let $\psi$ be the smallest natural such that
-  % $1/2^\psi < \delta$; define $\delta' = 1/2^\psi$. Let $\tau$ be the integer
-  % such that $2^{\tau \psi} \le n < 2^\psi 2^{\tau \psi}$; define $n' =
-  % 2^{\tau\psi}$. Note that $n' = \Theta(n)$ as $n'$ is at worst a factor of
-  % $2^\psi$ less than $n$, but $\delta$ being constant implies that $\psi$ is
-  % also constant. Note that $$\tau = \Big\lfloor \frac{\lg n}{\psi} \Big\rfloor \ge \Theta(\log n).$$
-
-  % Consider $D^i_{1, \delta'}$. It contains everything of the form
-  % $2^{2i \psi} w$ for $w\in\mathbb{N}$.
-
-  % Um so the minimum element of a domain grows by a factor of
-  % $2^{2\psi}$ every time, whereas the set of values where the
-  % function achieves the desired backlog only grows by a factor of 
-  % $1/(1-1/2^\psi)$ every time.
-
-  % So that seems like a huge problem. 
-
-  % The base case needs to be constant size, so we can't cheat or anything.
-
-  % }
+  We claim that $g_i$ grows exponentially, so after recursing
+  with this process for $i_* \le O(\log n)$ levels of recursion we have
+  $g_{i_*} \ge n$ and hence we have an algorithm $\alg_{f_{i_*}}$
+  that achieves backlog $cn^{1-\epsilon}-1$ on $n$ cups, as
+  desired.
+  We lower bound the sequence $g_i$ with another sequence $g_i'$
+  defined as 
+  $$g_i'=\begin{cases}
+    1/\delta + 1, & i=0\\
+    g_{i-1}' / (1-\delta) -1, & i> 0.
+  \end{cases}$$
+  Solving this recurrence, we find 
+  $$g_i' = \frac{3-\delta}{(1-\delta)^i},$$
+  which clearly exhibits exponential growth. 
+  In particular, $g_{(\log_{\frac{1}{1-\delta}} n)}'$, and hence also
+  $g_{(\log_{\frac{1}{1-\delta}} n)}$, is at least $n$, as desired.
+  Let $i_* = \log_{\frac{1}{1-\delta}} n.$
 
   Let the running time of $f_{i_*}(n)$ be $T(n)$. From the Amplification Lemma we have 
   following recurrence bounding $T(n)$:
@@ -608,7 +565,7 @@ $\delta$ to $\Theta(1/n)$ \footnote{Or more precisely, setting $\delta$ to
 be a constant divided by the number of cups at the level of
 recursion; note in particular that $\delta$ changes at the
 different levels of recursion as opposed to in the proof of
- \cref{thm:adaptivePoly}}.
+ \cref{thm:adaptivePoly}.}.
 
 \begin{proposition}
   \label{prop:factorialTimeAlg}
@@ -959,51 +916,52 @@ Thus, by induction we have the invariant for all rounds $t\in\mathbb{N}$.
 
 
 \section{Oblivious Filler Lower Bound}\label{sec:oblivious}
-We now prove a lower bound on backlog with an oblivious filler. First we
-highlight the concentration inequalities that we will need in the analysis. 
+In this section we prove a lower bound on backlog with an oblivious filler. 
 
-The following theorem is known as Hoeffding's Inequality:
-\begin{theorem}
-  Let $X_i$ for $i=1,2,\ldots, k$ be independent bounded random variables with
-  $X_i \in [a,b]$ for all $i$. Then,
-  $$\Pr\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
-  2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
-\end{theorem}
-There are also several useful corollaries of Hoeffding's Inequality. 
-Firstly, the Chernoff Bound, i.e. Hoeffding's Inequality applied to binary
-random variables, is a trivial corollary.
-A more interesting corollary is that Hoeffding's Inequality applies to random
-variables drawn without replacement from a finite population.
-Let $S$ be a finite population, let $X_i$ for $i=1,2\ldots, k$ be chosen
-uniformly at random from $S \setminus \{X_1,\ldots, X_{i-1}\}$, and let $Y_i$
-for $i=1,2,\ldots, k$ be chosen uniformly at random from $S$.
-Note that $\{X_1,\ldots, X_k\}$ represents a sample of $S$ chosen without
-replacement, whereas $\{Y_1,\ldots, Y_k\}$ represents a sample with
-replacement. Because the $Y_i$ are independent random variables
-Hoeffding's Inequality provides a bound on the probability of $\sum_{i=1}^k
-Y_i$ deviating from its mean by more than $t$.
-The same bound can be given on the probability of $\sum_{i=1}^k X_i$ deviating
-from its mean by more than $t$, because the probability of $\sum_{i=1}^k X_i$
-deviating from its mean by more than $t$ is at most the probability of
-$\sum_{i=1}^k Y_i$ deviating from it's mean by $t$.
-Formally we can write this as 
-\begin{corollary}
-  \label{cor:hoeffdingwreplacement}
-  Let $S$ be a finite set with $\min(S) \ge a, \max(S) \le b$, and let $X_i$
-  for $i=1,2\ldots, k$ be chosen uniformly at random from $S \setminus
-  \{X_1,\ldots, X_{i-1}\}$.
-Then 
-  $$\Pr\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
-  2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
-\end{corollary}
-Hoeffding proved \cref{cor:hoeffdingwreplacement} in his seminal work
-\cite{who62} (the result follows from his Theorem 4, combined with Hoeffding's
-Inequality for independent random variables).
-This result is intuitive as samples drawn without replacement should be more
-tightly concentrated around the mean than samples drawn with replacement, which
-are more free to vary.
+% First we highlight the concentration inequalities that we will need in the analysis. 
 
-We now proceed with our analysis of oblivious lower bounds.
+% The following theorem is known as Hoeffding's Inequality:
+% \begin{theorem}
+%   Let $X_i$ for $i=1,2,\ldots, k$ be independent bounded random variables with
+%   $X_i \in [a,b]$ for all $i$. Then,
+%   $$\Pr\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
+%   2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
+% \end{theorem}
+% There are also several useful corollaries of Hoeffding's Inequality. 
+% Firstly, the Chernoff Bound, i.e. Hoeffding's Inequality applied to binary
+% random variables, is a trivial corollary.
+% A more interesting corollary is that Hoeffding's Inequality applies to random
+% variables drawn without replacement from a finite population.
+% Let $S$ be a finite population, let $X_i$ for $i=1,2\ldots, k$ be chosen
+% uniformly at random from $S \setminus \{X_1,\ldots, X_{i-1}\}$, and let $Y_i$
+% for $i=1,2,\ldots, k$ be chosen uniformly at random from $S$.
+% Note that $\{X_1,\ldots, X_k\}$ represents a sample of $S$ chosen without
+% replacement, whereas $\{Y_1,\ldots, Y_k\}$ represents a sample with
+% replacement. Because the $Y_i$ are independent random variables
+% Hoeffding's Inequality provides a bound on the probability of $\sum_{i=1}^k
+% Y_i$ deviating from its mean by more than $t$.
+% The same bound can be given on the probability of $\sum_{i=1}^k X_i$ deviating
+% from its mean by more than $t$, because the probability of $\sum_{i=1}^k X_i$
+% deviating from its mean by more than $t$ is at most the probability of
+% $\sum_{i=1}^k Y_i$ deviating from it's mean by $t$.
+% Formally we can write this as 
+% \begin{corollary}
+%   \label{cor:hoeffdingwreplacement}
+%   Let $S$ be a finite set with $\min(S) \ge a, \max(S) \le b$, and let $X_i$
+%   for $i=1,2\ldots, k$ be chosen uniformly at random from $S \setminus
+%   \{X_1,\ldots, X_{i-1}\}$.
+% Then 
+%   $$\Pr\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
+%   2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
+% \end{corollary}
+% Hoeffding proved \cref{cor:hoeffdingwreplacement} in his seminal work
+% \cite{who62} (the result follows from his Theorem 4, combined with Hoeffding's
+% Inequality for independent random variables).
+% This result is intuitive as samples drawn without replacement should be more
+% tightly concentrated around the mean than samples drawn with replacement, which
+% are more free to vary.
+
+% We now proceed with our analysis of oblivious lower bounds.
 
 Call a cup configuration $M$\defn{-flat} if the fill of every cup is in the
 interval $[-M, M]$. Call an emptier $\Delta$\defn{-greedy-like} if whenever
@@ -1017,7 +975,7 @@ In the randomized setting we are only able to prove lower bounds for backlog
 against greedy-like emptiers; whether or not our results can be extended to a
 more general class of emptiers is an interesting open question. 
 Nonetheless, greedy-like emptiers are of great interest; for example, a greedy
-emptier is used in the upper bound proof.  
+emptier (which is $0$-greedy-like) is used in the upper bound proof.  
 
 We now prove a crucial property of greedy-like emptiers: 
 \begin{proposition}
@@ -1286,7 +1244,7 @@ Now we formally prove that the Step 1 succeeds (with exponentially good probabil
   independent, and identically distributed.
 
   Clearly $$\E\left[\sum_{i=1}^{n/4} X_i\right] = qn/4.$$ 
-  By a Chernoff Bound (i.e. Hoeffding's Inequality applied to binary random variables),
+  By a Chernoff Bound,
   $$\Pr\left(\sum_{i=1}^{n/4} X_i\le nq/8\right) \le e^{-nq^2/128}.$$ That is, the
   probability that less than $nq/8$ of the anchor cups have fill at least $h$ is
   exponentially small in $n$, as desired.
