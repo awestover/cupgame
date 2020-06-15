@@ -316,7 +316,7 @@ Next we prove the \defn{Amplification Lemma}.
   $$f'(n) \ge (1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n}) $$
   and $f'(n) \ge f(n)$
   in the negative-fill variable-processor cup game on $n$ cups in running time 
-  $$T'(n) \le n^2 \delta \cdot T(\floor{(1-\delta)n}) + T(\ceil{\delta n}t)$$
+  $$T'(n) \le n^2 \delta \cdot T(\floor{(1-\delta)n}) + T(\ceil{\delta n})$$
   starting from any initial cup state where the average fill is $0$.
 \end{lemma}
 
@@ -418,10 +418,6 @@ $(1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$.
   $\alg_f$ to $A$, and hence achieves a cup with fill at least 
   $$\mu(A) + f(|A|) \ge (1-\delta)f(\floor{(1-\delta)n)}) + f(\ceil{\delta n}),$$
   as desired.
-%  If the right side of \eqref{eq:muplusfa} is at least $f(n)$
-%  then this strategy has achieved the desired backlog. Otherwise, the
-%  filler now applies $\alg_f$ to all the cups, which gives a cup
-%  with backlog $f(n)$.
 
   Now we analyze the running time of the filling strategy
   $\alg_{f'}$. First, recall that in Step 1 $\alg_{f'}$ calls $\alg_f$ on a
@@ -576,32 +572,52 @@ different levels of recursion as opposed to in the proof of
 \end{proposition}
 \begin{proof}
   We start, as in the proof of \cref{thm:adaptivePoly}, with an
-  algorithm $\alg_{f_{n_0}}$ (note that we index these functions
-  starting at $n_0$ rather than $0$ for convenience) for
-  achieving backlog $f_{n_0}(k) \ge 1$ on $k\ge n_0$ cups, which is
-  possible by \cref{prop:adaptiveBase}. Let $\alg_{f_{n_0+k}}$
-  for $k\in [n_0-1]$ be the same as $\alg_{f_0}$.
-  For $i \ge 2n_0$ we construct $\alg_{f_i}$ as the
-  amplification of $\alg_{f_{i-n_0}}$ using the
-  Amplification Lemma with parameter $\delta = n_0/i$. 
+  algorithm $\alg_{f_0}$ for
+  achieving backlog $f_0(k) \ge 1$ on $k\ge n_0$ cups, which is
+  possible by \cref{prop:adaptiveBase}. 
+  For $i > 0$ we construct $\alg_{f_{i}}$ as the
+  amplification of $\alg_{f_{i-1}}$ using the
+  Amplification Lemma with parameter $\delta = 1/(i+1)$. 
 
-  Clearly the sequence of functions $f_i$ satisfies
-  $$f_i(i) \ge \left(1-\frac{n_0}{i}\right) f_{i-n_0}(i-n_0) + 1$$
-  for all $i\ge 2n_0$.
+  We claim the following regarding this constuction:
+  \begin{clm}
+    \label{clm:yayactuallygetn}
+  For all $i\ge 0$,
+  \begin{equation}
+    \label{eq:omegaNpfinduction}
+    f_i((i+1)\cdot n_0) \ge \sum_{j=0}^i \left(1-\frac{j}{i+1}\right).
+  \end{equation}
+  \end{clm}
+  \begin{proof}
+  We prove \cref{clm:yayactuallygetn} by induction on $i$. When $i=0$, the base case, \eqref{eq:omegaNpfinduction} becomes 
+  $f_{0}(n_0) \ge 1$ which is true. Assuming
+  \eqref{eq:omegaNpfinduction} for $f_{i-1}$, we now show
+  \eqref{eq:omegaNpfinduction} holds for $f_{i}$.
+  Because $f_{i}$ is the amplification of $f_{i-1}$ with $\delta = 1/(i+1)$, we have
+  $$f_{i}((i+1)\cdot n_0) \ge \left(1 - \frac{1}{i+1}\right) f_{i-1}(i\cdot n_0) + f_{i-1}(n_0).$$
+  Since $f_{i-1}(n_0) \ge f_0(n_0) \ge 1$ we have
+  $$f_{i}((i+1)\cdot n_0) \ge \left(1 - \frac{1}{i+1}\right) f_{i-1}(i\cdot n_0) + 1.$$
+  Using the inductive hypothesis we have
+  $$f_{i}((i+1)\cdot n_0) \ge \left(1 - \frac{1}{i+1}\right)\sum_{j=0}^{i-1} \left(1-\frac{j}{i}\right) + 1.$$
+  Note that 
+  \begin{align*}
+    \left(1 - \frac{1}{i+1}\right)\cdot \left(1-\frac{j}{i}\right) &= \frac{i}{i+1} \cdot \frac{i-j}{i} \\
+  &= \frac{i-j}{i+1}\\
+  &= 1 - \frac{j+1}{i+1}.
+  \end{align*}
+  Thus we have
+  $$f_{i}((i+1)\cdot n_0) \ge \sum_{j=1}^{i} \left(1-\frac{j}{i+1}\right) + 1 = \sum_{j=0}^{i} \left(1-\frac{j}{i+1}\right),$$
+  as desired.
+  \end{proof}
 
-  Let $i_* = \floor{n/(2n_0)}$, let $m = n\bmod n_0$. We can see by inspection, or by
-  inductively analyzing the sequence
-  $$f_{m}(m), f_{n_0 + m}(n_0+m), f_{2n_0 + m}(2n_0+m), \ldots,$$
-  that $\alg_{f_{i_*}(n)}$ achieves backlog 
-  $$1+ 1-\frac{n_0}{n} + 1-\frac{2n_0}{n} +
-  1-\frac{3n_0}{n} + \cdots + 1-\frac{1}{2}.$$
-  Each of the $\Theta(n)$ terms in this sum are at least $1/2$, so
-  we have
-  $$f_{i_*}(n) \ge \Omega(n).$$
+  Let $i_* = \floor{n/n_0}-1$, which by design satisfies $(i_*+1)n_0 \le n$.
+  By \cref{clm:yayactuallygetn} we have
+  $$f_{i_*}((i_*+1)\cdot n_0) \ge \sum_{j=0}^{i_*} \left(1 - \frac{j}{i_*+1} \right) = i_*/2 + 1.$$
+  As $i_* = \Theta(n)$, we have thus shown that $\alg_{f_{i_*}}$ can achieve backolog $\Omega(n)$ on $n$ cups.
 
-  The recurrence for running time is 
-  $$T(n) = n \cdot n_0T(n-n_0)+O(1).$$
-  Clearly $T(n) = O(n!)$.
+  The recurrence for the running running time of $f_{i_*}$ is 
+  $$T(n) \le n \cdot n_0T(n-n_0)+O(1).$$
+  Clearly $T(n) \le O(n!)$.
 
   This algorithm can be interpreted very simply. To achieve large backlog on
   $n$ cups we create an anchor set $A$ of $n_0$ cups and a set $B$ of $n-n_0$
