@@ -1,6 +1,6 @@
 \documentclass[twocolumn]{article}[10pt]
 \usepackage[left=1in, right=1in, top=1in, bottom=1in]{geometry}
-\usepackage[moderate, mathspacing=normal]{savetrees}
+%\usepackage[moderate, mathspacing=normal]{savetrees}
 
 \usepackage{amsthm}
 \usepackage{amssymb}
@@ -260,66 +260,65 @@ constant $\epsilon$.
 We also give a $O(n!)$-time filling strategy that achieves
 backlog $\Omega(n)$.
 
-{\color{red}
+We begin with a simple proposition that gives backlog $1/2$ for two cups.
 \begin{proposition}
-  \label{prop:adaptiveBaseAlternate}
+  \label{prop:adaptiveBase}
   Consider an instance of the negative-fill $1$-processor cup
   game on $2$ cups, and let the cups start in any state where the
   average fill is $0$. There is an $O(1)$-step adaptive filling
   strategy that achieves backlog at least $1/2$.
 \end{proposition}
 \begin{proof}
-  Let the fills of the $2$ cups start as $x, -x$ for some $x\ge
-  0$. If $x\ge 1/2$ the algorithm halts. Otherwise, the filling
+  Let the fills of the $2$ cups start as $x$ and $-x$ for some $x\ge
+  0$. If $x\ge 1/2$ the algorithm need not do anything. Otherwise, the filling
   strategy adds $1/2 - x$ fill to the cup with fill $x$, and adds
   $1/2 + x$ fill to the cup with fill $-x$. This results in $2$
   cups both having fill $1/2$; the emptier then empties from one
-  of these, and leaves a cup with fill $1/2$ as desired.
+  of these, and leaves a cup with fill $1/2$, as desired.
 \end{proof}
-}
 
-We begin by modifying the proof of the classic lower bound for
-the single-processor cup game to work with a cup configuration
-that includes negative fills; allowing for negative fills will be
-important when applying the result in later constructions. 
-\begin{proposition}
-\label{prop:adaptiveBase}
-  Consider an instance of the negative-fill $1$-processor cup
-  game on $n$ cups, and let the cups start in any state where the
-  average fill is $0$. There is an $O(n)$-step adaptive filling
-  strategy that achieves backlog at least
-  $\frac{1}{4}(\ln (n/2) - 1)$.
-\end{proposition}
-\begin{proof}
-  Let $h = \frac{1}{4}(\ln (n/2) -1)$ be the desired fill. Once a cup with fill at
-  least $h$ is achieved the filler stops, and the algorithm is done.  
+% We begin by modifying the proof of the classic lower bound for
+% the single-processor cup game to work with a cup configuration
+% that includes negative fills; allowing for negative fills will be
+% important when applying the result in later constructions. 
+% \begin{proposition}
+% \label{prop:adaptiveBaseAlternate}
+%   Consider an instance of the negative-fill $1$-processor cup
+%   game on $n$ cups, and let the cups start in any state where the
+%   average fill is $0$. There is an $O(n)$-step adaptive filling
+%   strategy that achieves backlog at least
+%   $\frac{1}{4}(\ln (n/2) - 1)$.
+% \end{proposition}
+% \begin{proof}
+%   Let $h = \frac{1}{4}(\ln (n/2) -1)$ be the desired fill. Once a cup with fill at
+%   least $h$ is achieved the filler stops, and the algorithm is done.  
   
-  We claim that, at the beginning of the game, either the
-  algorithm is already done, or there are at least $n / 2$ cups
-  containing fills greater than $-2h$. If the filling process is
-  not yet complete then $\fil(c) < h$ for all cups $c$, and thus
-  the mass of the cups with non-negative fills is less than $hn$.
-  Assume for contradiction that at least $n / 2$ cups have fills
-  $-2h$ or smaller. The mass of those cups is less than or equal
-  to $-hn$. Since the mass of the cups with non-negative fills is
-  less than $hn$, it follows that the total mass of the cups is
-  negative, a contradiction. 
+%   We claim that, at the beginning of the game, either the
+%   algorithm is already done, or there are at least $n / 2$ cups
+%   containing fills greater than $-2h$. If the filling process is
+%   not yet complete then $\fil(c) < h$ for all cups $c$, and thus
+%   the mass of the cups with non-negative fills is less than $hn$.
+%   Assume for contradiction that at least $n / 2$ cups have fills
+%   $-2h$ or smaller. The mass of those cups is less than or equal
+%   to $-hn$. Since the mass of the cups with non-negative fills is
+%   less than $hn$, it follows that the total mass of the cups is
+%   negative, a contradiction. 
 
-  We now describe the filler's strategy. If the algorithm is not
-  already done at the beginning of the game, then at least $n /
-  2$ cups must have fills greater than $-2h$. At the beginning of
-  the algorithm, $n / 2$ such cups are labeled as \defn{active
-  cups}. In each of step of the algorithm, the filler distributes
-  $1$ unit of water evenly among the active cups. The emptier
-  then removes water from some cup $c$. Finally, the filler
-  reduces the number of active cups by $1$, removing cup $c$ if
-  it was active, and otherwise removing an arbitrary cup. Now
-  consider the state of the final active cup after $n / 2  - 1$
-  steps. This cup's fill has increased by 
-  $$1/(n/2) + 1/(n/2 - 1) + \cdots + 1/2 \ge \ln (n/2) -1 = 4h.$$ 
-  This cup's fill started as at least $-2h$. Thus this cup now
-  has fill at least $2h$, as desired.
-\end{proof}
+%   We now describe the filler's strategy. If the algorithm is not
+%   already done at the beginning of the game, then at least $n /
+%   2$ cups must have fills greater than $-2h$. At the beginning of
+%   the algorithm, $n / 2$ such cups are labeled as \defn{active
+%   cups}. In each of step of the algorithm, the filler distributes
+%   $1$ unit of water evenly among the active cups. The emptier
+%   then removes water from some cup $c$. Finally, the filler
+%   reduces the number of active cups by $1$, removing cup $c$ if
+%   it was active, and otherwise removing an arbitrary cup. Now
+%   consider the state of the final active cup after $n / 2  - 1$
+%   steps. This cup's fill has increased by 
+%   $$1/(n/2) + 1/(n/2 - 1) + \cdots + 1/2 \ge \ln (n/2) -1 = 4h.$$ 
+%   This cup's fill started as at least $-2h$. Thus this cup now
+%   has fill at least $2h$, as desired.
+% \end{proof}
 
 Next we prove the \defn{Amplification Lemma}.
 \begin{lemma}[Adaptive Amplification Lemma]\label{lem:adaptiveAmplification}
@@ -522,7 +521,7 @@ can achieve backlog $n^{1 - \epsilon}$.
   $$f_{i+1}(k) \ge (1-\delta) c \cdot (((1-\delta)k)^{1-\epsilon}-2) + c(\delta k)^{1-\epsilon}-1.$$
   Moving the $ck^{1-\epsilon}$ to the front we have
   $$ f_{i+1}(k) \ge ck^{1-\epsilon} \cdot\left((1-\delta)^{2-\epsilon} + \delta^{1-\epsilon} - 2(1-\delta)/k^{1-\epsilon} \right) -1.$$
-  Because $(1-\delta)^{2-\epsilon} \ge 1-(2-\epsilon)\delta$, a fact called Bernouli's Identity, we have
+  Because $(1-\delta)^{2-\epsilon} \ge 1-(2-\epsilon)\delta$, a fact called Bernoulli's Identity, we have
   $$f_{i+1}(k) \ge ck^{1-\epsilon} \cdot\left(1-(2-\epsilon)\delta + \delta^{1-\epsilon} - 2(1-\delta)/k^{1-\epsilon} \right)-1.$$
   By choosing $\delta< 1/2$ we make $-2(1-\delta) \ge -1$, so we have
   $$f_{i+1}(k) \ge ck^{1-\epsilon} \cdot\left(1-(2-\epsilon)\delta + \delta^{1-\epsilon} - 1/k^{1-\epsilon} \right) -1.$$
@@ -544,11 +543,12 @@ can achieve backlog $n^{1 - \epsilon}$.
   only on $\epsilon$. 
   \end{proof}
 
-  We claim that $g_i$ grows exponentially, so after recursing
-  with this process for $i_* \le O(\log n)$ levels of recursion we have
-  $g_{i_*} \ge n$ and hence we have an algorithm $\alg_{f_{i_*}}$
+  To complete the proof, we will show that $g_i$ grows exponentially in $i$. Thus,
+  after there exists $i_* \le O(\log n)$ such that
+  $g_{i_*} \ge n$, and hence we have an algorithm $\alg_{f_{i_*}}$
   that achieves backlog $cn^{1-\epsilon}-1$ on $n$ cups, as
   desired.
+  
   We lower bound the sequence $g_i$ with another sequence $g_i'$
   defined as 
   $$g_i'=\begin{cases}
@@ -562,26 +562,22 @@ can achieve backlog $n^{1 - \epsilon}$.
   In particular, let $i_* = \ceil{\log_{1/(1-\delta)} n}$. Then,
   $$ g_{i_*} \ge g_{i_*}' \ge n,$$ as desired.
 
-  Let the running time of $f_{i_*}(n)$ be $T(n)$. From the Amplification Lemma we have 
-  following recurrence bounding $T(n)$:
-  $$T(n) \le n^2\delta \cdot T(\floor{(1-\delta)n}) +
-  T(\ceil{\delta n}) \le 2n^2T(\floor{(1-\delta)n}).$$
-  Continuing for $O(\log n)$ levels of recursion is sufficient to
-  achieve the desired backlog. This gives running time
-  $$T(n) \le (2n^2)^{O(\log n)} \le 2^{O(\log^2 n)}$$
+  Let the running time of $f_i(n)$ be $T_i(n)$. From the Amplification Lemma we have following recurrence bounding $T_i(n)$:
+  \begin{align*}
+  T_i(n) &\le n^2\delta \cdot T_{i-1}(\floor{(1-\delta)n}) +
+  T_{i-1}(\ceil{\delta n}) \\
+  &\le 2n^2T_{i-1}(\floor{(1-\delta)n}).
+  \end{align*}
+  It follows that $\alg_{f_{i_*}}$, recalling that $i_* \le O(\log n)$, has running time
+  $$T_{i_*}(n) \le (2n^2)^{O(\log n)} \le 2^{O(\log^2 n)}$$
   as desired.
 
 \end{proof}
 
 Now we provide a very simple construction that can achieve backlog $\Omega(n)$
-in very long games. Although the running time is very large, it is
-still an interesting result. Further, it can be interpreted as the same
+in very long games. The construction can be interpreted as the same
 argument as in \cref{thm:adaptivePoly} but with an extremal setting of
-$\delta$ to $\Theta(1/n)$ \footnote{Or more precisely, setting $\delta$ to
-be a constant divided by the number of cups at the level of
-recursion; note in particular that $\delta$ changes at the
-different levels of recursion as opposed to in the proof of
- \cref{thm:adaptivePoly}.}.
+$\delta$ to $\Theta(1/n)$. \footnote{Or more precisely, setting $\delta$ in each level of recursion to be $\Theta(1 / n)$, where $n$ is the subproblem size; note in particular that $\delta$ changes between levels of recursion, which was not the case in the proof of \cref{thm:adaptivePoly}.}
 
 \begin{proposition}
   \label{prop:factorialTimeAlg}
@@ -594,10 +590,10 @@ different levels of recursion as opposed to in the proof of
   achieving backlog $f_0(k) \ge 1$ on $k\ge n_0$ cups, which is
   possible by \cref{prop:adaptiveBase}. 
   For $i > 0$ we construct $\alg_{f_{i}}$ as the
-  amplification of $\alg_{f_{i-1}}$ using the
+  amplification of $\alg_{f_{i-1}}$ using the 
   Amplification Lemma with parameter $\delta = 1/(i+1)$. 
 
-  We claim the following regarding this constuction:
+  We claim the following regarding this construction:
   \begin{clm}
     \label{clm:yayactuallygetn}
   For all $i\ge 0$,
@@ -611,7 +607,7 @@ different levels of recursion as opposed to in the proof of
   $f_{0}(n_0) \ge 1$ which is true. Assuming
   \eqref{eq:omegaNpfinduction} for $f_{i-1}$, we now show
   \eqref{eq:omegaNpfinduction} holds for $f_{i}$.
-  Because $f_{i}$ is the amplification of $f_{i-1}$ with $\delta = 1/(i+1)$, we have
+  Because $f_{i}$ is the amplification of $f_{i-1}$ with $\delta = 1/(i+1)$, we have by the Amplification Lemma
   $$f_{i}((i+1)\cdot n_0) \ge \left(1 - \frac{1}{i+1}\right) f_{i-1}(i\cdot n_0) + f_{i-1}(n_0).$$
   Since $f_{i-1}(n_0) \ge f_0(n_0) \ge 1$ we have
   $$f_{i}((i+1)\cdot n_0) \ge \left(1 - \frac{1}{i+1}\right) f_{i-1}(i\cdot n_0) + 1.$$
@@ -631,11 +627,12 @@ different levels of recursion as opposed to in the proof of
   Let $i_* = \floor{n/n_0}-1$, which by design satisfies $(i_*+1)n_0 \le n$.
   By \cref{clm:yayactuallygetn} we have
   $$f_{i_*}((i_*+1)\cdot n_0) \ge \sum_{j=0}^{i_*} \left(1 - \frac{j}{i_*+1} \right) = i_*/2 + 1.$$
-  As $i_* = \Theta(n)$, we have thus shown that $\alg_{f_{i_*}}$ can achieve backolog $\Omega(n)$ on $n$ cups.
+  As $i_* = \Theta(n)$, we have thus shown that $\alg_{f_{i_*}}$ can achieve backlog $\Omega(n)$ on $n$ cups.
 
+    Let $T_i$ be the running time of $\alg_{f_i}$.
   The recurrence for the running running time of $f_{i_*}$ is 
-  $$T(n) \le n \cdot n_0T(n-n_0)+O(1).$$
-  Clearly $T(n) \le O(n!)$.
+  $$T_i(n) \le n \cdot n_0T_{i-1}(n-n_0)+O(1).$$
+  Clearly $T_{i_*}(n) \le O(n!)$.
 
   % This algorithm can be interpreted very simply. To achieve large backlog on
   % $n$ cups we create an anchor set $A$ of $n_0$ cups and a set $B$ of $n-n_0$
