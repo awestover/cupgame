@@ -1335,31 +1335,31 @@ is quite similar to that of the Adaptive Amplification Lemma, but the
 proof is somewhat more complicated because the filler is oblivious.
 \begin{lemma}[Oblivious Amplification Lemma]
   \label{lem:obliviousAmplification} 
-  Let $\Delta \le O(1)$, $M, M' \ge R_\Delta$, $q \ge \Omega(1)$. Let $\alg_f$ be an
-  oblivious filling strategy that achieves backlog $f(n)$ in the negative-fill
-  variable-processor cup game on $n$ cups with probability at least $1-2^{-\Omega(n)}$
-  in running time $T(n) \le \poly(n)$ when given a $M$-flat configuration,
-  against a $\Delta$-greedy-like emptier.
-
-  Let $0 < \delta \ll 1/2$, $\eta \in \mathbb{N}$, $1/2 \ll
-  \phi<1$ be constant parameters. 
+  Let $0 < \delta \ll 1/2, 1/2\ll \phi < 1$ be constant
+  parameters, and let $\eta \in \mathbb{N}$ be a function of $\phi$. 
+  Let $\Delta \le O(1)$, $M, M' \ge R_\Delta$. 
+  Let $\alg_f$ be an oblivious filling strategy that achieves
+  backlog $f(n)$ in the negative-fill variable-processor cup game
+  on $n$ cups with probability at least $1-2^{-\Omega(n)}$ in
+  running time $T(n) \le \poly(n)$ when given a $M$-flat
+  configuration, against a $\Delta$-greedy-like emptier.
 
   There exists an oblivious filling strategy $\alg_{f'}$ that
   achieves backlog $f'(n)$ satisfying 
-  $$f'(n) \ge \phi \cdot (1-\delta) f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$$ 
-  and $f'(n) \ge f(n)$ in the negative-fill variable-processor cup game on $n$ cups given a
-  $M'$-flat configuration of cups in running time $$T'(n) \le
-  O(M') + \delta n^{\eta+1} T(\floor{(1-\delta)n}) +
-  T(\ceil{\delta n})$$ against a $\Delta$-greedy-like emptier
-  with probability at least $$1-2^{-\Omega(n)}.$$
+  $$f'(n) \ge (1-\delta)(\phi-1/(\delta n)) (f(\floor{(1-\delta)n})-R_\Delta) + f(\ceil{\delta n})$$ 
+  and $f'(n) \ge f(n)$, in the negative-fill
+  variable-processor cup game on $n$ cups with probability at
+  least $1-2^{-\Omega(n)}$ in running time $$T'(n) \le O(M') +
+  \delta n^{\eta+1} T(\floor{(1-\delta)n}) + T(\ceil{\delta n})$$
+  when given a $M'$-flat configuration of cups against a
+  $\Delta$-greedy-like emptier.
 \end{lemma}
 \begin{proof}
-The algorithm defaults to using $\alg_f$ if $f(n) \ge
-\phi \cdot (1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$; in this
-case using $\alg_f$
-achieves the desired backlog in the desired running time. In the
-rest of the proof, we describe our strategy for achieving backlog
-$\phi \cdot (1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$. 
+The algorithm defaults to using $\alg_f$ on all the cups if doing
+so results in greater backlog than the strategy that we will
+outline in the rest of the proof; in this case applying $\alg_f$
+to all the cups trivially achieves the desried backlog in the
+desired running time. We now outline the filler's strategy if this is not the case.
 
   The filler starts by flattening all the cups, using the flattening procedure
   detailed in \cref{prop:greedylikeisflat}. 
@@ -1368,8 +1368,7 @@ $\phi \cdot (1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$.
   chosen arbitrarily, and let $B$, the \defn{non-anchor} set,
   consist of the rest of the cups ($|B| = \floor{(1-\delta)n}$). Note
   that the average fill of $A$ and $B$ both must start as at
-  least $-R_\Delta$ due to the flattening. Let $h =
-  (1-\delta)f(\floor{(1-\delta)n})$.
+  least $-R_\Delta$ due to the flattening. 
 
   The filler's strategy is essentially as follows:\\
   \textbf{Step 1:} Using $\alg_f$ repeatedly on $B$, achieve a
@@ -1405,7 +1404,10 @@ $\phi \cdot (1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$.
   this round. The mass of the anchor set increases by at least
   $1$ each round that the anchor set is neglected. An application
   of $\alg_f$ to $B$ is said to be \defn{successful} if $A$ is
-  never neglected during the application of $\alg_f$ to $B$.
+  never neglected during the application of $\alg_f$ to $B$. We
+  say that a swapping-process is \defn{successful} if the application of
+  $\alg_f$ on which the filler swaps a cup into $A$ is a
+  successful application of $\alg_f$.
 
   Let $\mu_\Delta = 2R_\Delta + \Delta$; the emptier, being
   $\Delta$-greedy-like, cannot neglect the anchor set more than
@@ -1425,15 +1427,23 @@ $\phi \cdot (1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$.
   state started as $R_\Delta$-flat (relative to $\mu(B)$) and
   hence also started as $M$-flat (as $M\ge R_\Delta$).
 
-  Now we aim to show that $\mu(A) \ge h$. To do so, it suffices
-  to show that the average fill of $B$ decreases by at least
-  $-h \cdot \delta/(1-\delta)$.
+  Now we aim to show that $\mu(A)$ is large; we do so by showing
+  that $\mu(B)$ is small (i.e. very negative). Because the
+  probability of an application of $\alg_f$ being successful is
+  only $1-1/\poly(n)$, which is not as good as the
+  $1-2^{-\Omega(n)}$ that we will guarantee, we will not be able
+  to actually assume that every such application of $\alg_f$ is
+  successful. However, (as we will show later) we can guarantee
+  that at least a constant fraction $\phi$ of the
+  swapping-processes are successful with
+  exponentially good probability.
+
   The filler swaps $\delta n$ cups into $B$. 
-  Consider how $\mu(B \cup A\setminus A_0)$ changes when the a new
+  Consider how $\mu(B \cup A\setminus A_0)$ changes when a new
   cup is swapped into $A$ and placed in $A_0$. Let initial value
   of $\mu(B \cup A\setminus A_0)$ be $\mu_0$. Say that
   initially $|A_0| = i$ (i.e. $i$ swapping processes have occured
-  so far). The swapped cup has
+  so far). If the swapping-process is successful then the swapped cup has
   fill at least $\mu_0 - R_\Delta + f(|B|)$. Hence the new
   average fill of $B \cup A\setminus A_0$ after the swap is
   $$\frac{\mu_0\cdot (n-i) - (\mu_0 - R_\Delta + f(|B|))}{n-i-1} =
@@ -1441,36 +1451,40 @@ $\phi \cdot (1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$.
   This recurrence relation allows us to find the value of
   $\mu(B \cup A\setminus A_0) = \mu(B)$ after $|A|$ swapping
   processes (i.e. once $A\setminus A_0 = \varnothing$):
-  $$\mu(B) \le -\sum_{i=1}^{|A|} \frac{f(|B|)-R_\Delta}{n-i}.$$
-  Now we bound $H_{n-1} - H_{n-|A|-1}$ where $H_i$ is the $i$-th harmonic number.
+  $$\mu(B) \le -\sum_{i=1}^{|A|\phi} \frac{f(|B|)-R_\Delta}{n-i}.$$
+  Now we bound $H_{n-1} - H_{n-|A|\phi-1}$ where $H_i$ is the $i$-th harmonic number.
   \begin{align*}
-    H_{n-1} - H_{n-|A|-1}
-  &\ge \ln \frac{n-1}{n-|A|-1} - \frac{1}{2(n-|A|-1)}\\
-  &\ge \ln \frac{n}{n-|A|} - \frac{1}{n}\\
-  &= \ln \frac{n}{n-\ceil{\delta n}} - \frac{1}{n}\\
-  &\ge \ln \frac{1}{1-\delta} - \frac{1}{n}\\
-  &\ge \delta - \frac{1}{n}.
+    H_{n-1} - H_{n-|A|\phi-1}
+  &\ge \ln \frac{n-1}{n-|A|\phi-1} - \frac{1}{2(n-|A|\phi-1)}\\
+  &\ge \ln \frac{n}{n-|A|\phi} - \frac{1}{n}\\
+  &= \ln \frac{n}{n-\ceil{\delta n}\phi} - \frac{1}{n}\\
+  &\ge \ln \frac{1}{1-\delta\phi} - \frac{1}{n}\\
+  &\ge \delta\phi - \frac{1}{n}.
   \end{align*}
   % this is due to the asymptotic expansion of H_n as 
   % $H_n = \ln n + gamma + 1/(2n) - 1/(12n^2) + 1/(120n^4) - \ldots$
 
-  {\color{red} 
-  so we're going to go for a new amplification lemma here that looks something like 
+  Hence we have, 
+  $$\mu(A) \ge \frac{(1-\delta)}{\delta}\paren{\delta\phi-\frac{1}{n}}(f(|B|)-R_\Delta)$$
 
-  $$f'(n) \ge (1-\delta)^4 f(\floor{(1-\delta)n}) + f(\ceil{\delta n}).$$
-  In order to get this we choose $\phi \ge 1-\delta$ and 
-  make sure that $n\ge \delta^2$ and that $f(|B|) \ge
-  R_\Delta/\delta$ (note: this requires getting more than $1$
-  backlog in the base case, but still constant, so it's fine).
+  % {\color{red} 
+  % so we're going to go for a new amplification lemma here that looks something like 
 
-  The asymptotic analysis still works out; it looks basically
-  like this: $$(1-\delta)^4c((1-\delta)n)^{1-\epsilon} + c(\delta
-  n)^{1-\epsilon} \ge cn^{1-\epsilon}(1-(5-\epsilon)\delta +
-  \delta^{1-\epsilon}) \ge cn^{1-\epsilon}$$ for sufficiently
-  small $\delta$.
+  % $$f'(n) \ge (1-\delta)^4 f(\floor{(1-\delta)n}) + f(\ceil{\delta n}).$$
+  % In order to get this we choose $\phi \ge 1-\delta$ and 
+  % make sure that $n\ge \delta^2$ and that $f(|B|) \ge
+  % R_\Delta/\delta$ (note: this requires getting more than $1$
+  % backlog in the base case, but still constant, so it's fine).
 
-  This is pretty much what has to happen. It's not so bad.
-  }
+  % The asymptotic analysis still works out; it looks basically
+  % like this: $$(1-\delta)^4c((1-\delta)n)^{1-\epsilon} + c(\delta
+  % n)^{1-\epsilon} \ge cn^{1-\epsilon}(1-(5-\epsilon)\delta +
+  % \delta^{1-\epsilon}) \ge cn^{1-\epsilon}$$ for sufficiently
+  % small $\delta$.
+
+  % This is pretty much what has to happen. It's not so bad.
+  % so long as $f(\floor{(1-\delta)n}) \ge R_\Delta/\delta$ and $n\ge 1/\delta^2$
+  % }
 
   % For sake of simplicity, assume for a moment that the cups in
   % $A$ start having $0$ fill, and that the emptier never
@@ -1493,25 +1507,16 @@ $\phi \cdot (1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$.
   % &= h.
   % \end{align*}
 
-  If, in which case the mass
-  transfered from $B$ to $A$ would be $\delta n f((1-\delta) n)$.
-  In order for their to be an increase in the difference of the
-  average fills of $A$ and $B$ by this amount $B$ would have had
-  to contribute $|A|/n = \delta$ of the difference, with $A$
-  contributing $|B|/n=(1-\delta)$ of the difference. Hence the
-  average fill of $A$ would have actually only increased by
-  $(1-\delta) f((1-\delta)n)$.
+  % If, in which case the mass
+  % transfered from $B$ to $A$ would be $\delta n f((1-\delta) n)$.
+  % In order for their to be an increase in the difference of the
+  % average fills of $A$ and $B$ by this amount $B$ would have had
+  % to contribute $|A|/n = \delta$ of the difference, with $A$
+  % contributing $|B|/n=(1-\delta)$ of the difference. Hence the
+  % average fill of $A$ would have actually only increased by
+  % $(1-\delta) f((1-\delta)n)$.
 
-  For Step 2 the filler simply recurses. 
-  The run-time bound is clear: The initial smoothing takes time $O(M')$, and
-  after that, at each level of recursion for each cup in the anchor set the
-  filler applies $f$ to the non-anchor set $n^\eta$ times. Hence the running
-  time due to this is 
-  $$\sum_{\ell=0}^L (\delta^\ell n\delta) n^\eta T((1-\delta)\delta^\ell n).$$
-  This is quite complicated, a simpler bound suffices; bounding each term in
-  the sum with the first term, which is clearly the largest, we have
-  $$T'(n) \le O(M') + (L\delta)n^{\eta+1} T((1-\delta)n).$$
-
+  This is essentially the backlog that we aimed to achieve in $A$, however, 
   It is almost clear that the desired backlog is achieved; if every swapping
   process succeeded then we would achieve fill $(1-\delta)
   f((1-\delta)\delta^\ell n)$ in each cup in the anchor set at each level of
@@ -1552,7 +1557,20 @@ $\phi \cdot (1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$.
   applications of $f$ clearly still gets probability failure at most
   $2^{-\Omega(n)}$.
 
+  For Step 2 the filler simply recurses. 
+  The run-time bound is clear: The initial smoothing takes time $O(M')$, and
+  after that, at each level of recursion for each cup in the anchor set the
+  filler applies $f$ to the non-anchor set $n^\eta$ times. Hence the running
+  time due to this is 
+  $$\sum_{\ell=0}^L (\delta^\ell n\delta) n^\eta T((1-\delta)\delta^\ell n).$$
+  This is quite complicated, a simpler bound suffices; bounding each term in
+  the sum with the first term, which is clearly the largest, we have
+  $$T'(n) \le O(M') + (L\delta)n^{\eta+1} T((1-\delta)n).$$
+
   Thus overall the filler succeeds with at least probability $1-2^{-\Omega(n)}$.
+
+  % RUNNING TIME
+  % PROBABILITY
 
 \end{proof}
 
