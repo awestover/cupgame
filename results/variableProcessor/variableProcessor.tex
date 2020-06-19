@@ -12,6 +12,8 @@
 
 \newcommand{\defn}[1]{{\textit{\textbf{\boldmath #1}}}\xspace}
 \renewcommand{\paragraph}[1]{\vspace{0.09in}\noindent{\bf \boldmath #1.}} 
+\newcommand{\todo}[1]{{\color{red}\textbf{TODO:} #1}}
+
 \DeclareMathOperator{\E}{\mathbb{E}}
 \DeclareMathOperator{\Var}{\text{Var}}
 \DeclareMathOperator{\img}{Im}
@@ -19,7 +21,8 @@
 \DeclareMathOperator{\poly}{\text{poly}}
 
 \DeclareMathOperator{\fil}{\text{fill}}
-\DeclareMathOperator{\alg}{\text{alg}}
+\newcommand{\alg}[1]{\textit{\text{alg}}({#1})}
+
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
 \newcommand{\ceil}[1]{\left\lceil #1 \right\rceil}
@@ -80,7 +83,7 @@
   show that it drastically alters the game.
 
   We construct an adaptive filling strategy that achieves backlog
-  $\Omega(n^{1-\epsilon})$ for any constant $\epsilon >0$ of our choice in
+  $\Omega(n^{1-\varepsilon})$ for any constant $\varepsilon >0$ of our choice in
   running time $2^{O(\log^2 n)}$. This is enormous compared to the upper
   bound of $O(\log n)$ that holds in the classic $p$-processor cup game!
   We also present a simple adaptive filling strategy that is able to
@@ -92,7 +95,7 @@
   backlog exceed $O(n)$.
 
   We also construct an oblivious filling strategy that achieves backlog
-  $\Omega(n^{1-\epsilon})$ for $\epsilon>0$ constant of our choice in time
+  $\Omega(n^{1-\varepsilon})$ for $\varepsilon>0$ constant of our choice in time
   $2^{O(\log^2 n)}$ against any ``greedy-like" emptier with probability at least
   $1-2^{-\polylog(n)}$. Whereas classically randomization gives the emptier a
   large advantage, in the variable-processor cup game the lower bound is the same!
@@ -166,11 +169,12 @@ some portion of the processors.
 
 A priori having variable resources offers neither player a clear advantage:
 lower values of $p$ mean that the emptier is at more of a discretization
-disadvantage but also mean that the filler can ``anchor" fewer cups\footnote{A
+disadvantage but also mean that the filler can ``anchor" fewer
+cups. \footnote{A
 useful part of many filling algorithms is maintaining an ``anchor" set of
 ``anchored" cups. The filler always places $1$ unit of water in each anchored
 cup. This ensures that the fill of an anchored cup never decreases after it is
-placed in the anchor set.}. Furthermore, at any fixed value of $p$ upper bounds
+placed in the anchor set.} Furthermore, at any fixed value of $p$ upper bounds
 have been proven. For instance, regardless of $p$ a greedy emptier prevents an
 adaptive filler from having backlog greater than $O(\log n)$. Switching between
 different values of $p$, all of which the filler cannot individually use to get
@@ -191,7 +195,7 @@ notations we will use to discuss the variable-processor cup game.
 In \cref{sec:adaptive} we provide an inductive proof of a
 lower bound on backlog with an adaptive filler.
 \cref{thm:adaptivePoly} states that a filler can achieve backlog
-$\Omega(n^{1-\epsilon})$ for any constant $\epsilon > 0$ in
+$\Omega(n^{1-\varepsilon})$ for any constant $\varepsilon > 0$ in
 quasi-polynomial running time. \cref{prop:factorialTimeAlg} also provides an extremal strategy
 that achieves backlog $\Omega(n)$ in incredibly long games: it
 has $O(n!)$ running time.
@@ -206,7 +210,7 @@ The lower bound and upper bound agree; our analysis is tight for adaptive filler
 
 In \cref{sec:oblivious} we prove a lower bound on backlog with an oblivious filler. 
 \cref{thm:obliviousPoly} states that an oblivious filler can achieve
-backlog $\Omega(n^{1-\epsilon})$ for any constant $\epsilon > 0$ in
+backlog $\Omega(n^{1-\varepsilon})$ for any constant $\varepsilon > 0$ in
 quasi-polynomial time with probability at least $1-2^{-\polylog(n)}$.
 \cref{thm:obliviousPoly} only applies to a certain class of emptiers:
 ``greedy-like emptiers". Nonetheless, this class of emptiers is very
@@ -255,8 +259,8 @@ for the emptier when cups can zero out.
 \section{Adaptive Filler Lower Bound}\label{sec:adaptive}
 
 In this section we give a $2^{\polylog n}$-time filling strategy
-that achieves backlog $n^{1 - \epsilon}$ for any positive
-constant $\epsilon$. 
+that achieves backlog $n^{1 - \varepsilon}$ for any positive
+constant $\varepsilon$. 
 We also give a $O(n!)$-time filling strategy that achieves
 backlog $\Omega(n)$.
 
@@ -323,12 +327,12 @@ We begin with a simple proposition that gives backlog $1/2$ for two cups.
 Next we prove the \defn{Amplification Lemma}.
 \begin{lemma}[Adaptive Amplification Lemma]\label{lem:adaptiveAmplification}
   Let $\delta\in(0,1)$ be a parameter.
-  Let $\alg_f$ be an adaptive filling strategy that 
+  Let $\alg{f}$ be an adaptive filling strategy that 
   achieves backlog $f(n) < n$ in the negative-fill variable-processor cup game
   on $n$ cups in running time $T(n)$ starting from any initial
   cup state where the average fill is $0$.
 
-  Then there exists an adaptive filling strategy $\alg_{f'}$ that
+  Then there exists an adaptive filling strategy $\alg{f'}$ that
   achieves backlog $f'(n)$ satisfying 
   $$f'(n) \ge (1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n}) $$
   and $f'(n) \ge f(n)$
@@ -338,21 +342,21 @@ Next we prove the \defn{Amplification Lemma}.
 \end{lemma}
 
 Before proving the Amplification Lemma, we briefly motivate it. 
-We call $\alg_{f'}$, the filling strategy created by the Amplification
-Lemma, the \defn{amplification} of $\alg_f$.
-As suggested by the name, $\alg_{f'}$ will be able to achieve
-higher backlog than $\alg_f$. In particular, we
-will show that by starting with a filling strategy $\alg_{f_0}$ for achieving
+We call $\alg{f'}$, the filling strategy created by the Amplification
+Lemma, the \defn{amplification} of $\alg{f}$.
+As suggested by the name, $\alg{f'}$ will be able to achieve
+higher backlog than $\alg{f}$. In particular, we
+will show that by starting with a filling strategy $\alg{f_0}$ for achieving
 constant backlog and then recursively forming a sufficiently
-long sequence of filling strategies $\alg_{f_0}, \alg_{f_1},
-\ldots, \alg_{f_{i_*}}$ with
-$\alg_{f_{i+1}}$ the amplification of $\alg_{f_i}$, we eventually
+long sequence of filling strategies $\alg{f_0}, \alg{f_1},
+\ldots, \alg{f_{i_*}}$ with
+$\alg{f_{i+1}}$ the amplification of $\alg{f_i}$, we eventually
 get a filling strategy for achieving $\poly(n)$ backlog.
   
 \begin{proof}[Proof of Amplification Lemma]
-The algorithm defaults to using $\alg_f$ if $f(n) \ge
+The algorithm defaults to using $\alg{f}$ if $f(n) \ge
 (1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$; in this
-case using $\alg_f$
+case using $\alg{f}$
 achieves the desired backlog in the desired running time. In the
 rest of the proof, we describe our strategy for achieving backlog
 $(1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$. 
@@ -363,12 +367,12 @@ $(1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$.
   (1-\delta)f(\floor{(1-\delta)n}).$
 
   The filler's strategy is roughly as follows: \\
-  \textbf{Step 1:} Get $\mu(A) \ge h$ by using $\alg_f$
+  \textbf{Step 1:} Get $\mu(A) \ge h$ by using $\alg{f}$
   repeatedly on $B$ to achieve cups with fill at least $\mu(B) +
   f(|B|)$ in $B$ and then swapping these into $A$.\\
-  \textbf{Step 2:} Use $\alg_f$ once on $A$ to obtain some cup
+  \textbf{Step 2:} Use $\alg{f}$ once on $A$ to obtain some cup
   with fill $\mu(A)+f(|A|)$.\\
-  Note that in order to use $\alg_f$ on subsets of the cups the
+  Note that in order to use $\alg{f}$ on subsets of the cups the
   filler will need to vary $p$.
 
   We now describe how to achieve Step 1, which is
@@ -384,16 +388,16 @@ $(1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$.
   fails to do this on a given round, then we say that the emptier
   has \defn{neglected} the anchor cups. 
 
-  We say that the filler \defn{applies} $\alg_f$ to $B$ if it
-  follows the filling strategy $\alg_f$ on $B$ while placing $1$
-  unit of water in each anchor cup. An application of $\alg_f$ to
+  We say that the filler \defn{applies} $\alg{f}$ to $B$ if it
+  follows the filling strategy $\alg{f}$ on $B$ while placing $1$
+  unit of water in each anchor cup. An application of $\alg{f}$ to
   $B$ is said to be \defn{successful} if $A$ is never neglected
-  during the application of $\alg_f$ to $B$. The filler uses a
+  during the application of $\alg{f}$ to $B$. The filler uses a
   procedure that we call a \defn{swapping-process} to achieve the
   desired average fill in $A$. In a swapping-process, the filler
-  repeatedly applies $\alg_f$ to $B$ until a successful
+  repeatedly applies $\alg{f}$ to $B$ until a successful
   application occurs, and then takes the cup generated by
-  $\alg_f$ within $B$ on this successful application with fill at
+  $\alg{f}$ within $B$ on this successful application with fill at
   least $\mu(B) + f(|B|)$ and swaps it with the least full cup in
   $A$. If the average fill in $A$ ever reaches $h$, then the
   algorithm immediately halts (even if it is in the middle of a
@@ -411,13 +415,13 @@ $(1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$.
   \label{eq:Batleast}
   \end{equation}
   We will now show that during each swapping process, the filler
-  applies $\alg_f$ to $B$ at most $h n \delta + 1$ times. 
+  applies $\alg{f}$ to $B$ at most $h n \delta + 1$ times. 
   Each time the emptier neglects the anchor set, the mass of the
   anchor set increases by $1$. If the emptier neglects the anchor set $h
   n\delta + 1$ times, then the average fill in the anchor set increases by
   more than $h$, so the desired average fill is achieved in the
   anchor set. Thus the swapping process consists of at most
-  $hn\delta + 1$ applications of $\alg_f$.  
+  $hn\delta + 1$ applications of $\alg{f}$.  
 
   Consider the fill of a cup $c$ swapped into $A$ at the end of a
   swapping-process. Cup $c$'s fill is at least $\mu(B) + f(|B|)$,
@@ -431,48 +435,48 @@ $(1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$.
   already achieved $\mu(A) \ge h$. 
   
   Now the filler performs Step 2, i.e. the filler applies
-  $\alg_f$ to $A$, and hence achieves a cup with fill at least 
+  $\alg{f}$ to $A$, and hence achieves a cup with fill at least 
   $$\mu(A) + f(|A|) \ge (1-\delta)f(\floor{(1-\delta)n)}) + f(\ceil{\delta n}),$$
   as desired.
 
   Now we analyze the running time of the filling strategy
-  $\alg_{f'}$. First, recall that in Step 1 $\alg_{f'}$ calls $\alg_f$ on a
+  $\alg{f'}$. First, recall that in Step 1 $\alg{f'}$ calls $\alg{f}$ on a
   set of size $\floor{(1-\delta)n}$ as many as $hn\delta +1$ times.
   Because we mandate that $h < n$, Step 1 contributes no more
   than $(n\cdot n\delta) \cdot T(|B|)$ to the running time.
-  Step 2 requires applying $\alg_f$ to $|A|$ cups one time, and hence
+  Step 2 requires applying $\alg{f}$ to $|A|$ cups one time, and hence
   contributes $T(|A|)$ to the running time. Summing these we have
   $$T'(n) \le n^2\delta \cdot T(\floor{(1-\delta)n}) + T(\ceil{\delta n}).$$
 
 \end{proof}
 
 We next show that by recursively using the Amplification Lemma we
-can achieve backlog $n^{1 - \epsilon}$.
+can achieve backlog $n^{1 - \varepsilon}$.
 \begin{theorem}
   \label{thm:adaptivePoly}
   There is an adaptive filling strategy for the variable-processor cup game on
-  $n$ cups that achieves backlog $\Omega(n^{1-\epsilon})$ for any constant
-  $\epsilon > 0$ of our choice in running time $2^{O(\log^2 n)}$.
+  $n$ cups that achieves backlog $\Omega(n^{1-\varepsilon})$ for any constant
+  $\varepsilon > 0$ of our choice in running time $2^{O(\log^2 n)}$.
 \end{theorem}
 \begin{proof}
-  Take constant $\epsilon \in (0,1/2)$. Let $c, \delta$ be
+  Take constant $\varepsilon \in (0,1/2)$. Let $c, \delta$ be
   parameters, with $c\in (0,1), 0 < \delta \ll 1/2$, these will
-  be chosen later as functions of $\epsilon$.
-  We show how to achieve backlog at least $cn^{1-\epsilon}-1$.
+  be chosen later as functions of $\varepsilon$.
+  We show how to achieve backlog at least $cn^{1-\varepsilon}-1$.
 
   By \cref{prop:adaptiveBase} there exists a constant
   $n_0$ such that a filler can achieve backlog $1$
-  on $n_0$ cups (e.g., $n_0 = 1000$ works). Let $\alg_{f_0}$ by
+  on $n_0$ cups (e.g., $n_0 = 1000$ works). Let $\alg{f_0}$ by
   the filling strategy described in \cref{prop:adaptiveBase},
   where $f_0(k)
   \ge 1$ for all $k\ge n_0$. 
 
   Next, using the Amplification Lemma we recursively construct
-  $\alg_{f_{i+1}}$ as the amplification of $\alg_{f_{i}}$ for $i\ge 0$. 
+  $\alg{f_{i+1}}$ as the amplification of $\alg{f_{i}}$ for $i\ge 0$. 
 
   Define a sequence $g_i$ with 
   $$ g_i = \begin{cases}
-    \ceil{4/\delta},  & i = 0,\\
+    \ceil{16/\delta},  & i = 0,\\
     \floor{g_{i-1}/(1-\delta)} & i \ge 1
   \end{cases} $$
 
@@ -481,7 +485,7 @@ can achieve backlog $n^{1 - \epsilon}$.
     \label{clm:fikinduction}
     For all $i\ge0$,
     \begin{equation}
-      f_i(k) \ge ck^{1-\epsilon}-1\,\, \text{ for all }\,\, k\in [g_{i}].
+      f_i(k) \ge ck^{1-\varepsilon}-1\,\, \text{ for all }\,\, k\in [g_{i}].
     \label{eqn:fikinduction}
     \end{equation}
   \end{clm}
@@ -490,14 +494,14 @@ can achieve backlog $n^{1 - \epsilon}$.
   For $i=0$, the base case, \eqref{eqn:fikinduction} can
   be made true by taking $c$ and $\delta$ sufficiently small.
   In particular, we we choose $c=\Theta(1)$ small enough to make 
-  $c n_0^{1-\epsilon} -1 \le 0$, which implies
+  $c n_0^{1-\varepsilon} -1 \le 0$, which implies
   \eqref{eqn:fikinduction} holds for $k \in [n_0]$ by
-  monotonicity of $ck^{1-\epsilon}-1$; we also choose $\delta$
+  monotonicity of $ck^{1-\varepsilon}-1$; we also choose $\delta$
   small enough to make $g_0 \ge n_0$, and we choose $c$ small
-  enough to make $c g_0^{1-\epsilon} -1 \le f_0(g_0) = 1$, which
+  enough to make $c g_0^{1-\varepsilon} -1 \le f_0(g_0) = 1$, which
   implies \eqref{eqn:fikinduction} holds for $k\in [n_0, g_0]$ by
-  monotonicity of $ck^{1-\epsilon}-1$. \footnote{Note
-  that it is important here that $\epsilon$ and
+  monotonicity of $ck^{1-\varepsilon}-1$. \footnote{Note
+  that it is important here that $\varepsilon$ and
   $\delta$ are constants, that way $c$ is also a constant.}
 
   As our inductive hypothesis we assume
@@ -506,47 +510,49 @@ can achieve backlog $n^{1 - \epsilon}$.
   design of $g_i$, if $k \le g_{i+1}$ then $\floor{k\cdot (1-\delta)} \le g_i$.
   Consider any $k\in [g_{i+1}]$. First we deal with the trivial
   case where $k \le g_0$. In this case 
-  $$f_{i+1}(k) \ge f_i(k) \ge \cdots \ge f_0(k) \ge ck^{1-\epsilon} -1.$$
+  $$f_{i+1}(k) \ge f_i(k) \ge \cdots \ge f_0(k) \ge ck^{1-\varepsilon} -1.$$
 
   Now we consider the case where $k \ge g_0$.
   Since $f_{i+1}$ is the amplification of $f_i$ we have
   $$f_{i+1}(k) \ge (1-\delta) f_i(\floor{(1-\delta)k}) + f_i(\ceil{\delta k}).$$
   By our inductive hypothesis, which applies as $\ceil{\delta k}\le g_i, \floor{k\cdot (1-\delta)} \le g_i$, we have
-  $$f_{i+1}(k) \ge (1-\delta) (c \cdot\floor{(1-\delta)k}^{1-\epsilon}-1) + c\ceil{\delta k}^{1-\epsilon} - 1. $$
+  $$f_{i+1}(k) \ge (1-\delta) (c \cdot\floor{(1-\delta)k}^{1-\varepsilon}-1) + c\ceil{\delta k}^{1-\varepsilon} - 1. $$
   Dropping the floor and ceiling, incurring a $-1$ for dropping the floor, we have
-  $$f_{i+1}(k) \ge (1-\delta) (c \cdot ((1-\delta)k-1)^{1-\epsilon}-1) + c (\delta k)^{1-\epsilon} - 1.$$
-  Because $(x-1)^{1-\epsilon} \ge x^{1-\epsilon} -1$, due to the
-  fact that $x\mapsto x^{1-\epsilon}$ is a sub-linear
+  $$f_{i+1}(k) \ge (1-\delta) (c \cdot ((1-\delta)k-1)^{1-\varepsilon}-1) + c (\delta k)^{1-\varepsilon} - 1.$$
+  Because $(x-1)^{1-\varepsilon} \ge x^{1-\varepsilon} -1$, due to the
+  fact that $x\mapsto x^{1-\varepsilon}$ is a sub-linear
   sub-additive function, we have 
-  $$f_{i+1}(k) \ge (1-\delta) c \cdot (((1-\delta)k)^{1-\epsilon}-2) + c(\delta k)^{1-\epsilon}-1.$$
-  Moving the $ck^{1-\epsilon}$ to the front we have
-  $$ f_{i+1}(k) \ge ck^{1-\epsilon} \cdot\left((1-\delta)^{2-\epsilon} + \delta^{1-\epsilon} - 2(1-\delta)/k^{1-\epsilon} \right) -1.$$
-  Because $(1-\delta)^{2-\epsilon} \ge 1-(2-\epsilon)\delta$, a fact called Bernoulli's Identity, we have
-  $$f_{i+1}(k) \ge ck^{1-\epsilon} \cdot\left(1-(2-\epsilon)\delta + \delta^{1-\epsilon} - 2(1-\delta)/k^{1-\epsilon} \right)-1.$$
-  By choosing $\delta< 1/2$ we make $-2(1-\delta) \ge -1$, so we have
-  $$f_{i+1}(k) \ge ck^{1-\epsilon} \cdot\left(1-(2-\epsilon)\delta + \delta^{1-\epsilon} - 1/k^{1-\epsilon} \right) -1.$$
-  Because $-1/k^{1-\epsilon} \ge -1/g_0^{1-\epsilon} \ge
-  -(\delta/4)^{1-\epsilon} \ge -\delta^{1-\epsilon}/2$, which follows from our choice of $g_0 = \ceil{4/\delta}$ and the restriction
-  $\epsilon<1/2$, we have
-  $$f_{i+1}(k) \ge ck^{1-\epsilon} \cdot\left(1-(2-\epsilon)\delta + \delta^{1-\epsilon} - (1/2)\delta^{1-\epsilon} \right)-1.$$
+  $$f_{i+1}(k) \ge (1-\delta) c \cdot (((1-\delta)k)^{1-\varepsilon}-2) + c(\delta k)^{1-\varepsilon}-1.$$
+  Moving the $ck^{1-\varepsilon}$ to the front we have
+  $$ f_{i+1}(k) \ge ck^{1-\varepsilon} \cdot\left((1-\delta)^{2-\varepsilon} + \delta^{1-\varepsilon} - \frac{2(1-\delta)}{k^{1-\varepsilon}} \right) -1.$$
+  Because $(1-\delta)^{2-\varepsilon} \ge 1-(2-\varepsilon)\delta$, a fact called Bernoulli's Identity, we have
+  $$f_{i+1}(k) \ge ck^{1-\varepsilon} \cdot\left(1-(2-\varepsilon)\delta + \delta^{1-\varepsilon} - \frac{2(1-\delta)}{k^{1-\varepsilon}} \right)-1.$$
+  Of course $-2(1-\delta) \ge -2$, so 
+  $$f_{i+1}(k) \ge ck^{1-\varepsilon} \cdot\left(1-(2-\varepsilon)\delta + \delta^{1-\varepsilon} - \frac{2}{k^{1-\varepsilon}} \right) -1.$$
+  Because 
+  $$-2/k^{1-\varepsilon} \ge -2/g_0^{1-\varepsilon} \ge
+  -2(\delta/16)^{1-\varepsilon} \ge -\delta^{1-\varepsilon}/2,$$ which follows from our choice of $g_0 = \ceil{16/\delta}$ and the restriction
+  $\varepsilon<1/2$, we have
+  $$f_{i+1}(k) \ge ck^{1-\varepsilon} \cdot\left(1-(2-\varepsilon)\delta + \delta^{1-\varepsilon} - (1/2)\delta^{1-\varepsilon} \right)-1.$$
   Finally, combining terms we have
-  $$f_{i+1}(k) \ge  ck^{1-\epsilon} \cdot\left(1-(2-\epsilon)\delta + (1/2)\delta^{1-\epsilon}\right)-1. $$
+  $$f_{i+1}(k) \ge  ck^{1-\varepsilon} \cdot\left(1-(2-\varepsilon)\delta + (1/2)\delta^{1-\varepsilon}\right)-1. $$
 
-  Because $\delta^{1-\epsilon}$ dominates $\delta$ for
+  Because $\delta^{1-\varepsilon}$ dominates $\delta$ for
   sufficiently small $\delta$, there is a choice of
-  $\delta=\Theta(1)$ such that $1-(2-\epsilon)\delta +
-  (1/2)\delta^{1-\epsilon} \ge 1$. Taking $\delta$ to be this
+  $\delta=\Theta(1)$ such that 
+  $$1-(2-\varepsilon)\delta + (1/2)\delta^{1-\varepsilon} \ge 1.$$ 
+  Taking $\delta$ to be this
   small we have,
-  $$f_{i+1}(k) \ge ck^{1-\epsilon}-1,$$
+  $$f_{i+1}(k) \ge ck^{1-\varepsilon}-1,$$
   completing the proof. We remark that the choices of $c, \delta$
   are the same for every $i$ in the inductive proof, and depend
-  only on $\epsilon$. 
+  only on $\varepsilon$. 
   \end{proof}
 
   To complete the proof, we will show that $g_i$ grows exponentially in $i$. Thus,
   after there exists $i_* \le O(\log n)$ such that
-  $g_{i_*} \ge n$, and hence we have an algorithm $\alg_{f_{i_*}}$
-  that achieves backlog $cn^{1-\epsilon}-1$ on $n$ cups, as
+  $g_{i_*} \ge n$, and hence we have an algorithm $\alg{f_{i_*}}$
+  that achieves backlog $cn^{1-\varepsilon}-1$ on $n$ cups, as
   desired.
   
   We lower bound the sequence $g_i$ with another sequence $g_i'$
@@ -568,7 +574,7 @@ can achieve backlog $n^{1 - \epsilon}$.
   T_{i-1}(\ceil{\delta n}) \\
   &\le 2n^2T_{i-1}(\floor{(1-\delta)n}).
   \end{align*}
-  It follows that $\alg_{f_{i_*}}$, recalling that $i_* \le O(\log n)$, has running time
+  It follows that $\alg{f_{i_*}}$, recalling that $i_* \le O(\log n)$, has running time
   $$T_{i_*}(n) \le (2n^2)^{O(\log n)} \le 2^{O(\log^2 n)}$$
   as desired.
 
@@ -577,7 +583,11 @@ can achieve backlog $n^{1 - \epsilon}$.
 Now we provide a very simple construction that can achieve backlog $\Omega(n)$
 in very long games. The construction can be interpreted as the same
 argument as in \cref{thm:adaptivePoly} but with an extremal setting of
-$\delta$ to $\Theta(1/n)$. \footnote{Or more precisely, setting $\delta$ in each level of recursion to be $\Theta(1 / n)$, where $n$ is the subproblem size; note in particular that $\delta$ changes between levels of recursion, which was not the case in the proof of \cref{thm:adaptivePoly}.}
+$\delta$ to $\Theta(1/n)$. \footnote{Or more precisely, setting
+$\delta$ in each level of recursion to be $\Theta(1 / n)$, where
+$n$ is the subproblem size; note in particular that $\delta$
+changes between levels of recursion, which was not the case in
+the proof of \cref{thm:adaptivePoly}.}
 
 \begin{proposition}
   \label{prop:factorialTimeAlg}
@@ -586,11 +596,11 @@ $\delta$ to $\Theta(1/n)$. \footnote{Or more precisely, setting $\delta$ in each
 \end{proposition}
 \begin{proof}
   We start, as in the proof of \cref{thm:adaptivePoly}, with an
-  algorithm $\alg_{f_0}$ for
+  algorithm $\alg{f_0}$ for
   achieving backlog $f_0(k) \ge 1$ on $k\ge n_0$ cups, which is
   possible by \cref{prop:adaptiveBase}. 
-  For $i > 0$ we construct $\alg_{f_{i}}$ as the
-  amplification of $\alg_{f_{i-1}}$ using the 
+  For $i > 0$ we construct $\alg{f_{i}}$ as the
+  amplification of $\alg{f_{i-1}}$ using the 
   Amplification Lemma with parameter $\delta = 1/(i+1)$. 
 
   We claim the following regarding this construction:
@@ -627,9 +637,9 @@ $\delta$ to $\Theta(1/n)$. \footnote{Or more precisely, setting $\delta$ in each
   Let $i_* = \floor{n/n_0}-1$, which by design satisfies $(i_*+1)n_0 \le n$.
   By \cref{clm:yayactuallygetn} we have
   $$f_{i_*}((i_*+1)\cdot n_0) \ge \sum_{j=0}^{i_*} \left(1 - \frac{j}{i_*+1} \right) = i_*/2 + 1.$$
-  As $i_* = \Theta(n)$, we have thus shown that $\alg_{f_{i_*}}$ can achieve backlog $\Omega(n)$ on $n$ cups.
+  As $i_* = \Theta(n)$, we have thus shown that $\alg{f_{i_*}}$ can achieve backlog $\Omega(n)$ on $n$ cups.
 
-    Let $T_i$ be the running time of $\alg_{f_i}$.
+    Let $T_i$ be the running time of $\alg{f_i}$.
   The recurrence for the running running time of $f_{i_*}$ is 
   $$T_i(n) \le n \cdot n_0T_{i-1}(n-n_0)+O(1).$$
   Clearly $T_{i_*}(n) \le O(n!)$.
@@ -958,7 +968,7 @@ Thus, by induction we have the invariant for all rounds $t\in\mathbb{N}$.
 
 \section{Oblivious Filler Lower Bound}\label{sec:oblivious}
 In this section we prove that, surprisingly, an oblivious filler
-can achieve backlog $n^{1-\epsilon}$, although only against a
+can achieve backlog $n^{1-\varepsilon}$, although only against a
 certain class of ``greedy-like" emptiers (a natural class of emptiers).
 
 % First we highlight the concentration inequalities that we will need in the analysis. 
@@ -1155,7 +1165,7 @@ We remark that this proposition plays a similar role to
   $A$, say $nc$ cups, have fill at least $h$ with exponentially good
   probability. Between single-processor cup games the filler flattens $B$.\\
   \textbf{Step 2:} Reduce the number of processors to $nc$, and raise the fill
-  of $nc$ \emph{known} cups to fill $h'$. The emptier, being
+  of $nc$ \textit{known} cups to fill $h'$. The emptier, being
   greedy, must first empty from the
   cups with fill $h$ before emptying from the cups that the filler is
   attempting to get fill $h'$ in.\\
@@ -1335,13 +1345,13 @@ proof is somewhat more complicated because the filler is oblivious.
   Let $0 < \delta \ll 1/2, 1/2\ll \phi < 1$ be constant
   parameters, and let $\eta \in \mathbb{N}$ be a function of $\phi$. 
   Let $\Delta \le O(1)$, $M, M' \ge R_\Delta$. 
-  Let $\alg_f$ be an oblivious filling strategy that achieves
+  Let $\alg{f}$ be an oblivious filling strategy that achieves
   backlog $f(n)$ in the negative-fill variable-processor cup game
   on $n$ cups with probability at least $1-2^{-\Omega(n)}$ in
   running time $T(n) \le \poly(n)$ when given a $M$-flat
   configuration, against a $\Delta$-greedy-like emptier.
 
-  There exists an oblivious filling strategy $\alg_{f'}$ that
+  There exists an oblivious filling strategy $\alg{f'}$ that
   achieves backlog $f'(n)$ satisfying 
   $$f'(n) \ge (1-\delta)(\phi-1/(\delta n)) (f(\floor{(1-\delta)n})-R_\Delta) + f(\ceil{\delta n})$$ 
   and $f'(n) \ge f(n)$, in the negative-fill
@@ -1352,9 +1362,9 @@ proof is somewhat more complicated because the filler is oblivious.
   $\Delta$-greedy-like emptier.
 \end{lemma}
 \begin{proof}
-The algorithm defaults to using $\alg_f$ on all the cups if doing
+The algorithm defaults to using $\alg{f}$ on all the cups if doing
 so results in greater backlog than the strategy that we will
-outline in the rest of the proof; in this case applying $\alg_f$
+outline in the rest of the proof; in this case applying $\alg{f}$
 to all the cups trivially achieves the desired backlog in the
 desired running time. We now outline the filler's strategy if this is not the case.
 
@@ -1368,11 +1378,11 @@ desired running time. We now outline the filler's strategy if this is not the ca
   least $-R_\Delta$ due to the flattening. 
 
   The filler's strategy is essentially as follows:\\
-  \textbf{Step 1:} Using $\alg_f$ repeatedly on $B$, achieve a
+  \textbf{Step 1:} Using $\alg{f}$ repeatedly on $B$, achieve a
   cup with fill $\mu(B) + f(|B|)$ in $B$ and then swap this cup into $A$. \\
-  \textbf{Step 2:} Use $\alg_f$ once on $A$ to obtain a cup in
+  \textbf{Step 2:} Use $\alg{f}$ once on $A$ to obtain a cup in
   $A$ with fill $\mu(A) + f(|A|)$.\\
-  Note that in order to use $\alg_f$ on subsets of the cups the filler will need to vary $p$.
+  Note that in order to use $\alg{f}$ on subsets of the cups the filler will need to vary $p$.
 
   We now describe how to achieve Step 1, which is complicated by
   the fact that the emptier may attempt to prevent the filler
@@ -1383,7 +1393,7 @@ desired running time. We now outline the filler's strategy if this is not the ca
   works almost every time.
 
   The filler's strategy will be to always place $1$ fill in each cup in the
-  anchor-set while applying $\alg_f$ to $B$.
+  anchor-set while applying $\alg{f}$ to $B$.
 
   For each cup in $A$ the filler performs a procedure called a
   \defn{swapping-process}. Let $A_0$ be initialized to
@@ -1391,46 +1401,45 @@ desired running time. We now outline the filler's strategy if this is not the ca
   some cup in $B$ to have high fill (with very good probability),
   and then swap this cup into $A$, and place the cup in $A_0$ too.
   We say that the filler \defn{applies}
-  $\alg_f$ to $B$ if it follows the filling strategy $\alg_f$ on
+  $\alg{f}$ to $B$ if it follows the filling strategy $\alg{f}$ on
   $B$ while placing $1$ unit of fill in each anchor cup; during a
-  swapping-process the filler repeatedly applies $\alg_f$ to $B$,
+  swapping-process the filler repeatedly applies $\alg{f}$ to $B$,
   flattening $B \cup (A\setminus A_0)$ and then flattening $B$
   too before each application.
   We say that the emptier \defn{neglects} the anchor set on a
   round if the emptier does not empty from every anchor cup on
   this round. The mass of the anchor set increases by at least
   $1$ each round that the anchor set is neglected. An application
-  of $\alg_f$ to $B$ is said to be \defn{successful} if $A$ is
-  never neglected during the application of $\alg_f$ to $B$. We
+  of $\alg{f}$ to $B$ is said to be \defn{successful} if $A$ is
+  never neglected during the application of $\alg{f}$ to $B$. We
   say that a swapping-process is \defn{successful} if the application of
-  $\alg_f$ on which the filler swaps a cup into $A$ is a
-  successful application of $\alg_f$.
+  $\alg{f}$ on which the filler swaps a cup into $A$ is a
+  successful application of $\alg{f}$.
 
   Let $\mu_\Delta = 2R_\Delta + \Delta$; the emptier, being
   $\Delta$-greedy-like, cannot neglect the anchor set more than
   $n\delta\mu_\Delta$ times. Thus, by making each
-  swapping-process consist of $n^{\eta}$ applications of $\alg_f$
+  swapping-process consist of $n^{\eta}$ applications of $\alg{f}$
   to $B$ and then choosing a single application among these
   (uniformly at random) after which to swap a cup into $A$ (and
   we also place the cup in $A_0$; $A_0$ consists of all cups in
   $A$ that were swapped into $A$ from $B$), we guarantee that
-  with probability at least $\delta\mu_\Delta/n^\eta$, when
-  averaged over the $|A| \ge n\delta$ swapping processes, this swap
-  occurs at the end of a successful application of $\alg_f$ to $B$. 
+  with probability at least $n\delta\mu_\Delta/n^{\eta}$ this swap
+  occurs at the end of a successful application of $\alg{f}$ to $B$. 
 
-  If an application of $\alg_f$ is successful, then with
+  If an application of $\alg{f}$ is successful, then with
   probability at least $1-2^{-\Omega(n)}$ it generates a cup with
   fill $f(|B|) + \mu(B)$ in $B$, because equal resources were put
-  into $B$ on each round while $\alg_f$ was used, and the cup
+  into $B$ on each round while $\alg{f}$ was used, and the cup
   state started as $R_\Delta$-flat (relative to $\mu(B)$) and
   hence also started as $M$-flat (as $M\ge R_\Delta$).
 
   Now we aim to show that $\mu(A)$ is large; we do so by showing
   that $\mu(B)$ is small (i.e. very negative). Because the
-  probability of an application of $\alg_f$ being successful is
-  only $1-1/\poly(n)$ on average, which is not as good as the
+  probability of an application of $\alg{f}$ being successful is
+  only $1-1/\poly(n)$, which is in particular not as good as the
   $1-2^{-\Omega(n)}$ that we will guarantee, we will not be able
-  to actually assume that every such application of $\alg_f$ is
+  to actually assume that every such application of $\alg{f}$ is
   successful. However, (as we will show later) we can guarantee
   that at least a constant fraction $\phi$ of the
   swapping-processes are successful with
@@ -1480,9 +1489,9 @@ desired running time. We now outline the filler's strategy if this is not the ca
   % backlog in the base case, but still constant, so it's fine).
 
   % The asymptotic analysis still works out; it looks basically
-  % like this: $$(1-\delta)^4c((1-\delta)n)^{1-\epsilon} + c(\delta
-  % n)^{1-\epsilon} \ge cn^{1-\epsilon}(1-(5-\epsilon)\delta +
-  % \delta^{1-\epsilon}) \ge cn^{1-\epsilon}$$ for sufficiently
+  % like this: $$(1-\delta)^4c((1-\delta)n)^{1-\varepsilon} + c(\delta
+  % n)^{1-\varepsilon} \ge cn^{1-\varepsilon}(1-(5-\varepsilon)\delta +
+  % \delta^{1-\varepsilon}) \ge cn^{1-\varepsilon}$$ for sufficiently
   % small $\delta$.
 
   % This is pretty much what has to happen. It's not so bad.
@@ -1522,28 +1531,31 @@ desired running time. We now outline the filler's strategy if this is not the ca
   Now we establish that we can guarantee that $\phi |A|$ of the
   $|A|$ swapping-process succeed for any choice of $\phi =
   \Theta(1)$ by sufficiently large choice of $\eta$, i.e. by performing
-  enough applications of $\alg_f$ within each swapping-process.
+  enough applications of $\alg{f}$ within each swapping-process.
   Recall that by construction of $\mu_\Delta$ the emptier cannot
   neglect the anchor set on more than $n\delta \mu_\Delta$
-  applications of $\alg_f$ to $B$. There are $n^\eta |A| \ge
-  n^{\eta+1}\delta$ applications of $\alg_f$ to $B$. 
+  applications of $\alg{f}$ to $B$. 
+  %There are $n^\eta |A| \ge n^{\eta+1}\delta$ applications of $\alg{f}$ to $B$. 
 
   Let $X_i$ be the random variable that indicates the event that
-  the $i$-th swapping-process was not successful.
-  We {\color{red} almost :( } have, for any constant $\phi$,
-  {\color{red} OK, so this part is a bit messed up. It's the right idea, but as it stands it's not doing so good. Specifically, here is what's messed up with what I'm doing here: a) events aren't independent, b) emptier can force a specific swapping-process to fail with higher probability. maybe a and b are fixable by bloating $\eta$.}
+  the $i$-th swapping-process was not successful; note that the
+  $X_i$ are independent, because the filler's random choices of
+  which applications of $\alg{f}$ within each swapping-process on
+  which to swap a cup into the anchor set are independent.
+  We have, for any constant $\phi$,
+  % {\color{red} OK, so this part is a bit messed up. It's the right idea, but as it stands it's not doing so good. Specifically, here is what's messed up with what I'm doing here: a) events aren't independent, b) emptier can force a specific swapping-process to fail with higher probability. maybe a and b are fixable by bloating $\eta$.}
   \begin{align*}
-  \Pr\left[\left|\frac{1}{|A|}\sum_{i=1}^{|A|}X_i - \frac{\delta\mu_\Delta}{n^{\eta}}\right| \ge 1-2\phi \right] 
+  \Pr\left[\left|\frac{1}{|A|}\sum_{i=1}^{|A|}X_i - \frac{n\delta\mu_\Delta}{n^{\eta}}\right| \ge 1-2\phi \right] 
   &\le 2e^{-2|A|(1-2\phi)^2} \\
   &\le 2^{-\Omega(n)}.
   \end{align*}
-  By appropriately large choice for $\eta \le O(1)$, $$\delta\mu_\Delta /n^\eta
+  By appropriately large choice for $\eta \le O(1)$, $$n\delta\mu_\Delta / n^\eta
   \le \phi$$ no matter how small $w \ge \Omega(1)$ is chosen. In particular this
   implies that $$\Pr\left[\sum_{i=1}^{|A|} X_i \ge |A|(1-\phi)\right] \ge 1-2^{\Omega(n)}.$$
   That is, with exponentially good probability $|A|\phi$ of the swapping processes succeed.
-  Taking a union bound over all applications of $\alg_f$ we have
+  Taking a union bound over all applications of $\alg{f}$ we have
   that there is exponentially good probability that all
-  applications of $\alg_f$ succeeded. Thus, with exponentially
+  applications of $\alg{f}$ succeeded. Thus, with exponentially
   good probability, by \eqref{eq:nastyobliviousamplificationlemmastep1backlog}, Step 1 achieves
   backlog $$(1-\delta)(\phi-1/(\delta n)(f(\floor{(1-\delta)n}-R_\Delta)$$
 
@@ -1588,7 +1600,7 @@ desired running time. We now outline the filler's strategy if this is not the ca
   % applications of $f$ clearly still gets probability failure at most
   % $2^{-\Omega(n)}$.
 
-  To achieve Step 2 the filler simply applies $\alg_f$ to $A$.
+  To achieve Step 2 the filler simply applies $\alg{f}$ to $A$.
   This clearly achieves backlog 
   $$f(|A|) = f(\ceil{\delta n})$$
   with exponentially good probability.
@@ -1601,127 +1613,180 @@ desired running time. We now outline the filler's strategy if this is not the ca
   The initial smoothing takes time $O(M')$. Step 1 entails
   $n^{\eta}\cdot (n\delta)$ swapping-processes, each of which
   takes time $f(|B|)$. Due to flattening at the beginning of each
-  application of $\alg_f$ the running time may be increased by a
+  application of $\alg{f}$ the running time may be increased by a
   multiplicative factor of at most $6$. Step 2 takes time
   $T(|A|)$. Adding these times we have that the running time
-  $T'(n)$ of $\alg_{f'}$ is
+  $T'(n)$ of $\alg{f'}$ is
   $$T'(n) \le O(M') + 6 \delta n^{\eta+1} T(\floor{(1-\delta)n}) + T(\ceil{\delta n}).$$
 
-  Having proved that $\alg_{f'}$ achieves the desired backlog
+  Having proved that $\alg{f'}$ achieves the desired backlog
   with the desired probability in the desired running time, the
   proof is now complete.
 
 \end{proof}
 
+Finally we prove that an oblivious filler can achieve backlog
+$n^{1-\varepsilon}$. 
+% in the variable-processor cup game on $n$ cups, where $\varepsilon = \Theta(1)$ 
+The proof is very similar to the proof of
+\cref{thm:adaptivePoly}, but more complicated because in the
+oblivious case we must guarantee that the result holds with good
+probability, and also more complicated because the Oblivious
+Amplification Lemma is more complicated than the Adaptive
+Amplification Lemma. We remark that it is quite remarkable that
+an oblivious filler is still able to achieve $\poly(n)$ backlog, just as
+an adaptive filler can, because intuitively being oblivious is a
+large disadvantage.
+
 \begin{theorem}
   \label{thm:obliviousPoly}
   There is an oblivious filling strategy for the
   variable-processor cup game on $n$ cups that achieves backlog
-  at least $\Omega(n^{1-\epsilon})$ for any constant $\epsilon
+  at least $\Omega(n^{1-\varepsilon})$ for any constant $\varepsilon
   >0$ in running time $2^{O(\log^2 n)}$ with probability at least
-  $1-2^{-\Omega(n)}$.
+  $1-2^{-\Omega(n)}$ against any $\Delta$-greedy-like emptier for
+  $\Delta \le O(1)$.
 \end{theorem}
 \begin{proof}
-  The proof is quite similar to that of \cref{thm:adaptivePoly}.
-  It is quite remarkable that the filler is able to 
-  achieve $\poly(n)$ backlog, and in fact the same asymptotic backlog as the
-  adaptive filler when the games are restricted to the reasonable length of
-  $2^{O(\log^2 n)}$. Because of the similarity to 
-  \cref{thm:adaptivePoly}'s proof, we ignore minor technical details in this
-  section, specifically with regards to there being an integer number of cups.
-  These can be dealt just as in the proof of \cref{thm:adaptivePoly}: by
-  modifying $n$ and $\delta$ slightly to be powers of $2$.
+  Take constant $\varepsilon \in (0, 1/2)$.
+  We aim to achieve backlog $(n/n_b)^{1-\varepsilon}-1$ for some constant $n_b$ on $n$ cups.
+  Let $\delta, \phi$ be constants, chosen as functions of $\epsilon$.
 
-  We aim to achieve backlog $cn^{1-\epsilon}$ for $\epsilon >  0$ a constant of
-  our choice, and $0< c \ll 1$ an appropriate constant that we will choose.
-  As in the proof of \cref{thm:adaptivePoly} we achieve large backlog
-  by repeated amplification of a base case. 
+  By \cref{prop:obliviousBase} there is an oblivious filling
+  strategy that achieves backlog $\Omega(1)$ on $n$ cups with
+  exponentially good probability in $n$; we call this algorithm
+  $\alg{f_0}$.
+  However, unlike in the proof of \cref{thm:adaptivePoly}, we
+  obviously cannot use the base case with a constant number of
+  cups: doing so would completely destroy our probability of
+  success! Because the running time of our algorithm will be
+  $2^{\polylog(n)}$, we will be required to take a union bound
+  over $2^{\polylog(n)}$ events. By making the size of our base
+  case $n_b = \polylog(n)$ we get that the probability of the
+  algorithm failing in the base case is at most
+  $2^{-\polylog(n)}$. Then, taking a union bound over
+  $2^{\polylog(n)}$ events can give us the desired probability.
+  By \cref{prop:obliviousBase} $\alg{f_0}$ achieves backlog
+  $f_0(k) \ge H \ge \Omega(1)$ for all $k \ge n_b$, for some
+  constant $H \ge \Omega(1)$ to be determined ($H$ is a function
+  of $\delta$).
 
-  The base case is given by \cref{prop:obliviousBase}. However,
-  unlike in the adaptive case, we cannot do the base case on a constant size
-  subset of the cups: this would destroy our probability of success. Recalling
-  that the running time of the algorithm is going to be $2^{\polylog(n)}$ it
-  seems reasonable to want to union bound over $2^{\polylog(n)}$ events. Hence
-  the probability of failure needs to also be at most $2^{-\polylog(n)}$.
-  Hence as our base case we use a $\polylog(n)$ size subset of the cups. 
-  Let $n_b = \polylog(n)$ be the size of our base case.
+  Then we construct $f_{i+1}$ as the amplification of $f_i$ using
+  \cref{lem:obliviousAmplification}.
 
-  Our base case strategy is 
-  $$
-  f_0(k)=
+  Define a sequence $g_i$ as 
+  $$g_i =
   \begin{cases}
-    2, & k > n_b\\
-    0, & k \le n_b
-  \end{cases}.$$
-  This is possible by \cref{prop:obliviousBase}.
-  Then we construct $f_{i+1}$ as the amplification of $f_i$ using \cref{lem:obliviousAmplification}.
-
-  Define $g_i$ as 
-  $$
-  g_i =
-  \begin{cases}
-    1/\delta, & i=0\\
-    g_{i-1}/(1-\delta), & i\ge 1 
+    n_b\ceil{16/\delta}, & i=0\\
+    \floor{ g_{i-1}/(1-\delta) }, & i\ge 1 
   \end{cases}.$$
 
+  We claim the following regarding our construction:
   \begin{clm}
     \label{clm:fikinductionagain}
-    $f_i(k \cdot n_b) \ge ck^{1-\epsilon}$ for all $k < g_i$.
-  \end{clm}
-  We prove \cref{clm:fikinductionagain} by induction. Clearly by
-  appropriate choice of $c$ the base case is satisfied.
-
-  Assume the claim for $f_i$, consider $f_{i+1}$. For any $k < g_{i-1}/(1-\delta)$ we have
-  \begin{align*}
-    f_{i+1}(k\cdot n_b) & \\
-                  &\ge \phi\cdot(1-\delta)\sum_{\ell=0}^L f_i((k\cdot n_b)\delta^\ell (1-\delta))\\
-                  &\ge \phi\cdot(1-\delta)\sum_{\ell=0}^L c (k\delta^\ell(1-\delta))^{1-\epsilon}\\
-                  &\ge ck^{1-\epsilon} \phi\cdot(1-\delta)^{2-\epsilon}\sum_{\ell=0}^L (\delta^\ell)^{1-\epsilon}\\
-                  &\ge ck^{1-\epsilon} \phi\cdot(1-\delta)^{2-\epsilon}( 1+\delta^{1-\epsilon}).
-  \end{align*}
-
-  Now we must prove the following claim (something similar was
-  proven in the adaptive version of this proof, but the following
-  proof is slightly complicated by the $\phi$ factor out front):
-  \begin{clm}
-    Let 
-    $$h(\delta, \phi) = \phi\cdot (1-\delta)^{2-\epsilon}(1+\delta^{1-\epsilon})$$
-    There exists constant choices of $\delta, \phi$ such that $h(\delta, \phi) > 1$.
+    \begin{equation}
+      f_i(k) \ge (k/n_b)^{1-\varepsilon} - 1 \text{ for all } k \le g_i. \label{eqn:fikinductionAGAIN}
+    \end{equation}
   \end{clm}
   \begin{proof}
-    As before we lower bound $h$ by 
-    $$h(\delta, \phi) \ge \phi \cdot (1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon}).$$
-    Recall from before that 
-    $$(1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon}) -1$$ is positive for
-    $\delta \in (0, 1/(2(2-\epsilon))^{1/\epsilon})$. Choosing $\delta$ as the
-    midpoint of this interval, $(1-(2-\epsilon)\delta)(1+\delta^{1-\epsilon})$
-    is some value strictly larger than $1$, say $1+z$. Then
-    choosing $$\phi = \frac{1+z/2}{1+z}$$
-    guarantees that $h(\delta, \phi) = 1+z/2 > 1$ as desired.
+  We prove \cref{clm:fikinductionagain} by induction on $i$. 
+
+  First we derive a simpler (more loose) form of the lower bound
+  on $\alg{f'}$'s backlog in terms of $\alg{f}$'s backlog that
+  hold if  $\floor{(1-\delta)n} \ge n_b$. We choose $n_b=
+  \polylog(n)$ making $n_b > 1/\delta^2$ and hence also $\delta >
+  1/(\delta n_b)$; this means that there is a choice of $\phi \in
+  (1/2, 1)$ making $\phi - 1/(\delta n_b) > 1-\delta$. Note that
+  for any $n\ge n_b$ this same $\phi$ satisfies $$(1-\delta) \le
+  \phi - \frac{1}{\delta n_b} \le \phi - \frac{1}{ \delta n}.$$
+  We choose $\phi = 1-\delta + 1/(\delta n_b)$. Further, we
+  choose $H \ge \Omega(1)$ to make $$ H - R_\Delta \ge
+  (1-\delta)H.$$ This ensures that $$f_0(\floor{(1-\delta) n}) -
+  R_\Delta \ge (1-\delta)f_0(\floor{(1-\delta)n})$$ so long as
+  $\floor{(1-\delta)n} \ge n_b$. Combining this, we have that if
+  $\floor{(1-\delta)n}\ge n_b$ then 
+  \begin{equation}
+    \label{eq:simpleramplemmaobliviousforthmpf}
+  f'(n) \ge (1-\delta)^3 f(\floor{(1-\delta)n}) + f(\ceil{\delta n}).
+  \end{equation}
+  We also choose $H$ large enough so that $H \ge
+  (g_0/n_b)^{1-\epsilon}-1 = \ceil{16/\delta}^{1-\epsilon}-1$.
+
+  When $i=0$, the base case of our induction,
+  \eqref{eqn:fikinductionAGAIN} is trivially true as
+  $(k/n_b)^{1-\epsilon} - 1 \le H$ by definition of $H$ for $k\le g_0$.
+
+  Assume \eqref{eqn:fikinductionAGAIN} for $f_i$, consider $f_{i+1}$. 
+
+  Note that, by design of $g_i$, if $k \le g_{i+1}$ then $\floor{k\cdot (1-\delta)} \le g_i$.
+  Consider any $k\in [g_{i+1}]$. 
+
+  First we deal with the trivial
+  case where $k \le g_0$. In this case
+  $$f_{i+1}(k) \ge f_i(k) \ge \cdots \ge f_0(k) \ge (k/n_b)^{1-\varepsilon} -1.$$
+
+  Now we consider $k \ge g_0$. Note that in this case $\floor{(1-\delta)k} \ge n_b$.
+  Since $f_{i+1}$ is the amplification of $f_i$, and $k$ is sufficiently large, we have by \eqref{eq:simpleramplemmaobliviousforthmpf} that
+  $$f_{i+1}(k) \ge (1-\delta)^3 f_i(\floor{(1-\delta)k}) + f_i(\ceil{\delta k}).$$
+  By our inductive hypothesis, which applies as $\ceil{\delta k}\le g_i, \floor{k\cdot (1-\delta)} \le g_i$, we have
+  $$f_{i+1}(k) \ge (1-\delta)^3 (\floor{(1-\delta)k/n_b}^{1-\varepsilon}-1) + \ceil{\delta k/n_b}^{1-\varepsilon} - 1. $$
+  Dropping the floor and ceiling, incurring a $-1$ for dropping the floor, we have
+  $$f_{i+1}(k) \ge (1-\delta)^3 (((1-\delta)k/n_b-1)^{1-\varepsilon}-1) + (\delta k/n_b)^{1-\varepsilon} - 1.$$
+  Because $(x-1)^{1-\varepsilon} \ge x^{1-\varepsilon} -1$, due to the
+  fact that $x\mapsto x^{1-\varepsilon}$ is a sub-linear
+  sub-additive function, we have 
+  $$f_{i+1}(k) \ge (1-\delta)^3 (((1-\delta)k/n_b)^{1-\varepsilon}-2) + (\delta k/n_b)^{1-\varepsilon}-1.$$
+  Moving the $(k/n_b)^{1-\varepsilon}$ to the front we have
+  $$ f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left((1-\delta)^{4-\varepsilon} + \delta^{1-\varepsilon} - \frac{2(1-\delta)^3}{(k/n_b)^{1-\varepsilon}} \right) -1.$$
+  Because $(1-\delta)^{4-\varepsilon} \ge 1-(4-\varepsilon)\delta$, a fact called Bernoulli's Identity, we have
+  $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left(1-(4-\varepsilon)\delta + \delta^{1-\varepsilon} - \frac{2(1-\delta)^3}{(k/n_b)^{1-\varepsilon}} \right)-1.$$
+  Of course $-2(1-\delta)^3 \ge -2$, so 
+  $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left(1-(2-\varepsilon)\delta + \delta^{1-\varepsilon} - 2/(k/n_b)^{1-\varepsilon} \right) -1.$$
+  Because $$-2/(k/n_b)^{1-\varepsilon} \ge -2/(g_0/n_b)^{1-\varepsilon} \ge
+  -2(\delta/16)^{1-\varepsilon} \ge -\delta^{1-\varepsilon}/2,$$
+  which follows from our choice of $g_0 = \ceil{8/\delta} n_b$ and the restriction
+  $\varepsilon<1/2$, we have 
+  $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left(1-(4-\varepsilon)\delta + \delta^{1-\varepsilon} - (1/2)\delta^{1-\varepsilon} \right)-1.$$
+  Finally, combining terms we have
+  $$f_{i+1}(k) \ge  (k/n_b)^{1-\varepsilon} \cdot\left(1-(4-\varepsilon)\delta + (1/2)\delta^{1-\varepsilon}\right)-1. $$
+
+  Because $\delta^{1-\varepsilon}$ dominates $\delta$ for
+  sufficiently small $\delta$, there is a choice of
+  $\delta=\Theta(1)$ such that 
+  $$1-(4-\varepsilon)\delta + (1/2)\delta^{1-\varepsilon} \ge 1.$$ 
+  Taking $\delta$ to be this small we have,
+  $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon}-1,$$
+  completing the proof. 
   \end{proof}
 
-  Now we can complete the proof of \cref{clm:fikinductionagain}, 
+  The sequence $g_i$ is $n_b$ times the sequence $g_i$ from
+  the proof of \cref{thm:adaptivePoly}; we thus have that $g_{i_*}
+  \ge n$ for some $i_* \le O(\log n)$.
+  Hence $\alg{f_{i_*}}$ achieves backlog 
+  $$f_{i_*}(n) \ge (n/n_b)^{1-\varepsilon}-1.$$
+  As $n_b \le \polylog(n)$ we have
+  $$f_{i_*}(n) \ge \Omega(n^{1-\varepsilon}),$$ as desired.
+
+  Let the running time of $f_i(n)$ be $T_i(n)$. From the Amplification Lemma we have following recurrence bounding $T_i(n)$:
   \begin{align*}
-    f_{i+1}(k) & \\
-               &\ge ck^{1-\epsilon} h(\delta, \phi)\\
-               &\ge ck^{1-\epsilon}.
+    T_i(n) &\le 6n^{\eta+1} \delta \cdot T_{i-1}(\floor{(1-\delta)n}) +
+  T_{i-1}(\ceil{\delta n}) \\
+  &\le 7n^{\eta+1}T_{i-1}(\floor{(1-\delta)n}).
   \end{align*}
+  It follows that $\alg{f_{i_*}}$, recalling that $i_* \le O(\log n)$, has running time
+  $$T_{i_*}(n) \le (7n^{\eta+1})^{O(\log n)} \le 2^{O(\log^2 n)}$$
+  as desired.
 
-  Recursing for $O(\log n)$ levels of recursion is sufficient to achieve a function $f$ with 
-  $$f(n) \ge c(n/n_b)^{1-\epsilon}$$
-  As $n_b \le \polylog(n)$ this is still $\Omega(n^{1-\epsilon})$ as desired.
-
-  Hence the desired backlog is achieved. See the proof of
-  \cref{thm:adaptivePoly} for how to treat the integers more carefully.
-
-  By identical analysis to before we get running time $2^{O(\log^2 n)}$.
-  As stated previously, the probability result is guaranteed by a union bound,
-  so we have probability at least $1-2^{-\polylog(n)}$ of success.
+  As noted, because the running time is $2^{\polylog(n)}$ and the
+  base case size is $n_b\ge \polylog(n)$, a union bound
+  guarantees the probability of success is at least
+  $1-2^{-\polylog(n)}$.
 \end{proof}
 
-% in fact, our results even hold for $\Delta \le O(\log \log n)$
+% \section{oblivious lower bound part 2}
+% in fact, our results (probably) even hold for $\Delta \le O(\log \log n)$
 % you just need to modify the proposition, the lemma doesn't care too much
-% modify the proposition to only need one of them to succeed.
+% modify the proposition to *only need one of them to succeed*.
 
 \section{Conclusion}
 Many important open questions remain open. Can our oblivious cup game results
