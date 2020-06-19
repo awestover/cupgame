@@ -169,7 +169,7 @@ some portion of the processors.
 
 A priori having variable resources offers neither player a clear advantage:
 lower values of $p$ mean that the emptier is at more of a discretization
-disadvantage but also mean that the filler can ``anchor" fewer
+disadvantage but also mean that the filler can ``anchor" fewer   
 cups. \footnote{A
 useful part of many filling algorithms is maintaining an ``anchor" set of
 ``anchored" cups. The filler always places $1$ unit of water in each anchored
@@ -969,7 +969,7 @@ Thus, by induction we have the invariant for all rounds $t\in\mathbb{N}$.
 \section{Oblivious Filler Lower Bound}\label{sec:oblivious}
 In this section we prove that, surprisingly, an oblivious filler
 can achieve backlog $n^{1-\varepsilon}$, although only against a
-certain class of ``greedy-like" emptiers (a natural class of emptiers).
+certain class of ``greedy-like" emptiers.
 
 % First we highlight the concentration inequalities that we will need in the analysis. 
 
@@ -1030,33 +1030,30 @@ $\Delta$-greedy-like for $\Delta \le O(1)$.
 In the randomized setting we are only able to prove lower bounds for backlog
 against greedy-like emptiers; whether or not our results can be extended to a
 more general class of emptiers is an interesting open question. 
-Nonetheless, greedy-like emptiers are of great interest; for example, a greedy
-emptier (which is $0$-greedy-like) is used in the upper bound proof.  
+Nonetheless, greedy-like emptiers are of great interest because all the known randomized algorithm for the cup game are $O(1)$-greedy-like \todo{cite ppl and stuff}.
 
 We now prove a crucial property of greedy-like emptiers: 
 \begin{proposition}
   \label{prop:greedylikeisflat}
-  Given a cup configuration that is $M$-flat, an oblivious filler can achieve a
-  $2(2+\Delta)$-flat configuration of cups against a $\Delta$-greedy-like
-  emptier in running time $2M$ in the negative-fill variable-processor cup
-  game on $n$ cups.
+  Consider an $M$-flat cup configuration in the negative-fill variable-processor cup
+  game on $n$ cups with average fill $0$.
+  An oblivious filler can achieve a $2(2+\Delta)$-flat configuration of cups against a $\Delta$-greedy-like
+  emptier in running time $2M$.
 \end{proposition}
 \begin{proof}
   The filler sets $p=n/2$ and distributes fill equally amongst
-  all cups at every round, in particular placing $1/2$ fill in each cup.
+  all cups at every round, placing $1/2$ fill in each cup.
   Let $\ell_t = \min_{c\in S_t} \fil_{S_t}(c)$, $u_t=\max_{c\in S_t} \fil_{S_t}(c)$. Let
   $L_t$ be the set of cups $c$ with $\fil_{S_t}(c) \le l_t+2+\Delta$, and let
   $U_t$ be the set of cups $c$ with $\fil_{S_t}(c) \ge u_t-2-\Delta$.
-
-  There are two ways to think of $U_t$. First, $U_t$ contains cups in the union
-  of intervals of length $1$, $\Delta$, and $1$. This ensures that if any cup
-  with fill in $[u_t-\Delta-2, u_t-\Delta-1]$ is emptied from then all cups
+  
+  Note the following regarding $U_t$ (symmetric properties for $L_t$ also hold):\\
+  \textbf{Observation 1}: 
+  If any cup with fill in $[u_t-\Delta-2, u_t-\Delta-1]$ is emptied from then all cups
   with fills in $[u_t-1, u_t]$ must be emptied from because the emptier is
-  $\Delta$-greedy-like. Second, $U_t$ contains cups with fill in the union of
-  $[u_t-2, u_t]$ and $[u_t-\Delta-2, u_t-2]$. Thus if there are more than $n/2$
-  cups outside of $U_t$ then all cups in $[u_t-2, u_t]$ must be emptied from
-  because the emptier is $\Delta$-greedy-like. $L_t$ is of course completely
-  symmetric to $U_t$.
+  $\Delta$-greedy-like. \\
+  \textbf{Observation 2}:
+  If there are more than $n/2$ cups outside of $U_t$, that is cups with fills in $[\ell_t, u_t-2-\Delta]$, then all cups in $[u_t-2, u_t]$ must be emptied from because the emptier is $\Delta$-greedy-like.
 
   Now we prove a key property of the sets $U_t$ and $L_t$: once a cup is in
   $U_t$ or $L_t$ it is always in $U_{t'}, L_{t'}$ for all $t' > t$. This
@@ -1075,7 +1072,7 @@ We now prove a crucial property of greedy-like emptiers:
     On the other hand, if $c$ is emptied from, i.e. $\fil(c)$ has decreased by
     $1/2$, we consider two cases.\\
     \textbf{Case 1:} If $\fil_{S_t}(c) \ge u_t-\Delta -1$, then $\fil_{S_t}(c)$
-    is at least $1$ above the bottom of the interval. The backlog increases by
+    is at least $1$ above the bottom of the interval defining which cups belong to $U_t$. The backlog increases by
     at most $1/2$ and the fill of $c$ decreases by $1/2$, so
     $\fil_{S_{t+1}}(c)$ is at least $1-1/2-1/2 = 0$ above the bottom of the
     interval, i.e. still in the interval. \\
@@ -1084,13 +1081,11 @@ We now prove a crucial property of greedy-like emptiers:
     %   $$\fil_{S_{t+1}}(c) \ge u_t-\Delta-1 - 1/2\ge u_{t+1}-\Delta-2.$$
     \textbf{Case 2:} On the other hand, if $\fil_{S_t}(c) < u_t-\Delta-1$, then every cup
         with fill in $[u_t-1, u_t]$ must have been emptied
-        from. The fullest cup at round $t+1$ is the same as the fullest cup on
+        from by Observation 1. The fullest cup at round $t+1$ is the same as the fullest cup on
         round $t$, because the fills of all cups with fill in
         $[u_t-1, u_t]$ have decreased by $1/2$, and no cup with fill less than
         $u_t-1$ had fill increase by more than $1/2$. Hence $u_{t+1} = u_t -1/2$.
-        Because both the fill of $c$ and the backlog have decreased by the same
-        amount, the distance between them is still at most $\Delta+2$, hence
-        $c\in U_{t+1}$.\\
+        Because both the fill of $c$ and the backlog have both decreased by $1/2$, the distance between them is still at most $\Delta+2$, hence $c\in U_{t+1}$.\\
     The argument for why $L_t \subseteq L_{t+1}$ is symmetric.
   \end{proof}
 
@@ -1103,9 +1098,7 @@ We now prove a crucial property of greedy-like emptiers:
     long as $|L_t| \le n/2$ we have $\ell_{t+1} = \ell_t+ 1/2$.
   \end{clm}
   \begin{proof}
-    If there are more than $n/2$ cups outside of $U_t$ then there must be some
-    cup with fill less than $u_t-\Delta-2$ that is emptied from. Because the
-    emptier is $\Delta$-greedy-like this means that the emptier must empty from
+    If there are more than $n/2$ cups outside of $U_t$, then by Observation 2, the emptier must empty from
     every cup with fill at least $u_t-2$. Thus $u_{t+1} = u_t -1/2$: no cup
     with fill less than $u_t-2$ could have become the fullest cup, and the
     previous fullest cup has lost $1/2$ units of fill. 
