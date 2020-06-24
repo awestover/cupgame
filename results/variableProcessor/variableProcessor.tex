@@ -1132,8 +1132,8 @@ configuration of cups they can achieve a $R_\Delta$-flat configuration of cups.
 Now we are equipped to prove the following proposition:
 \begin{proposition}
   \label{prop:obliviousBase}
-  Let $H \le O(1)$, $\Delta \le O(1)$, $n \ge \Omega(1)$ at
-  least a sufficiently large constant determined by $H$ and $\Delta$, $M \le \poly(n)$. 
+  Let $H \le O(1)$, let $\Delta \le O(1)$, let $n$ be at
+  least a sufficiently large constant determined by $H$ and $\Delta$, and let $M \le \poly(n)$. 
   Consider an $M$-flat cup configuration in the negative-fill variable-processor cup
   game on $n$ cups with average fill $0$.
   Given this configuration, an oblivious filler can achieve fill $H$
@@ -1143,19 +1143,17 @@ Now we are equipped to prove the following proposition:
 We remark that \cref{prop:obliviousBase} plays a role in the
 proof of the lower bound with an oblivious filler similar to
 that of \cref{prop:adaptiveBase} in the lower bound proof for an adaptive
-filler. However, the ability to achieve constant backlog is much more
-complicated to prove with an oblivious filler. 
+filler. However, achieving constant backlog is much more
+complicated with an oblivious filler. 
 \begin{proof}[Proof of \cref{prop:obliviousBase}]
   The filler starts by flattening the cups, using the flattening procedure
   detailed in \cref{prop:greedylikeisflat}. 
 
-  Let $A$, the \defn{anchor} set, be an arbitrary (e.g. randomly chosen) subset
-  of $n/32$ cups and let $B$, the \defn{non-anchor} set, consist of the rest of
-  the cups ($|B| = n\cdot 31/32$). Let $h = (16\Delta + 16)H$. Note that
-  the average fill of $A$ and $B$ both must start as at least $-R_\Delta$ due
-  to the flattening.
+  Let $A$, the \defn{anchor} set, be an arbitrary subset
+  of $n/32$ cups and let $B$, the \defn{non-anchor} set, consist of the rest of the cups ($|B| = n\cdot 31/32$). Let $h = (16\Delta + 16)H$. Note that
+  the average fills of $A$ and $B$ both must start as at least $-R_\Delta$ due to the flattening.
 
-  The filler sets $p=|A|+1$. The filler's strategy is roughly as follows: \\
+  The filler sets $p=|A|+1$. We begin by outlining the filler's strategy: \\
   \textbf{Step 1:} Make a constant fraction of the cups in $A$ have fill at
   least $h$ by playing single processor cup games on constant-size subsets of
   $B$ and then swapping the cup within $B$ that has high fill, with constant
@@ -1164,54 +1162,50 @@ complicated to prove with an oblivious filler.
   probability. Between single-processor cup games the filler flattens $B$.\\
   \textbf{Step 2:} Reduce the number of processors to $nc$, and raise the fill
   of $nc$ \textit{known} cups to fill $H$. The emptier, being
-  greedy, must first empty from the cups with fill $h$ before
+  greedy-like, must first empty from the cups with fill $h$ before
   emptying from the cups that the filler is attempting to get fill $H$ in.
 
 To achieve Step 1 the filler performs a series of $|A|$
-\defn{swapping-process}, which are procedures that the filler
+\defn{swapping-processes}, which are procedures that the filler
 uses to get a new cup---which will sometimes have high fill---in
 $A$. A swapping-process is composed of a substructure, repeated
 many times, which we call a \defn{round-block}; a round-block is
 a set of rounds. A swapping-process will consists of $|A|\cdot
 c_\Delta$ round-blocks ($c_\Delta = \Theta(1)$ a function of
-$\Delta$ to be specified); at the beginning of each
+$\Delta$ to be specified). At the beginning of each
 swapping-process the filler chooses a round-block $j$ uniformly
-at random from $[|A|\cdot c_\Delta]$. 
+at random from $[|A|\cdot c_\Delta]$, on which it will swap some cup in $B$ and some cup in $A$. 
 
 For each round-block $i\in [|A|\cdot c_\Delta]$, the filler
 selects a random subset $D_i\subset B$ of the non-anchor cups and
 plays a single processor cup game on $D_i$. In this
 single-processor cup game the filler essentially employs the
-classic adaptive strategy for achieving backlog $\Omega(\log
-|B|)$ on a set of $|B|$ cups, with slight modifications for the
-fact that it is oblivious. In particular, the filler will only
-achieve this fill with constant probability. While doing this,
-the filler always places $1$ unit of fill in each cup in the
-anchor set. 
+classic adaptive strategy given in \todo{cite some part of someone's paper} for achieving backlog $\Omega(\log |D_i|)$ on a set of $|D_i|$ cups, with the slight modification that the filler is guessing randomly what the emptier's actions are; we will show that the fill of $\Omega(\log |D_i|)$ is achieved with constant probability. In each step of the single-processor cup game on $D_i$ the filler also places $1$ unit of fill in each cup in the anchor set---this means that the total number of processors in each step is $|A| + 1$. 
+
+% probability: 1/|D_i|!, backlog: \log D_i
 
 On most round-blocks---all but the $j$-th---the filler does
 nothing with the results of the single processor cup game.
 However, on the $j$-th round-block the filler swaps a cup which
 has constant probability of having fill at least $\Omega(\log
 |D_i|)$ into the anchor set. Let $A_0$ be the set of cups that
-have been swapped into the anchor set. At the end of each
-round-block the filler flattens $B \cup A\setminus A_0$, and then
+have been swapped into the anchor set (note that $A_0$ changes over the course of the swapping-process). At the end of each
+round-block the filler flattens $B \cup A\setminus A_0$, and then separately
 also flattens $B$. Note that this will not affect the running
 time beyond a multiplicative factor (of e.g. $6$). 
 
-We remark that this construction is very similar to the
+We remark that the construction of a swapping-process is very similar to the
 construction in \cref{lem:adaptiveAmplification}, e.g. both
 consist of anchoring a set of cups and then playing many cup
 games on the non-anchor cups and occasionally swapping a
 non-anchor cup and an anchor cup. However, there are two major
 differences in the construction for this proof. First, in this
-proof we definitely get many cups with high fill; in the other 
+proof we, with exponentially good probability, get many cups with high fill; in the other 
 proof all the fill could be concentrated in a few anchor cups.
 Second, in this proof we cannot terminate the algorithm upon
 achieving the desired backlog, because we can't know when we
-achieve the desired backlog. The disadvantages that an
-oblivious filler has prevents the strategy of this proof from working in
-general, but against a greedy-like emptier we can overcome them.
+achieve the desired backlog. The oblivious filler's disadvantage compared to an adaptive filler prevents the strategy of this proof from working in
+general, but against a greedy-like emptier an oblivious filler is able to over come its disadvantage.
 
 Now we show that the Step 1 succeeds with exponentially good probability.
 
@@ -1256,7 +1250,7 @@ Now we show that the Step 1 succeeds with exponentially good probability.
   $\mu(B)$. There are two ways for $\mu(B)$ to change: it can
   change when the emptier neglects the anchor-set or when a swap
   occurs. Within each swapping-process, because the emptier is
-  greedy-like, and because now cup in $B$ ever is raised to have
+  greedy-like, and because no cup in $B$ ever is raised to have
   fill above $\mu(B) + R_\Delta + d$, we have that any cup in $A$
   that has fill greater than $\mu(B) + d + R_\Delta + \Delta$
   must always be emptied from. If $\mu(A) \le \mu(B) + d +
@@ -1310,7 +1304,7 @@ Now we show that the Step 1 succeeds with exponentially good probability.
   neglect the anchor set more than $|A|r$ times. Hence, there
   is at least a $q_0/2$ chance that on the $j$-th round-block the
   emptier doesn't neglect the anchor set and the filler correctly guesses
-  the emptiers emptying sequence. Thus, overall, there is at least
+  the emptier's emptying sequence. Thus, overall, there is at least
   a constant probability of achieving fill $h$ in a cup in $A$.
 
   Say that a swapping-process \defn{succeeds} if the filler is able to swap a
