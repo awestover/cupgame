@@ -22,7 +22,7 @@
 
 \DeclareMathOperator{\fil}{\text{fill}}
 \newcommand{\alg}[1]{\textit{\text{alg}}({#1})}
-\newcommand{\randalg}{randalg\textsubscript{1}\xspace}
+\newcommand{\randalg}{randalg-1\xspace}
 
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
@@ -244,18 +244,23 @@ consistently. For example, the fullest cup at a state has rank $1$, and the
 least full cup has rank $n$. Let $[n] = \{1,2,\ldots, n\}$, let
 $i+[n] = \{i+1, i+2, \ldots, i+n\}$.
 
-Many of our lower bound proofs will adopt the convention of allowing for
-negative fill. We call this the \defn{negative-fill variable-processor cup
-game}. Specifically, in the negative-fill variable-processor cup game, when the
-emptier empties from a cup its fill always decreases by exactly $1$: there is
-no zeroing out. Negative-fill can be interpreted as fill below some average
-fill. Measuring fill like this is important however, as our lower bound results
-are used recursively, building on the average fill already achieved. Note that
-it is strictly easier for the filler to achieve high backlog when cups can zero
-out, because then some of the emptier's resources are wasted. On the other hand,
-during the upper bound proof we show that a greedy emptier maintains the
-desired invariants even if cups zero out. This is crucial as the game is harder
-for the emptier when cups can zero out.
+Many of our lower bound proofs will adopt the convention of
+allowing for negative fill. We call this the \defn{negative-fill
+cup game}. Specifically, in the negative-fill cup game, when the
+emptier empties from a cup its fill always decreases by exactly
+$1$: there is no zeroing out. Negative-fill can be interpreted as
+fill below some average fill. Measuring fill like this is
+important however, as our lower bound results are used
+recursively, building on the average fill already achieved. Note
+that it is strictly easier for the filler to achieve high backlog
+when cups can zero out, because then some of the emptier's
+resources are wasted. On the other hand, during the upper bound
+proof we show that a greedy emptier maintains the desired
+invariants even if cups zero out. This is crucial as the game is
+harder for the emptier when cups can zero out.
+Some results are proved for the variable-processor negative-fill
+cup game, and some results are proved for the single-processor
+negative-fill cup game.
 
 \section{Adaptive Filler Lower Bound}\label{sec:adaptive}
 
@@ -1132,16 +1137,16 @@ By \cref{prop:greedylikeisflat}, if a filler is given a $M$-flat
 configuration of cups they can achieve a $R_\Delta$-flat configuration of cups.
 
 Next we describe a simple oblivious filling strategy that will be used as a
-subroutine in \cref{lem:obliviousBase}; this strategy is very
+subroutine in \cref{lem:obliviousManyUnknownCups}; this strategy is very
 well-known, and similar versions of it can be found in
 \cite{ mbe19, mbe15, die91, wku20}.
 \begin{proposition}
   \label{prop:obliviousTerribleProbability}
   Consider an $R$-flat cup configuration in the negative-fill
   single-processor cup game on $n$ cups with average fill $0$.
-  There is an oblivious filling strategy that, in a chosen cup,
-  achieves fill at least $-R + \sum_{i=2}^{n} 1/i$ with
-  probability at least $1/n!$. Further, this filling strategy
+  There is an oblivious filling strategy that
+  achieves fill at least $-R + \sum_{i=2}^{n} 1/i$ in a randomly chosen
+  cup with probability at least $1/n!$. Further, this filling strategy
   guarantees that the chosen cup has fill at most $R +
   \sum_{i=2}^{n} 1/i$, and at least $-R-n$. This filling strategy
   has running time $O(n)$.
@@ -1150,21 +1155,20 @@ well-known, and similar versions of it can be found in
   The filler maintains an \defn{active-set}, initialized to being
   all of the cups. Every round the filler distributes $1$ unit of
   fill equally among all cups in the active set. Then the emptier
-  removes fill from some cup. Finally, the filler removes a cup
-  randomly from the active set. This continues until only a single cup
-  remains in the active set. On the $i$-th step of this process,
-  i.e. when the size of the active set is $n-i+1$, if the emptier
-  empties from a cup in the active set the filler has a
-  $1/(n-i+1)$ chance of removing this cup from the anchor set; on
-  the other hand if the emptier empties from a cup not in the
-  anchor set the filler is certain to guarantee that this cup is
-  not in the active set after removing a random cup from the
-  active set. Hence with probability at least $1/n!$ the final
+  removes $1$ unit of fill from some cup. Finally, the filler
+  removes a cup uniformly randomly from the active set. This
+  continues until only a single cup remains in the active set. 
+  Consider the probability that this cup has never been emptied
+  from. On the $i$-th step of this process, i.e. when the size of
+  the active set is $n-i+1$, consider the cup the emptier empties
+  from. If this cup is in the active-set, with probability at
+  least $1/(n-i+1)$ the filler removes it from the active set.
+  If the cup is not in the active set, then it is irrelevant.
+  Hence with probability at least $1/n!$ the final
   cup in the active set has never been emptied from.
-  In this case, this cup will have gained fill $1/n+1(n-1) +
-  \cdots + 1/2$ as claimed. The chosen cup started with fill at
-  least $-R$, and hence now has fill at least $-R+ \sum_{i=2}^n
-  1/i$. 
+  In this case, this cup will have gained fill $\sum_{i=2}^n 1/i$
+  as claimed. The chosen cup started with fill at
+  least $-R$, and hence now has fill at least $-R+ \sum_{i=2}^n 1/i$. 
 
   The chosen cup has fill at most $R + \sum_{i=2}^n 1/i$, which
   is achieved if the cup was never emptied from over the course
@@ -1175,7 +1179,11 @@ well-known, and similar versions of it can be found in
 
 \end{proof}
 
-Now we are equipped to prove the following lemma:
+Now we are equipped to prove the following lemma, which shows
+that we can achieve a constant number of unkown cups with high
+fill; using this lemma and exploting the greedy-like nature of
+the emptier we can get a known cup with high fill
+(we show this in \cref{lem:obliviousBase}).
 \begin{lemma}
   \label{lem:obliviousManyUnknownCups}
   Let $\Delta \le O(1)$, let $h \le O(1)$ with $h \ge 16+16\Delta$, let
@@ -1192,10 +1200,10 @@ Now we are equipped to prove the following lemma:
   $\poly(n)$ against a $\Delta$-greedy-like emptier with
   probability at least $1-2^{-\Omega(n)}.$
   The filling strategy also guarantees that $\mu(B) \ge -h/2$.
-
 \end{lemma}
 \begin{proof}
   We refer to $A$ as the \defn{anchor} set, and $B$ as the
+  \defn{non-anchor} set.
   Throughout the proof the filler uses $p=|A|+1$.
 
 We denote by \randalg the oblivious single-processor filling
@@ -1212,19 +1220,18 @@ always places $1$ unit of water in each anchor cup. The filler
 then performs a series of $|A|$ \defn{swapping-processes}, one
 per anchor cup, which are procedures that the filler uses to get
 a new cup---which will sometimes have high fill---in $A$. On each
-swapping-processes the filler applies \randalg to constant-size
-sets $D_i \subset B$ with $|D_i| = \ceil{e^{2h+1}}$; the filler
-does this $|A|\cdot c_\Delta$ times for some constant $c_\Delta$
-to be specified later (as a function of $\Delta$). At the start
-of each swapping-process the filler chooses a random index $j \in
-[|A|\cdot c_\Delta]$; on the $j$-th application of \randalg the
-filler swaps the cup created by \randalg with the cup in the
-anchor set associated with this swapping-process. 
-Let $A_0$ be the set of cups that have been swapped into the
-anchor set (note that $A_0$ changes over the course of the
-swapping-processes). Before each application of \randalg the filler
-flattens $B \cup A\setminus A_0$, and then separately also
-flattens $B$. 
+swapping-process the filler applies \randalg $|A|\cdot c_\Delta$
+times ($c_\Delta=\Theta(1)$ to be specified as a function of
+$\Delta$) to arbitrarily chosen constant-size sets $D \subset B$ with $|D| =
+\ceil{e^{2h+1}}$. At the start of each swapping-process the
+filler chooses a random index $j \in [|A|\cdot c_\Delta]$; on the
+$j$-th application of \randalg the filler swaps the cup given
+by \randalg with the cup in the anchor set associated with this
+swapping-process. Let $A_0$ be the set of cups that have been
+swapped into the anchor set (note that $A_0$ changes over the
+course of the swapping-processes). Before each application of
+\randalg the filler flattens $B \cup A\setminus A_0$, and then
+separately also flattens $B$. 
 
 We remark that although this construction is somewhat similar to
 the construction in \cref{lem:adaptiveAmplification}, there is a
@@ -1244,9 +1251,10 @@ average fill of the anchor cups from increasing, then emptier
 must empty from every anchor cup on each step. If the emptier
 fails to do this on a given round, then we say that the emptier
 has \defn{neglected} the anchor cups. We say that an application
-of \randalg to $D$ is \defn{successful} if the emptier does not
+of \randalg to $D\subset B$ is \defn{successful} if the emptier does not
 neglect the anchor set during any round of the application. We
-define $d = \sum_{i=2}^{|D_i|} 1/i$; note that on any successful
+define $d = \sum_{i=2}^{|D|} 1/i$ (recall that $|D| =
+\ceil{e^{2h+1}}$). Note that on any successful
 application of \randalg there is a $1/|D|!$ chance of getting a
 cup with fill at least $\mu(B) -R_\Delta + d$. We say that a swap
 is \defn{good} if it swaps a cup with fill at least
@@ -1298,8 +1306,8 @@ $\mu(B)-R_\Delta + d$ into the anchor set.
 
 \begin{clm}
   \label{clm:emptierCantNeglectAnchorTooMuch}
-  The emptier cannot neglect the anchor set no more than 
-  $$r = (1+|A|/|B|)(D_i + 2R_\Delta) + R_\Delta + \Delta$$
+  The emptier can neglect the anchor set no more than 
+  $$r = (1+|A|/|B|)(|D| + 2R_\Delta) + R_\Delta + \Delta$$
   times per swapping-process.
 \end{clm}
 \begin{proof}
@@ -1307,7 +1315,7 @@ $\mu(B)-R_\Delta + d$ into the anchor set.
   % processes and those can't be arbitrarily bad for it 
   % thus too much neglect by the emptier violates greedy-likeness
 
-  We now claim that $\mu(B)$ does not rise very high, and $\mu(A)$
+  We claim that $\mu(B)$ does not rise very high, and $\mu(A)$
   does not sink very low. The only time that $\mu(A)$ can
   decrease is due to a swap. Thus, by lower bounding the average
   fill of $A$ and upper bounding the average fill of $B$ we can
@@ -1317,10 +1325,10 @@ $\mu(B)-R_\Delta + d$ into the anchor set.
   than $\Delta$ higher than the highest cup in $B$, which is
   contrary to the emptier's greedy nature.
 
-  It is clear that $\mu(A) \ge -|D_i| -2R_\Delta$ always holds,
+  It is clear that $\mu(A) \ge -|D| -2R_\Delta$ always holds,
   as no cup is ever transferred out of $B$ with fill less than
   $\mu(B) - R_\Delta -|D_i|$. Correspondingly we have for
-  $\mu(B)$ that $$\mu(B) \le \frac{|A|}{|B|}(|D_i| + 2R_\Delta).$$
+  $\mu(B)$ that $$\mu(B) \le \frac{|A|}{|B|}(|D| + 2R_\Delta).$$
 
   The emptier can neglect the anchor set no more than $|A|r$
   times because doing so would increase the mass of the anchor
@@ -1336,23 +1344,23 @@ at least $h$ in at least $\Theta(n)$ of the cups in $A$.
 \end{clm}
 \begin{proof}
   By \cref{prop:obliviousTerribleProbability} using \randalg on
-  $|D_i| = \lceil e^{2h+1} \rceil$ gives the filler a cup that
+  $|D| = \lceil e^{2h+1} \rceil$ gives the filler a cup that
   has fill at least $\mu(B) + d-R_\Delta$ with probability
-  $1/|D_i|!$. By \cref{clm:muBdoesntSinkTooLow} we have that
-  $\mu(B) \ge -h/2$, so with probability $1/|D_i|!$ this generated
+  $1/|D|!$. By \cref{clm:muBdoesntSinkTooLow} we have that
+  $\mu(B) \ge -h/2$, so with probability $1/|D|!$ this generated
   cup has fill at least $h$ if it wasn't neglected.
 
   By \cref{clm:emptierCantNeglectAnchorTooMuch} there is a choice
   of $c_\Delta$ large enough that the probability of this cup
   having been neglected is at most $1/2$. In particular, we
-  choose $c_\Delta = 4r|D_i|!$. By applying \randalg $|A|\cdot
+  choose $c_\Delta = 4r|D|!$. By applying \randalg $|A|\cdot
   c_\Delta$ times we have by a Chernoff bound that with
   exponentially good probability in $|A|\cdot c_\Delta =
   \Theta(n)$ there are at least $2|A|r$ applications where the
   filler would succeed if the emptier doesn't neglect the anchor
   set. As shown, the emptier cannot
   neglect the anchor set more than $|A|r$ times. Hence, there
-  is at least a $(1/2)/|D_i|!$ chance that on the $j$-th
+  is at least a $(1/2)/|D|!$ chance that on the $j$-th
   application of \randalg the emptier doesn't neglect the anchor
   set and the filler correctly guesses the emptier's emptying
   sequence. Thus, overall, there is at least a constant
