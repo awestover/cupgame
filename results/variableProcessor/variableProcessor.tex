@@ -1062,7 +1062,10 @@ We now prove a crucial property of greedy-like emptiers:
   with fills in $[u_t-1, u_t]$ must be emptied from because the emptier is
   $\Delta$-greedy-like. \\
   \textbf{Observation 2}:
-  If there are more than $n/2$ cups outside of $U_t$, that is cups with fills in $[\ell_t, u_t-2-\Delta]$, then all cups in $[u_t-2, u_t]$ must be emptied from because the emptier is $\Delta$-greedy-like.
+  If there are more than $n/2$ cups outside of $U_t$, that is
+  cups with fills in $[\ell_t, u_t-2-\Delta]$, then all cups in
+  $[u_t-2, u_t]$ must be emptied from because the emptier is
+  $\Delta$-greedy-like.
 
   Now we prove a key property of the sets $U_t$ and $L_t$: once a cup is in
   $U_t$ or $L_t$ it is always in $U_{t'}, L_{t'}$ for all $t' > t$. This
@@ -1080,9 +1083,10 @@ We now prove a crucial property of greedy-like emptiers:
 
     On the other hand, if $c$ is emptied from, i.e. $\fil(c)$ has decreased by
     $1/2$, we consider two cases.\\
-    \textbf{Case 1:} If $\fil_{S_t}(c) \ge u_t-\Delta -1$, then $\fil_{S_t}(c)$
-    is at least $1$ above the bottom of the interval defining which cups belong to $U_t$. The backlog increases by
-    at most $1/2$ and the fill of $c$ decreases by $1/2$, so
+    \textbf{Case 1:} If $\fil_{S_t}(c) \ge u_t-\Delta -1$, then
+    $\fil_{S_t}(c)$ is at least $1$ above the bottom of the
+    interval defining which cups belong to $U_t$. The backlog
+    increases by at most $1/2$ and the fill of $c$ decreases by $1/2$, so
     $\fil_{S_{t+1}}(c)$ is at least $1-1/2-1/2 = 0$ above the bottom of the
     interval, i.e. still in the interval. \\
     % We can also express this in terms
@@ -1094,7 +1098,9 @@ We now prove a crucial property of greedy-like emptiers:
         round $t$, because the fills of all cups with fill in
         $[u_t-1, u_t]$ have decreased by $1/2$, and no cup with fill less than
         $u_t-1$ had fill increase by more than $1/2$. Hence $u_{t+1} = u_t -1/2$.
-        Because both the fill of $c$ and the backlog have both decreased by $1/2$, the distance between them is still at most $\Delta+2$, hence $c\in U_{t+1}$.\\
+        Because both the fill of $c$ and the backlog have both
+        decreased by $1/2$, the distance between them is still at
+        most $\Delta+2$, hence $c\in U_{t+1}$.\\
     The argument for why $L_t \subseteq L_{t+1}$ is symmetric.
   \end{proof}
 
@@ -1107,7 +1113,8 @@ We now prove a crucial property of greedy-like emptiers:
     long as $|L_t| \le n/2$ we have $\ell_{t+1} = \ell_t+ 1/2$.
   \end{clm}
   \begin{proof}
-    If there are more than $n/2$ cups outside of $U_t$, then by Observation 2, the emptier must empty from
+    If there are more than $n/2$ cups outside of $U_t$, then by
+    Observation 2, the emptier must empty from
     every cup with fill at least $u_t-2$. Thus $u_{t+1} = u_t -1/2$: no cup
     with fill less than $u_t-2$ could have become the fullest cup, and the
     previous fullest cup has lost $1/2$ units of fill. 
