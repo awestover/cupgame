@@ -1,0 +1,452 @@
+Next we prove the \defn{Oblivious Amplification Lemma}. The idea
+is quite similar to that of the Adaptive Amplification Lemma, but the 
+proof is somewhat more complicated because the filler is oblivious.
+\begin{lemma}[Oblivious Amplification Lemma]
+  \label{lem:obliviousAmplification} 
+  Let $0 < \delta \ll 1/2, 1/2\ll \phi < 1$ be constant
+  parameters, and let $\eta \in \mathbb{N}$ be a function of $\phi$. 
+  Let $\Delta \le O(1)$, $M, M' \ge R_\Delta$. 
+  Let $\alg{f}$ be an oblivious filling strategy that achieves
+  backlog $f(n)$ in the negative-fill variable-processor cup game
+  on $n$ cups with probability at least $1-2^{-\Omega(n)}$ in
+  running time $T(n) \le \poly(n)$ when given a $M$-flat
+  configuration, against a $\Delta$-greedy-like emptier.
+
+  There exists an oblivious filling strategy $\alg{f'}$ that
+  achieves backlog $f'(n)$ satisfying 
+  $$f'(n) \ge (1-\delta)(\phi-1/(\delta n)) (f(\floor{(1-\delta)n})-R_\Delta) + f(\ceil{\delta n})$$ 
+  and $f'(n) \ge f(n)$, in the negative-fill
+  variable-processor cup game on $n$ cups with probability at
+  least $1-2^{-\Omega(n)}$ in running time $$T'(n) \le O(M') +
+  6 \delta n^{\eta+1} T(\floor{(1-\delta)n}) + T(\ceil{\delta n})$$
+  when given a $M'$-flat configuration of cups against a
+  $\Delta$-greedy-like emptier.
+\end{lemma}
+\begin{proof}
+The algorithm defaults to using $\alg{f}$ on all the cups if doing
+so results in greater backlog than the strategy that we will
+outline in the rest of the proof; in this case applying $\alg{f}$
+to all the cups trivially achieves the desired backlog in the
+desired running time. We now outline the filler's strategy if this is not the case.
+
+  The filler starts by flattening all the cups, using the flattening procedure
+  detailed in \cref{prop:greedylikeisflat}. 
+
+  Let $A$, the \defn{anchor} set, be a subset of $\ceil{\delta n}$ cups
+  chosen arbitrarily, and let $B$, the \defn{non-anchor} set,
+  consist of the rest of the cups ($|B| = \floor{(1-\delta)n}$). Note
+  that the average fill of $A$ and $B$ both must start as at
+  least $-R_\Delta$ due to the flattening. 
+
+  The filler's strategy is essentially as follows:\\
+  \textbf{Step 1:} Using $\alg{f}$ repeatedly on $B$, achieve a
+  cup with fill $\mu(B) + f(|B|)$ in $B$ and then swap this cup into $A$. \\
+  \textbf{Step 2:} Use $\alg{f}$ once on $A$ to obtain a cup in
+  $A$ with fill $\mu(A) + f(|A|)$.\\
+  Note that in order to use $\alg{f}$ on subsets of the cups the filler will need to vary $p$.
+
+  We now describe how to achieve Step 1, which is complicated by
+  the fact that the emptier may attempt to prevent the filler
+  from achieving high fill in a cup in $B$, and further by the
+  fact that the filler, being oblivious, can not know if the
+  emptier has done this. In particular, Step 1 may not succeed
+  time, but we show that with exponentially good probability is
+  works almost every time.
+
+  The filler's strategy will be to always place $1$ fill in each cup in the
+  anchor-set while applying $\alg{f}$ to $B$.
+
+  For each cup in $A$ the filler performs a procedure called a
+  \defn{swapping-process}. Let $A_0$ be initialized to
+  $\varnothing$; during each swapping-process the filler will get
+  some cup in $B$ to have high fill (with very good probability),
+  and then swap this cup into $A$, and place the cup in $A_0$ too.
+  We say that the filler \defn{applies}
+  $\alg{f}$ to $B$ if it follows the filling strategy $\alg{f}$ on
+  $B$ while placing $1$ unit of fill in each anchor cup; during a
+  swapping-process the filler repeatedly applies $\alg{f}$ to $B$,
+  flattening $B \cup (A\setminus A_0)$ and then flattening $B$
+  too before each application.
+  We say that the emptier \defn{neglects} the anchor set on a
+  round if the emptier does not empty from every anchor cup on
+  this round. The mass of the anchor set increases by at least
+  $1$ each round that the anchor set is neglected. An application
+  of $\alg{f}$ to $B$ is said to be \defn{successful} if $A$ is
+  never neglected during the application of $\alg{f}$ to $B$. We
+  say that a swapping-process is \defn{successful} if the application of
+  $\alg{f}$ on which the filler swaps a cup into $A$ is a
+  successful application of $\alg{f}$.
+
+  Let $\mu_\Delta = 2R_\Delta + \Delta$; the emptier, being
+  $\Delta$-greedy-like, cannot neglect the anchor set more than
+  $n\delta\mu_\Delta$ times. Thus, by making each
+  swapping-process consist of $n^{\eta}$ applications of $\alg{f}$
+  to $B$ and then choosing a single application among these
+  (uniformly at random) after which to swap a cup into $A$ (and
+  we also place the cup in $A_0$; $A_0$ consists of all cups in
+  $A$ that were swapped into $A$ from $B$), we guarantee that
+  with probability at least $n\delta\mu_\Delta/n^{\eta}$ this swap
+  occurs at the end of a successful application of $\alg{f}$ to $B$. 
+
+  If an application of $\alg{f}$ is successful, then with
+  probability at least $1-2^{-\Omega(n)}$ it generates a cup with
+  fill $f(|B|) + \mu(B)$ in $B$, because equal resources were put
+  into $B$ on each round while $\alg{f}$ was used, and the cup
+  state started as $R_\Delta$-flat (relative to $\mu(B)$) and
+  hence also started as $M$-flat (as $M\ge R_\Delta$).
+
+  Now we aim to show that $\mu(A)$ is large; we do so by showing
+  that $\mu(B)$ is small (i.e. very negative). Because the
+  probability of an application of $\alg{f}$ being successful is
+  only $1-1/\poly(n)$, which is in particular not as good as the
+  $1-2^{-\Omega(n)}$ that we will guarantee, we will not be able
+  to actually assume that every such application of $\alg{f}$ is
+  successful. However, (as we will show later) we can guarantee
+  that at least a constant fraction $\phi$ of the
+  swapping-processes are successful with
+  exponentially good probability.
+
+  The filler swaps $\delta n$ cups into $B$. 
+  Consider how $\mu(B \cup A\setminus A_0)$ changes when a new
+  cup is swapped into $A$ and placed in $A_0$. Let initial value
+  of $\mu(B \cup A\setminus A_0)$ be $\mu_0$. Say that
+  initially $|A_0| = i$ (i.e. $i$ swapping processes have occured
+  so far). If the swapping-process is successful then the swapped cup has
+  fill at least $\mu_0 - R_\Delta + f(|B|)$. Hence the new
+  average fill of $B \cup A\setminus A_0$ after the swap is
+  $$\frac{\mu_0\cdot (n-i) - (\mu_0 - R_\Delta + f(|B|))}{n-i-1} =
+  \mu_0 - \frac{f(|B|) - R_\Delta}{n-i-1}.$$
+  This recurrence relation allows us to find the value of
+  $\mu(B \cup A\setminus A_0) = \mu(B)$ after $|A|$ swapping
+  processes (i.e. once $A\setminus A_0 = \varnothing$):
+  $$\mu(B) \le -\sum_{i=1}^{|A|\phi} \frac{f(|B|)-R_\Delta}{n-i}.$$
+  Now we bound $H_{n-1} - H_{n-|A|\phi-1}$ where $H_i$ is the $i$-th harmonic number.
+  Using the fact that 
+  $$H_n = \ln n + \gamma + 1/(2n) - 1/(12 n^2) + 1/(120 n^4) - \ldots$$
+  we have,
+  \begin{align*}
+    &H_{n-1} - H_{n-|A|\phi-1}\\
+  &\ge \ln \frac{n-1}{n-|A|\phi-1} - \frac{1}{2(n-|A|\phi-1)}\\
+  &\ge \ln \frac{n}{n-|A|\phi} - \frac{1}{n}\\
+  &= \ln \frac{n}{n-\ceil{\delta n}\phi} - \frac{1}{n}\\
+  &\ge \ln \frac{1}{1-\delta\phi} - \frac{1}{n}\\
+  &\ge \delta\phi - \frac{1}{n}.
+  \end{align*}
+
+  Hence we have, 
+  \begin{equation}
+    \label{eq:nastyobliviousamplificationlemmastep1backlog}
+  \mu(A) \ge
+  \frac{(1-\delta)}{\delta}\paren{\delta\phi-\frac{1}{n}}(f(|B|)-R_\Delta).
+  \end{equation}
+
+  % {\color{red} 
+  % so we're going to go for a new amplification lemma here that looks something like 
+
+  % $$f'(n) \ge (1-\delta)^4 f(\floor{(1-\delta)n}) + f(\ceil{\delta n}).$$
+  % In order to get this we choose $\phi \ge 1-\delta$ and 
+  % make sure that $n\ge \delta^2$ and that $f(|B|) \ge
+  % R_\Delta/\delta$ (note: this requires getting more than $1$
+  % backlog in the base case, but still constant, so it's fine).
+
+  % The asymptotic analysis still works out; it looks basically
+  % like this: $$(1-\delta)^4c((1-\delta)n)^{1-\varepsilon} + c(\delta
+  % n)^{1-\varepsilon} \ge cn^{1-\varepsilon}(1-(5-\varepsilon)\delta +
+  % \delta^{1-\varepsilon}) \ge cn^{1-\varepsilon}$$ for sufficiently
+  % small $\delta$.
+
+  % This is pretty much what has to happen. It's not so bad.
+  % so long as $f(\floor{(1-\delta)n}) \ge R_\Delta/\delta$ and $n\ge 1/\delta^2$
+  % }
+
+  % For sake of simplicity, assume for a moment that the cups in
+  % $A$ start having $0$ fill, and that the emptier never
+  % neglects $A$. Then, each swapping-process results in a cup
+  % with fill $\mu(B)+ f(|B|)$ being swapped from $B$ with a cup
+  % in $A$ that has $0$ fill; hence here the average fill of $B$
+  % decreases from $\mu(B)$ to 
+  % $$\frac{|B|-1}{|B|} \mu(B) + f(|B|) / |B|.$$
+  % We start with $\mu(B)=0$, and list a sequence of lower bounds for $\mu(B)$ after a few swaps into $A$:
+  % $$0, -\frac{f(|B|)}{|B|}, -\frac{f(|B|)}{|B|} \left(\frac{|B|-1}{|B|} +1 \right),$$
+  % $$-\frac{f(|B|)}{|B|} \left(\left(\frac{|B|-1}{|B|}\right)^2 + \frac{|B|-1}{|B|} +1 \right).$$
+  % Continuing on for $|A|$ swaps we find that by the end of this process $\mu(B)$ is at most 
+  % $$-\frac{f(|B|)}{|B|}\left( \frac{\left(\frac{|B|-1}{|B|}\right)^{|A|}- 1}{\frac{|B|-1}{|B|} - 1} \right) \ge -\frac{|A|}{|B|}f(|B|).$$
+  % Hence every cup ever swapped into $A$ has fill at least
+  % least
+  % \begin{align*}
+  % -\frac{|A|}{|B|}f(|B|) + f(|B|) &\\
+  % &= -\frac{\ceil{\delta n}}{\floor{(1-\delta) n}} f(|B|) + f(|B|) \\
+  % &\ge (1-\delta/(1-\delta)) f(|B|) \\
+  % &= h.
+  % \end{align*}
+
+  % If, in which case the mass
+  % transfered from $B$ to $A$ would be $\delta n f((1-\delta) n)$.
+  % In order for their to be an increase in the difference of the
+  % average fills of $A$ and $B$ by this amount $B$ would have had
+  % to contribute $|A|/n = \delta$ of the difference, with $A$
+  % contributing $|B|/n=(1-\delta)$ of the difference. Hence the
+  % average fill of $A$ would have actually only increased by
+  % $(1-\delta) f((1-\delta)n)$.
+
+  Now we establish that we can guarantee that $\phi |A|$ of the
+  $|A|$ swapping-process succeed for any choice of $\phi =
+  \Theta(1)$ by sufficiently large choice of $\eta$, i.e. by performing
+  enough applications of $\alg{f}$ within each swapping-process.
+  Recall that by construction of $\mu_\Delta$ the emptier cannot
+  neglect the anchor set on more than $n\delta \mu_\Delta$
+  applications of $\alg{f}$ to $B$. 
+  %There are $n^\eta |A| \ge n^{\eta+1}\delta$ applications of $\alg{f}$ to $B$. 
+
+  Let $X_i$ be the random variable that indicates the event that
+  the $i$-th swapping-process was not successful; note that the
+  $X_i$ are independent, because the filler's random choices of
+  which applications of $\alg{f}$ within each swapping-process on
+  which to swap a cup into the anchor set are independent.
+  We have, for any constant $\phi$,
+  % {\color{red} OK, so this part is a bit messed up. It's the right idea, but as it stands it's not doing so good. Specifically, here is what's messed up with what I'm doing here: a) events aren't independent, b) emptier can force a specific swapping-process to fail with higher probability. maybe a and b are fixable by bloating $\eta$.}
+  \begin{align*}
+  \Pr\left[\left|\frac{1}{|A|}\sum_{i=1}^{|A|}X_i - \frac{n\delta\mu_\Delta}{n^{\eta}}\right| \ge 1-2\phi \right] 
+  &\le 2e^{-2|A|(1-2\phi)^2} \\
+  &\le 2^{-\Omega(n)}.
+  \end{align*}
+  By appropriately large choice for $\eta \le O(1)$, $$n\delta\mu_\Delta / n^\eta
+  \le \phi$$ no matter how small $w \ge \Omega(1)$ is chosen. In particular this
+  implies that $$\Pr\left[\sum_{i=1}^{|A|} X_i \ge |A|(1-\phi)\right] \ge 1-2^{\Omega(n)}.$$
+  That is, with exponentially good probability $|A|\phi$ of the swapping processes succeed.
+  Taking a union bound over all applications of $\alg{f}$ we have
+  that there is exponentially good probability that all
+  applications of $\alg{f}$ succeeded. Thus, with exponentially
+  good probability, by \eqref{eq:nastyobliviousamplificationlemmastep1backlog}, Step 1 achieves
+  backlog $$(1-\delta)(\phi-1/(\delta n)(f(\floor{(1-\delta)n}-R_\Delta)$$
+
+  % This is essentially the backlog that we aimed to achieve in $A$, however, 
+  % It is almost clear that the desired backlog is achieved; if every swapping
+  % process succeeded then we would achieve fill $(1-\delta)
+  % f((1-\delta)\delta^\ell n)$ in each cup in the anchor set at each level of
+  % recursion hence achieving backlog $$(1-\delta)\sum_{\ell=0}^L
+  % f(n\delta^\ell(1-\delta))$$ overall. However each swapping process has some
+  % (very small) probability of failing; we computed probability of failure this
+  % to be at most $\delta \mu_\Delta / n^\eta.$ Consider the probability that
+  % more than a constant fraction $w = \Theta(1)$ of the $s = \sum_{\ell=0}^L
+  % n\delta^{\ell+1}$ swapping-processes fail. Let $X_i$ be the random variable
+  % indicating whether the $i$-th swapping-process succeeds (note: this is
+  % swapping-processes on all levels of recursion), and let $X=\sum_{i=1}^s X_i$.
+  % Clearly $\E[X] = s(1-\delta\mu_\Delta/n^\eta)$. Success of the
+  % swapping-processes are not independent events: a swapping-process is in-fact
+  % more likely to succeed given that previous swapping-processes have failed.
+  % Hence we can upper bound the probability of more than a $w$-fraction of the
+  % swapping-processes failing by a Chernoff Bound: $$\Pr\left(\frac{1}{s}X \ge
+  % \frac{1}{s}\E[X] - w/2\right) \ge 1-2e^{-s w^2/2} \ge 1-2^{\Omega(n)}$$ By
+  % appropriately large choice for $\eta \le O(1)$, $$\delta\mu_\Delta /n^\eta
+  % \le w/2$$ no matter how small $w \ge \Omega(1)$ is chosen. In particular this
+  % implies that $\Pr[X \ge s(1-w)] \ge 1-2^{\Omega(n)}$.
+
+  % Now we will define $\phi$ such that success of $s(1-w)$ of the
+  % swapping-processes guarantees backlog $$\phi \cdot (1-\delta) \sum_{\ell=0}^L
+  % f(n\delta^\ell(1-\delta)).$$ In the worst case the failed swapping-processes
+  % bring very negative cups into the anchor-set, potentially as negative as
+  % $-\delta f((1-\delta)\delta^\ell n)$ on the $\ell$-th level of recursion.
+  % However, clearly this is equivalent to removing at most $2$ cups worth of
+  % mass from the anchor set. Overall we thus remove at most $2w$ cups worth of
+  % mass from the anchor set. Hence choosing $\phi = 1-2w$ works.
+  % Noting that the constant $w > 0$ was arbitrary we have that $\phi$ can be
+  % made any constant arbitrarily close to $1$.
+
+  % In order to achieve this backlog however, not only does the filler need to be
+  % able to swap over $s(1-w)$ cups on rounds where the emptier neglects the
+  % anchor set, but no applications of $f$ can fail; failure happens with
+  % probability $2^{-n\delta^\ell(1-\delta) q}$ for an application of $f$ to
+  % $n\delta^\ell(1-\delta)$ cups. Taking a union bound over the $\poly(n)$
+  % applications of $f$ clearly still gets probability failure at most
+  % $2^{-\Omega(n)}$.
+
+  To achieve Step 2 the filler simply applies $\alg{f}$ to $A$.
+  This clearly achieves backlog 
+  $$f(|A|) = f(\ceil{\delta n})$$
+  with exponentially good probability.
+ 
+  Since both Step 1 and Step 2 succeed with exponentially good
+  probability, the entire process succeeds with exponentially
+  good probability.
+
+  We now analyze the running time of $\alg(f')$.
+  The initial smoothing takes time $O(M')$. Step 1 entails
+  $n^{\eta}\cdot (n\delta)$ swapping-processes, each of which
+  takes time $f(|B|)$. Due to flattening at the beginning of each
+  application of $\alg{f}$ the running time may be increased by a
+  multiplicative factor of at most $6$. Step 2 takes time
+  $T(|A|)$. Adding these times we have that the running time
+  $T'(n)$ of $\alg{f'}$ is
+  $$T'(n) \le O(M') + 6 \delta n^{\eta+1} T(\floor{(1-\delta)n}) + T(\ceil{\delta n}).$$
+
+  Having proved that $\alg{f'}$ achieves the desired backlog
+  with the desired probability in the desired running time, the
+  proof is now complete.
+
+\end{proof}
+
+Finally we prove that an oblivious filler can achieve backlog
+$n^{1-\varepsilon}$. 
+% in the variable-processor cup game on $n$ cups, where $\varepsilon = \Theta(1)$ 
+The proof is very similar to the proof of
+\cref{thm:adaptivePoly}, but more complicated because in the
+oblivious case we must guarantee that the result holds with good
+probability, and also more complicated because the Oblivious
+Amplification Lemma is more complicated than the Adaptive
+Amplification Lemma. We remark that it is quite remarkable that
+an oblivious filler is still able to achieve $\poly(n)$ backlog, just as
+an adaptive filler can, because intuitively being oblivious is a
+large disadvantage.
+
+\begin{theorem}
+  \label{thm:obliviousPoly}
+  There is an oblivious filling strategy for the
+  variable-processor cup game on $n$ cups that achieves backlog
+  at least $\Omega(n^{1-\varepsilon})$ for any constant $\varepsilon
+  >0$ in running time $2^{O(\log^2 n)}$ with probability at least
+  $1-2^{-\Omega(n)}$ against any $\Delta$-greedy-like emptier for
+  $\Delta \le O(1)$.
+\end{theorem}
+\begin{proof}
+  Take constant $\varepsilon \in (0, 1/2)$.
+  We aim to achieve backlog $(n/n_b)^{1-\varepsilon}-1$ for some constant $n_b$ on $n$ cups.
+  Let $\delta, \phi$ be constants, chosen as functions of $\epsilon$.
+
+  By \cref{lem:obliviousBase} there is an oblivious filling
+  strategy that achieves backlog $\Omega(1)$ on $n$ cups with
+  exponentially good probability in $n$; we call this algorithm
+  $\alg{f_0}$.
+  However, unlike in the proof of \cref{thm:adaptivePoly}, we
+  obviously cannot use the base case with a constant number of
+  cups: doing so would completely destroy our probability of
+  success! Because the running time of our algorithm will be
+  $2^{\polylog(n)}$, we will be required to take a union bound
+  over $2^{\polylog(n)}$ events. By making the size of our base
+  case $n_b = \polylog(n)$ we get that the probability of the
+  algorithm failing in the base case is at most
+  $2^{-\polylog(n)}$. Then, taking a union bound over
+  $2^{\polylog(n)}$ events can give us the desired probability.
+  By \cref{lem:obliviousBase} $\alg{f_0}$ achieves backlog
+  $f_0(k) \ge H \ge \Omega(1)$ for all $k \ge n_b$, for some
+  constant $H \ge \Omega(1)$ to be determined ($H$ is a function
+  of $\delta$).
+
+  Then we construct $f_{i+1}$ as the amplification of $f_i$ using
+  \cref{lem:obliviousAmplification}.
+
+  Define a sequence $g_i$ as 
+  $$g_i =
+  \begin{cases}
+    n_b\ceil{16/\delta}, & i=0\\
+    \floor{ g_{i-1}/(1-\delta) }, & i\ge 1 
+  \end{cases}.$$
+
+  We claim the following regarding our construction:
+  \begin{clm}
+    \label{clm:fikinductionagain}
+    \begin{equation}
+      f_i(k) \ge (k/n_b)^{1-\varepsilon} - 1 \text{ for all } k \le g_i. \label{eqn:fikinductionAGAIN}
+    \end{equation}
+  \end{clm}
+  \begin{proof}
+  We prove \cref{clm:fikinductionagain} by induction on $i$. 
+
+  First we derive a simpler (more loose) form of the lower bound
+  on $\alg{f'}$'s backlog in terms of $\alg{f}$'s backlog that
+  hold if  $\floor{(1-\delta)n} \ge n_b$. We choose $n_b=
+  \polylog(n)$ making $n_b > 1/\delta^2$ and hence also $\delta >
+  1/(\delta n_b)$; this means that there is a choice of $\phi \in
+  (1/2, 1)$ making $\phi - 1/(\delta n_b) > 1-\delta$. Note that
+  for any $n\ge n_b$ this same $\phi$ satisfies $$(1-\delta) \le
+  \phi - \frac{1}{\delta n_b} \le \phi - \frac{1}{ \delta n}.$$
+  We choose $\phi = 1-\delta + 1/(\delta n_b)$. Further, we
+  choose $H \ge \Omega(1)$ to make $$ H - R_\Delta \ge
+  (1-\delta)H.$$ This ensures that $$f_0(\floor{(1-\delta) n}) -
+  R_\Delta \ge (1-\delta)f_0(\floor{(1-\delta)n})$$ so long as
+  $\floor{(1-\delta)n} \ge n_b$. Combining this, we have that if
+  $\floor{(1-\delta)n}\ge n_b$ then 
+  \begin{equation}
+    \label{eq:simpleramplemmaobliviousforthmpf}
+  f'(n) \ge (1-\delta)^3 f(\floor{(1-\delta)n}) + f(\ceil{\delta n}).
+  \end{equation}
+  We also choose $H$ large enough so that $H \ge
+  (g_0/n_b)^{1-\epsilon}-1 = \ceil{16/\delta}^{1-\epsilon}-1$.
+
+  When $i=0$, the base case of our induction,
+  \eqref{eqn:fikinductionAGAIN} is trivially true as
+  $(k/n_b)^{1-\epsilon} - 1 \le H$ by definition of $H$ for $k\le g_0$.
+
+  Assume \eqref{eqn:fikinductionAGAIN} for $f_i$, consider $f_{i+1}$. 
+
+  Note that, by design of $g_i$, if $k \le g_{i+1}$ then $\floor{k\cdot (1-\delta)} \le g_i$.
+  Consider any $k\in [g_{i+1}]$. 
+
+  First we deal with the trivial
+  case where $k \le g_0$. In this case
+  $$f_{i+1}(k) \ge f_i(k) \ge \cdots \ge f_0(k) \ge (k/n_b)^{1-\varepsilon} -1.$$
+
+  Now we consider $k \ge g_0$. Note that in this case $\floor{(1-\delta)k} \ge n_b$.
+  Since $f_{i+1}$ is the amplification of $f_i$, and $k$ is sufficiently large, we have by \eqref{eq:simpleramplemmaobliviousforthmpf} that
+  $$f_{i+1}(k) \ge (1-\delta)^3 f_i(\floor{(1-\delta)k}) + f_i(\ceil{\delta k}).$$
+  By our inductive hypothesis, which applies as $\ceil{\delta k}\le g_i, \floor{k\cdot (1-\delta)} \le g_i$, we have
+  $$f_{i+1}(k) \ge (1-\delta)^3 (\floor{(1-\delta)k/n_b}^{1-\varepsilon}-1) + \ceil{\delta k/n_b}^{1-\varepsilon} - 1. $$
+  Dropping the floor and ceiling, incurring a $-1$ for dropping the floor, we have
+  $$f_{i+1}(k) \ge (1-\delta)^3 (((1-\delta)k/n_b-1)^{1-\varepsilon}-1) + (\delta k/n_b)^{1-\varepsilon} - 1.$$
+  Because $(x-1)^{1-\varepsilon} \ge x^{1-\varepsilon} -1$, due to the
+  fact that $x\mapsto x^{1-\varepsilon}$ is a sub-linear
+  sub-additive function, we have 
+  $$f_{i+1}(k) \ge (1-\delta)^3 (((1-\delta)k/n_b)^{1-\varepsilon}-2) + (\delta k/n_b)^{1-\varepsilon}-1.$$
+  Moving the $(k/n_b)^{1-\varepsilon}$ to the front we have
+  $$ f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left((1-\delta)^{4-\varepsilon} + \delta^{1-\varepsilon} - \frac{2(1-\delta)^3}{(k/n_b)^{1-\varepsilon}} \right) -1.$$
+  Because $(1-\delta)^{4-\varepsilon} \ge 1-(4-\varepsilon)\delta$, a fact called Bernoulli's Identity, we have
+  $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left(1-(4-\varepsilon)\delta + \delta^{1-\varepsilon} - \frac{2(1-\delta)^3}{(k/n_b)^{1-\varepsilon}} \right)-1.$$
+  Of course $-2(1-\delta)^3 \ge -2$, so 
+  $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left(1-(2-\varepsilon)\delta + \delta^{1-\varepsilon} - 2/(k/n_b)^{1-\varepsilon} \right) -1.$$
+  Because $$-2/(k/n_b)^{1-\varepsilon} \ge -2/(g_0/n_b)^{1-\varepsilon} \ge
+  -2(\delta/16)^{1-\varepsilon} \ge -\delta^{1-\varepsilon}/2,$$
+  which follows from our choice of $g_0 = \ceil{8/\delta} n_b$ and the restriction
+  $\varepsilon<1/2$, we have 
+  $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left(1-(4-\varepsilon)\delta + \delta^{1-\varepsilon} - (1/2)\delta^{1-\varepsilon} \right)-1.$$
+  Finally, combining terms we have
+  $$f_{i+1}(k) \ge  (k/n_b)^{1-\varepsilon} \cdot\left(1-(4-\varepsilon)\delta + (1/2)\delta^{1-\varepsilon}\right)-1. $$
+
+  Because $\delta^{1-\varepsilon}$ dominates $\delta$ for
+  sufficiently small $\delta$, there is a choice of
+  $\delta=\Theta(1)$ such that 
+  $$1-(4-\varepsilon)\delta + (1/2)\delta^{1-\varepsilon} \ge 1.$$ 
+  Taking $\delta$ to be this small we have,
+  $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon}-1,$$
+  completing the proof. 
+  \end{proof}
+
+  The sequence $g_i$ is $n_b$ times the sequence $g_i$ from
+  the proof of \cref{thm:adaptivePoly}; we thus have that $g_{i_*}
+  \ge n$ for some $i_* \le O(\log n)$.
+  Hence $\alg{f_{i_*}}$ achieves backlog 
+  $$f_{i_*}(n) \ge (n/n_b)^{1-\varepsilon}-1.$$
+  As $n_b \le \polylog(n)$ we have
+  $$f_{i_*}(n) \ge \Omega(n^{1-\varepsilon}),$$ as desired.
+
+  Let the running time of $f_i(n)$ be $T_i(n)$. From the Amplification Lemma we have following recurrence bounding $T_i(n)$:
+  \begin{align*}
+    T_i(n) &\le 6n^{\eta+1} \delta \cdot T_{i-1}(\floor{(1-\delta)n}) +
+  T_{i-1}(\ceil{\delta n}) \\
+  &\le 7n^{\eta+1}T_{i-1}(\floor{(1-\delta)n}).
+  \end{align*}
+  It follows that $\alg{f_{i_*}}$, recalling that $i_* \le O(\log n)$, has running time
+  $$T_{i_*}(n) \le (7n^{\eta+1})^{O(\log n)} \le 2^{O(\log^2 n)}$$
+  as desired.
+
+  As noted, because the running time is $2^{\polylog(n)}$ and the
+  base case size is $n_b\ge \polylog(n)$, a union bound
+  guarantees the probability of success is at least
+  $1-2^{-\polylog(n)}$.
+\end{proof}
+
+% Im not sure this is true anymore:
+% \section{oblivious lower bound part 2}
+% in fact, our results (probably) even hold for $\Delta \le O(\log \log n)$
+% you just need to modify the proposition, the lemma doesn't care too much
+% modify the proposition to *only need one of them to succeed*.
+
