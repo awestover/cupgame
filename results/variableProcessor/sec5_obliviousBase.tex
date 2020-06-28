@@ -64,10 +64,9 @@ against greedy-like emptiers; whether or not our results can be extended to a
 more general class of emptiers is an interesting open question. 
 Nonetheless, greedy-like emptiers are of great interest because
 all the known randomized algorithm for the cup game are
-$O(1)$-greedy-like \cite{wku20}\cite{mbe19}.
+$O(1)$-greedy-like \cite{mbe19, wku20}.
 
-
-% idea: flattening can be made to certainly work
+% ideas: flattening can be made to certainly work
 % just continue on for long enough, which works because mu(A) can't sink too
 % low (interconnected induction thing)
 % $L_t$ and $U_t$ still can't lose stuff; this doesn't depend on if the emptier is changing its $p$
@@ -98,23 +97,30 @@ $O(1)$-greedy-like \cite{wku20}\cite{mbe19}.
 % flattening now requires even number of cups as input; this
 % might be a problem, I'm honestly inclined to slap a -1
 % somewhere else and call it a day though... That would probably work
-% bigger issue: emptier is allowed to skip its turn. Dang! This
-% should be a good thing for the filler, but yeah it's still
-% annoying.
+% integer issues all over the place, like the obliviousBase lem
+% thing assumes n/32 is a thing 
+% I guess saying n % 64 = 0 fixes all the integer issues. Note
+% that we only need to use this base case like once, so its fine
+% to do something like that as far as i can tell
+
+% bigger issue: emptier is allowed to skip its turn. Dang! ugh.
+% darn emptier. This should be a good thing for the filler, but
+% yeah it's still annoying.
 
 As a tool in our analysis we define a new variant of the cup
 game. In the $(p, E, T)$-\defn{extra-emptying} negative-fill cup
 game on $n$ cups the filler distributes $p$ units of water
 amongst the cups, and then the emptier empties from $p$
-\textit{or more} cups (up to $n$ cups). In particular, the
+\textit{or more} (up to $n$) cups. In particular, the
 game lasts for $T$ rounds, and among these rounds the emptier is
-allowed to do extra emptying $E$ times.
+allowed to empty $E$ extra cups, i.e. the sum of the number of
+extra cups that that the emptier empties can be as large as $E$.
 
 We now prove a crucial property of greedy-like emptiers: 
 \begin{proposition}
   \label{prop:greedylikeisflat}
   Consider an $M$-flat cup configuration in the $(p, E,
-  T)$-extra-emptying negative-fill cup game on $n = 2p$, cups
+  T)$-extra-emptying negative-fill cup game on $n = 2p$ cups
   with average fill $0$ with $T = 2(M + E)$. An oblivious filler
   can achieve a $2(2+\Delta)$-flat configuration of cups against
   a $\Delta$-greedy-like emptier in running time $T$.
@@ -143,7 +149,7 @@ We now prove a crucial property of greedy-like emptiers:
   follows immediately from the following claim:
   \begin{clm}
     \label{clm:dontlosestuff}
-    $$U_{t} \subseteq U_{t+1}, L_t \subseteq L_{t+1}.$$
+    $$U_{t} \subseteq U_{t+1},\quad L_t \subseteq L_{t+1}.$$
   \end{clm}
   \begin{proof}
     Consider a cup $c\in U_t$.
@@ -253,7 +259,7 @@ Given a $\Delta$-greedy-like filler, let $R_\Delta = 2(2+\Delta).$
 By \cref{prop:greedylikeisflat}, an oblivious filler can achieve
 a $R_\Delta$-flat configuration of cups from an $M$ flat
 configuration of cups against a $\Delta$-greedy-like emptier in
-the $(p, E, T)$-\defn{extra-emptying} negative-fill cup game on
+the $(p, E, T)$-extra-emptying negative-fill cup game on
 $n$ cups where $n = p/2$, $T = 2(M + E)$.
 
 % note: may as well take $\Delta \in \mathbb{N}$
@@ -297,9 +303,9 @@ well-known, and similar versions of it can be found in
   on the $i$-th round of this process.
 \end{proof}
 
-Now we are equipped to prove the following lemma, which shows
-that we can force a constant fraction of the cups to have high fill
-fill; using this lemma and exploiting the greedy-like nature of
+Now we are equipped to prove \cref{lem:obliviousManyUnknownCups}, which shows
+that we can force a constant fraction of the cups to have high
+fill; using \cref{lem:obliviousManyUnknownCups} and exploiting the greedy-like nature of
 the emptier we can get a known cup with high fill
 (we show this in \cref{lem:obliviousBase}).
 \begin{lemma}
@@ -323,9 +329,9 @@ the emptier we can get a known cup with high fill
   \defn{non-anchor} set.
   Throughout the proof the filler uses $p=|A|+1$.
 
-We denote by \randalg the oblivious single-processor filling
+We denote by \randalg the oblivious filling
 strategy given by \cref{prop:obliviousTerribleProbability}. 
-We denote by \flatalg the oblivious variable-processor filling
+We denote by \flatalg the oblivious filling
 strategy given by \cref{prop:greedylikeisflat}.
 We say that the filler \defn{applies} a filling strategy
 \genericalg to a set of cups $D \subset B$ if the filler uses
@@ -334,24 +340,23 @@ We say that the filler \defn{applies} a filling strategy
 We now describe the filler's strategy.
 
 The filler starts by flattening the cups, i.e. using \flatalg on
-$A\cup B$. The filling strategy always places $1$ unit of water
-in each anchor cup. The filler performs a series of $|A|$
-\defn{swapping-processes}, one per anchor cup, which are
-procedures that the filler uses to get a new cup---which will
-sometimes have high fill---in $A$. On each swapping-process the
-filler applies \randalg many times to arbitrarily chosen
-constant-size sets $D \subset B$ with $|D| = \ceil{e^{2h+1}}$.
-The number of times that the filler applies \randalg is chosen at
-the start of the swapping-process, chosen uniformly at random
-from $[|A|\cdot m]$ ($m = \Theta(1)$ to be specified). At the end
-of the swapping-process the filler swaps the cup given by
-\randalg with the cup in the anchor set associated with this
-swapping-process. Before each application of \randalg, the filler
-applies \flatalg to $B$ a many times; the number of times is
-chosen before each application of \randalg, chosen uniformly at
-random from $[|A| \cdot r]$ ($r=\Theta(1)$ to be specified). 
+$A\cup B$ for $2M$ rounds. After this, the filling strategy
+always places $1$ unit of water in each anchor cup. The filler
+performs a series of $|A|$ \defn{swapping-processes}, one per
+anchor cup, which are procedures that the filler uses to get a
+new cup---which will sometimes have high fill---in $A$. On each
+swapping-process the filler applies \randalg many times to
+arbitrarily chosen constant-size sets $D \subset B$ with $|D| =
+\ceil{e^{2h+1}}$. The number of times that the filler applies
+\randalg is chosen at the start of the swapping-process, chosen
+uniformly at random from $[m]$ ($m = \Theta(n)$ to be
+specified). At the end of the swapping-process the filler swaps
+the cup given by \randalg with the cup in the anchor set
+associated with this swapping-process. Before each application of
+\randalg the filler flattens $B$ by applying \flatalg to $B$ for
+$r$ rounds ($r=\Theta(n)$ to be specified). 
 
-We remark that this construction is somewhat similar to
+We remark that this construction is similar to
 the construction in \cref{lem:adaptiveAmplification}, but has a
 major difference: in the adaptive lower bound construction the
 filler halts after achieving the desired average fill in the
@@ -361,6 +366,14 @@ must rely on flattening to guarantee that each application of
 fill.
 
 We proceed to analyze the algorithm.
+
+First note that the initial flattening of $A\cup B$ succeeds by
+\cref{prop:greedylikeisflat}. In particular, the game is the 
+$(n/2, 0, 2M)$-extra-emptying cup game, where $E=0$ so the
+emptier is actually not allowed to ever do extra emptying and
+this is equivalent to the $(n/2)$-processor cup game that lasts
+for $2M$ rounds, and hence the filler can achieve this by setting
+$p=n/2$.
 
 We say that the emptier \defn{neglects} the anchor set on a round
 if it does not empty from each anchor cup. We say that an
@@ -373,39 +386,75 @@ application of \randalg where $B$ started $R_\Delta$-flat there
 is a $1/|D|!$ chance of getting a
 cup with fill at least $\mu(B) -R_\Delta + d$. 
 
-We now prove that the emptier cannot neglect the anchor set too
-many times per swapping-process; thus by applying \randalg and
-\flatalg a large, randomly chosen, number of times (i.e. setting
-$r, m$ appropriately) the filler can guarantee that the emptier
-doesn't neglect the anchor set on the round that the filler stops.
-
+Now we prove an important claim:
 \begin{clm}
   \label{clm:emptierCantNeglectAnchorTooMuch}
-  The emptier can neglect the anchor set no more than $|A| \cdot
-  r$ times per swapping-process, where 
-  $$r = (1+|A|/|B|)(|D| + 2R_\Delta) + R_\Delta + \Delta.$$
+  Fix any swapping-process $i \in [|A|]$. 
+  There exists $r = \Theta(n)$ such that on the $i$-th swapping-process every
+  flattening makes the cups $R_\Delta$-flat, and such that the
+  following bounds hold for any cups $a\in A, b\in B$ (with fill
+  measured after the swap at the end of the swapping-process):
+  \begin{align}
+    & -(4R_\Delta + d + |D|) \le \fil(a) \ge  \label{eq:boundonAfill}\\
+    & -(4R_\Delta + d + |D|) \le \fil(b) \le \max(\mu(B) + R_\Delta + d, -R_\Delta). \label{eq:boundonBfill}
+  \end{align}
+
 \end{clm}
 \begin{proof}
-  % mu(A) doesn't sink too low, because it only sinks on swapping
-  % processes and those can't be arbitrarily bad for it 
-  % thus too much neglect by the emptier violates greedy-likeness
+  % cups in A don't have too negative fill
+  % so the number of neglects during flattening is bounded
+  % so doing flattening long enough works
+  % so there are never cups with super bad fill, in particular no
+  % cups with super bad fill ever get swapped into A
 
-  Because $1$ unit of fill is placed in each cup in $A$ at each
-  round in the swapping-process no cup in $A$ has its fill
-  decrease over the course of the swapping-process (before the
-  swap).
+  We prove \cref{clm:emptierCantNeglectAnchorTooMuch} by
+  induction on $i$. Note that the statements we aim to prove are
+  interconnected; we prove having that the desired lower bound on
+  fills of cups in $A$ \eqref{eq:boundonAfill} and upper bound on
+  fills of cups in $B$ \eqref{eq:boundonBfill} makes it possible
+  for the flattening to succeed, which in turn leads to the
+  bounds \eqref{eq:boundonAfill} \eqref{eq:boundonBfill} being
+  maintained.
 
-  It is clear that $\mu(A) \ge -|D| -2R_\Delta$ always holds,
-  as no cup is ever transferred out of $B$ with fill less than
-  $\mu(B) - R_\Delta -|D_i|$. Correspondingly we have for
-  $\mu(B)$ that $$\mu(B) \le \frac{|A|}{|B|}(|D| + 2R_\Delta).$$
+  For $i=1$, because $A\cup B$ starts $R_\Delta$-flat, the bounds
+  on the fill of cups in $A$ and $B$ \eqref{eq:boundonAfill}
+  \eqref{eq:boundonBfill} trivially hold.
 
-  The emptier can neglect the anchor set no more than $|A|r$
-  times because doing so would increase the mass of the anchor
-  set by $r$, and consequently make each cup in $A$ have fill
-  high enough that the emptier, being $\Delta$-greedy-like would
-  be forced to empty from that cup.
+  Now we assume \eqref{eq:boundonAfill} and
+  \eqref{eq:boundonBfill}, and show that the flattening can be
+  made to succeed by large enough choice of $r$. 
+  If the emptier neglects the anchor set $|A|(4R_\Delta + d +
+  |D|)$ times then $\mu(B) \ge 0$. If the emptier neglects the
+  anchor set $|B|(R_\Delta + d + 1)$ more times then $\mu(B) \le
+  -R_\Delta + d + 1$. Then by \eqref{eq:boundonBfill} the fill of
+  each cup in $B$ is at most $-R_\Delta$. If the emptier neglects
+  the anchor set $|A|(4R_\Delta + d +
+  |D|)$ more times then every cup in $A$ necessarily has fill
+  at least $0$, which is more than $\Delta$ above the fill of
+  each cup in $B$. Hence $A$ cannot be neglected anymore
+  because the emptier is $\Delta$-greedy like. Hence,
+  the application of \flatalg can be seen as an instance of the
+  $(n/2, r, 2(M + r))$ where $M$ is a bound on the flatness of
+  the cups \todo{which we only freaking have one freaking side of}
+  and where $r$ is given by 
+  $$r = 2|A|(4R_\Delta + d + |D|) + |B|(R_\Delta + d)$$
+
+  \todo{other part of the induction }
+
 \end{proof}
+
+\begin{clm}
+  \label{clm:thereexistsmsuchthat}
+  There exists $m=\Theta(n)$ such that with probability
+  at least $1/2$ the emptier does not neglect the anchor set on
+  the final application of \randalg on the $i$-th
+  swapping-process.
+\end{clm}
+\begin{proof}
+  This follows immediately from the arguments made in the
+  previous proof.
+\end{proof}
+
 
 \begin{clm}
   \label{clm:muBdoesntSinkTooLow}
