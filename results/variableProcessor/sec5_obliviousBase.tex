@@ -362,8 +362,7 @@ major difference: in the adaptive lower bound construction the
 filler halts after achieving the desired average fill in the
 anchor set, whereas the oblivious filler cannot halt but rather
 must rely on flattening to guarantee that each application of
-\randalg has constant probability of generating a cup with high
-fill.
+\randalg has constant probability of generating a cup with high fill.
 
 We proceed to analyze the algorithm.
 
@@ -383,8 +382,8 @@ the application. We define $d = \sum_{i=2}^{|D|} 1/i$ (recall
 that $|D| = \ceil{e^{2h+1}}$). Note that by
 \cref{prop:obliviousTerribleProbability} on any successful
 application of \randalg where $B$ started $R_\Delta$-flat there
-is a $1/|D|!$ chance of getting a
-cup with fill at least $\mu(B) -R_\Delta + d$. 
+is a $1/|D|!$ chance of getting a cup with fill at least $\mu(B)
+-R_\Delta + d$. 
 
 Now we prove an important claim:
 \begin{clm}
@@ -392,11 +391,13 @@ Now we prove an important claim:
   Fix any swapping-process $i \in [|A|]$. 
   There exists $r = \Theta(n)$ such that on the $i$-th swapping-process every
   flattening makes the cups $R_\Delta$-flat, and such that the
-  following bounds hold for any cups $a\in A, b\in B$ (with fill
-  measured after the swap at the end of the swapping-process):
+  following bounds hold for any cups $a\in A, b\in B$ where fill
+  is measured after any application of \randalg, and where
+  $\mu_0(B)$ refers to the average fill of $B$ prior to the
+  application of \randalg:
   \begin{align}
-    & -(4R_\Delta + d + |D|) \le \fil(a) \ge  \label{eq:boundonAfill}\\
-    & -(4R_\Delta + d + |D|) \le \fil(b) \le \max(\mu(B) + R_\Delta + d, -R_\Delta). \label{eq:boundonBfill}
+    & - R_\Delta - |D| \le \fil(a) -\mu_0(B) \le R_\Delta + 1 + d + \Delta \label{eq:boundonAfill}\\
+    & - R_\Delta - |D| \le \fil(b) - \mu_0(B) \le R_\Delta + d. \label{eq:boundonBfill}
   \end{align}
 
 \end{clm}
@@ -409,12 +410,11 @@ Now we prove an important claim:
 
   We prove \cref{clm:emptierCantNeglectAnchorTooMuch} by
   induction on $i$. Note that the statements we aim to prove are
-  interconnected; we prove having that the desired lower bound on
-  fills of cups in $A$ \eqref{eq:boundonAfill} and upper bound on
-  fills of cups in $B$ \eqref{eq:boundonBfill} makes it possible
-  for the flattening to succeed, which in turn leads to the
-  bounds \eqref{eq:boundonAfill} \eqref{eq:boundonBfill} being
-  maintained.
+  interconnected: having the bounds \eqref{eq:boundonAfill},
+  \eqref{eq:boundonBfill} on the fills of cups in $A, B$ makes it
+  possible for the flattening to succeed, which in turn leads to
+  the bounds \eqref{eq:boundonAfill} \eqref{eq:boundonBfill}
+  being maintained.
 
   For $i=1$, because $A\cup B$ starts $R_\Delta$-flat, the bounds
   on the fill of cups in $A$ and $B$ \eqref{eq:boundonAfill}
@@ -423,23 +423,37 @@ Now we prove an important claim:
   Now we assume \eqref{eq:boundonAfill} and
   \eqref{eq:boundonBfill}, and show that the flattening can be
   made to succeed by large enough choice of $r$. 
-  If the emptier neglects the anchor set $|A|(4R_\Delta + d +
-  |D|)$ times then $\mu(B) \ge 0$. If the emptier neglects the
-  anchor set $|B|(R_\Delta + d + 1)$ more times then $\mu(B) \le
-  -R_\Delta + d + 1$. Then by \eqref{eq:boundonBfill} the fill of
-  each cup in $B$ is at most $-R_\Delta$. If the emptier neglects
-  the anchor set $|A|(4R_\Delta + d +
-  |D|)$ more times then every cup in $A$ necessarily has fill
-  at least $0$, which is more than $\Delta$ above the fill of
-  each cup in $B$. Hence $A$ cannot be neglected anymore
-  because the emptier is $\Delta$-greedy like. Hence,
-  the application of \flatalg can be seen as an instance of the
-  $(n/2, r, 2(M + r))$ where $M$ is a bound on the flatness of
-  the cups \todo{which we only freaking have one freaking side of}
-  and where $r$ is given by 
-  $$r = 2|A|(4R_\Delta + d + |D|) + |B|(R_\Delta + d)$$
+  Consider how much $\mu(B)$ can change by over the course of an
+  application of \randalg to an $R_\Delta$-flat cup configuration.
+  If the emptier neglected every anchor cup on every round of the
+  application of \randalg, then the average fill of $B$ would have
+  decreased by $|A||D|/|B| = |D|/31$. The mass of $B$ cannot have
+  increased during the application of \randalg.
+  Hence the bounds \eqref{eq:boundonAfill}
+  \eqref{eq:boundonBfill} can be rewritten in terms of $\mu(B)$.
 
-  \todo{other part of the induction }
+  Now note that during a flattening process the backlog in $B$
+  cannot increase until the cups are $R_\Delta$-flat around their
+  current average. Now we note that the number of times that the
+  emptier can neglect the anchor set during a flattening process
+  is limited by virtue of the emptier being $\Delta$-greedy-like.
+  In particular, the emptier can't neglect any anchor cup more
+  than $2R_\Delta + |D| + 1 + d + 2\Delta$ times, because a cup
+  with this much fill has fill more than $\Delta$ larger than the
+  backlog in $B$. We set $r = |A|(2R_\Delta + |D| + 1 +
+  d + 2\Delta)$. Thus the application of \flatalg can be seen as an instance of the
+  $(n/2, r, 2(M + r))$ where $M$ is a bound on the flatness of
+  the cups guaranteed by the bounds \eqref{eq:boundonAfill}
+  \eqref{eq:boundonBfill}, and thus by
+  \cref{prop:greedylikeisflat} the flattening process
+  successfully makes $\mu(B)$ $R_\Delta$-flat around its average.
+
+  Now we show that an application of \randalg to a
+  $R_\Delta$-flat set of cups guarantees the bounds
+  \eqref{eq:boundonAfill} \eqref{eq:boundonBfill}.
+  This is clearly true by
+  \cref{prop:obliviousTerribleProbability} and
+  the emptier's $\Delta$-greedy-like nature.
 
 \end{proof}
 
