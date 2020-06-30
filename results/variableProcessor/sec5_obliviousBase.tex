@@ -427,16 +427,17 @@ least $\mu(B) - R_\Delta + d$; note that by
 application of \randalg where $B$ started $R_\Delta$-flat has
 at least a $1/|D|!$ chance of being lucky. 
 
-
-\todo{i dont like the word always being used in these proofs, its
-not quite true, say since the flattening of AB?}
+We say that a property of the cups has \defn{always} held if
+the property has held since the start of the first
+swapping-process; i.e. from now on we only consider rounds after
+the initial flattening of $A\cup B$.
 
 Now we prove several important bounds on fills of cups in $A$ and $B$.
 \begin{clm}
   \label{clm:oblivBaseIntenseInduction1}
   If all applications of \flatalg so far have made
   $B$ be $R_\Delta$-flat, then $B$ has always been $(R_\Delta +
-  d)$-flat and $\mu(B)$ has never exceeded $1$.
+  d)$-flat and $\mu(B)$ has always been at most $1$.
 \end{clm}
 \begin{proof}
   Given that the application of \flatalg immediately prior to an application
@@ -546,6 +547,7 @@ Now we combine \cref{clm:oblivBaseIntenseInduction1}
 \cref{clm:oblivBaseIntenseInduction2} and
 \cref{clm:oblivBaseIntenseInduction3} to get the following:
 \begin{clm}
+  \label{clm:flatteningAlwaysWorks}
   All applications of \flatalg make $B$ be $R_\Delta$-flat.
  \end{clm}
 \begin{proof}
@@ -565,95 +567,33 @@ Now we combine \cref{clm:oblivBaseIntenseInduction1}
   $R_\Delta$-flat.
 \end{proof}
 
-\todo{most of the stuff below this point in the proof is false}
-
-\todo{extract the good probability stuff from this skechy proof}
-
-Now we prove a very important claim:
+\todo{this proof feels sketchy}
+Now we show that this guarantees that with constant probability
+the final application of \randalg a swapping-process is both
+lucky and successful. 
 \begin{clm}
-  \label{clm:emptierCantNeglectAnchorTooMuch}
-  Every application of \flatalg succeeds, $\mu(B)$ is never
-  more than $1$, and we always have $\fil(b) \in $ for $b\in B$. 
-  Furthermore, no anchor cup can be neglected more than $\Delta + 1$
-
-  Fix any swapping-process $i \in [|A|]$. 
-  There exists $r = \Theta(n)$ such that on the $i$-th swapping-process every
-  flattening makes the cups $R_\Delta$-flat, and such that the
-  following bounds hold for any cups $a\in A, b\in B$ where fill
-  is measured after any application of \randalg, and where
-  $\mu_0(B)$ refers to the average fill of $B$ prior to the
-  application of \randalg:
-  \begin{align}
-    & - R_\Delta - |D| \le \fil(a) -\mu_0(B) \le R_\Delta + 1 + d + \Delta \label{eq:boundonAfill}\\
-    & - R_\Delta - |D| \le \fil(b) - \mu_0(B) \le R_\Delta + d. \label{eq:boundonBfill}
-  \end{align}
-
-  Further, there exists $m=\Theta(n)$ such that with probability
-  at least $1/(2|D|!)$ the final application of \randalg on the $i$-th
-  swapping-process is both successful and promising.
+  There exists choice of $m = \poly(n)$ such that with at least
+  constant probability the final application of \randalg on any
+  fixed swapping-process is both lucky and successful.
 \end{clm}
 \begin{proof}
-  % cups in A don't have too negative fill
-  % so the number of neglects during flattening is bounded
-  % so doing flattening long enough works
-  % so there are never cups with super bad fill, in particular no
-  % cups with super bad fill ever get swapped into A
+  Fix some swapping-process. By \cref{clm:flatteningAlwaysWorks}
+  we have that the fill of each cup in $A$ starts the
+  swapping-process with fill at least $\ell_A$, and never exceeds
+  $u_A$ throughout the course of the swapping-process. This
+  places an upper bound of $r$ on the number of applications of
+  \randalg on which $A$ can be neglected. 
 
-  We prove \cref{clm:emptierCantNeglectAnchorTooMuch} by
-  induction on $i$. Note that the statements we aim to prove are
-  interconnected: having the bounds \eqref{eq:boundonAfill},
-  \eqref{eq:boundonBfill} on the fills of cups in $A, B$ makes it
-  possible for the flattening to succeed, which in turn leads to
-  the bounds \eqref{eq:boundonAfill} \eqref{eq:boundonBfill}
-  being maintained.
-
-  For $i=1$, because $A\cup B$ starts $R_\Delta$-flat, the bounds
-  on the fill of cups in $A$ and $B$ \eqref{eq:boundonAfill}
-  \eqref{eq:boundonBfill} trivially hold.
-
-  Now we assume \eqref{eq:boundonAfill} and
-  \eqref{eq:boundonBfill}, and show that the flattening can be
-  made to succeed by large enough choice of $r$. 
-  Consider how much $\mu(B)$ can change by over the course of an
-  application of \randalg to an $R_\Delta$-flat cup configuration.
-  If the emptier neglected every anchor cup on every round of the
-  application of \randalg, then the average fill of $B$ would have
-  decreased by $|A||D|/|B| = |D|/31$. The mass of $B$ cannot have
-  increased during the application of \randalg.
-  Hence the bounds \eqref{eq:boundonAfill}
-  \eqref{eq:boundonBfill} can be rewritten in terms of $\mu(B)$.
-
-  Now note that during a flattening process the backlog in $B$
-  cannot increase until the cups are $R_\Delta$-flat around their
-  current average. Now we note that the number of times that the
-  emptier can neglect the anchor set during a flattening process
-  is limited by virtue of the emptier being $\Delta$-greedy-like.
-  In particular, the emptier can't neglect any anchor cup more
-  than $2R_\Delta + |D| + 1 + d + 2\Delta$ times, because a cup
-  with this much fill has fill more than $\Delta$ larger than the
-  backlog in $B$. We set $r = |A|(2R_\Delta + |D| + 1 +
-  d + 2\Delta)$. Thus the application of \flatalg can be seen as an instance of the
-  $(n/2, r, 2(M + r))$ where $M$ is a bound on the flatness of
-  the cups guaranteed by the bounds \eqref{eq:boundonAfill}
-  \eqref{eq:boundonBfill}, and thus by
-  \cref{lem:greedylikeisflat} the flattening process
-  successfully makes $\mu(B)$ $R_\Delta$-flat around its average.
-
-  Now we show that an application of \randalg to a
-  $R_\Delta$-flat set of cups guarantees the bounds
-  \eqref{eq:boundonAfill} \eqref{eq:boundonBfill}.
-  This is clearly true by
-  \cref{prop:obliviousTerribleProbability} and
-  the emptier's $\Delta$-greedy-like nature.
-
-  As shown, the emptier cannot neglect the anchor set more than
-  $r$ times per swapping-process. We choose $m = 4|D|! r$. By a
-  Chernoff bound there is exponentially good probability in $n$
-  that at least $2r$ of the $m$ applications of \randalg would be
-  promising if they were successful. By choosing an application
-  uniformly at random there is at least a $1/(2|D|!)$ chance of
-  the application being simultaneously successful and promising. 
-
+  The filler chooses $m = 4|D|! r$. By a Chernoff bound, there is
+  exponentially high probability that of $4|D|! r$ applications
+  of \randalg at least $2r$ are lucky.
+  The emptier can choose at most $r$ of these to neglect, so
+  there is at least a $1/2$ chance that the randomly chosen final
+  application of \randalg is successful, conditioning on it
+  lucky. The final application is lucky with probability
+  $1/|D|!$. 
+  Hence overall this choice of $m$ makes the final round lucky
+  and successful with constant probability $1/(2|D|!)$.
 \end{proof}
 
 \begin{clm}
@@ -707,7 +647,9 @@ constant backlog. We remark that \cref{lem:obliviousBase} plays a
 similar role in the proof of the lower bound on backlog as
 \cref{prop:adaptiveBase} does in the adaptive case, but is vastly
 more complicated to prove (in particular,
-\cref{prop:adaptiveBase} is trivial).
+\cref{prop:adaptiveBase} is trivial, whereas we have already
+proved several lemmas and propositions as preperation for the
+proof of \cref{lem:obliviousBase}).
 \begin{lemma}
   \label{lem:obliviousBase}
   Let $H \le O(1)$, let $\Delta \le O(1)$, let $n$ be at
