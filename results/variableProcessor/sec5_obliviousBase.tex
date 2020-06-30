@@ -1,115 +1,57 @@
-\todo{turn skipping :x :x rip rip}
-
-\todo{minor issue: integer stuff; don't sweat it for now, can
-probably push this issue off to the next file worst comes to
-worst}
-
-% issues left to deal with:
-% flattening now requires even number of cups as input; this
-% might be a problem, I'm honestly inclined to slap a -1
-% somewhere else and call it a day though... That would probably work
-% integer issues all over the place, like the obliviousBase lem
-% thing assumes n/32 is a thing 
-% I guess saying n % 64 = 0 fixes all the integer issues. Note
-% that we only need to use this base case like once, so its fine
-% to do something like that as far as i can tell
-
-% bigger issue: emptier is allowed to skip its turn. Dang! ugh.
-% darn emptier. This should be a good thing for the filler, but
-% yeah it's still annoying.
+\todo{emptier turn skipping RIP}
+\todo{integer stuff}
 
 \section{Oblivious Filler Lower Bound}\label{sec:oblivious}
 In this section we prove that, surprisingly, an oblivious filler
 can achieve backlog $n^{1-\varepsilon}$, although only against a
 certain class of ``greedy-like" emptiers.
 
-% First we highlight the concentration inequalities that we will need in the analysis. 
-
-% The following theorem is known as Hoeffding's Inequality:
-% \begin{theorem}
-%   Let $X_i$ for $i=1,2,\ldots, k$ be independent bounded random variables with
-%   $X_i \in [a,b]$ for all $i$. Then,
-%   $$\Pr\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
-%   2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
-% \end{theorem}
-% There are also several useful corollaries of Hoeffding's Inequality. 
-% Firstly, the Chernoff Bound, i.e. Hoeffding's Inequality applied to binary
-% random variables, is a trivial corollary.
-% A more interesting corollary is that Hoeffding's Inequality applies to random
-% variables drawn without replacement from a finite population.
-% Let $S$ be a finite population, let $X_i$ for $i=1,2\ldots, k$ be chosen
-% uniformly at random from $S \setminus \{X_1,\ldots, X_{i-1}\}$, and let $Y_i$
-% for $i=1,2,\ldots, k$ be chosen uniformly at random from $S$.
-% Note that $\{X_1,\ldots, X_k\}$ represents a sample of $S$ chosen without
-% replacement, whereas $\{Y_1,\ldots, Y_k\}$ represents a sample with
-% replacement. Because the $Y_i$ are independent random variables
-% Hoeffding's Inequality provides a bound on the probability of $\sum_{i=1}^k
-% Y_i$ deviating from its mean by more than $t$.
-% The same bound can be given on the probability of $\sum_{i=1}^k X_i$ deviating
-% from its mean by more than $t$, because the probability of $\sum_{i=1}^k X_i$
-% deviating from its mean by more than $t$ is at most the probability of
-% $\sum_{i=1}^k Y_i$ deviating from it's mean by $t$.
-% Formally we can write this as 
-% \begin{corollary}
-%   \label{cor:hoeffdingwreplacement}
-%   Let $S$ be a finite set with $\min(S) \ge a, \max(S) \le b$, and let $X_i$
-%   for $i=1,2\ldots, k$ be chosen uniformly at random from $S \setminus
-%   \{X_1,\ldots, X_{i-1}\}$.
-% Then 
-%   $$\Pr\left(\Big|\frac{1}{k} \sum_{i=1}^k (X_i - \E[X_i])\Big|\ge t\right) \le
-%   2\exp\left(-\frac{2kt^2}{(b-a)^2}\right) $$
-% \end{corollary}
-% Hoeffding proved \cref{cor:hoeffdingwreplacement} in his seminal work
-% \cite{who62} (the result follows from his Theorem 4, combined with Hoeffding's
-% Inequality for independent random variables).
-% This result is intuitive as samples drawn without replacement should be more
-% tightly concentrated around the mean than samples drawn with replacement, which
-% are more free to vary.
-
-% We now proceed with our analysis of oblivious lower bounds.
-
 We call a cup configuration \defn{$M$-flat} if the difference
 between the fill of the fullest cup and the fill of the least
-full is at most $M$; note that in an $M$-flat cup configuration with
-average fill $0$ the all cups have fills in $[-M, M]$. We say an emptier is
-\defn{$\Delta$-greedy-like} if, whenever there are two cups with
-fills that differ by at least $\Delta$, the emptier never empties
-from the less full cup without also emptying from the more full
-cup. That is, if there are cups $c_1, c_2$ with $\fil(c_1) >
-\fil(c_2) + \Delta$, then a $\Delta$-greedy-like emptier doesn't
-empty from $c_2$ on this round unless it also empties from $c_1$
-on this round. Note that a perfectly greedy emptier is
-$0$-greedy-like. We call an emptier \defn{greedy-like} if it is
-$\Delta$-greedy-like for $\Delta \le O(1)$. 
+full is at most $M$; note that in an $M$-flat cup configuration
+with average fill $0$ all cups have fills in $[-M, M]$. We say an
+emptier is \defn{$\Delta$-greedy-like} if, whenever there are two
+cups with fills that differ by at least $\Delta$, the emptier
+never empties from the less full cup without also emptying from
+the more full cup. That is, if on some round $t$, there are cups
+$c_1, c_2$ with $\fil_{I_t}(c_1) > \fil_{I_t}(c_2) + \Delta$,
+then a $\Delta$-greedy-like emptier doesn't empty from $c_2$ on
+round $t$ unless it also empties from $c_1$ on round $t$. Note
+that a perfectly greedy emptier is $0$-greedy-like. We call an
+emptier \defn{greedy-like} if it is $\Delta$-greedy-like for
+$\Delta \le O(1)$. 
 
-In the randomized setting we are only able to prove lower bounds
-for backlog against greedy-like emptiers; whether or not our
+With an oblivious filler we are only able to prove lower bounds
+on backlog against greedy-like emptiers; whether or not our
 results can be extended to a more general class of emptiers is an
 interesting open question. Nonetheless, greedy-like emptiers are
 of great interest because all the known randomized algorithm for
 the cup game are greedy-like \cite{mbe19, wku20}.
 
 As a tool in our analysis we define a new variant of the cup
-game. In the $p$-processor \defn{$E$-extra-empties} negative-fill cup
+game: In the $p$-processor \defn{$E$-extra-empties} negative-fill cup
 game on $n$ cups, the filler distributes $p$ units of water
 amongst the cups, and then the emptier empties from $p$
-\textit{or more} (up to $n$) cups. In particular the emptier is
-allowed to empty $E$ extra cups over the course of the game.
+\textit{or more} cups. In particular the emptier is
+allowed to empty $E$ extra cups over the course of the game. Note
+that the emptier still cannot empty from the same cup twice on a
+single round.
 
 We now prove a crucial property of greedy-like emptiers: 
 \begin{lemma}
   \label{lem:greedylikeisflat}
+  Let $R_\Delta = 2(2+\Delta)$.
   Consider an $M$-flat cup configuration in the $p$-processor
   $E$-extra-empties negative-fill cup game on $n = 2p$ cups. An
-  oblivious filler can achieve a $2(2+\Delta)$-flat configuration
+  oblivious filler can achieve a $R_\Delta$-flat configuration
   of cups against a $\Delta$-greedy-like emptier in running time
   $2(M+E)$. Furthermore, throughout this process the cup configuration
   is $M$-flat on every round.
 \end{lemma}
 \begin{proof}
-  If $M \le 2(2+\Delta)$ the algorithm does nothing, since the
+  If $M \le R_\Delta$ the algorithm does nothing, since the
   desired flatness is already achieved; for
-  the rest of the proof we consider $M > 2(2+\Delta)$.
+  the rest of the proof we consider $M > R_\Delta$.
 
   The filler's strategy is to distribute fill equally amongst all
   cups at every round, placing $p/n = 1/2$ fill in each cup. 
@@ -128,9 +70,10 @@ We now prove a crucial property of greedy-like emptiers:
   \begin{proof}
     Consider a cup $c\in U_t$.
 
-    If $c$ is not emptied from, i.e. $\fil(c)$ has increased by $1/2$, then
+    If $c$ is not emptied from, i.e. $\fil(c)$ has increased by
+    $1/2$ from the previous round, then
     clearly $c \in U_{t+1}$, because backlog has increased by at most $1/2$, so
-    the fill of $c$ must still be within $2+\Delta$ of the backlog on round $t+1$. 
+    $\fil(c)$ must still be within $2+\Delta$ of the backlog on round $t+1$. 
 
     On the other hand, if $c$ is emptied from, i.e. $\fil(c)$ has decreased by
     $1/2$, we consider two cases.\\
@@ -148,8 +91,8 @@ We now prove a crucial property of greedy-like emptiers:
     because every cup with fill in $[u_t-1, u_t]$
     has had its fill decrease by $1/2$, and no cup with fill less than
     $u_t-1$ had its fill increase by more than $1/2$. Hence $u_{t+1}
-    = u_t -1/2$. Because both the fill of $c$ and the backlog
-    have both decreased by $1/2$, the distance between them is
+    = u_t -1/2$. Because both $\fil(c)$ and the backlog
+    have decreased by $1/2$, the distance between them is
     still at most $\Delta+2$, hence $c\in U_{t+1}$.\\
     The argument for why $L_t \subseteq L_{t+1}$ is symmetric.
   \end{proof}
@@ -159,8 +102,8 @@ We now prove a crucial property of greedy-like emptiers:
 
   \begin{clm}
     \label{clm:howDoLandUchange}
-    On any round, if $|U_t| \le n/2$ then $u_{t+1} = u_t - 1/2$.
-    On any round where the emptier doesn't use extra resources, if
+    On any round $t$, if $|U_t| \le n/2$ then $u_{t+1} = u_t - 1/2$.
+    On any round $t$ where the emptier doesn't use extra resources, if
     $|L_t| \le n/2$ then $\ell_{t+1} = \ell_t+ 1/2$.
   \end{clm}
   \begin{proof}
@@ -186,8 +129,8 @@ We now prove a crucial property of greedy-like emptiers:
 
     We remark however that we cannot guarantee that $\ell_{t+1} =
     \ell_t + 1/2$ on all rounds where $|L_t| \le n/2$, because the
-    emptier could do extra empties; in the most extreme case the
-    emptier could empty from every cup in which case of course we
+    emptier could do extra emptying; in the most extreme case the
+    emptier could empty from every cup in which case we
     would have $\ell_{t+1} = \ell_t - 1/2$. 
   \end{proof}
   
@@ -195,7 +138,8 @@ We now prove a crucial property of greedy-like emptiers:
   \defn{emptier-extra-resource} round. At most $E$ of the
   $2(M+E)$ total rounds are emptier-extra-resource rounds. When
   the emptier uses extra resources it can potentially hurt the
-  filler's efforts to achieve a flat configuration of cups.
+  filler's efforts to achieve a flat configuration of cups, in
+  particular by making $\ell_{t+1} < \ell_t$.
   However, the affect of emptier-extra-resource rounds is
   countered by rounds where the emptier does not use extra
   resources. In particular, we now define what it means for a
@@ -236,8 +180,8 @@ We now prove a crucial property of greedy-like emptiers:
   \ell_t+2+\Delta]$ intersect. Hence we have that
   $$\ell_t+2+\Delta \ge u_t-2-\Delta.$$ 
   Or, rearranging, 
-  $$u_t - \ell_t \le 2(2+\Delta).$$ 
-  Thus the cup configuration is $2(2+\Delta)$-flat.
+  $$u_t - \ell_t \le 2(2+\Delta) = R_\Delta.$$ 
+  Thus the cup configuration is $R_\Delta$-flat.
 
   Now we establish that throughout this flattening process the cup
   configuration is always $M$-flat. Consider a round where
@@ -257,14 +201,6 @@ We now prove a crucial property of greedy-like emptiers:
   round where the distance $u_t-\ell_t$ increases it increases to
   a value at most $M$, we have that the cups are always $M$-flat.
 \end{proof}
-
-Given a $\Delta$-greedy-like filler, let $R_\Delta =
-2(2+\Delta).$ By \cref{lem:greedylikeisflat}, an oblivious filler
-can achieve an $R_\Delta$-flat configuration of cups from an
-$M$-flat configuration of cups, while staying $M$-flat, against a
-$\Delta$-greedy-like emptier in the $p$-processor
-$E$-extra-empties negative-fill cup game on $n$ cups where $n =
-p/2$, in running time $2(M + E)$.
 
 % note: may as well take $\Delta' = \ceil{\Delta} \in
 % \mathbb{N}$, this might be useful sometimes
@@ -294,39 +230,41 @@ well-known, and similar versions of it can be found in
   removes $1$ unit of fill from some cup. Finally, the filler
   removes a cup uniformly at random from the active set. This
   continues until a single cup $c$ remains in the active set. 
-  Consider the probability that $c$ has never been emptied
-  from. On the $i$-th step of this process, i.e. when the size of
-  the active set is $n-i+1$, consider the cup the emptier empties
-  from. If this cup is in the active-set, with probability at
-  least $1/(n-i+1)$ the filler removes it from the active set.
-  If the cup is not in the active set, then it is irrelevant.
-  Hence with probability at least $1/n!$ the final
-  cup in the active set, $c$, has never been emptied from.
-  In this case, $c$ will have gained fill $d=\sum_{i=2}^n 1/i$
-  as claimed. Because $c$ started with fill at
-  least $-R$, $c$ now has fill at least $-R+ d$. 
 
-  Further, $c$ has fill at most $R + d$, as $c$ started with at
-  most $R$ fill and $c$ gains at most $1/(n-i+1)$ fill on the
+  We now bound the probability that $c$ has never been emptied
+  from. On the $i$-th step of this process, i.e. when the size of
+  the active set is $n-i+1$, consider the cup $c'$ that the
+  emptier empties. If $c'$ is in the active-set, then with
+  probability at least $1/(n-i+1)$ the filler removes it from the
+  active set. If $c'$ is not in the active set, then it is
+  irrelevant. Hence with probability at least $1/n!$ the final
+  cup in the active set, $c$, has never been emptied from. In
+  this case, $c$ will have gained fill $d=\sum_{i=2}^n 1/i$ as
+  claimed. Because $c$ started with fill at least $-R$, $c$ now
+  has fill at least $-R+ d$. 
+
+  Further, $c$ has fill at most $R + d$, as $c$ starts with fill
+  at most $R$, and $c$ gains at most $1/(n-i+1)$ fill on the
   $i$-th round of this process.
 
-  Now consider the game with a $\Delta$-greedy-like emptier.
-  Consider a round on which the minimum fill of a cup becomes
-  lower, i.e. where the emptier empties from some cup with fill
-  less than $1$ above the lower fill. On such a round, because
-  the emptier is $\Delta$-greedy-like, it must be that the
-  backlog is at most $\Delta$ more than the fill of the cup that
-  was emptied from. Hence the cups are $(\Delta+1)$-flat on such
-  a round. If the cups are always $(\Delta+1)$-flat then we are
-  done. Otherwise, consider the round after the last round on
-  which they are $(\Delta + 1)$-flat, (or the first round if the
-  cups are never $(\Delta+1)$-flat). From this round on, the emptier
-  cannot empty a cup with fill within $1$ of the fill of the
-  lowest cup, hence the fill of the lowest cup cannot decrease. 
-  Consider how much the backlog could increase. The backlog could
-  increase by $d$ from whatever value it starts at. The backlog
-  starts as at most $\max(\Delta+1, R) = R$, and hence throughout
-  the process the cups remain $(R+d)$-flat, as desired.
+  Now we analyze this algorithm specifically for a
+  $\Delta$-greedy-like emptier. Consider a round on which the
+  minimum fill of the cups becomes lower, i.e. where the emptier
+  empties from some cup $c$ with fill less than $1$ above the
+  lowest fill. On such a round, because the emptier is
+  $\Delta$-greedy-like, the backlog is no more than $\Delta$
+  greater than $\fil(c)$. Hence the cups are $(\Delta+1)$-flat on
+  such a round. If the cups are always $(\Delta+1)$-flat then we
+  are done. Otherwise, consider the round after the last round on
+  which the cups are $(\Delta + 1)$-flat, (or the first round of
+  the process if the cups are never $(\Delta+1)$-flat). From this
+  round on, the emptier cannot empty a cup with fill within $1$
+  of the fill of the lowest cup, hence the fill of the lowest cup
+  cannot decrease. Consider how much the backlog could increase.
+  The backlog could increase by $d$ from whatever value it starts
+  at. The backlog starts as at most $\max(\Delta+1, R) = R$, and
+  hence throughout the process the cups remain $(R+d)$-flat, as
+  desired.
 
 \end{proof}
 
@@ -345,9 +283,9 @@ known cup with high fill (we show this in
   variable-processor cup game on $n$ cups with average fill $0$.
   Let $A, B, A'$ be disjoint constant-fraction-size subsets of
   the cups with $|A| = \Theta(n)$ sufficiently small and with
-  $|A| + |B| + |A'| = n$. Note that the set $A$ is fixed, while
-  the set $B$ will lose some cups to $A'$ over the course of
-  the process.
+  $|A| + |B| + |A'| = n$. These sets will change over the course
+  of the filler's strategy, but $|A|$ will remain fixed and $|A|
+  \ll |A|$ will always hold.
 
   There is an oblivious filling strategy that makes an unknown
   set of $\Theta(n)$ cups in $A$ have fill at least $h$ with
@@ -357,7 +295,7 @@ known cup with high fill (we show this in
 \end{lemma}
 \begin{proof}
   We refer to $A$ as the \defn{anchor} set, $B$ as the
-  \defn{non-anchor} set, and $A'$ as the \defn{trash can} set.
+  \defn{non-anchor} set, and $A'$ as the \defn{garbage} set.
   Throughout the proof the filler uses $p=|A|+1$.
   The filler initializes the sets as $A' = \varnothing$, and $B$
   is all the cups besides the cups in $A$.
@@ -372,7 +310,7 @@ strategy given by \cref{prop:obliviousTerribleProbability}.
 We denote by \flatalg the oblivious filling
 strategy given by \cref{lem:greedylikeisflat}.
 We say that the filler \defn{applies} a filling strategy
-\genericalg to a set of cups $D \subset B$ if the filler uses
+\genericalg to a set of cups $D \subseteq B$ if the filler uses
 \genericalg on $D$ while placing $1$ unit of fill in each anchor cup. 
 
 We now describe the filler's strategy.
@@ -388,32 +326,36 @@ arbitrarily chosen constant-size sets $D \subset B$ with $|D| =
 \ceil{e^{2h+1}}$. The number of times that the filler applies
 \randalg is chosen at the start of the swapping-process, chosen
 uniformly at random from $[m]$ ($m = \poly(n)$ to be
-specified). At the end of the swapping-process, with probability
-$1/2$ the filler does nothing, and with probability $1/2$ the filler swaps
-the cup given by \randalg with the cup in the anchor set
-associated with this swapping-process, and then moves the cup
-that was swapped into $B$ into the trash can set. Before each application of
-\randalg the filler flattens $B$ by applying \flatalg to $B$ for
-$\poly(n)$ rounds (exactly how many rounds will be specified
-later in the proof). 
+specified). At the end of the swapping-process, the filler does a
+``swap": the filler takes the cup given by \randalg in $B$ and
+puts it in $A$, and the filler takes the cup in $A$ associated
+with the current swapping-process and moves it into $A'$.
+Before each application of \randalg the filler flattens $B$ by
+applying \flatalg to $B$ for $\poly(n)$ rounds (exactly how many
+rounds will be specified later in the proof). 
 
-We remark that this construction is similar to
-the construction in \cref{lem:adaptiveAmplification}, but has a
-major difference: in the adaptive lower bound construction the
-filler halts after achieving the desired average fill in the
-anchor set, whereas the oblivious filler cannot halt but rather
-must rely on flattening to guarantee that each application of
-\randalg has constant probability of generating a cup with high fill.
+We remark that this construction is similar to the construction
+in \cref{lem:adaptiveAmplification}, but has a major difference
+that substantially complicates the analysis: in the adaptive
+lower bound construction the filler halts after achieving the
+desired average fill in the anchor set, whereas the oblivious
+filler cannot halt but rather must rely on the emptier's
+greediness to guarantee that each application of \randalg has
+constant probability of generating a cup with high fill.
 
-We proceed to analyze the algorithm.
+We proceed to analyze our algorithm.
 
-First note that the initial flattening of $A\cup B$ succeeds by
-\cref{lem:greedylikeisflat}. In particular, the game is the 
-$(n/2, 0, 2M)$-extra-emptying cup game, where $E=0$ so the
-emptier is actually not allowed to ever do extra emptying and
-this is equivalent to the $(n/2)$-processor cup game that lasts
-for $2M$ rounds, and hence the filler can achieve this by setting
-$p=n/2$ and using \flatalg on $A\cup B$.
+First note that the initial flattening of $A\cup B$ succeeds
+because the emptier is not allowed to do any extra emptying on
+$A\cup B$ so by setting $p=n/2$ the filler makes the flattening
+happen in the $0$-extra-empties, $(n/2)$-processor cup game,
+which by \cref{lem:greedylikeisflat} gets an $R_\Delta$-flat cup
+configuration in running time $2M$.
+
+We say that a property of the cups has \defn{always} held if the
+property has held since the start of the first swapping-process;
+i.e. from now on we only consider rounds after the initial
+flattening of $A\cup B$.
 
 We say that the emptier \defn{neglects} the anchor set on a round
 if it does not empty from each anchor cup. We say that an
@@ -426,11 +368,6 @@ least $\mu(B) - R_\Delta + d$; note that by
 \cref{prop:obliviousTerribleProbability} any successful
 application of \randalg where $B$ started $R_\Delta$-flat has
 at least a $1/|D|!$ chance of being lucky. 
-
-We say that a property of the cups has \defn{always} held if
-the property has held since the start of the first
-swapping-process; i.e. from now on we only consider rounds after
-the initial flattening of $A\cup B$.
 
 Now we prove several important bounds on fills of cups in $A$ and $B$.
 \begin{clm}
@@ -450,8 +387,10 @@ Now we prove several important bounds on fills of cups in $A$ and $B$.
   throughout the duration of the application of \flatalg by
   \cref{lem:greedylikeisflat}. Given that $B$ is $(R_\Delta +
   d)$-flat before a swap occurs $B$ is clearly still $(R_\Delta +
-  d)$-flat after the swap, because a cup was removed from $B$.
-  Note that $B$ started $R_\Delta$-flat before the first
+  d)$-flat after the swap, because the only change to $B$ during
+  a swap is that a cup is removed from $B$ which cannot increase
+  the backlog in $B$ or decrease the fill of the least full cup
+  in $B$. Note that $B$ started $R_\Delta$-flat before the first
   application of \flatalg because $A\cup B$ was flattened.
   Hence we have by induction that $B$ has always been $(R_\Delta
   + d)$-flat. 
