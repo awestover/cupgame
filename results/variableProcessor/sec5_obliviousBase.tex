@@ -426,21 +426,30 @@ Let $u_A = 1 + (R_\Delta + d) + \Delta + 1$, $\ell_A = -|B|
   been in $[\ell_A, u_A]$ and we have always had $\mu(B) > -h/2$.
 \end{clm}
 \begin{proof}
-  Because the emptier is $\Delta$-greedy-like, if a cup $c\in A$
-  has fill more than $\Delta$ higher than the backlog in $B$ then
-  $c$ must be emptied from. Our assumptions on $B$ imply that no
-  cup in $B$ ever has fill more than $1 + (R_\Delta + d)$, so any
-  cup with fill at least $1 + (R_\Delta + d) + \Delta = u_A - 1$ must
-  be emptied from, and hence $u_A$ upper bounds the backlog in
-  $A$. 
+  First consider how high the fill of a cup $c\in A$ could be.
+  Let $u_B = 1 + (R_\Delta + d)$; note that the assumptions on
+  $B$ guarantee that $u_B$ has always been an upper bound for the
+  backlog in $B$. If $c$ came from $B$ then when it is swapped
+  into $A$ its fill is at most $u_B < u_A$. Otherwise, $c$
+  started with fill at most $R_\Delta < u_A$. Now consider how
+  much the fill of $c$ could increase while being in $A$. Because
+  the emptier is $\Delta$-greedy-like, if a cup $c\in A$ has fill
+  more than $\Delta$ higher than the backlog in $B$ then $c$ must
+  be emptied from, so any cup with fill at least $u_B + \Delta =
+  u_A - 1$ must be emptied from, and hence $u_A$ upper bounds the
+  backlog in $A$. 
 
   Of course an upper bound on backlog in $A$ also serves as
   an upper bound on the average fill of $A$ as well, i.e. $\mu(A)
   \le u_A$. Then, because $A\cup B$ has average fill $0$, we have that 
-  $$\mu(B) = -\frac{|A|}{|B|} \mu(A) \ge -u_A \frac{|A|}{|B|}.$$
-  Note that $|B| \gg |A|$ so this quantity, so in particular by
-  \eqref{eq:chooseBmuchbiggerthanA} this lower bound on $\mu(B)$
-  can be loosened to $\mu(B) \ge -h/2$.
+  \begin{equation}
+    \label{eq:muBisPrettyFineBecauseItsHUGE}
+    \mu(B) = -\frac{|A|}{|B|} \mu(A) \ge -u_A \frac{|A|}{|B|}.
+  \end{equation}
+  Note that $|B| \gg |A|$ so
+  \eqref{eq:muBisPrettyFineBecauseItsHUGE} is not very negative.
+  In particular, by \eqref{eq:chooseBmuchbiggerthanA}
+  \eqref{eq:muBisPrettyFineBecauseItsHUGE} can be loosened to $\mu(B) \ge -h/2$.
 
   Because $\mu(B) \le 1$ we have $\mu(A) \ge -|B|/|A|$. The mass
   of a subset of $|A|-1$ of the cups is at most $(|A|-1)u_A$, so
@@ -448,7 +457,8 @@ Let $u_A = 1 + (R_\Delta + d) + \Delta + 1$, $\ell_A = -|B|
   $$\fil(c) \ge -|B| -u_A \cdot (|A| -1).$$
 \end{proof}
 
-Let $r = |A|(\ell_A + u_A)$.
+Let $r = |A|(\ell_A + u_A)$; note that $r = \Theta(n^2) =
+\poly(n)$.
 \begin{clm}
   \label{clm:oblivBaseIntenseInduction3}
   If at the start of an application of \flatalg $B$ is $(R_\Delta
