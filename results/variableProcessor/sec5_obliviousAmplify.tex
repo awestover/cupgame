@@ -313,7 +313,7 @@ large disadvantage.
   We aim to achieve backlog $(n/n_b)^{1-\varepsilon}-1$ for some constant $n_b$ on $n$ cups.
   Let $\delta, \phi$ be constants, chosen as functions of $\epsilon$.
 
-  By \cref{lem:obliviousBase} there is an oblivious filling
+  By \cref{prop:obliviousBase} there is an oblivious filling
   strategy that achieves backlog $\Omega(1)$ on $n$ cups with
   exponentially good probability in $n$; we call this algorithm
   $\alg{f_0}$.
@@ -327,7 +327,7 @@ large disadvantage.
   algorithm failing in the base case is at most
   $2^{-\polylog(n)}$. Then, taking a union bound over
   $2^{\polylog(n)}$ events can give us the desired probability.
-  By \cref{lem:obliviousBase} $\alg{f_0}$ achieves backlog
+  By \cref{prop:obliviousBase} $\alg{f_0}$ achieves backlog
   $f_0(k) \ge H \ge \Omega(1)$ for all $k \ge n_b$, for some
   constant $H \ge \Omega(1)$ to be determined ($H$ is a function
   of $\delta$).
