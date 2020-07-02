@@ -618,15 +618,16 @@ more complicated to prove (in particular,
 proved several lemmas and propositions as preparation for the
 proof of \cref{prop:obliviousBase}).
 \begin{proposition}
-  \todo{fix this}
   \label{prop:obliviousBase}
   Let $H \le O(1)$, let $\Delta \le O(1)$, let $n$ be at
   least a sufficiently large constant determined by $H$ and
   $\Delta$, and let $R \le \poly(n)$. 
+  Let $M \gg n$ be very large.
   Consider an $R$-flat cup configuration in the negative-fill variable-processor cup
   game on $n$ cups with average fill $0$.
-  Given this configuration, an oblivious filler can achieve fill $H$
-  in a chosen cup in running time $\poly(n)$ against a
+  Given this configuration, an oblivious filler can either
+  achieve mass $M$ among the cups, or achieve fill $H$
+  in a chosen cup in running time $\poly(M)$ against a
   $\Delta$-greedy-like emptier with probability at least $1-2^{-\Omega(n)}.$
 \end{proposition}
 \begin{proof}
