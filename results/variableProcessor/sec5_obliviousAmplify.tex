@@ -1,8 +1,3 @@
-\todo{there are some major problems with this section: flattening
-is harder than I make it out to be, and the neglect upper bound
-is totally fake. My options are to relive the proof of the
-previous thing or use real n}
-
 Next we prove the \defn{Oblivious Amplification Lemma}. The same
 idea of using a function multiple times on subsets of the cups
 drives both the \cref{lem:obliviousAmplification} and
@@ -11,59 +6,101 @@ however the Oblivious Amplification Lemma is more difficult to prove.
 \begin{lemma}[Oblivious Amplification Lemma]
   \label{lem:obliviousAmplification} 
   Let $0 < \delta \ll 1/2, 1/2\ll \phi < 1$ be constant
-  parameters, and let $\eta \in \mathbb{N}$ be a function of $\phi$. 
-  Let $\Delta \le O(1)$, $M, M' \ge R_\Delta$. 
-  Let $\alg{f}$ be an oblivious filling strategy that achieves
-  backlog $f(n)$ in the negative-fill variable-processor cup game
+  parameters, and let $\eta \in \mathbb{N}$ be a function of
+  $\phi$. Let $\Delta \le O(1)$, $R, R' \ge R_\Delta$. Let
+  $\alg{f}$ be an oblivious filling strategy that, conditional on
+  the emptier not using extra-emptyings, either achieves
+  mass $M$ or achieves backlog $f(n)$ in the $S$-skip-emptyings
+  $E$-extra-emptyings negative-fill variable-processor cup game
   on $n$ cups with probability at least $1-2^{-\Omega(n)}$ in
-  running time $T(n) \le \poly(n)$ when given a $M$-flat cup
-  configuration against a $\Delta$-greedy-like emptier.
+  running time $T(n) \le \poly(n)$ when given a $R$-flat cup
+  configuration against a $\Delta$-greedy-like emptier, where $M
+  \gg n$ is very large. Furthermore, let $\alg{f}$ guarantee that
+  the cups are $(R_\Delta + f(n))$-flat.
 
-  There exists an oblivious filling strategy $\alg{f'}$ that
-  achieves backlog $f'(n)$ satisfying 
-  $$f'(n) \ge (1-\delta)(\phi-1/(\delta n)) (f(\floor{(1-\delta)n})-R_\Delta) + f(\ceil{\delta n})$$ 
-  and $f'(n) \ge f(n)$, in the negative-fill
-  variable-processor cup game on $n$ cups with probability at
-  least $1-2^{-\Omega(n)}$ in running time $$T'(n) \le O(M') +
-  6 \delta n^{\eta+1} T(\floor{(1-\delta)n}) + T(\ceil{\delta n})$$
-  when given a $M'$-flat cup configuration against a
-  $\Delta$-greedy-like emptier.
+  There exists an oblivious filling strategy $\alg{f'}$ that,
+  conditional on the emptier not using extra-emptyings,
+  either achieves mass $M'$ or achieves backlog $f'(n)$
+  satisfying $$f'(n) \ge (1-\delta)(\phi-1/(\delta n))
+  (f(\floor{(1-\delta)n})-R_\Delta) + f(\ceil{\delta n})$$ and
+  $f'(n) \ge f(n)$, in the $S'$-skip-emptyings
+  $E'$-extra-emptyings negative-fill variable-processor cup
+  game on $n$ cups with probability at least $1-2^{-\Omega(n)}$
+  in running time $$T'(n) \le O(M') + 6 \delta n^{\eta+1}
+  T(\floor{(1-\delta)n}) + T(\ceil{\delta n})$$ when given a
+  $M'$-flat cup configuration against a $\Delta$-greedy-like
+  emptier, where $M \gg n$ is very large.
+  Furthermore, $\alg{f'}$ guarantees that the cups are always
+  $(R_\Delta + f'(n))$-flat.
 \end{lemma}
 \begin{proof}
-The algorithm defaults to using $\alg{f}$ on all the cups if 
-$$f(n) \ge (1-\delta)(\phi-1/(\delta n))
-(f(\floor{(1-\delta)n})-R_\Delta) + f(\ceil{\delta n})$$ 
-In this case our strategy trivially results in the desired
-backlog in the desired running time. In the rest of the proof we
-consider the case where we cannot simply fall back on $\alg{f}$
-to achieve the desired backlog.
+  For now we condition on the emptier not using extra emptying
+  and show that we can achieve the desired result in this case
+  (good backlog with exponentially good probability);
+  at the end of the proof we will consider the case where the
+  emptier does use extra emptyings, and bound the fill-range in
+  that case. 
 
-  The filler starts by flattening all the cups, using the flattening procedure
-  detailed in \cref{lem:greedylikeisflat}. 
+  The algorithm defaults to using $\alg{f}$ on all the cups if 
+  $$f(n) \ge (1-\delta)(\phi-1/(\delta n))
+  (f(\floor{(1-\delta)n})-R_\Delta) + f(\ceil{\delta n})$$ 
+  In this case our strategy trivially results in the desired
+  backlog in the desired running time. In the rest of the proof we
+  consider the case where we cannot simply fall back on $\alg{f}$
+  to achieve the desired backlog.
 
-  Let $A$, the \defn{anchor} set, be a subset of $\ceil{\delta n}$ cups
-  chosen arbitrarily, and let $B$, the \defn{non-anchor} set,
-  consist of the rest of the cups ($|B| = \floor{(1-\delta)n}$). Note
-  that the average fill of $A$ and $B$ both must start as at
-  least $-R_\Delta$ due to the flattening. 
+  We refer to $A$ as the \defn{anchor} set and $B$ as the
+  \defn{non-anchor} set. Let $n_A = \ceil{\delta n}$, $n_B =
+  \floor{(1-\delta)n}$. The filler initializes $A$ to
+  $\varnothing$, and $B$ to be all of the cups. Over the course
+  of $\alg{f'}$ $B$ will donate $n_A$ cups to $B$; note that 
+  we always have $|B| \ge n_B$, $|A| \le n_A$ with equality
+  achieved after $n_A$ donations.
 
-  The filler's strategy is essentially as follows:\\
+  We denote by \flatalg the oblivious filling strategy given in
+  \cref{lem:greedylikeisflat}. We say that the filler
+  \defn{applies} an algorithm \genericalg to $B$ if it uses
+  \genericalg on $B$ while placing $1$ unit of fill in each
+  anchor cup.
+
+  We now describe the filler's strategy.
+
+  At a high level the filler's strategy is as follows:\\
   \textbf{Step 1:} Using $\alg{f}$ repeatedly on $B$, achieve a
-  cup with fill $\mu(B) + f(|B|)$ in $B$ and then swap this cup into $A$. \\
+  cup with fill $\mu(B) + f(|B|)$ in $B$ and then donate this cup into $A$. \\
   \textbf{Step 2:} Use $\alg{f}$ once on $A$ to obtain a cup in
   $A$ with fill $\mu(A) + f(|A|)$.\\
 
-  We now describe how to achieve Step 1, which is complicated by
-  the fact that the emptier may attempt to prevent the filler
-  from achieving high fill in a cup in $B$, and further by the
-  fact that the filler, being oblivious, cannot know if the
-  emptier has done this. In particular, Step 1 may not succeed
-  sometimes, but we show that with exponentially good probability is
-  works almost every time.
+  We now describe in detail how to achieve Step 1, which is
+  complicated by the fact that the emptier may attempt to prevent
+  the filler from achieving high fill in a cup in $B$, and
+  further by the fact that the filler, being oblivious, cannot
+  know if the emptier has done this. In particular, some
+  applications of $\alg{f}$ may fail, but we show that with
+  exponentially good probability a $(1-\phi)$-fraction of the
+  applications of $\alg{f}$ succeed.
 
-  The filler's strategy always places $1$ unit of fill in each
-  cup in $A$ while applying $\alg{f}$ to $B$.
+  The filler starts by flattening the cups, i.e. using \flatalg
+  on all of the cups for $\poly(M')$ rounds (setting $p=n/2$).
+  After this the filling strategy always places $1$ unit of fill
+  into each anchor cup on every round. The filler performs a
+  series of $n_A$ \defn{donation-processes}, which are procedures
+  that the filler uses to get a new cup---which will sometimes
+  have high fill---in the anchor set. On each donation-process
+  the filler applies $\alg{f}$ many times to $B$. The number of
+  times that the filler applies \randalg is chosen at the start
+  of the donation-process, chosen uniformly at random from $[m]$
+  ($m = \poly(M)$ to be specified). At the end of each
+  donation-process, the filler does a \defn{donation}: the filler
+  takes the cup given by $\alg{f}$ in $B$, evicts it from $B$ and
+  adds it to $A$. After performing a donation the filler must
+  increase $p$ by $1$ so that $p=|A|+1$. Before each application
+  of $\alg{f}$ the filler flattens $B$ by applying \flatalg to $B$
+  for $\poly(M)$ rounds.
 
+  We proceed to analyze our algorithm.
+
+  \todo{
   For each cup in $A$ the filler performs a procedure called a
   \defn{swapping-process}. Let $A_0$ be initialized to
   $\varnothing$; during each swapping-process the filler will get
@@ -85,7 +122,6 @@ to achieve the desired backlog.
   $\alg{f}$ on which the filler swaps a cup into $A$ is a
   successful application of $\alg{f}$.
 
-  % this is just super false
   \todo{
   Let $\mu_\Delta = 2R_\Delta + \Delta$; the emptier, being
   $\Delta$-greedy-like, cannot neglect the anchor set more than
@@ -271,6 +307,7 @@ to achieve the desired backlog.
   % $n\delta^\ell(1-\delta)$ cups. Taking a union bound over the $\poly(n)$
   % applications of $f$ clearly still gets probability failure at most
   % $2^{-\Omega(n)}$.
+}
 
   To achieve Step 2 the filler simply applies $\alg{f}$ to $A$.
   This clearly achieves backlog 

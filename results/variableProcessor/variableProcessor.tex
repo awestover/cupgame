@@ -21,7 +21,7 @@
 \DeclareMathOperator{\poly}{\text{poly}}
 
 \DeclareMathOperator{\fil}{\textnormal{fill}}
-\newcommand{\alg}[1]{\textit{\text{alg}}({#1})}
+\newcommand{\alg}[1]{\textnormal{\text{alg}}(#1)}
 \newcommand{\randalg}{\textit{randalg}\xspace}
 \newcommand{\flatalg}{\textit{flatalg}\xspace}
 \newcommand{\genericalg}{\textit{alg}\xspace}
@@ -33,7 +33,7 @@
 
 \usepackage[capitalise,nameinlink,noabbrev]{cleveref}
 \crefname{equation}{}{} % cref{eq:blah} only does (1) instead of Equation (1)
-\crefname{enumi}{Step}{} % cref{eq:blah} only does (1) instead of Equation (1)
+\crefname{enumi}{Step}{} % cref{eq:blah} only does (1) instead of Item (1)
 
 \newcommand{\contr}[0]{\[ \Rightarrow\!\Leftarrow \]}
 \newcommand{\defeq}{\vcentcolon=}
@@ -72,9 +72,14 @@
 % \input{sec2_prelims.tex}
 % \input{sec3_adaptive.tex}
 % \input{sec4_upperbound.tex}
-% \input{sec5_obliviousBase.tex} % can't handle skips
+
+% \input{sec5_obliviousBase_broken.tex} % BROKEN: can't handle skips and extra empties, use _realN.tex instead
+% \input{sec5_obliviousFlattening.tex}
 \input{sec5_oblivious_realN.tex}
-% \input{sec5_obliviousAmplify.tex}
+
+\clearpage
+
+\input{sec5_obliviousAmplify.tex}
 % \input{sec5_obliviousThm.tex}
 % \input{sec6_conclusion.tex}
 
