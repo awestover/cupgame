@@ -21,6 +21,7 @@
 \DeclareMathOperator{\poly}{\text{poly}}
 
 \DeclareMathOperator{\fil}{\textnormal{fill}}
+\DeclareMathOperator{\rep}{\textnormal{rep}}
 \newcommand{\alg}[1]{\textnormal{\text{alg}}(#1)}
 \newcommand{\randalg}{\textit{randalg}\xspace}
 \newcommand{\flatalg}{\textit{flatalg}\xspace}
@@ -67,21 +68,19 @@
 \affil[ ]{\textit{kuszmaul@mit.edu, alek.westover@gmail.com}}
 
 \begin{document}
-% \input{sec0_abstract.tex}
-% \input{sec1_intro.tex}
-% \input{sec2_prelims.tex}
-% \input{sec3_adaptive.tex}
-% \input{sec4_upperbound.tex}
-
-% \input{sec5_obliviousBase_broken.tex} % BROKEN: can't handle skips and extra empties, use _realN.tex instead
-% \input{sec5_obliviousFlattening.tex}
-\input{sec5_oblivious_realN.tex}
-
+\input{sec0_abstract.tex}
+\input{sec1_intro.tex}
+\input{sec2_prelims.tex}
+\input{sec3_adaptive.tex}
+\input{sec4_upperbound.tex}
+\input{sec5_obliviousFlattening.tex}
 \clearpage
-
-\input{sec5_obliviousAmplify.tex}
-% \input{sec5_obliviousThm.tex}
-% \input{sec6_conclusion.tex}
+% \input{sec5_oblivious_realN.tex}
+\clearpage
+% \input{sec5_obliviousAmplify.tex}
+\clearpage
+\input{sec5_obliviousThm.tex}
+\input{sec6_conclusion.tex}
 
 \bibliographystyle{plain}
 \bibliography{paper}

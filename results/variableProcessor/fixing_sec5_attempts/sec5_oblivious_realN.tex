@@ -1,0 +1,400 @@
+Now we show that we can force a constant fraction of the cups to
+have high fill; using \cref{lem:obliviousManyUnknownCups} and
+exploiting the greedy-like nature of the emptier we can get a
+known cup with high fill (we show this in
+\cref{prop:obliviousBase}).
+\begin{lemma}
+  \label{lem:obliviousManyUnknownCups}
+  Let $\Delta \le O(1)$, let $h \le O(1)$ with $h \ge
+  16+16\Delta$, let $n$ be at least a sufficiently large constant
+  determined by $h$ and $\Delta$, and let $R \le \poly(n)$.
+  Let $M\gg n$ be very large.
+  % we will be setting $M = 2^{\log^2 (real n)}$
+  % which is huge, so yes it does hurt our running time
+  % but running time will still be quasi-polynomial
+  Consider an $R$-flat cup configuration in the
+  $M$-skip-emptyings $M$-extra-emptyings
+  variable-processor cup game on $n$ cups.
+  Let $A, B$ be disjoint subsets of the cups with $|AB| = n$.
+  Over the course of the algorithm $B$ will give some cups to
+  $A$, but $|A|$ will always satisfy $|A| \ll |B|$, and $|A|$
+  will eventually be $\Theta(n)$.
+
+  There is an oblivious filling strategy that either achieves
+  mass at least $M$ in the cups, or makes an unknown
+  set of $\Theta(n)$ cups in $A$ have fill at least $h +
+  \mu_{\min}$, where $\mu_{\min}$ is the minimum value that the
+  average fill of $AB$ attains throughout the process, with
+  probability at least $1-2^{-\Omega(n)}$ in running time
+  $\poly(M)$ against a $\Delta$-greedy-like emptier while also
+  guaranteeing that $\mu(B) \ge -h/2 + \mu_{\min}$. Furthermore, throughout
+  the filler's process the backlog never exceeds the average
+  fill by more than $R_\Delta + 4h$.
+\end{lemma}
+\begin{proof}
+  We refer to $A$ as the \defn{anchor} set, and $B$ as the
+  \defn{non-anchor} set. Let $n_A = \Theta(n)$ be small enough to
+  satisfy
+  \begin{equation}
+    \label{eq:chooseBmuchbiggerthanA}
+    n_A \le (n - n_A) / (2e^{2h+1} + 1).
+  \end{equation}
+  The filler initializes $A$ to $\varnothing$, and $B$ to be all
+  of the cups. Over the course of the algorithm $B$ will give
+  away $n_A$ cups to $A$. Note that $|B| \ge n-n_A \gg n_A \ge |A|$.
+
+We denote by \randalg the oblivious filling
+strategy given by \cref{prop:obliviousTerribleProbability}. 
+We denote by \flatalg the oblivious filling
+strategy given by \cref{lem:greedylikeisflat}.
+We say that the filler \defn{applies} a filling strategy
+\genericalg to a set of cups $D \subseteq B$ if the filler uses
+\genericalg on $D$ while placing $1$ unit of fill in each anchor cup. 
+
+We now describe the filler's strategy.
+
+The filler starts by flattening the cups, i.e. using \flatalg on
+all of the cups for $\poly(M)$ rounds (setting $p=n/2$). After
+this the filling strategy always places $1$ unit of water into
+each anchor cup on every round. The filler performs a series of
+$n_A$ \defn{donation-processes}, which are
+procedures that the filler uses to get a new cup---which will
+sometimes have high fill---in the anchor set. On each
+donation-process the filler applies \randalg many times to
+arbitrarily chosen constant-size sets $D \subset B$ with $|D| =
+\ceil{e^{2h+1}}$. The number of times that the filler applies
+\randalg is chosen at the start of the donation-process, chosen
+uniformly at random from $[m]$ ($m = \poly(M)$ to be specified).
+At the end of each donation-process, the filler does a
+\defn{donation}: the filler takes the cup given by \randalg in
+$B$ evicts it from $B$ and adds it to $A$. After performing a
+donation the filler must increase $p$ by $1$ so that $p=|A| + 1$.
+Before each application of \randalg the filler flattens $B$ by
+applying \flatalg to $B$ for $\poly(M)$ rounds. 
+
+We remark that this construction is similar to the construction
+in \cref{lem:adaptiveAmplification}, but has a major difference
+that substantially complicates the analysis: in the adaptive
+lower bound construction the filler halts after achieving the
+desired average fill in the anchor set, whereas the oblivious
+filler cannot halt but rather must rely on the emptier's
+greediness to guarantee that each application of \randalg has
+constant probability of generating a cup with high fill.
+
+We proceed to analyze our algorithm.
+
+Without loss of generality we assume that the emptier does not do
+this neglect the anchor set $M$ times without decreasing the
+fills of an anchor cup in between the rounds on which the anchor
+set is neglected; if the emptier chooses to neglect that much,
+then the anchor cups will have achieved mass $M$, so the claim in
+\cref{lem:obliviousManyUnknownCups} is already fulfilled. 
+
+First note that the initial flattening makes the cups
+$R_\Delta$-flat by \cref{lem:greedylikeisflat}. In particular,
+note that the flattening happens in the $(n/2)$-processor
+$M$-extra-emptyings $M$-skip-emptyings variable-processor cup
+game on $n$ cups.
+
+We say that a property of the cups has \defn{always} held if the
+property has held since the start of the first donation-process;
+i.e. from now on we only consider rounds after the initial
+flattening.
+
+We say that the emptier \defn{neglects} the anchor set on a round
+if it does not empty from each anchor cup. We say that an
+application of \randalg to $D\subset B$ is
+\defn{non-emptier-wasted} if the emptier does not neglect the
+anchor set during any round of the application of \randalg. We
+define $d = \sum_{i=2}^{|D|} 1/i$ (recall that $|D| =
+\ceil{e^{2h+1}}$). We say that an application of \randalg to $D$
+is \defn{lucky} if it achieves backlog at least $\mu(B) -
+R_\Delta + d$; note that by
+\cref{prop:obliviousTerribleProbability} if we condition on an
+application of \randalg where $B$ started $R_\Delta$-flat being
+non-emptier-wasted then the application has at least a $1/|D|!$
+chance of being lucky.
+
+Now we prove several important bounds on fills of cups in $A$ and $B$.
+\begin{clm}
+  \label{clm:allflatteningsworkbyM}
+  All applications of \flatalg make $B$ be $R_\Delta$-flat and
+  $B$ is always $(R_\Delta + d)$-flat.
+\end{clm}
+\begin{proof}
+  Given that the application of \flatalg immediately prior to an application
+  of \randalg made $B$ be $R_\Delta$-flat, by
+  \cref{prop:obliviousTerribleProbability} we have that $B$ will
+  stay $(R_\Delta + d)$-flat during the application of \randalg. 
+  Given that the application of \randalg immediately prior to an
+  application of \flatalg resulted in $B$ being $(R_\Delta
+  + d)$-flat, we have that $B$ remains $(R_\Delta + d)$-flat
+  throughout the duration of the application of \flatalg by
+  \cref{lem:greedylikeisflat}. Given that $B$ is $(R_\Delta +
+  d)$-flat before a donation occurs $B$ is clearly still $(R_\Delta +
+  d)$-flat after the donation, because the only change to $B$ during
+  a donation is that a cup is removed from $B$ which cannot increase
+  the fill-range of $B$.
+  Note that $B$ started $R_\Delta$-flat at the beginning of the
+  first donation-process before of the initial flattening of all
+  the cups before the first donation-process.
+  Note that if an application of \flatalg begins with $B$ being
+  $(R_\Delta + d)$-flat, then by considering the flattening to
+  happen in the $(|B|/2)$-processor $M$-extra-emptyings
+  $M$-skip-emptyings cup game we ensure that it makes $B$ be
+  $R_\Delta$-flat.
+  Hence we have by induction that $B$ has always been $(R_\Delta
+  + d)$-flat and that all flattening processes have made $B$ be
+  $R_\Delta$-flat. 
+  % start, flatalg, randalg, flatalg, randalg, ..., flatalg
+  % randalg, donation, flatalg, randalg, flatalg, randalg, ..., donation,
+  % ..., donation, ..., right now
+\end{proof}
+
+Now we aim to show that $\mu(B)$ is never too low, which we need
+in order to establish that every non-emptier-wasted lucky
+application of \randalg gets a cup with high fill. Interestingly
+in order to lower bound $\mu(B)$ we first must upper bound
+$\mu(B)$, which by greediness and flatness of $B$ gives an upper
+bound on $\mu(A)$ which we use to get a lower bound on $\mu(B)$.
+
+\begin{clm}
+  \label{clm:muBdoesntgettoobig}
+  We have always had
+  $$\mu(B) \le 2 + \mu(A B).$$
+\end{clm}
+\begin{proof}
+  There are two ways that $\mu(B)-\mu(A B)$ can increase: \\
+  \textbf{Case 1:}
+  The emptier could empty from $0$ cups in $B$ while emptying
+  from every cup in $A$. \\
+  \textbf{Case 2:}
+  The filler could evict a cup with fill lower than $\mu(B)$ from
+  $B$ at the end of a donation-process. \\
+
+  Note that cases are exhaustive, in particular note that if the
+  emptier skips more than $1$ emptying then $\mu(B) - \mu(AB)$
+  must decrease because $|A|\approx |AB|$, in particular
+  \eqref{eq:chooseBmuchbiggerthanA}, as opposed to in Case 1
+  where $\mu(B) - \mu(AB)$ increases.
+
+  In Case 1, because the emptier is $\Delta$-greedy-like,
+  $$\min_{a\in A} \fil(a) > \max_{b\in B} \fil(b) - \Delta.$$
+  Thus $\mu(B) \le \mu(A) + \Delta$. As $|B| \gg |A|$, in
+  particular by \eqref{eq:chooseBmuchbiggerthanA}, this can be
+  loosened to $\mu(B) \le 1 + \mu(A B)$.
+
+  Consider the final round on which $B$ is skipped while $A$ is
+  not skipped (or consider the first round if there is no such
+  round).
+
+  From this round onwards the only increase to $\mu(B) - \mu(A
+  B)$ is due to $B$ evicting cups with fill well below $\mu(B)$.
+  We can upper bound the increase of $\mu(B) - \mu(A B)$ by the
+  increase of $\mu(B)$ as $\mu(A B)$ is strictly increasing.
+
+  \todo{this is overly pessimistic, we just proved that B is
+  flat. if you decrease the pessimism here, you should be able to
+choose $n_A$ bigger, which is nice.}
+  The cup that $B$ evicts at the end of a
+  donation-process has fill at least $\mu(B) - R_\Delta -
+  (|D|-1)$, as the running time of \randalg is $|D|-1$, and
+  because $B$ starts $R_\Delta$-flat by
+  \cref{clm:allflatteningsworkbyM}. Evicting a cup
+  with fill $\mu(B) - R_\Delta - (|D| -1)$ from $B$ changes
+  $\mu(B)$ by $(R_\Delta + |D| - 1) / (|B|-1)$ where $|B|$ is the
+  size of $B$ before the cup is evicted from $B$. Even if this
+  happens on each of the $n_A$ donation-processes $\mu(B)$ cannot
+  rise higher than $n_A (R_\Delta + |D|-1) / (n-n_A)$ which by
+  design in choosing $|B| \gg |A|$, as was done in
+  \eqref{eq:chooseBmuchbiggerthanA}, is at most $1$.
+
+  Thus it always is the case that $\mu(B) \le 2 + \mu(A B).$
+
+\end{proof}
+
+The upper bound on $\mu(B)$ along with the guarantee that $B$ is
+flat allows us to bound the highest that a cup in $A$ could rise
+by greediness, which in turn upper bounds $\mu(A)$ which in turn
+lower bounds $\mu(B)$. In particular we have
+\begin{clm}
+  \label{clm:muBgreaterthanminushover2}
+  We always have
+  $$\mu(B) \ge -h/2 + \mu_{\min}.$$
+\end{clm}
+\begin{proof}
+  By \cref{clm:muBdoesntgettoobig} and \cref{clm:allflatteningsworkbyM} 
+  we have that no cup in $B$ ever has fill greater than
+  $u_B = \mu(A B) + 2 + R_\Delta + d$. 
+
+  Let $u_A = u_B + \Delta + 1$. We claim that the backlog in $A$
+  never exceeds $u_A$.
+
+  Consider how high the fill of a cup $c \in A$ could be.
+  If $c$ came from $B$ then when it is donated
+  to $A$ its fill is at most $u_B < u_A$. Otherwise, $c$
+  started with fill at most $R_\Delta < u_A$. Now consider how
+  much the fill of $c$ could increase while being in $A$. Because
+  the emptier is $\Delta$-greedy-like, if a cup $c\in A$ has fill
+  more than $\Delta$ higher than the backlog in $B$ then $c$ must
+  be emptied from, so any cup with fill at least $u_B + \Delta =
+  u_A - 1$ must be emptied from, and hence $u_A$ upper bounds the
+  backlog in $A$. 
+
+  Of course an upper bound on backlog in $A$ also serves as
+  an upper bound on the average fill of $A$ as well, i.e.
+  $\mu(A) \le u_A$. 
+  Rearranging the expression 
+  $$|B|\mu(B) + |A|\mu(A) = |AB|\mu(AB)$$
+  we have
+  \begin{align*}
+    &\mu(B) \\
+           &= -\frac{|A|}{|B|} \mu(A) + \frac{|A B|}{|B|}\mu(A B) \\
+           &\ge -(\mu(AB) + 3+R_\Delta+d+\Delta) \frac{|A|}{|B|} + \frac{|AB|}{|B|}\mu(AB)\\
+           &= -(3+R_\Delta+d + \Delta) \frac{|A|}{|B|} + \mu(AB)\\
+           &\ge -h/2 + \mu(AB)
+  \end{align*}
+  where the final inequality follows because $\mu(AB) \ge 0$, and
+  $|B|\gg |A|$, in particular by \eqref{eq:chooseBmuchbiggerthanA}.
+
+  Of course $\mu(AB) \ge \mu_{\min}$ so we have
+  $$\mu(B) \ge -h/2 + \mu_{\min}.$$
+
+\end{proof}
+
+Now we show that we can at least a constant fraction of the
+donation-processes succeed with exponentially good probability.
+\begin{clm}
+  There exists choice of $m = \poly(M)$ such that with probability at least
+  $1-2^{-\Omega(n)}$, the filler achieves fill at least
+  $h+\mu_{\min}$ in at
+  least $\Theta(n)$ of the cups in $A$. 
+\end{clm}
+\begin{proof}
+  If the emptier was not allowed to neglect the anchor set ever
+  and use extra-emptyings in $B$ then the claim would be true as
+  each application of \randalg would unconditionally succeed with
+  constant probability, so a Chernoff bound would give that
+  $\Theta(n)$ of the donation-processes donate a cup with fill at
+  least $\mu(B) - R_\Delta + d \ge h + \mu_{\min}$, where the inequality
+  follows from \cref{clm:muBgreaterthanminushover2} which asserts
+  that $\mu(B) \ge -h/2 + \mu_{\min}$, and from the facts $d\ge 2h$
+  and $h \ge 16(1+\Delta)$.
+  However, the emptier is allowed to neglect the anchor set, and
+  in fact the emptier can choose to neglect the anchor set
+  conditional on the filler's progress during \randalg. 
+
+  We can lower bound the probability of getting $\Theta(n)$ cups
+  with fills all at least $h + \mu_{\min}$ by considering an augmented emptier
+  that is allowed to interfere with $M$ applications of \randalg
+  per donation-process that only interferes with applications of
+  \randalg that would otherwise donate a cup with fill $h +
+  \mu_{\min}$ into $A$. 
+  The optimal strategy for such an emptier, given our filler's
+  strategy of randomly choosing which application to donate a cup
+  on, is to simply interfere with the first $M$ applications of
+  \randalg that without interference would have achieved a cup
+  with fill $h$. The filler sets $m = 4M|D|!$. Conditional on
+  the emptier not interfering, each of these applications of
+  \randalg has at least a $1/|D|!$ chance of getting a cup with
+  fill $h$. Hence, by a Chernoff bound with exponentially good
+  probability at least $2M$ of the applications of \randalg have
+  the potential to donate a cup with fill $h+\mu_{\min}$ to $A$, if the
+  emptier does not interfere. The filler chooses an application
+  uniformly at random from all $m$ applications on which to
+  donate a cup. With probability at least $1/|D|!$ this is on an
+  application where the filler could get a cup with fill
+  $h+\mu_{\min}$ in
+  $A$ if the emptier does not interfere, and with probability at
+  least $1/2$ the emptier does not interfere on this application
+  of \randalg, because the emptier can interfere on at most $M$
+  of the applications of \randalg. 
+
+  Against this augmented emptier whether or not 
+  donation-processes achieve a cup with fill $h+\mu_{\min}$ in $A$ are
+  independent events. As each happens with at least constant
+  probability, by a Chernoff bound there is exponentially high
+  probability that at least a constant fraction of them succeed.
+
+  Note that we used the Chernoff bound $\Theta(n)$; by a union
+  bound there is exponentially good probability that all of the
+  desired events occur.
+
+\end{proof}
+
+We now analyze the running time of the filling strategy.
+There are $|A|$ donation-processes. Each donation-process
+consists of $\poly(M)$ applications of \randalg, which each take
+constant time, and $\poly(M)$
+applications of \flatalg, which each take $\poly(M)$ time.
+Thus overall the algorithm takes $\poly(M)$ time, as desired.
+  
+\end{proof}
+
+Finally, using \cref{lem:obliviousManyUnknownCups} we can show in
+\cref{prop:obliviousBase} that an oblivious filler can achieve
+constant backlog. We remark that \cref{prop:obliviousBase} plays a
+similar role in the proof of the lower bound on backlog as
+\cref{prop:adaptiveBase} does in the adaptive case, but is vastly
+more complicated to prove (in particular,
+\cref{prop:adaptiveBase} is trivial, whereas we have already
+proved several lemmas and propositions as preparation for the
+proof of \cref{prop:obliviousBase}).
+\begin{proposition}
+  \label{prop:obliviousBase}
+  Let $H \le O(1)$, let $\Delta \le O(1)$, let $n$ be at
+  least a sufficiently large constant determined by $H$ and
+  $\Delta$, and let $R \le \poly(n)$. 
+  Let $M \gg n$ be very large.
+  Consider an $R$-flat cup configuration in the
+  $M$-skip-emptyings $M$-extra-emptyings variable-processor cup
+  game on $n$ cups with average fill $\mu_0$.
+  Given this configuration, if the emptier does not use any
+  extra-emptyings, an oblivious filler can either
+  achieve mass $M$ among the cups, or achieve fill at least $\mu_0 + H$
+  in a chosen cup in running time $\poly(M)$ against a
+  $\Delta$-greedy-like emptier with probability at least $1-2^{-\Omega(n)}.$
+  Furthermore, throughout the filling strategy the backlog never
+  exceeds the average fill by more than $R_\Delta + H\cdot
+  64(1+\Delta)$.
+\end{proposition}
+\begin{proof}
+  The filler starts by performing the procedure detailed in
+  \cref{lem:obliviousManyUnknownCups}, using $h = H\cdot
+  16(1+\Delta)$. Because by assumption the emptier is not using
+  extra-emptyings the average fill of the set of all cups is at
+  least $\mu_0$ throughout the process.
+  Let the number of cups which must now exist with
+  fill $h+\mu_0$ be of size $nc = \Theta(n)$.
+
+  The filler sets $p=1$, i.e. uses a single processor. Now the
+  filler exploits the emptier's greedy-like nature to to get fill
+  $H$ in a chosen cup $c_0$. Specifically, for $(5/8)h$ rounds
+  the filler places $1$ unit of fill into $c_0$. Because the
+  emptier is greedy-like it must empty from the $nc$ cups in $A$
+  with fill at least $h+\mu_0$ until $c_0$ has large fill. Over
+  $(5/8)h$ rounds the cups in $A$ cannot have their fill decrease
+  below $(3/8)h \ge h/8 + \Delta + \mu_0$. Hence, any cups with fills
+  less than $h/8+\mu_0$ must not be emptied from during these rounds.
+  The fill of $c_0$ started as at least $-h/2+\mu_0$ as $\mu(B) \ge
+  -h/2+\mu_0$. After $(5/8)h$ rounds $c_0$ has fill at least
+  $h/8+\mu_0$,
+  because the emptier cannot have emptied $c_0$ until it attained
+  fill $h/8+\mu_0$, and if $c_0$ is never emptied from then it achieves
+  fill $h/8+\mu_0$.
+
+  Thus the filling strategy achieves backlog $h/8 +\mu_0 \ge H +
+  \mu_0$ in $c_0$, a known cup, as desired.
+
+  Now consider how much the backlog could exceed the average fill
+  by during this process. By \cref{lem:obliviousManyUnknownCups}
+  during the process that gets many unknown cups to have high
+  fill the backlog never exceeds the average fill by more than
+  the desired quantity. Clearly during the final steps of the
+  process, where the filler is just adding fill to $c_0$ the
+  emptier, being $\Delta$-greedy-like, will not let the backlog
+  increase once $c_0$ has fill at least $\Delta$ above the
+  average fill.
+
+\end{proof}
+Let $k_\Delta = 64(1+\Delta)$.
