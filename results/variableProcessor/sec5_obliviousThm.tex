@@ -16,6 +16,7 @@ Amplification Lemma.
   $\Delta \le O(1)$.
 \end{theorem}
 \begin{proof}
+\todo{
   Take constant $\varepsilon \in (0, 1/2)$.
   We aim to achieve backlog $(n/n_b)^{1-\varepsilon}-1$ for some constant $n_b$ on $n$ cups.
   Let $\delta, \phi$ be constants, chosen as functions of $\epsilon$.
@@ -149,9 +150,15 @@ Amplification Lemma.
   base case size is $n_b\ge \polylog(n)$, a union bound
   guarantees the probability of success is at least
   $1-2^{-\polylog(n)}$.
+}
 \end{proof}
 
-% Im not sure this is true anymore:
+% Im not sure this is true anymore: [remark: I'm not super
+% enthusiastic about trying to prove this; we'll see if I can get
+% the argument simpler for the case $\Delta \le O(1)$, but right
+% now even that is really intense, don't want to make it more
+% intense for very little additional coolness benefit, I mean
+% $\omega(1)$ is kinda neat, but still]
 % \section{oblivious lower bound part 2}
 % in fact, our results (probably) even hold for $\Delta \le O(\log \log n)$
 % you just need to modify the proposition, the lemma doesn't care too much
