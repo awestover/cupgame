@@ -136,8 +136,6 @@ pf
 basic algebra
 
 
-
-
 so far:
 
 ok so if no extra empties 
@@ -166,4 +164,39 @@ happen to it,
 CLAIM is false, 
       because A is very not flat at the bottom
 
+
+
+
+alg f0 basically has to work basically the way its going right
+now
+  - in particular, flattening A makes no sense in this setting
+
+
+having A be flat seems kind of nice for other levels of
+recursion
+
+ but maybe there is a less strict thing that we can say
+
+ like 
+
+
+
+
+1) Base case works if no extra emptying, elsewise no guarantees on it.
+2) Assume that f_i works if theres no extra emptying. consider an
+instance of f_{i+1} that happens with no extra emptying. we're
+repeatedly flattening B and then applying f_i to B. 
+By a union bound we can say that the final times never
+have neglects. so every time we donate we're donating a cup with
+fill like mu(B_0) + f(|B_0|). so mu(B) is monotonitcally
+decreasing. **except for skips**. if muB
+never gets below mu_0 - delta f(n_B) then everytime we swap its
+lit
+elsewise, muB is low enough in the end that we know we're rolling
+with A
+
+hum, so its not quite mu(B) that's monotonically decreasing, 
+it's more like mu(B) - mu(AB) maybe?
+
+I think that by analysis of this we can maybe be ok?
 

@@ -44,8 +44,9 @@ that a $\Delta$-greedy-like emptier must take into account extra
 emptyings and skip emptyings to determine valid moves. 
 
 For a $\Delta$-greedy-like emptier let $R_\Delta = 2(2+\Delta)$;
-we now prove a key property of these emptiers: an oblivious
-filler can attain an $R_\Delta$-flat cup configuration against a
+we now prove a key property of these emptiers: there is an
+oblivious filling strategy, which we term \defn{$\flatalg$}, that
+attains an $R_\Delta$-flat cup configuration against a
 $\Delta$-greedy-like emptier, given cups of a known starting
 fill-range.
 
@@ -54,10 +55,10 @@ fill-range.
   Consider an $R$-flat cup configuration in the $p$-processor
   $E$-extra-emptyings $S$-skip-emptyings negative-fill cup game on $n =
   2p$ cups. There is an oblivious filling strategy
-  \defn{\flatalg} that achieves an $R_\Delta$-flat
+  \defn{$\flatalg$} that achieves an $R_\Delta$-flat
   configuration of cups against a $\Delta$-greedy-like emptier in
   running time $2(R + \ceil{(1+1/n)(E + S)})$. Furthermore,
-  \flatalg guarantees that the cup configuration is $R$-flat on every round.
+  $\flatalg$ guarantees that the cup configuration is $R$-flat on every round.
 \end{lemma}
 \begin{proof}
   If $R \le R_\Delta$ the algorithm does nothing, since the
@@ -246,7 +247,8 @@ fill-range.
 % note: may as well take $\Delta' = \ceil{\Delta} \in
 % \mathbb{N}$, this might be useful sometimes
 
-Next we describe a simple oblivious filling strategy that will be used as a
+Next we describe a simple oblivious filling strategy, that we
+call \defn{$\randalg$}, that will be used as a
 subroutine in \cref{lem:obliviousManyUnknownCups}; this strategy is very
 well-known, and similar versions of it can be found in
 \cite{ mbe19, mbe15, die91, wku20}.
@@ -255,24 +257,25 @@ well-known, and similar versions of it can be found in
   Consider an $R$-flat cup configuration in the single-processor
   $\infty$-extra-emptyings $\infty$-skip-emptyings negative-fill cup
   game on $n$ cups with initial average fill $\mu_0$.
-  Let $d = \sum_{i=2}^n 1/i$.
+  Let $k \in [n]$ be a parameter. Let $d = \sum_{i=2}^k 1/i$.
 
-  There is an oblivious filling strategy \defn{\randalg} with running
-  time $n-1$ that achieves a cup with fill at most $\mu_0 + R +
-  d$; if we condition on the emptier not performing extra
-  emptying then \randalg achieves fill at least $\mu_0 -R + d$ in
+  There is an oblivious filling strategy \defn{$\randalg(k)$} with running
+  time $k-1$ that, if we condition on the emptier not performing extra
+  emptyings, achieves fill at least $\mu_0 -R + d$ in
   a known cup $c$ with probability at least $1/(n-1)!$.
+  This filling strategy achieves fill at most $\mu_0 + R + d$ in
+  this cup, unconditionally.
 
   Furthermore, when applied against a $\Delta$-greedy-like emptier
-  with $R = R_\Delta$, \randalg guarantees that
+  with $R = R_\Delta$, $\randalg(k)$ guarantees that
   the cup configuration is $(R + d)$-flat on every round.
 \end{proposition}
 \begin{proof}
   First we condition on the emptier does not using extra emptying
   and show that in this case the filler has probability at least
-  $1/(n-1)!$ of attaining a cup with fill at least $\mu_0 -R +d$.
+  $1/(k-1)!$ of attaining a cup with fill at least $\mu_0 -R +d$.
   The filler maintains an \defn{active set}, initialized to being
-  all of the cups. Every round the filler distributes $1$ unit of
+  an arbitrary subset of $k$ of the cups. Every round the filler distributes $1$ unit of
   fill equally among all cups in the active set. Next the emptier
   removes $1$ unit of fill from some cup, or skips its emptying.
   Then the filler removes a random cup from the active set
@@ -289,18 +292,18 @@ well-known, and similar versions of it can be found in
   or empties from a cup not in the active set then it is
   trivially still true that no cups in the active set have been
   emptied from. If the cup that the emptier empties from is in
-  the active set then with probability $1/(n-i+1)$ it is evicted
+  the active set then with probability $1/(k-i+1)$ it is evicted
   from the active set, in which case we still have that no
   cup in the active set has ever been emptied from. Hence with
-  probability at least $1/(n-1)!$ the final cup in the
+  probability at least $1/(k-1)!$ the final cup in the
   active set, $c$, has never been emptied from. In this case, $c$
-  will have gained fill $d=\sum_{i=2}^n 1/i$ as claimed. Because
+  will have gained fill $d=\sum_{i=2}^k 1/i$ as claimed. Because
   $c$ started with fill at least $-R+\mu_0$, $c$ now has fill at
   least $-R+ d+\mu_0$. 
 
   Now note that regardless of if the emptier uses extra emptyings
   $c$ has fill at most $\mu_0 + R + d$ , as $c$ starts with fill
-  at most $R$, and $c$ gains at most $1/(n-i+1)$ fill on the
+  at most $R$, and $c$ gains at most $1/(k-i+1)$ fill on the
   $i$-th round of this process. 
 
   Now we analyze this algorithm specifically for a
@@ -321,11 +324,11 @@ well-known, and similar versions of it can be found in
   of the cups changes during the set of rounds
   $t$ with $t_0 < t \le t_1$. On any such round $t$ either $\min_c
   \fil_{S_{t+1}}(c) \ge \min_c \fil_{S_{t}}(c)$ in which case the
-  fill-range increases by at most $1/(n-t+1)$ where $n-t+1$ is the
+  fill-range increases by at most $1/(k-t+1)$ where $k-t+1$ is the
   size of the active set on round $t$, or all cups on round $t+1$
   with fill equal to the backlog were emptied from, meaning that
-  backlog decreased by at least $1-1/(n-t+1)$. In either case the
-  fill-range increases by at most $1/(n-t+1)$. Thus in total the
+  backlog decreased by at least $1-1/(k-t+1)$. In either case the
+  fill-range increases by at most $1/(k-t+1)$. Thus in total the
   fill-range is at most $R + d$. That is, the cups are
   $(R+d)$-flat on round $t_1$, as desired.
 
