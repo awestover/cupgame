@@ -50,6 +50,13 @@ attains an $R_\Delta$-flat cup configuration against a
 $\Delta$-greedy-like emptier, given cups of a known starting
 fill-range.
 
+% interesting(?) note:
+% if you're willing to say "screw running time" (which we are, so
+% long as it is still $2^{\polylog n}$, then we can definitely
+% flatten, even if we don't know the cups are $R$-flat for some
+% $R$, because the cups must be $M$-flat (i.e. 2^{\polylog(real
+% n)}-flat or we're just done)
+
 \begin{lemma}
   \label{lem:greedylikeisflat}
   Consider an $R$-flat cup configuration in the $p$-processor

@@ -267,6 +267,7 @@ lower bounds $\mu(B)$. In particular we have
 Now we show that at least a constant fraction of the
 donation-processes succeed with exponentially good probability.
 \begin{clm}
+  \label{clm:baseChernoffBound}
   There exists choice of $m =\Theta(M)$ such that with
   probability at least $1-2^{-\Omega(n)}$, the filler achieves
   fill at least $h+\mu_0$ in $\Theta(n)$ of the cups in $A$. 
@@ -393,7 +394,7 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
   \label{lem:obliviousAmplification} 
   Let $\delta \in (0, 1/2)$ be a parameter. Let $\Delta \le
   O(1)$. Let $M$ be very large. Consider a cup configuration in
-  the variable-processor cup game on $n$ cups with average fill
+  the variable-processor cup game on $n\ll M$ cups with average fill
   $\mu_0$ that is $R_\Delta$-flat. Let $\alg(f)$ be an oblivious
   filling strategy that either achieves mass $M$ or achieves
   backlog $\mu_0 + f(n)$ on such cups with probability at least
@@ -401,12 +402,12 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
   $\Delta$-greedy-like emptier.
 
   Consider a cup configuration in the variable-processor cup game
-  on $n$ cups with average fill $\mu_0$ that is $R_\Delta$-flat.
+  on $n\ll M$ cups with average fill $\mu_0$ that is $R_\Delta$-flat.
   There exists an oblivious filling strategy $\alg(f')$ that
   either achieves mass $M$ or achieves backlog $f'(n)$ satisfying
   $$f'(n) \ge (1-\delta) f(\floor{(1-\delta)n}) + f(\ceil{\delta n}) + \mu_0$$
   and $f'(n) \ge f(n)$, with probability at least
-  $1-2^{-\Omega(n)}$ in running time 
+  $1-2^{-\Omega(n)}-1/\poly(M)$ in running time 
   $$T'(n) \le M\cdot n\cdot T(\floor{(1-\delta)n}) + T(\ceil{\delta n})$$ 
   against a $\Delta$-greedy-like emptier.
 \end{lemma}
@@ -444,84 +445,127 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
   causing the mass of the cups to be at least $M$; we assume the
   emptier chooses not to do this.
 
-  Roughly speaking, by choosing $m$ (recall that we choose how
-  many times to apply $\alg(f)$ in a donation-process uniformly
-  at random from $[m]$) sufficiently large, because each
-  application of $\alg(f)$ where the anchor set is not neglected
-  succeeds with exponentially good probability, we can take a
-  union bound and guarantee that all applications of $\alg(f)$
-  succeed. Each successful application of $\alg(f)$ removes from
-  $B$ a cup with fill 
+  We choose $m\ge M^3, m = \poly(M)$ ---recall that $[m]$ is
+  the set from which we choose how many times to apply $\alg(f)$
+  in a donation-process. Using the ideas from the analysis in
+  \cref{clm:baseChernoffBound}, we see that by a Chernoff bound
+  with exponentially good probability in $n$ many more than $m/2$
+  of the applications would succeed without if the emptier did
+  not interfere with them. Conditional on the final application
+  being a round that would be successful without the emptier
+  interfering, the emptier has at best a $M/(m/2)= 1/\poly(M)$
+  chance of interfering on the correct round.
+  Taking a union bound, we can say that with probability at least
+  $1-1/\poly(M) - 2^{-\Omega(n)}$ all applications of $\alg(f)$
+  are not non-emptier-wasted and successfully achieve a cup with
+  fill at least $\mu_{t_0}(B) + f(n_B)$ where $\mu_{t_0}(B)$ refers to the
+  average fill of $B$ measured at the start of the application of
+  $\alg(f)$.
 
-  \todo{
-    that's basically like $\mu(B) + f(n_B)$ but just not quite
-    because skips lol. 
-    if you do this often enough either $\mu(B)$ gets small enough
-    that we're good (note that it's monotonically decreasing)
-    or $\mu(B)$ stays pretty high so all the cups we're
-    transferring over are pretty good.
-}
-
-{\color{purple}
-  If an application of $\alg(f)$ is successful, then with
-  probability at least $1-2^{-\Omega(n)}$ it generates a cup with
-  fill $f(|B|) + \mu(B)$ in $B$, because equal resources were put
-  into $B$ on each round while $\alg(f)$ was used, and the cup
-  state started as $R_\Delta$-flat and
-  hence also started as $M$-flat (as $M\ge R_\Delta$).
-
-  Now we aim to show that $\mu(A)$ is large; we do so by showing
-  that $\mu(B)$ is small (i.e. very negative). Because the
-  probability of an application of $\alg(f)$ being successful is
-  only $1-1/\poly(n)$, which is in particular not as good as the
-  $1-2^{-\Omega(n)}$ that we will guarantee, we will not be able
-  to actually assume that every such application of $\alg(f)$ is
-  successful. However, (as we will show later) we can guarantee
-  that at least a constant fraction $\phi$ of the
-  swapping-processes are successful with
-  exponentially good probability.
-
-  The filler swaps $|A|$ cups into $B$. 
-  Consider how $\mu(B \cup A\setminus A_0)$ changes when a new
-  cup is swapped into $A$ and placed in $A_0$. Let the initial value
-  of $\mu(B \cup A\setminus A_0)$ be $\mu_0$. Say that
-  initially $|A_0| = i$ (i.e. $i$ swapping-processes have occured
-  so far). If the swapping-process is successful then the swapped cup has
-  fill at least $\mu_0 - R_\Delta + f(|B|)$. Hence the new
-  average fill of $B \cup A\setminus A_0$ after the swap is
-  $$\frac{\mu_0\cdot (n-i) - (\mu_0 - R_\Delta + f(|B|))}{n-i-1} =
-  \mu_0 - \frac{f(|B|) - R_\Delta}{n-i-1}.$$
-  This recurrence relation allows us to find the value of
-  $\mu(B \cup A\setminus A_0) = \mu(B)$ after $|A|$ swapping
-  processes (i.e. once $A\setminus A_0 = \varnothing$):
-  $$\mu(B) \le -\sum_{i=1}^{|A|\phi} \frac{f(|B|)-R_\Delta}{n-i}.$$
-  Now we bound $H_{n-1} - H_{n-|A|\phi-1}$ where $H_i$ is the $i$-th harmonic number.
-  Using the fact that 
-  $$H_n = \ln n + \gamma + 1/(2n) - 1/(12 n^2) + 1/(120 n^4) - \ldots$$
-  we have,
-  \begin{align*}
-    &H_{n-1} - H_{n-|A|\phi-1}\\
-  &\ge \ln \frac{n-1}{n-|A|\phi-1} - \frac{1}{2(n-|A|\phi-1)}\\
-  &\ge \ln \frac{n}{n-|A|\phi} - \frac{1}{n}\\
-  &= \ln \frac{n}{n-\ceil{\delta n}\phi} - \frac{1}{n}\\
-  &\ge \ln \frac{1}{1-\delta\phi} - \frac{1}{n}\\
-  &\ge \delta\phi - \frac{1}{n}.
-  \end{align*}
-
-  Hence we have, 
+  Let \defn{$\skips_t$} denote the number of times that the
+  emptier has skipped the anchor set by step $t$. Consider how
+  $\mu(B) - \skips/n_B$ changes over the course of the donation
+  processes. As noted above at the end of each donation-process
+  $\mu(B)$ decreases due to $B$ donating a cup with fill at least
+  $\mu(B) + f(n_B)$. In particular, if $t_0$ denotes the time
+  right before a cup is donated on the $i$-th donation-process
+  and $t_1$ denotes the time right after a cup is donated, then
+  $\mu_{t_1}(B) = \mu_{t_0}(B) - f(n_B) / (n-i)$. Now we claim that
+  $\mu(B) - \skips/n_B$ is monotonically decreasing. Clearly each
+  donation decreases this quantity. If the anchor set is
+  neglected then $\mu(B)$ decreases. If a skip occurs, then
+  $\skips/n_B$ increases by more than $\mu(B)$ can possibly
+  decrease. Let $t_*$ be the time at the end of all the
+  donation-processes. We have that 
   \begin{equation}
-    \label{eq:nastyobliviousamplificationlemmastep1backlog}
-  \mu(A) \ge
-  \frac{(1-\delta)}{\delta}\paren{\delta\phi-\frac{1}{n}}(f(|B|)-R_\Delta).
+    \label{eq:harmonic1}
+  \mu_{t_*}(B) - \skips_{t_*}/n_B \le \mu_0 -
+  \sum_{i=1}^{n_A}\frac{f(n_B)}{n-i}.
   \end{equation}
+  By conservation of mass we have 
+  \begin{equation}
+    \label{eq:conservationOfMass}
+    n_A\mu_{t_*}(A) + n_B \mu_{t_*}(B) = \mu_0 + \skips.
+  \end{equation}
+  We can use Inequalities \eqref{eq:conservationOfMass} and
+  \eqref{eq:harmonic1} to get a lower bound on $\mu_{t_*}(A)$ as
+  follows:
+  \begin{equation}
+    \label{eq:lowerboundingAharmonic}
+    \mu_{t_*}(A) = \mu_0 + \frac{n_B}{n_A}\paren{\mu_0 +
+    \frac{\skips_{t_*}}{n_B} - \mu_{t_*}(B)}.
+  \end{equation}
+  Now we obtain a simpler form of
+  Inequality~\eqref{eq:harmonic1}. Let $H_n$ denote the $n$-th
+  harmonic
+  number. We desire a simpler lower bound for 
+  $$\sum_{i=1}^{n_A} \frac{1}{n-i} = H_{n-1}-H_{n_B-1}.$$
+
+  We use the well known fact that 
+  \begin{equation}
+    \label{eq:wellKnownLogIneq}
+    \frac{1}{2(n+1} < H_n - \ln n - \gamma < \frac{1}{2n}
+  \end{equation}
+  where $\gamma = \Theta(1)$ denotes the Euler-Macaroni constant.
+  Of course $H_{n-1}-H_{n_B-1} \ge H_n - H_{n_B}.$ Now using
+  Inequality~\eqref{eq:wellKnownLogIneq} we have
+  \begin{align*}
+    H_n - H_{n_B} &> \paren{\ln n + \gamma + \frac{1}{2(n+1)}} - \paren{\ln n_B + \gamma + \frac{1}{2n_B}}
+                  &> \ln \frac{1}{1-\delta} + \frac{1}{2}\paren{\frac{n_B-n-1}{(n+1)n_B}}
+                  &\approx \delta - \frac{\delta}{2n(1-\delta)}.
+  \end{align*}
+  Now using this lower bound on $H_n - H_{n_B}$ in
+  Inequality~\eqref{eq:lowerboundingAharmonic} we have:
+  \begin{align*}
+    \mu_{t_*}(A) &> \mu_0 + \frac{n_B}{n_A}\paren{stuff}.
+                 &> \mu_0 + (1-\delta)^2 f(n_B)
+  \end{align*}
+  where the final inequality follows from choosing $n$
+  sufficiently large.
+
+
+  \todo{\textbf{take into account skip-emptyings and
+  extra-emptyings}
+  For a moment we ignore the fact that the emptier can skip
+  emptyings and neglect the anchor set, or equivalently we
+  consider the case where $\mu(AB)=\mu_0$ always holds. Then, if
+  $\mu(B)$ is always at least $\mu_0 - \delta f(n_B)$ we have
+  that each of these swapped cups has fill at least $\mu_0 +
+  (1-\delta)f(n_B)$, as desired; on the other hand, if $\mu(B)$
+  ever sinks below $\mu_0 -\delta f(n_B)$ then, because $\mu(B)$
+  is monotonically decreasing, in the end we will have $$\mu(A)
+  \ge \mu_0 + \frac{n_B}{n_A} \delta f(n_B) = \mu_0 +
+  (1-\delta)f(n_B).$$ Now we extend the argument to deal with
+  skip-emptyings and extra-emptyings.
+
+
+  intuitively, extra-emptyings can only happen when $\mu(B)
+  \approx \mu(A)$ and skip-emptyings just help us out.
+
+  $\rep'$ is like rep, but you also flatten $A$ at the start of
+  each donation-process
+
+  if you're extra-emptying then 
+
 }
+  \todo{fix thm}
 
 We have shown that in Step 1 the filler achieves average fill
-$\mu_0 + (1-\delta)f(n_B)$ in $A$.
-Now the filler flattens $A$ and uses $\alg(f)$ on $A$.A
+$\mu_0 + (1-\delta)f(n_B)$ in $A$ (with good probability).
+Now the filler flattens $A$ and uses $\alg(f)$ on $A$.
+It is clear that this is possible, and succeeds with probability
+at least $1-2^{-\Omega(n)}$.
 This gets a cup with fill 
 $$\mu_0 + (1-\delta)f(n_B) + f(n_A)$$
 in $A$, as desired.
+
+Taking a union bound over the probabilities of Step 1 and Step 2
+succeeding gives the desired probability. 
+
+The running time of Step 1 is clearly $M\cdot n\cdot
+T(\floor{(1-\delta)n})$ and the running time of Step 2 is clearly
+$T(\ceil{\delta n})$ summing these yields the desired upper
+bound on running time.
 
 \end{proof}
 
