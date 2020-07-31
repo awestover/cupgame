@@ -273,17 +273,18 @@ can achieve backlog $n^{1 - \varepsilon}$.
   Of course $-2(1-\delta) \ge -2$, so 
   $$f_{i+1}(k) \ge ck^{1-\varepsilon} \cdot\left(1-(2-\varepsilon)\delta + \delta^{1-\varepsilon} - \frac{2}{k^{1-\varepsilon}} \right) -1.$$
   Because 
-  $$-2/k^{1-\varepsilon} \ge -2/g_0^{1-\varepsilon} \ge
-  -2(\delta/16)^{1-\varepsilon} \ge -\delta^{1-\varepsilon}/2,$$ which follows from our choice of $g_0 = \ceil{16/\delta}$ and the restriction
+  $$\frac{-2}{k^{1-\varepsilon}} \ge \frac{-2}{g_0^{1-\varepsilon}} \ge -2(\delta/16)^{1-\varepsilon} \ge -\delta^{1-\varepsilon}/2,$$ 
+  which follows from our choice of $g_0 = \ceil{16/\delta}$ and the restriction
   $\varepsilon<1/2$, we have
-  $$f_{i+1}(k) \ge ck^{1-\varepsilon} \cdot\left(1-(2-\varepsilon)\delta + \delta^{1-\varepsilon} - (1/2)\delta^{1-\varepsilon} \right)-1.$$
+  $$f_{i+1}(k) \ge ck^{1-\varepsilon}
+  \cdot\left(1-(2-\varepsilon)\delta + \delta^{1-\varepsilon} - \delta^{1-\varepsilon}/2 \right)-1.$$
   Finally, combining terms we have
-  $$f_{i+1}(k) \ge  ck^{1-\varepsilon} \cdot\left(1-(2-\varepsilon)\delta + (1/2)\delta^{1-\varepsilon}\right)-1. $$
+  $$f_{i+1}(k) \ge  ck^{1-\varepsilon} \cdot\left(1-(2-\varepsilon)\delta + \delta^{1-\varepsilon}/2\right)-1. $$
 
   Because $\delta^{1-\varepsilon}$ dominates $\delta$ for
   sufficiently small $\delta$, there is a choice of
   $\delta=\Theta(1)$ such that 
-  $$1-(2-\varepsilon)\delta + (1/2)\delta^{1-\varepsilon} \ge 1.$$ 
+  $$1-(2-\varepsilon)\delta + \delta^{1-\varepsilon}/2 \ge 1.$$ 
   Taking $\delta$ to be this
   small we have,
   $$f_{i+1}(k) \ge ck^{1-\varepsilon}-1,$$

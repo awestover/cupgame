@@ -16,29 +16,26 @@ Amplification Lemma.
   $\Delta \le O(1)$.
 \end{theorem}
 \begin{proof}
-\todo{
-  Take constant $\varepsilon \in (0, 1/2)$.
   We aim to achieve backlog $(n/n_b)^{1-\varepsilon}-1$ for some constant $n_b$ on $n$ cups.
-  Let $\delta, \phi$ be constants, chosen as functions of $\epsilon$.
+  Let $\delta$ be a constant, chosen as a function of $\epsilon$.
 
   By \cref{prop:obliviousBase} there is an oblivious filling
   strategy that achieves backlog $\Omega(1)$ on $n$ cups with
   exponentially good probability in $n$; we call this algorithm
-  $\alg{f_0}$.
-  However, unlike in the proof of \cref{thm:adaptivePoly}, we
-  obviously cannot use the base case with a constant number of
-  cups: doing so would completely destroy our probability of
-  success! Because the running time of our algorithm will be
-  $2^{\polylog(n)}$, we will be required to take a union bound
-  over $2^{\polylog(n)}$ events. By making the size of our base
-  case $n_b = \polylog(n)$ we get that the probability of the
-  algorithm failing in the base case is at most
-  $2^{-\polylog(n)}$. Then, taking a union bound over
-  $2^{\polylog(n)}$ events can give us the desired probability.
-  By \cref{prop:obliviousBase} $\alg{f_0}$ achieves backlog
-  $f_0(k) \ge H \ge \Omega(1)$ for all $k \ge n_b$, for some
-  constant $H \ge \Omega(1)$ to be determined ($H$ is a function
-  of $\delta$).
+  $\alg{f_0}$. However, unlike in the proof of
+  \cref{thm:adaptivePoly}, we obviously cannot use the base case
+  with a constant number of cups: doing so would completely
+  destroy our probability of success. Because the running time of
+  our algorithm will be $2^{\polylog(n)}$, we will be required to
+  take a union bound over $2^{\polylog(n)}$ events. By making the
+  size of our base case $n_b = \polylog(n)$ we get that the
+  probability of the algorithm failing in the base case is at
+  most $2^{-\polylog(n)}$. Then, taking a union bound over
+  $2^{\polylog(n)}$ events can give us the desired probability of
+  success. By \cref{prop:obliviousBase} $\alg{f_0}$ achieves
+  backlog $f_0(k) \ge H \ge \Omega(1)$ for all $k \ge n_b$, for
+  some constant $H \ge \Omega(1)$ to be determined ($H$ is a
+  function of $\delta$).
 
   Then we construct $f_{i+1}$ as the amplification of $f_i$ using
   \cref{lem:obliviousAmplification}.
@@ -60,27 +57,6 @@ Amplification Lemma.
   \begin{proof}
   We prove \cref{clm:fikinductionagain} by induction on $i$. 
 
-  First we derive a simpler (more loose) form of the lower bound
-  on $\alg{f'}$'s backlog in terms of $\alg{f}$'s backlog that
-  hold if  $\floor{(1-\delta)n} \ge n_b$. We choose $n_b=
-  \polylog(n)$ making $n_b > 1/\delta^2$ and hence also $\delta >
-  1/(\delta n_b)$; this means that there is a choice of $\phi \in
-  (1/2, 1)$ making $\phi - 1/(\delta n_b) > 1-\delta$. Note that
-  for any $n\ge n_b$ this same $\phi$ satisfies $$(1-\delta) \le
-  \phi - \frac{1}{\delta n_b} \le \phi - \frac{1}{ \delta n}.$$
-  We choose $\phi = 1-\delta + 1/(\delta n_b)$. Further, we
-  choose $H \ge \Omega(1)$ to make $$ H - R_\Delta \ge
-  (1-\delta)H.$$ This ensures that $$f_0(\floor{(1-\delta) n}) -
-  R_\Delta \ge (1-\delta)f_0(\floor{(1-\delta)n})$$ so long as
-  $\floor{(1-\delta)n} \ge n_b$. Combining this, we have that if
-  $\floor{(1-\delta)n}\ge n_b$ then 
-  \begin{equation}
-    \label{eq:simpleramplemmaobliviousforthmpf}
-  f'(n) \ge (1-\delta)^3 f(\floor{(1-\delta)n}) + f(\ceil{\delta n}).
-  \end{equation}
-  We also choose $H$ large enough so that $H \ge
-  (g_0/n_b)^{1-\epsilon}-1 = \ceil{16/\delta}^{1-\epsilon}-1$.
-
   When $i=0$, the base case of our induction,
   \eqref{eqn:fikinductionAGAIN} is trivially true as
   $(k/n_b)^{1-\epsilon} - 1 \le H$ by definition of $H$ for $k\le g_0$.
@@ -95,34 +71,33 @@ Amplification Lemma.
   $$f_{i+1}(k) \ge f_i(k) \ge \cdots \ge f_0(k) \ge (k/n_b)^{1-\varepsilon} -1.$$
 
   Now we consider $k \ge g_0$. Note that in this case $\floor{(1-\delta)k} \ge n_b$.
-  Since $f_{i+1}$ is the amplification of $f_i$, and $k$ is sufficiently large, we have by \eqref{eq:simpleramplemmaobliviousforthmpf} that
-  $$f_{i+1}(k) \ge (1-\delta)^3 f_i(\floor{(1-\delta)k}) + f_i(\ceil{\delta k}).$$
+  Since $f_{i+1}$ is the amplification of $f_i$, and $k$ is sufficiently large, we have by \cref{lem:obliviousAmplification} that
+  $$f_{i+1}(k) \ge (1-\delta)^2 f_i(\floor{(1-\delta)k}) + f_i(\ceil{\delta k}).$$
   By our inductive hypothesis, which applies as $\ceil{\delta k}\le g_i, \floor{k\cdot (1-\delta)} \le g_i$, we have
-  $$f_{i+1}(k) \ge (1-\delta)^3 (\floor{(1-\delta)k/n_b}^{1-\varepsilon}-1) + \ceil{\delta k/n_b}^{1-\varepsilon} - 1. $$
+  $$f_{i+1}(k) \ge (1-\delta)^2 (\floor{(1-\delta)k/n_b}^{1-\varepsilon}-1) + \ceil{\delta k/n_b}^{1-\varepsilon} - 1. $$
   Dropping the floor and ceiling, incurring a $-1$ for dropping the floor, we have
-  $$f_{i+1}(k) \ge (1-\delta)^3 (((1-\delta)k/n_b-1)^{1-\varepsilon}-1) + (\delta k/n_b)^{1-\varepsilon} - 1.$$
+  $$f_{i+1}(k) \ge (1-\delta)^2 (((1-\delta)k/n_b-1)^{1-\varepsilon}-1) + (\delta k/n_b)^{1-\varepsilon} - 1.$$
   Because $(x-1)^{1-\varepsilon} \ge x^{1-\varepsilon} -1$, due to the
   fact that $x\mapsto x^{1-\varepsilon}$ is a sub-linear
   sub-additive function, we have 
-  $$f_{i+1}(k) \ge (1-\delta)^3 (((1-\delta)k/n_b)^{1-\varepsilon}-2) + (\delta k/n_b)^{1-\varepsilon}-1.$$
+  $$f_{i+1}(k) \ge (1-\delta)^2 (((1-\delta)k/n_b)^{1-\varepsilon}-2) + (\delta k/n_b)^{1-\varepsilon}-1.$$
   Moving the $(k/n_b)^{1-\varepsilon}$ to the front we have
-  $$ f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left((1-\delta)^{4-\varepsilon} + \delta^{1-\varepsilon} - \frac{2(1-\delta)^3}{(k/n_b)^{1-\varepsilon}} \right) -1.$$
-  Because $(1-\delta)^{4-\varepsilon} \ge 1-(4-\varepsilon)\delta$, a fact called Bernoulli's Identity, we have
-  $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left(1-(4-\varepsilon)\delta + \delta^{1-\varepsilon} - \frac{2(1-\delta)^3}{(k/n_b)^{1-\varepsilon}} \right)-1.$$
-  Of course $-2(1-\delta)^3 \ge -2$, so 
-  $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left(1-(2-\varepsilon)\delta + \delta^{1-\varepsilon} - 2/(k/n_b)^{1-\varepsilon} \right) -1.$$
-  Because $$-2/(k/n_b)^{1-\varepsilon} \ge -2/(g_0/n_b)^{1-\varepsilon} \ge
-  -2(\delta/16)^{1-\varepsilon} \ge -\delta^{1-\varepsilon}/2,$$
+  $$ f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left((1-\delta)^{3-\varepsilon} + \delta^{1-\varepsilon} - \frac{2(1-\delta)^2}{(k/n_b)^{1-\varepsilon}} \right) -1.$$
+  Because $(1-\delta)^{3-\varepsilon} \ge 1-(3-\varepsilon)\delta$, a fact called Bernoulli's Identity, we have
+  $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left(1-(3-\varepsilon)\delta + \delta^{1-\varepsilon} - \frac{2(1-\delta)^2}{(k/n_b)^{1-\varepsilon}} \right)-1.$$
+  Of course $-2(1-\delta)^2 > -2$, so 
+  $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left(1-(3-\varepsilon)\delta + \delta^{1-\varepsilon} - 2/(k/n_b)^{1-\varepsilon} \right) -1.$$
+  Because $$\frac{-2}{(k/n_b)^{1-\varepsilon}} \ge \frac{-2}{(g_0/n_b)^{1-\varepsilon}} \ge -2(\delta/16)^{1-\varepsilon} \ge -\delta^{1-\varepsilon}/2,$$
   which follows from our choice of $g_0 = \ceil{8/\delta} n_b$ and the restriction
   $\varepsilon<1/2$, we have 
-  $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left(1-(4-\varepsilon)\delta + \delta^{1-\varepsilon} - (1/2)\delta^{1-\varepsilon} \right)-1.$$
+  $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left(1-(3-\varepsilon)\delta + \delta^{1-\varepsilon} - \delta^{1-\varepsilon}/2 \right)-1.$$
   Finally, combining terms we have
-  $$f_{i+1}(k) \ge  (k/n_b)^{1-\varepsilon} \cdot\left(1-(4-\varepsilon)\delta + (1/2)\delta^{1-\varepsilon}\right)-1. $$
+  $$f_{i+1}(k) \ge  (k/n_b)^{1-\varepsilon} \cdot\left(1-(3-\varepsilon)\delta + \delta^{1-\varepsilon}/2\right)-1. $$
 
   Because $\delta^{1-\varepsilon}$ dominates $\delta$ for
   sufficiently small $\delta$, there is a choice of
   $\delta=\Theta(1)$ such that 
-  $$1-(4-\varepsilon)\delta + (1/2)\delta^{1-\varepsilon} \ge 1.$$ 
+  $$1-(3-\varepsilon)\delta + \delta^{1-\varepsilon}/2 \ge 1.$$ 
   Taking $\delta$ to be this small we have,
   $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon}-1,$$
   completing the proof. 
@@ -150,7 +125,6 @@ Amplification Lemma.
   base case size is $n_b\ge \polylog(n)$, a union bound
   guarantees the probability of success is at least
   $1-2^{-\polylog(n)}$.
-}
 \end{proof}
 
 % Im not sure this is true anymore: [remark: I'm not super
