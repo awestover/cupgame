@@ -11,11 +11,12 @@ analyze.
   \label{def:rep}
   {\normalfont
   Let $\alg_0$ be an oblivious filling strategy, that can get
-  high fill in some cup against greedy-like emptiers with some
-  probability. We construct a new filling strategy
-  $\rep_\delta(\alg_0)$, which we call the
-  $\delta$-\defn{repetition} of $\alg_0$, as follows:
+  high fill (for some definition of high) in some cup against
+  greedy-like emptiers with some probability. We construct a new
+  filling strategy \defn{$\rep_\delta(\alg_0)$} ($\rep$ stands
+  for \enquote{repetition}) as follows:
 
+  Say we have some configuration of $n$ cups.
   Let $n_A = \ceil{\delta n}, n_B = \floor{(1-\delta)n}$. Let $M
   \gg n$ be large, let $m=\poly(M)$ be a chosen parameter. 
   Initialize $A$ to $\varnothing$ and $B$ to
@@ -38,12 +39,11 @@ analyze.
   probability against a certain class of emptiers to have a
   certain high fill), and donates this cup to $A$. 
 
- A pseudocode description of this algorithm can be found in
- \cref{alg:rep}.
+  We give pseudocode for this algorithm in \cref{alg:rep}.
  }
 
 \begin{algorithm}
-  \caption{rep}
+  \caption{$\rep_\delta(\alg_0)$}
   \label{alg:rep}
   \begin{algorithmic}
     \State \textbf{Input:} $\alg_0, \delta, M, m, $ set of $n$ cups
@@ -51,7 +51,8 @@ analyze.
     \State
     \State $n_A \gets \ceil{\delta n}, n_B \gets \floor{(1-\delta) n}$
     \State $A \gets \varnothing, B \gets$ all the cups
-    \For{$i \in [n_A]$} \Comment Donation-processes
+    \State Always place $1$ fill in each cup in $A$
+    \For{$i \in [n_A]$} \Comment Donation-Processes
     \State $m_0 \gets \text{random}([m])$
       \For{$j \in [m_0]$}
         \State Apply $\flatalg$ to $B$ for $\Theta(M)$ rounds
@@ -61,6 +62,14 @@ analyze.
     \EndFor
   \end{algorithmic}
 \end{algorithm}
+
+{\normalfont
+We say that the emptier \defn{neglects} the anchor set on a round
+if it does not empty from each anchor cup. We say that an
+application of $\alg_0$ to $B$ is \defn{non-emptier-wasted} if
+the emptier does not neglect the anchor set during any round of
+the application of $\alg_0$.
+}
 \end{definition}
 
 We use the idea of repeating an algorithm in two different contexts.
@@ -98,33 +107,33 @@ $\rep_{\Theta(1)}(\randalg(\Theta(1)))$ in \cref{lem:obliviousManyUnknownCups}.
   (unknown) set of $\Theta(n)$ cups in $A$ have fill at least $h + \mu_0$
   while also guaranteeing that $\mu(B) \ge -h/2 + \mu_0$,
   where $A,B$ are the sets defined in \cref{def:rep}.
-  This strategy has running time $\poly(M)$.
+  Furthermore, $\rep_{\delta}(\randalg(k))$ has running time $\poly(M)$.
 \end{lemma}
 \begin{proof}
-  We use all definitions given in the \cref{def:rep}.
+  We use all definitions given in \cref{def:rep}.
 
 Without loss of generality we assume that the emptier does not
-neglect the anchor set more than $M$ in a particular donation
-process; if the emptier chooses to neglect the anchor set this
+neglect the anchor set more than $M$ in any particular donation-process;
+if the emptier chooses to neglect the anchor set this
 much then the anchor cups will have achieved mass $M$ so
 \cref{lem:obliviousManyUnknownCups} is already fulfilled. 
 Similarly we assume that the emptier does not choose to skip
-more than $M$ emptyings.
+more than $M$ emptyings; doing so clearly would result in mass
+at least mass $M$ in the cups.
 
-We say that the emptier \defn{neglects} the anchor set on a round
-if it does not empty from each anchor cup. We say that an
-application of $\randalg(k)$ to $B$ is \defn{non-emptier-wasted} if
-the emptier does not neglect the anchor set during any round of
-the application of $\randalg(k)$. We define $d = \sum_{i=2}^{k} 1/i =
-\Theta(h)$. We say that an application of $\randalg(k)$ to $D$ is
-\defn{lucky} if it achieves backlog at least $\mu(B) - R_\Delta +
-d$ where $\mu(B)$ is measured at the start of the application of
-$\randalg(k)$; note that by \cref{prop:obliviousTerribleProbability}
-if we condition on an application of $\randalg(k)$ where $B$ started
-$R_\Delta$-flat being non-emptier-wasted then the application has
-at least a $1/k!$ chance of being lucky.
+As in \cref{prop:obliviousTerribleProbability}, we define $d =
+\sum_{i=2}^{k} 1/i$; we remark that, because harmonic numbers
+grow like $x\mapsto \ln x$, it is clear that $d=\Theta(h)$. We say that an
+application of $\randalg(k)$ to $D$ is \defn{lucky} if it
+achieves backlog at least $\mu_S(B) - R_\Delta + d$ where $S$
+denotes the state of the cups at the start of the application of
+$\randalg(k)$; note that by
+\cref{prop:obliviousTerribleProbability} if we condition on an
+application of $\randalg(k)$ where $B$ started $R_\Delta$-flat
+being non-emptier-wasted then the application has at least a
+$1/k!$ chance of being lucky.
 
-Now we prove several important bounds on fills of cups in $A$ and $B$.
+Now we prove several important bounds satisfied by $A$ and $B$.
 \begin{clm}
   \label{clm:allflatteningsworkbyM}
   All applications of $\flatalg$ make $B$ be $R_\Delta$-flat and
@@ -158,15 +167,16 @@ Now we prove several important bounds on fills of cups in $A$ and $B$.
 
 Now we aim to show that $\mu(B)$ is never very low, which we need
 in order to establish that every non-emptier-wasted lucky
-application of $\randalg(k)$ gets a cup with high fill. Interestingly
-in order to lower bound $\mu(B)$ we first must upper bound
-$\mu(B)$, which by greediness and flatness of $B$ gives an upper
-bound on $\mu(A)$ which we use to get a lower bound on $\mu(B)$.
+application of $\randalg(k)$ gets a cup with high fill.
+Interestingly, in order to lower bound $\mu(B)$ we find it
+convenient to first upper bound $\mu(B)$, which by greediness and
+flatness of $B$ gives an upper bound on $\mu(A)$ which we then
+use to get a lower bound on $\mu(B)$.
 
 \begin{clm}
   \label{clm:muBdoesntgettoobig}
   We have always had
-  $$\mu(B) \le 2 + \mu(A B).$$
+  $$\mu(B) \le \mu(AB) + 2.$$
 \end{clm}
 \begin{proof}
   There are two ways that $\mu(B)-\mu(A B)$ can increase: \\
@@ -179,15 +189,25 @@ bound on $\mu(A)$ which we use to get a lower bound on $\mu(B)$.
 
   Note that cases are exhaustive, in particular note that if the
   emptier skips more than $1$ emptying then $\mu(B) - \mu(AB)$
-  must decrease because $|B|\approx |AB|$, in particular
-  by our choice of $\delta = \Theta(e^{-2h})$, as opposed to in Case 1
+  must decrease because $|B| > |AB|/2$, as opposed to in Case 1
   where $\mu(B) - \mu(AB)$ increases.
 
   In Case 1, because the emptier is $\Delta$-greedy-like,
   $$\min_{a\in A} \fil(a) > \max_{b\in B} \fil(b) - \Delta.$$
-  Thus $\mu(B) \le \mu(A) + \Delta$. As $|B| \gg |A|$, in
-  particular by our choice of $\delta = \Theta(e^{-2h})$, this can be
-  loosened to $\mu(B) \le 1 + \mu(A B)$.
+  Thus $\mu(B) \le \mu(A) + \Delta$. We can use this to get an
+  upper bound on $\mu(B) - \mu(AB)$. We have, 
+  \begin{align*}
+    \mu(B) &= \frac{\mu(AB) |AB| - \mu(A) |A|}{|B|}\\
+           &\le \frac{\mu(AB) |AB| - (\mu(B) - \Delta) |A|}{|B|}.
+  \end{align*}
+  Rearranging terms:
+  $$\mu(B) \paren{1+\frac{|A|}{|B|}} \le \frac{\mu(AB) |AB| + \Delta |A|}{|B|}.$$
+  Now, because $|A| \cdot \Delta \le n_A
+  \cdot \Delta < n$ (by our choice of $\delta$ to be a very small
+  constant), we have 
+  $$\mu(B) \frac{|AB|}{|B|}\le \frac{\mu(AB) |AB| + n}{|B|}.$$
+  Isolating $\mu(B)$ we have 
+  $$\mu(B) \le \mu(AB) + 1.$$
 
   Consider the final round on which $B$ is skipped while $A$ is
   not skipped (or consider the first round if there is no such
@@ -195,7 +215,7 @@ bound on $\mu(A)$ which we use to get a lower bound on $\mu(B)$.
 
   From this round onwards the only increase to $\mu(B) - \mu(A
   B)$ is due to $B$ evicting cups with fill well below $\mu(B)$.
-  We can upper bound the increase of $\mu(B) - \mu(A B)$ by the
+  We can upper bound the increase of $\mu(B) - \mu(AB)$ by the
   increase of $\mu(B)$ as $\mu(A B)$ is strictly increasing.
 
   The cup that $B$ evicts at the end of a
@@ -211,14 +231,14 @@ bound on $\mu(A)$ which we use to get a lower bound on $\mu(B)$.
   design in choosing $n_B\gg n_A$, as was done in
   choosing $\delta = \Theta(e^{-2h})$, is at most $1$.
 
-  Thus $\mu(B) \le 2 + \mu(A B)$ is always true.
+  Thus $\mu(B) \le \mu(AB) + 2$ is always true.
 
 \end{proof}
 
-The upper bound on $\mu(B)$ along with the guarantee that $B$ is
-flat allows us to bound the highest that a cup in $A$ could rise
-by greediness, which in turn upper bounds $\mu(A)$ which in turn
-lower bounds $\mu(B)$. In particular we have
+Now, the upper bound on $\mu(B)-\mu(AB)$ along with the guarantee
+that $B$ is flat allows us to bound the highest that a cup in $A$
+could rise by greediness, which in turn upper bounds $\mu(A)$
+which in turn lower bounds $\mu(B)$. 
 \begin{clm}
   \label{clm:muBgreaterthanminushover2}
   We always have
@@ -235,8 +255,9 @@ lower bounds $\mu(B)$. In particular we have
 
   Consider how high the fill of a cup $c \in A$ could be.
   If $c$ came from $B$ then when it is donated
-  to $A$ its fill is at most $u_B < u_A$. Otherwise, $c$
-  started with fill at most $R_\Delta < u_A$. Now consider how
+  to $A$ its fill is at most $u_B$; otherwise, $c$
+  started with fill at most $R_\Delta$. Both of these expressions
+  are less than $u_A - 1$. Now consider how
   much the fill of $c$ could increase while being in $A$. Because
   the emptier is $\Delta$-greedy-like, if a cup $c\in A$ has fill
   more than $\Delta$ higher than the backlog in $B$ then $c$ must
@@ -246,10 +267,7 @@ lower bounds $\mu(B)$. In particular we have
 
   Of course an upper bound on backlog in $A$ also serves as
   an upper bound on the average fill of $A$ as well, i.e.
-  $\mu(A) \le u_A$. 
-  Rearranging the expression 
-  $$|B|\mu(B) + |A|\mu(A) = |AB|\mu(AB)$$
-  we have
+  $\mu(A) \le u_A$.  Now we have
   \begin{align*}
     &\mu(B) \\
            &= -\frac{|A|}{|B|} \mu(A) + \frac{|A B|}{|B|}\mu(A B) \\
@@ -268,23 +286,25 @@ Now we show that at least a constant fraction of the
 donation-processes succeed with exponentially good probability.
 \begin{clm}
   \label{clm:baseChernoffBound}
-  There exists choice of $m =\Theta(M)$ such that with
+  There exists $m =\Theta(M)$ such that with
   probability at least $1-2^{-\Omega(n)}$, the filler achieves
   fill at least $h+\mu_0$ in $\Theta(n)$ of the cups in $A$. 
 \end{clm}
 \begin{proof}
   If the emptier was not allowed to neglect the anchor set ever
   then the claim would clearly be true as each application of
-  $\randalg(k)$ would unconditionally succeed with constant
+  $\randalg(k)$ would simply succeed with constant
   probability, so a Chernoff bound would give that $\Theta(n)$ of
   the donation-processes donate a cup with fill at least $\mu(B)
   - R_\Delta + d \ge h + \mu_0$, where the inequality follows
   from \cref{clm:muBgreaterthanminushover2} which asserts that
   $\mu(B) \ge -h/2 + \mu_0$, and from the facts $d\ge 2h$ and $h
-  \ge 16(1+\Delta)$. However, the emptier is allowed to neglect
+  \ge 16(1+\Delta)$. 
+
+  However, the emptier is allowed to neglect
   the anchor set, and worse, the emptier can choose to neglect
   the anchor set conditional on the filler's progress during
-  $\randalg(k)$. However, by applying $\randalg(k)$ a random
+  $\randalg(k)$! However, by applying $\randalg(k)$ a random
   number of times, chosen from $[m]$ (where $m=\Theta(M)$ which
   is quite large), we guarantee that with exponentially good
   probability the filler succeeds many times, in particular
@@ -298,41 +318,55 @@ donation-processes succeed with exponentially good probability.
   reasoning.
 
   We can lower bound the probability of getting $\Theta(n)$ cups
-  with fills all at least $h + \mu_0$ by considering an augmented emptier
-  that is allowed to interfere with $M$ applications of $\randalg(k)$
-  per donation-process that only interferes with applications of
-  $\randalg(k)$ that would otherwise donate a cup with fill at
-  least $h + \mu_0$ into $A$. 
-  The optimal strategy for such an emptier, given our filler's
+  with fills all at least $h + \mu_0$ by considering an augmented
+  emptier that is allowed to \defn{interfere} with $M$
+  applications of $\randalg(k)$ per donation-process that only
+  interferes with applications of $\randalg(k)$ that would
+  otherwise donate a cup with fill at least $h + \mu_0$ into $A$;
+  if this (augmented) emptier interferes with an application of
+  $\randalg(k)$ then the application \defn{emptier-water}, i.e.
+  we assume no guarantees on the fill it achieved.
+  The optimal strategy for such an emptier, for the goal of
+  maximizing the probability that the final round in a
+  donation-process is interfered with, given our filler's
   strategy of randomly choosing how many times to apply
-  $\randalg(k)$ before donating a cup, is to simply interfere with the first $M$ applications of
-  $\randalg(k)$ that would have achieved a cup
-  with fill $h+\mu_0$ without interference. 
-  Let $m = 4M k! = \Theta(M)$. Recall that conditional on
-  the emptier not interfering, each of these applications of
-  $\randalg(k)$ has at least a $1/k!$ chance of getting a cup with
-  fill $h$. Hence, by a Chernoff bound with exponentially good
-  probability at least $2M$ of $m$ applications of $\randalg(k)$ have
-  the potential to donate a cup with fill $h+\mu_0$ to $A$, if the
-  emptier does not interfere. The filler chooses an application
-  uniformly at random from $[m]$ on which to donate a cup.
-  With probability at least $1/k!$ this is on an
-  application where the filler could get a cup with fill
-  $h+\mu_0$ in $A$ if the emptier does not interfere, and with probability at
-  least $1/2$ the emptier does not interfere on this application
-  of $\randalg(k)$, because the emptier can interfere on at most $M$
-  of the applications of $\randalg(k)$. 
+  $\randalg(k)$ before donating a cup, is obviously to interfere
+  with the first $M$ applications of $\randalg(k)$ that would
+  have achieved a cup with fill $h+\mu_0$ without interference. 
 
-  Against this augmented emptier whether or not 
+  Let $m = 4M k! = \Theta(M)$. Recall that conditional on the
+  emptier not interfering, each of these applications of
+  $\randalg(k)$ has at least a $1/k!$ chance of getting a cup
+  with fill $h$. Hence, by a Chernoff bound with exponentially
+  good probability at least $2M$ of $m$ applications of
+  $\randalg(k)$ have the potential to donate a cup with fill
+  $h+\mu_0$ to $A$, if the emptier does not interfere. The filler
+  chooses an application uniformly at random from $[m]$ on which
+  to donate a cup. With probability at least $1/k!$ this is on an
+  application where the filler could get a cup with fill
+  $h+\mu_0$ in $A$ if the emptier does not interfere, and with
+  probability at least $1/2$ the emptier does not interfere on
+  this application of $\randalg(k)$, because the emptier can
+  interfere on at most $M$ of the applications of $\randalg(k)$. 
+
+  Against this augmented emptier whether or not
   donation-processes achieve a cup with fill $h+\mu_0$ in $A$ are
   independent events. As each happens with at least constant
   probability, by a Chernoff bound there is exponentially high
   probability that at least a constant fraction of them succeed.
 
-  Note that we used the Chernoff bound $\Theta(n)$; by a union
-  bound there is exponentially good probability that all of the
-  desired events occur.
+  Note that we used a Chernoff bound in two distinct places: (a)
+  in guaranteeing that each donation-process consists of at least
+  $2M$ applications of $\randalg(k)$ that would donate a cup with
+  fill $\mu_0 + h$ if the emptier did not interfere, and (b) in
+  guaranteeing that a constant fraction of the donation-processes
+  succeed given that their successes are independent and all
+  happen with constant probability. Taking a union bound over all
+  these $\poly(n)$ events still gives exponentially good
+  probability that all of the desired events occur.
 
+  The described augmented emptier is clearly strictly more
+  powerful than the real emptier, so the result transfers over.
 \end{proof}
 
 We now analyze the running time of the filling strategy.

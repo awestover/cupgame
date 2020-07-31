@@ -38,10 +38,16 @@ allowed to empty from---and is also allowed to skip $S$
 emptyings---we say that the emptier skips an emptying if it
 doesn't do an emptying---over the course of the
 game. Note that the emptier still cannot empty from the same cup
-twice on a single round. Also note that the emptier is allowed to
-skip extra emptyings in addition to regular emptyings. Also note
+twice on a single round, and also that note
 that a $\Delta$-greedy-like emptier must take into account extra
-emptyings and skip emptyings to determine valid moves. 
+emptyings and skip emptyings to determine valid moves. Further,
+note that the emptier is allowed to skip extra emptyings,
+although skipping extra emptyings looks the same as if the
+extra-emptyings had simply not been performed.
+It may seem strange that we are limiting the number of times that
+the emptier can skip-emptyings; in the regular cup game the
+emptier is allowed to skip as many times as it wants. However,
+this will turn out to be a useful idea.
 
 For a $\Delta$-greedy-like emptier let $R_\Delta = 2(2+\Delta)$;
 we now prove a key property of these emptiers: there is an
@@ -79,20 +85,20 @@ fill-range.
   First we show that the fill-range of the cups can only increase
   if the fill-range is very small.
   \begin{clm}
-    \label{clm:uandlgrowclosertogetherunlesstheyreveryclosealready}
+    \label{clm:fillRangeUpIFFfillRangeSmall}
     If $u_{t+1}-\ell_{t+1} > u_t - \ell_t$ then 
-    $$u_{t+1} - \ell_{t+1} \le R.$$
+    $$u_{t+1} - \ell_{t+1} \le R_\Delta.$$
   \end{clm}
   \begin{proof}
     First we remark that the fill of any cup changes by at most
     $1/2$ from round to round, and in particular $|u_{t+1}-u_t|
     \le 1/2$, $|\ell_{t+1} - \ell_t|\le 1/2$.
-  In order for the fill-range to increase the emptier must have
+  In order for the fill-range to increase, the emptier must have
   emptied from some cup with fill in $[\ell_t, \ell_t + 1]$ without
   emptying from some cup with fill in $[u_t-1, u_t]$; if the emptier
   had not emptied from every cup with fill in $[\ell_t, \ell_t+1]$
   then we would have $\ell_{t+1} = \ell_t + 1/2$ so the
-  fill-range cannot have increased, and similarly if the emptier
+  fill-range could not have increased, and similarly if the emptier
   had emptied from every cup with fill in $[u_t-1, u_t]$ then we
   would have $u_{t+1} = u_t - 1/2$ so again the fill-range could
   not have increased. Because the emptier is $\Delta$-greedy-like
@@ -100,12 +106,28 @@ fill-range.
   emptying from a cup with fill at least $u_t-1$ implies that
   $u_t-1$ and $\ell_t+1$ differ by at most $\Delta$.
   Thus, 
-  $$u_{t+1} - \ell_{t+1} \le u_t +1/2 - (\ell_t -1/2)  \le \Delta + 3 \le R.$$
+  $$u_{t+1} - \ell_{t+1} \le u_t +1/2 - (\ell_t -1/2)  \le \Delta + 3 \le R_\Delta.$$
   \end{proof}
-  Because by \cref{clm:uandlgrowclosertogetherunlesstheyreveryclosealready}
+  Because by
+  \cref{clm:fillRangeUpIFFfillRangeSmall}
   whenever the fill-range of the cups increases it increases to a
-  value at most $R$, we have by induction that the fill-range of
-  the cups never exceeds $R$, i.e. the cups are always $R$-flat.
+  value bounded above by $R_\Delta \le R$, we have by induction
+  that the fill-range of the cups never exceeds $R$, i.e. the
+  cups are always $R$-flat. While
+  \cref{clm:fillRangeUpIFFfillRangeSmall}
+  does imply that the fill-range must decrease until the
+  fill-range is at most $R_\Delta$, and once the fill-range is at
+  most $R_\Delta$ it is always at most $R_\Delta$,
+  \cref{clm:fillRangeUpIFFfillRangeSmall}
+  does not preclude the possibility that the fill-range doesn't
+  change for many rounds, or decreases by a very small amount.
+  For this reason we actually do not use
+  \cref{clm:fillRangeUpIFFfillRangeSmall}
+  in the remainder of the proof; we proved this result because
+  the fact that fill-range does not increase during $\flatalg$ is
+  an important property of $\flatalg$. In the rest of the proof
+  we establish that the fill-range indeed must eventually be at
+  most $R_\Delta$.
 
   Let $L_t$ be the set of cups $c$ with $\fil_{S_t}(c) \le \ell_t+2+\Delta$, and let
   $U_t$ be the set of cups $c$ with $\fil_{S_t}(c) \ge u_t-2-\Delta$.
@@ -227,7 +249,7 @@ fill-range.
   the average fill, and identically $\ell_t$ cannot have
   increased by more than $R + S/n$ or else it would be above the
   average fill. Now, by \cref{clm:howDoLandUchange} we have that
-  eventually $|L_t| > n/2$: If $|L_t|\le n/2$ were always true,
+  eventually $|L_t| > n/2$: if $|L_t|\le n/2$ were always true,
   then on every balanced round $\ell_t$ would have increased by
   $1/2$, and since $\ell_t$ increases by at most $1/2$ on
   unbalanced rounds, this implies that in total $\ell_t$ would
@@ -255,10 +277,10 @@ fill-range.
 % \mathbb{N}$, this might be useful sometimes
 
 Next we describe a simple oblivious filling strategy, that we
-call \defn{$\randalg$}, that will be used as a
-subroutine in \cref{lem:obliviousManyUnknownCups}; this strategy is very
-well-known, and similar versions of it can be found in
-\cite{ mbe19, mbe15, die91, wku20}.
+call \defn{$\randalg$}, that will be used as a subroutine in
+\cref{lem:obliviousManyUnknownCups}; variants of this strategy
+are well-known, and similar versions of it can be found in \cite{
+mbe19, mbe15, die91, wku20}.
 \begin{proposition}
   \label{prop:obliviousTerribleProbability}
   Consider an $R$-flat cup configuration in the single-processor
@@ -266,28 +288,31 @@ well-known, and similar versions of it can be found in
   game on $n$ cups with initial average fill $\mu_0$.
   Let $k \in [n]$ be a parameter. Let $d = \sum_{i=2}^k 1/i$.
 
-  There is an oblivious filling strategy \defn{$\randalg(k)$} with running
-  time $k-1$ that, if we condition on the emptier not performing extra
-  emptyings, achieves fill at least $\mu_0 -R + d$ in
-  a known cup $c$ with probability at least $1/(n-1)!$.
-  This filling strategy achieves fill at most $\mu_0 + R + d$ in
-  this cup, unconditionally.
+  There is an oblivious filling strategy \defn{$\randalg(k)$}
+  with running time $k-1$ that achieves fill at least $\mu_0 -R +
+  d$ in a known cup $c$ with probability at least $1/k!$ if
+  we condition on the emptier not performing extra emptyings.
+  $\randalg(k)$ achieves fill at most $\mu_0 + R + d$ in this cup
+  (unconditionally).
 
   Furthermore, when applied against a $\Delta$-greedy-like emptier
   with $R = R_\Delta$, $\randalg(k)$ guarantees that
-  the cup configuration is $(R + d)$-flat on every round.
+  the cup configuration is $(R + d)$-flat on every round
+  (unconditionally).
 \end{proposition}
 \begin{proof}
   First we condition on the emptier does not using extra emptying
   and show that in this case the filler has probability at least
-  $1/(k-1)!$ of attaining a cup with fill at least $\mu_0 -R +d$.
+  $1/(k-1)!$ (which we lower bound by $1/k!$ for sake of
+  simplicity) of attaining a cup with fill at least $\mu_0 -R +d$.
   The filler maintains an \defn{active set}, initialized to being
-  an arbitrary subset of $k$ of the cups. Every round the filler distributes $1$ unit of
-  fill equally among all cups in the active set. Next the emptier
-  removes $1$ unit of fill from some cup, or skips its emptying.
-  Then the filler removes a random cup from the active set
-  (chosen uniformly at random from the active set). This
-  continues until a single cup $c$ remains in the active set. 
+  an arbitrary subset of $k$ of the cups. Every round the filler
+  distributes $1$ unit of fill equally among all cups in the
+  active set. Next the emptier removes $1$ unit of fill from some
+  cup, or skips its emptying. Then the filler removes a random
+  cup from the active set (chosen uniformly at random from the
+  active set). This continues until a single cup $c$ remains in
+  the active set. 
 
   We now bound the probability that $c$ has never been emptied
   from. Assume that on the $i$-th step of this process, i.e. when
@@ -315,17 +340,19 @@ well-known, and similar versions of it can be found in
 
   Now we analyze this algorithm specifically for a
   $\Delta$-greedy-like emptier. Consider a round $t$ on which
-  $\min_c \fil_{S_{t+1}}(c) < \min_c \fil_{S_{t}}(c)$, and where a cup
-  $c_0$ that has $\fil_{S_{t+1}}(c_0) = \max_{c}
+  $\min_c \fil_{S_{t+1}}(c) < \min_c \fil_{S_{t}}(c)$, which
+  implies that a cup $c_1$ with $\fil_{S_t}(c_1) < \min_c
+  \fil_{S_t}(c) +1$ was emptied from on round $t$, and also on
+  which a cup $c_0$ that has $\fil_{S_{t+1}}(c_0) = \max_{c}
   \fil_{S_{t+1}}(c)$ was not emptied from on round $t$. Because
   the emptier is $\Delta$-greedy-like this
-  implies that $\fil_{I_t}(c_0) - \min_c \fil_{I_t}(c) \le \Delta
-  + 1$ and then $\max_c \fil_{S_{t+1}}(c) - \min_c
+  implies that $\fil_{I_t}(c_0) - \fil_{I_t}(c_1) \le \Delta$
+  and then $\max_c \fil_{S_{t+1}}(c) - \min_c
   \fil_{S_{t+1}}(c) \le \Delta + 2$, i.e. the cups are $(\Delta +
   2)$-flat. 
 
   Consider some round $t_1$ on which the cups are not $(\Delta +
-  2)$-flat; let $t_0$ be the last round on which the cups where
+  2)$-flat; let $t_0$ be the last round on which the cups were
   $R$-flat (note that if the cups are $(\Delta+2)$-flat they are
   also $R$-flat as $\Delta + 2 < R$). Consider how the fill-range
   of the cups changes during the set of rounds
