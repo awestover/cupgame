@@ -216,7 +216,7 @@ use to get a lower bound on $\mu(B)$.
   From this round onwards the only increase to $\mu(B) - \mu(A
   B)$ is due to $B$ evicting cups with fill well below $\mu(B)$.
   We can upper bound the increase of $\mu(B) - \mu(AB)$ by the
-  increase of $\mu(B)$ as $\mu(A B)$ is strictly increasing.
+  increase of $\mu(B)$ as $\mu(AB)$ is strictly increasing.
 
   The cup that $B$ evicts at the end of a
   donation-process has fill at least $\mu(B) - R_\Delta -
@@ -399,7 +399,8 @@ constant backlog.
   parameter settings as in \cref{lem:obliviousManyUnknownCups}
   where $h = H\cdot 16(1+\Delta)$, i.e. $k = \ceil{e^{2h+1}}$,
   $\delta = \Theta(e^{-2h})$. 
-  Let the number of cups which must now exist by
+  Let the number of cups which, with exponentially good
+  probability, now exist by
   \cref{lem:obliviousManyUnknownCups} with
   fill at least $h+\mu_0$ be of size $nc = \Theta(n)$.
 
