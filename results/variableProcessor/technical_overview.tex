@@ -1,0 +1,179 @@
+\section{Technical Overview}
+\subsection{Adaptive Lower Bound}
+
+The essential ingredient to this proof is the Amplification
+Lemma, which gives a way to transform a filling strategy
+$\alg(f)$ into a new filling strategy $\alg(f')$ that achieves backlog at
+least $f'(n) \ge (1-\delta) f(\floor{(1-\delta)n}) + f(\ceil{\delta n}).$
+We now briefly outline how the Amplification Lemma works.
+The filler designates an anchor set $A$ of size
+$\ceil{\delta n}$ and a non-anchor set $B$ of size
+$\floor{(1-\delta)n}$. The filler's strategy is roughly as follows:
+\textbf{Step 1:} Get $\mu(A) \ge h$ by using $\alg(f)$ repeatedly
+on $B$ to achieve cups with fill at least $f(n_B)$ in $B$ and
+then swapping these into $A$. The filler always places $1$ unit
+of fill into each anchor cup.\\
+\textbf{Step 2:} Use $\alg(f)$ once on $A$ to obtain some cup
+with fill $\mu(A)+f(n_A)$.\\
+Note that in order to use $\alg(f)$ on subsets of the cups the
+filler will need to vary $p$.
+In our analysis we show that Step 1 can be made to succeed, and
+in reasonable running time; Step 2 trivially can succeed.
+
+Using the Amplification Lemma we prove two theorems regarding how
+high an adaptive filler can make the backlog. First we construct
+a sequence of filling strategies with $\alg(f_{i+1})$ the
+amplification of $\alg(f_i)$ using $\delta = \Theta(1)$ in the
+Amplification Lemma. For this sequence, we show that
+$f_{\Theta(\lg n)} \ge \Omega(n^{1-\varepsilon})$ where
+$\varepsilon$ is a constant that depends on $\delta$: in
+particular, the smaller we make $\delta$ the smaller we can get
+$\varepsilon$. We show that this filling strategy has running
+time $2^{O(\lg^2 n}$, i.e. quasi-polynomial. Second, we construct
+a sequence of filling strategies with $\alg(f_{i+1})$ the
+amplification of $\alg(f_i)$ using $\delta = 1/(i+1)$ in the
+Amplification Lemma. Analysis shows that $\alg(f_{\Theta(n)})$
+strategy actually achieves backlog $\Omega(n)$, although with
+running time $O(n!)$.
+
+\subsection{Upper Bound}
+We prove that a perfectly greedy emptier, i.e. an emptier that
+always empties from the $p$ fullest cups, never lets backlog
+exceed $O(n)$. 
+This follows directly from a set of invariants that we show are
+maintained, in particular that the average fill of the $k$ fullest cups
+is at most $2n-k$.
+
+We now sketch the proof of this theorem. The proof is by
+induction on the rounds. Fix some round $t$ and assume that the
+invariants hold on round $t$. Fix some $k$; we aim to prove that
+the average fill of the $k$ fullest cups is at most $2n-k$ at the
+start of round $t+1$. 
+
+Let $A$ be the cups that are among the $k$ fullest cups in $I_t$,
+are emptied from, and are among the $k$ fullest cups in
+$S_{t+1}$. Let $B$ be the cups that are among the $k$ fullest
+cups in state $I_t$, are emptied from, and are not among the $k$
+fullest cups in $S_{t+1}$. Let $C$ be the cups with ranks $|A| +
+|B| + 1, \ldots, k + |B|$ in state $I_t$. The set $C$ is defined
+so that the $k$ fullest cups in state $S_{t+1}$ are $AC$, since
+once the cups in $B$ are emptied from, the cups in $B$ are not
+among the $k$ fullest cups, so cups in $C$ take their places
+among the $k$ fullest cups.
+
+Next, we show that we may assume without loss of
+generality that $S_t(r) = I_t(r)$ for each rank $r \in [n]$, by
+changing the labels of the cups.
+
+Next we analyze several cases, and show that in each case the
+desired invariant holds.
+
+\textbf{Case 1}:
+Some cup in $A$ zeroes out in round $t$.\\
+\textbf{Analysis}:
+The fill of all cups in $C$ must be at most $1$ at state $I_t$ to be
+less than the fill of the cup in $A$ that zeroed out. Further,
+$A$ has average fill at most $2n-(a-1)$ due to the cup with zero
+fill. Combined, with some algebra, these facts imply that the
+average fill in $AC$ is not too large, in particular not larger
+than $2n-k$.
+
+\textbf{Case 2}:
+No cups in $A$ zero out in round $t$ and $b=0$.\\
+\textbf{Analysis}:
+In this case $S_{t+1}([k]) = S_t([k])$.
+During round $t$ the emptier removes $a$ units of fill from the
+cups in $S_t([k])$, specifically the cups in $A$. The filler
+cannot have added more than $k$ fill to these cups, because it
+can add at most $1$ fill to any given cup. Also, the filler
+cannot have added more than $p_t$ fill to the cups because this
+is the total amount of fill that the filler is allowed to add.
+Hence the filler adds at most $\min(p_t, k) = a+b=a+0=a$ fill to
+these cups.
+The emptier thus is removing at least as much water as the filler
+is adding to these cups, so the average fill has not increased,
+and is still at most $2n-k$.
+
+Case 3 is the most technically interesting.
+\textbf{Case 3}:
+No cups in $A$ zero out on round $t$ and $b > 0$.
+\textbf{Analysis}:
+Clearly,
+$$m_{S_{t+1}}(S_{t+1}([k])) \le m_{S_t}(AC) + b.$$
+The key insight necessary to bound this is to notice that larger values for
+$m_{S_t}(A)$ correspond to smaller values for $m_{S_t}(C)$ because of the
+invariants.
+In particular, 
+$$m_{S_t}(C) \le \frac{c}{b+c}(m_{S_t}(ABC) - m_{S_t}(A)).$$
+But then we have 
+\begin{equation}
+  \label{eq:monotonicTECHOVER}
+  m_{S_{t+1}}(S_{t+1}([k])) \le \frac{c}{b+c}m_{S_t}(ABC) + \frac{b}{b+c}m_{S_t}(A).
+\end{equation}
+As \eqref{eq:monotonicTECHOVER} is monotonically increasing in
+both $m_{S_t}(A)$ and $m_{S_t}(ABC)$ we can upper bound the
+expression by substituting the extremal values of $\mu_{S_t}(A)$
+and $m_{S_t}(ABC)$ in, namely $2n-|A|$ and $2n-|ABC|$.
+After some algebra, or via a more elegant combinatorial argument,
+it can be shown that 
+$$\frac{c}{b+c}|ABC|(2n-|ABC|) + \frac{b}{b+c}|A|(2n-|A|) \le
+2n-k$$
+which gives that the average fill of the $k$ fullest cups in
+state $S_{t+1}$ is at most $2n-k$, as desired.
+
+We have shown the invariant holds for arbitrary $k$, so given that the
+invariants all hold at state $S_t$ they also must all hold at state $S_{t+1}$.
+Thus, by induction we have the invariant for all rounds $t\in\mathbb{N}$.
+
+\subsection{Oblivious Lower Bound}
+
+This section is the most technically difficult. The ideas driving
+the lower bound are similar to those driving the lower bounds
+with an adaptive filler, but the oblivious nature of the filler
+makes this lower bound substantially more difficult. 
+
+First we show that flatalg can flatten.
+Then we state and analyze randalg.
+Then we state rep. We apply flattening for $N^2$ rounds, and
+apply the alg $m = 2^{\polylog(N)}$ rounds.
+Then we analyze rep(randalg).
+This will be used as the base case of the argument
+\begin{itemize}
+  \item num cups: $\log^8 N$
+  \item backlog: $\Theta(1)$ (or mass $N^2$)
+  \item running time: $m=\Theta(N^2)$, so $\poly(N)$
+  \item fail pr: $2^{-\Omega(\log^8 N)}$
+\end{itemize}
+
+Then we analyze rep(alg(f)), i.e. the Oblivious Amplification Lemma.
+We are given $\alg(f)$ which has
+\begin{itemize}
+  \item num cups: $n$
+  \item backlog: $f(n)$ (or mass $N^2$)
+  \item running time: $T(n)$
+  \item fail pr: $p$, which is assumed to be $p\ge 1/2^{\lg^8 N}$.
+\end{itemize}
+We get $\alg(f')$ which has
+\begin{itemize}
+  \item num cups: $n$
+  \item backlog: $f'(n) \ge (1-\delta)f(\floor{(1-\delta)n}) + f(\ceil{\delta n})$ (or mass $N^2$)
+  \item running time: use $m = 2^{\log^{24} N}$, $T'(n) \le mnT(\floor{(1-\delta)n}) + T(\ceil{\delta n})$
+  \item fail pr: $p' \le 2p + 1/2^{\lg^8 N}$
+\end{itemize}
+
+Finally we recursively use the Oblivious Amplification Lemma to get large backlog.
+Specifically, we let $f_{i+1}$ be the amplification of $f_i$
+using $\delta = \Theta(1)$, and using $\randalg$ for $\alg(f_0)$.
+In particular we get the following:
+\begin{itemize}
+  \item num cups: $N$ 
+  \item backlog: $\Omega(N^{1-\varepsilon})$
+  \item running time: $(2^{\log^{24} N})^{\log N} = 2^{\log^{25} N}$
+  \item fail pr: the recurrence $p_{i+1} = ap_i + b, p_1 = c$
+    solves to $p_k = b\Theta(a^{k-1}) + c \Theta(a^k)$. In our
+    case this becomes $2^{\lg N} / 2^{\lg^8 N} + 2^{\lg
+    N}/2^{\lg^8 N} = 2^{-\polylog(N)}$
+\end{itemize}
+
+QED
+

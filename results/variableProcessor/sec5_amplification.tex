@@ -3,36 +3,30 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
 \begin{lemma}[Oblivious Amplification Lemma]
   \label{lem:obliviousAmplification} 
   Let $\delta \in (0, 1/2)$ be a constant parameter. Let $\Delta
-  \le O(1)$. Let $M$ be very large. Consider a cup configuration
-  in the variable-processor cup game on $n\ll M, n >
+  \le O(1)$. Consider a cup configuration
+  in the variable-processor cup game on $n \le N, n >
   \Omega(1/\delta^2)$ cups with average fill $\mu_0$ that is
   $R_\Delta$-flat. Let $\alg(f)$ be an oblivious filling strategy
-  that either achieves mass $M$ or with probability at least
-  $1-2^{-\Omega(n)}$ achieves backlog $\mu_0 + f(n)$ on such cups
+  that either achieves mass $N^2$ or, with failure probability at
+  most $p\ge 2^{-\lg^8 N}$, achieves backlog $\mu_0 + f(n)$ on such cups
   in running time $T(n)$ against a $\Delta$-greedy-like emptier.
+  Let $M = 2^{\polylog(N)}$.
 
   Consider a cup configuration in the variable-processor cup game
-  on $n\ll M, n > \Omega(1/\delta^2)$ cups with average fill
+  on $n \le N, n > \Omega(1/\delta^2)$ cups with average fill
   $\mu_0$ that is $R_\Delta$-flat. There exists an oblivious
-  filling strategy $\alg(f')$ that either achieves mass $M$ or
-  achieves backlog $f'(n)$ satisfying $$f'(n) \ge (1-\delta)^2
-  f(\floor{(1-\delta)n}) + f(\ceil{\delta n}) + \mu_0$$ and
-  $f'(n) \ge f(n)$, with probability at least
-  $1-2^{-\Omega(n)}-1/\poly(M)$ in running time $$T'(n) \le
-  M\cdot n\cdot T(\floor{(1-\delta)n}) + T(\ceil{\delta n})$$
+  filling strategy $\alg(f')$ that either achieves mass $N^2$ or
+  with failure probability at most 
+  $$p' \le 3p + 2^{-\lg^8 N}$$
+  achieves backlog $f'(n)$ satisfying 
+  $$f'(n) \ge (1-\delta)^2 f(\floor{(1-\delta)n}) + f(\ceil{\delta n}) + \mu_0$$ 
+  and $f'(n) \ge f(n)$, in running time 
+  $$T'(n) \le Mn\cdot T(\floor{(1-\delta)n}) + T(\ceil{\delta n})$$
   against a $\Delta$-greedy-like emptier.
 \end{lemma}
 
 \begin{proof}
-  We use the notation from \cref{lem:obliviousManyUnknownCups},
-  and from \cref{def:rep}. To summarize, we define $n_A =
-  \ceil{\delta n}, n_B = \floor{(1-\delta)n}$, we refer to $A$ as
-  the anchor set and $B$ as the non-anchor set, we say that the
-  filler applies $\alg(f)$ to $B$ if it uses $\alg(f)$ on $B$
-  while placing $1$ fill into each cup in $A$, and we say that
-  $A$ is neglected during an application of $\alg(f)$ to $B$ if
-  there is some round during the application where the emptier
-  does not empty from all anchor cups.
+  We use the definitions and notation given in \cref{def:rep}. 
 
   The filler defaults to using $\alg(f)$ on all the cups if 
   $$f(n) \ge (1-\delta)^2 f(n_B) + f(n_A).$$
@@ -51,25 +45,36 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
 
   Note that, exactly as in the proof of
   \cref{lem:obliviousManyUnknownCups}, the emptier cannot neglect
-  the anchor set more than $M$ times per donation-process, and
-  the emptier cannot skip more than $M$ emptyings, without
-  causing the mass of the cups to be at least $M$; we assume the
+  the anchor set more than $N^2$ times per donation-process, and
+  the emptier cannot skip more than $N^2$ emptyings, without
+  causing the mass of the cups to be at least $N^2$; we assume the
   emptier chooses not to do this.
 
-  We choose $m\ge M^3, m = \poly(M)$ ---recall that $[m]$ is
-  the set from which we choose how many times to apply $\alg(f)$
-  in a donation-process. Using the ideas from the analysis in
-  \cref{clm:baseChernoffBound}, we see that by a Chernoff bound
-  with exponentially good probability in $n$ many more than $m/2$
-  of the applications would succeed without if the emptier did
-  not interfere with them. Conditional on the final application
-  being a round that would be successful without the emptier
-  interfering, the emptier has at best a $M/(m/2)= 1/\poly(M)$
-  chance of interfering on the correct round.
-  Taking a union bound, we can say that with probability at least
-  $1-1/\poly(M) - 2^{-\Omega(n)}$ all applications of $\alg(f)$
-  are not non-emptier-wasted and successfully achieve a cup with
-  fill at least $\mu_{t_0}(B) + f(n_B)$ where $\mu_{t_0}(B)$ refers to the
+  We choose $M = 2^{\log^{24} N}$ ---recall that $[M]$ is
+  the set from which we randomly choose how many times to apply $\alg(f)$
+  in a donation-process. 
+  Ignoring for a moment the fact that the emptier can choose to
+  neglect the anchor set, i.e. assuming that no applications of
+  $\alg(f)$ are emptier-waster, consider the probability
+  that fewer than $M\cdot (1-2p)$ applications of $\alg(f)$ succeed. By a
+  Chernoff bound this probability is at most $$e^{-2Mp^2}.$$
+  Let $1-q$ be the probability that a donation-process succeeds.
+  Obviously $1-q$ is at least
+  the probability that a donation process succeeds given that at least
+  $k$ applications of $\alg(f)$ succeed. Arguing as in
+  \cref{lem:obliviousManyUnknownCups}, we see that this
+  probability is at least $$(1-e^{-2Mp^2})\paren{\frac{M\cdot (1-2p)-N^2}{M}}.$$
+  Rearranging, and over-estimating (i.e. dropping unnecessary
+  terms to simplify the expression, while maintaining the truth
+  of the expression), we have 
+  $$q \le e^{-2Mp^2} + 2p + \frac{N^2}{M}.$$
+  By assumption $p \ge 2^{-\lg^8 N}$, so $Mp^2 \ge 2^{\lg^8 N}$,
+  and we have the bound
+  $$q \le 2p + 2^{-\lg^8 N},$$ (note that we also absorb the minuscule $N^2/M$
+  term).
+  We have shown that with failure probability at most $p'$ each
+  donation-process successfully achieves a cup with fill at least
+  $\mu_{t_0}(B) + f(n_B)$ where $\mu_{t_0}(B)$ refers to the
   average fill of $B$ measured at the start of the application of
   $\alg(f)$.
 
@@ -136,20 +141,23 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
   $$\mu_{t_*}(A) > \mu_0 + (1-\delta)^2 f(n_B).$$
 
 We have shown that in Step 1 the filler achieves average fill
-$\mu_0 + (1-\delta)f(n_B)$ in $A$ (with good probability).
+$\mu_0 + (1-\delta)f(n_B)$ in $A$ (with failure probability at
+most $q$).
 Now the filler flattens $A$ and uses $\alg(f)$ on $A$.
 It is clear that this is possible, and succeeds with probability
-at least $1-2^{-\Omega(n)}$.
+at least $p$.
 This gets a cup with fill 
 $$\mu_0 + (1-\delta)^2 f(n_B) + f(n_A)$$
 in $A$, as desired.
 
 Taking a union bound over the probabilities of Step 1 and Step 2
-succeeding gives the desired probability. 
+succeeding gives that the entire procedure fails with probability
+at most 
+$$p' \le p + q = 3p + 2^{-\lg^8 N}.$$
 
 The running time of Step 1 is clearly $M\cdot n\cdot
 T(\floor{(1-\delta)n})$ and the running time of Step 2 is clearly
-$T(\ceil{\delta n})$ summing these yields the desired upper
+$T(\ceil{\delta n})$; summing these yields the desired upper
 bound on running time.
 
 \end{proof}

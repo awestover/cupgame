@@ -17,8 +17,8 @@ analyze.
   for \enquote{repetition}) as follows:
 
   Say we have some configuration of $n$ cups.
-  Let $n_A = \ceil{\delta n}, n_B = \floor{(1-\delta)n}$. Let $M
-  \gg n$ be large, let $m=\poly(M)$ be a chosen parameter. 
+  Let $n_A = \ceil{\delta n}, n_B = \floor{(1-\delta)n}$. Let $N
+  \gg n$ be large, let $M=2^{\polylog(N)}$ be a chosen parameter. 
   Initialize $A$ to $\varnothing$ and $B$ to
   being all of the cups. We call $A$ the \defn{anchor set} and
   $B$ the \defn{non-anchor set}. The filler always places $1$
@@ -27,12 +27,12 @@ analyze.
   procedures that result in a cup being \defn{donated} from $B$
   to $A$ (i.e. removed from $B$ and added to $A$). At the start
   of each donation-processes the filler chooses a value $m_0$
-  uniformly at random from $[m]$. We say that the filler
+  uniformly at random from $[M]$. We say that the filler
   \defn{applies} a filling strategy $\alg$ to $B$ if the
   filler uses $\alg$ on $B$ while placing $1$ unit of fill
   in each anchor cup. During the donation-process the filler
   applies $\alg_0$ to $B$ $m_0$ times, and flattens $B$ by
-  applying $\flatalg$ to $B$ for $\Theta(M)$ rounds before each
+  applying $\flatalg$ to $B$ for $\Theta(N^2)$ rounds before each
   application of $\alg_0$. At the end of each donation process
   the filler takes the cup given by the final application of
   $\alg_0$ (i.e. the cup that $\alg_0$ guarantees with some
@@ -46,16 +46,16 @@ analyze.
   \caption{$\rep_\delta(\alg_0)$}
   \label{alg:rep}
   \begin{algorithmic}
-    \State \textbf{Input:} $\alg_0, \delta, M, m, $ set of $n$ cups
+    \State \textbf{Input:} $\alg_0, \delta, N, M, $ set of $n$ cups
     \State \textbf{Output:} Guarantees on the sets $A, B$ (will vary based on $\alg_0$)
     \State
     \State $n_A \gets \ceil{\delta n}, n_B \gets \floor{(1-\delta) n}$
     \State $A \gets \varnothing, B \gets$ all the cups
     \State Always place $1$ fill in each cup in $A$
     \For{$i \in [n_A]$} \Comment Donation-Processes
-    \State $m_0 \gets \text{random}([m])$
+    \State $m_0 \gets \text{random}([M])$
       \For{$j \in [m_0]$}
-        \State Apply $\flatalg$ to $B$ for $\Theta(M)$ rounds
+        \State Apply $\flatalg$ to $B$ for $\Theta(N^2)$ rounds
         \State Apply $\alg_0$ to $B$
       \EndFor
       \State Donate the cup given by $\alg_0$ from $B$ to $A$
@@ -89,37 +89,45 @@ Although these results have deterministic analogues, their proofs
 are different and significantly more complex than the proofs for the
 deterministic cases.
 
+In the rest of the section our aim is to achieve backlog
+$N^{1-\varepsilon}$ in $N$ cups. We will use this value $N$
+within all of the following proofs. Many values implicitly depend
+on $N$. Note that we implicitly consider the cups to be part of a
+larger game in these results. Also note that we are happy if
+mass $N^2$ is achieved in the cups, because then backlog is
+always at least $N$.
+
 Before proving \cref{prop:obliviousBase} we analyze
 $\rep_{\Theta(1)}(\randalg(\Theta(1)))$ in \cref{lem:obliviousManyUnknownCups}.
 \begin{lemma}
-  \label{lem:obliviousManyUnknownCups}
-  Let $\Delta \le O(1)$, let $h \le O(1)$ with $h \ge
-  16+16\Delta$, let $k = \ceil{e^{2h+1}}$, let $\delta =
-  \Theta(e^{-2h})$, let $n$ be at least a sufficiently large
-  constant determined by $h$ and $\Delta$. Let $M\gg n$ be very
-  large. Consider an $R_\Delta$-flat cup configuration in the
+  \label{lem:obliviousManyUnknownCups} Let $\Delta \le O(1)$, let
+  $h \le O(1)$ with $h \ge 16+16\Delta$, let $k =
+  \ceil{e^{2h+1}}$, let $\delta = \Theta(e^{-2h})$, let $n$ be at
+  least a sufficiently large constant determined by $h$ and
+  $\Delta$. Consider an $R_\Delta$-flat cup configuration in the
   variable-processor cup game on $n$ cups with initial average
   fill $\mu_0$.
 
   When applied to a $\Delta$-greedy-like emptier
-  $\rep_{\delta}(\randalg(k))$ either achieves mass at least $M$ in
-  the cups, or with probability at least $1-2^{-\Omega(n)}$ makes an
-  (unknown) set of $\Theta(n)$ cups in $A$ have fill at least $h + \mu_0$
-  while also guaranteeing that $\mu(B) \ge -h/2 + \mu_0$,
-  where $A,B$ are the sets defined in \cref{def:rep}.
-  Furthermore, $\rep_{\delta}(\randalg(k))$ has running time $\poly(M)$.
+  $\rep_{\delta}(\randalg(k))$ using $M=\Theta(N^2)$ either
+  achieves mass at least $N^2$ in the cups, or with probability
+  at least $1-2^{-\Omega(n)}$ makes an (unknown) set of
+  $\Theta(n)$ cups in $A$ have fill at least $h + \mu_0$ while
+  also guaranteeing that $\mu(B) \ge -h/2 + \mu_0$, where $A,B$
+  are the sets defined in \cref{def:rep}. Furthermore,
+  $\rep_{\delta}(\randalg(k))$ has running time $\poly(N)$.
 \end{lemma}
 \begin{proof}
-  We use all definitions given in \cref{def:rep}.
+  We use the definitions given in \cref{def:rep}.
 
 Without loss of generality we assume that the emptier does not
-neglect the anchor set more than $M$ in any particular donation-process;
+neglect the anchor set more than $N^2$ in any particular donation-process;
 if the emptier chooses to neglect the anchor set this
-much then the anchor cups will have achieved mass $M$ so
+much then the anchor cups will have achieved mass $N^2$ so
 \cref{lem:obliviousManyUnknownCups} is already fulfilled. 
 Similarly we assume that the emptier does not choose to skip
-more than $M$ emptyings; doing so clearly would result in mass
-at least mass $M$ in the cups.
+more than $N^2$ emptyings; doing so clearly would result in mass
+at least mass $N^2$ in the cups.
 
 As in \cref{prop:obliviousTerribleProbability}, we define $d =
 \sum_{i=2}^{k} 1/i$; we remark that, because harmonic numbers
@@ -157,8 +165,8 @@ Now we prove several important bounds satisfied by $A$ and $B$.
   first donation-process.
   Note that if an application of $\flatalg$ begins with $B$ being
   $(R_\Delta + d)$-flat, then by considering the flattening to
-  happen in the $(|B|/2)$-processor $M$-extra-emptyings
-  $M$-skip-emptyings cup game we ensure that it makes $B$ be
+  happen in the $(|B|/2)$-processor $N^2$-extra-emptyings
+  $N^2$-skip-emptyings cup game we ensure that it makes $B$ be
   $R_\Delta$-flat.
   Hence we have by induction that $B$ has always been $(R_\Delta
   + d)$-flat and that all flattening processes have made $B$ be
@@ -286,7 +294,7 @@ Now we show that at least a constant fraction of the
 donation-processes succeed with exponentially good probability.
 \begin{clm}
   \label{clm:baseChernoffBound}
-  There exists $m =\Theta(M)$ such that with
+  By choosing $M =\Theta(N^2)$ the filler can guarantee that with
   probability at least $1-2^{-\Omega(n)}$, the filler achieves
   fill at least $h+\mu_0$ in $\Theta(n)$ of the cups in $A$. 
 \end{clm}
@@ -305,12 +313,12 @@ donation-processes succeed with exponentially good probability.
   the anchor set, and worse, the emptier can choose to neglect
   the anchor set conditional on the filler's progress during
   $\randalg(k)$! However, by applying $\randalg(k)$ a random
-  number of times, chosen from $[m]$ (where $m=\Theta(M)$ which
-  is quite large), we guarantee that with exponentially good
-  probability the filler succeeds many times, in particular
-  $\Theta(M)$ times. But since the emptier cannot neglect the
-  anchor set more than $M$ times, by appropriately large choice
-  of $m$ we can make it so that the filler succeeds at least $2M$
+  number of times, chosen from $[M]$ (where $M=\Theta(N^2)$), we
+  guarantee that with exponentially good
+  probability in $M$ the filler succeeds many times, in particular
+  $\Theta(N^2)$ times. But since the emptier cannot neglect the
+  anchor set more than $N^2$ times, by appropriately large choice
+  of $M$ we can make it so that the filler succeeds at least $2N^2$
   times with exponentially good probability. Then the emptier
   would have at best a $1/2$ chance of preventing the
   donation-process from giving away a cup with fill $h+\mu_0$
@@ -319,7 +327,7 @@ donation-processes succeed with exponentially good probability.
 
   We can lower bound the probability of getting $\Theta(n)$ cups
   with fills all at least $h + \mu_0$ by considering an augmented
-  emptier that is allowed to \defn{interfere} with $M$
+  emptier that is allowed to \defn{interfere} with $N^2$
   applications of $\randalg(k)$ per donation-process that only
   interferes with applications of $\randalg(k)$ that would
   otherwise donate a cup with fill at least $h + \mu_0$ into $A$;
@@ -331,23 +339,24 @@ donation-processes succeed with exponentially good probability.
   donation-process is interfered with, given our filler's
   strategy of randomly choosing how many times to apply
   $\randalg(k)$ before donating a cup, is obviously to interfere
-  with the first $M$ applications of $\randalg(k)$ that would
+  with the first $N^2$ applications of $\randalg(k)$ that would
   have achieved a cup with fill $h+\mu_0$ without interference. 
 
-  Let $m = 4M k! = \Theta(M)$. Recall that conditional on the
+  Let $M = 4N^2 k!$; note that as stated previously we choose $M=\Theta(N^2)$. 
+  Recall that conditional on the
   emptier not interfering, each of these applications of
   $\randalg(k)$ has at least a $1/k!$ chance of getting a cup
   with fill $h$. Hence, by a Chernoff bound with exponentially
-  good probability at least $2M$ of $m$ applications of
+  good probability in $M$ at least $2N^2$ of the $M$ applications of
   $\randalg(k)$ have the potential to donate a cup with fill
   $h+\mu_0$ to $A$, if the emptier does not interfere. The filler
-  chooses an application uniformly at random from $[m]$ on which
+  chooses an application uniformly at random from $[M]$ on which
   to donate a cup. With probability at least $1/k!$ this is on an
   application where the filler could get a cup with fill
   $h+\mu_0$ in $A$ if the emptier does not interfere, and with
   probability at least $1/2$ the emptier does not interfere on
   this application of $\randalg(k)$, because the emptier can
-  interfere on at most $M$ of the applications of $\randalg(k)$. 
+  interfere on at most $N^2$ of the applications of $\randalg(k)$. 
 
   Against this augmented emptier whether or not
   donation-processes achieve a cup with fill $h+\mu_0$ in $A$ are
@@ -357,13 +366,17 @@ donation-processes succeed with exponentially good probability.
 
   Note that we used a Chernoff bound in two distinct places: (a)
   in guaranteeing that each donation-process consists of at least
-  $2M$ applications of $\randalg(k)$ that would donate a cup with
+  $2N^2$ applications of $\randalg(k)$ that would donate a cup with
   fill $\mu_0 + h$ if the emptier did not interfere, and (b) in
   guaranteeing that a constant fraction of the donation-processes
   succeed given that their successes are independent and all
-  happen with constant probability. Taking a union bound over all
-  these $\poly(n)$ events still gives exponentially good
-  probability that all of the desired events occur.
+  happen with constant probability. The Chernoff bound in (a) is
+  actually with exponentially good probability in $M \gg n$, but
+  of course also holds with exponentially good probability in
+  $n$. Then we can take a union bound over $\poly(n)$ events that
+  all occur with exponentially good probability in $n$, which
+  gives still gives exponentially good
+  probability in $n$ that all of the desired events occur.
 
   The described augmented emptier is clearly strictly more
   powerful than the real emptier, so the result transfers over.
@@ -373,8 +386,8 @@ We now analyze the running time of the filling strategy.
 There are $n_A$ donation-processes. Each donation-process
 consists of $\Theta(M)$ applications of $\randalg(k)$, which each take
 constant time, and $\Theta(M)$
-applications of $\flatalg$, which each take $\poly(M)$ time.
-Thus overall the algorithm takes $\poly(M)$ time, as desired.
+applications of $\flatalg$, which each take $\Theta(N^2)$ time.
+Thus overall the algorithm takes $n_A \cdot \Theta(M) = \poly(N)$ time, as desired.
   
 \end{proof}
 
@@ -383,15 +396,13 @@ Now, using \cref{lem:obliviousManyUnknownCups} we show in
 constant backlog. 
 \begin{proposition}
   \label{prop:obliviousBase}
-  Let $H \le O(1)$, let $\Delta \le O(1)$, let $n$ be at
-  least a sufficiently large constant determined by $H$ and
-  $\Delta$. 
-  Let $M \gg n$ be very large.
+  Let $H \le O(1)$, let $\Delta \le O(1)$, let $n\ll N$ be at least a
+  sufficiently large constant determined by $H$ and $\Delta$. 
   Consider an $R_\Delta$-flat cup configuration in the variable-processor cup
   game on $n$ cups with average fill $\mu_0$.
   There is an oblivious filling strategy that either
-  achieves mass $M$ among the cups, or achieves fill at least $\mu_0 + H$
-  in a chosen cup in running time $\poly(M)$ against a
+  achieves mass $N^2$ among the cups, or achieves fill at least $\mu_0 + H$
+  in a chosen cup in running time $\poly(N)$ against a
   $\Delta$-greedy-like emptier with probability at least $1-2^{-\Omega(n)}.$
 \end{proposition}
 \begin{proof}
@@ -399,8 +410,10 @@ constant backlog.
   parameter settings as in \cref{lem:obliviousManyUnknownCups}
   where $h = H\cdot 16(1+\Delta)$, i.e. $k = \ceil{e^{2h+1}}$,
   $\delta = \Theta(e^{-2h})$. 
+  If this results in mass $N^2$ among the cups we are done; we
+  assume this is not the case for the rest of the proof.
   Let the number of cups which, with exponentially good
-  probability, now exist by
+  probability in $n$, now exist by
   \cref{lem:obliviousManyUnknownCups} with
   fill at least $h+\mu_0$ be of size $nc = \Theta(n)$.
 
@@ -420,6 +433,9 @@ constant backlog.
   $c_0$ is never emptied from then it achieves fill $h/8+\mu_0$.
   Thus the filling strategy achieves backlog $h/8 +\mu_0 \ge H +
   \mu_0$ in $c_0$, a known cup, as desired.
+
+  The running time is of course still $\poly(N)$ by
+  \cref{lem:obliviousManyUnknownCups}.
 
 \end{proof}
 

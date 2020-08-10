@@ -1,5 +1,5 @@
 Finally we prove that an oblivious filler can achieve backlog
-$n^{1-\varepsilon}$, just like an adaptive filler despite the
+$N^{1-\varepsilon}$, just like an adaptive filler despite the
 oblivious filler's disadvantage. The proof is very similar to the
 proof of \cref{thm:adaptivePoly}, but more complicated because in
 the oblivious case we must guarantee that the result holds with
@@ -9,14 +9,14 @@ Amplification Lemma.
 \begin{theorem}
   \label{thm:obliviousPoly}
   There is an oblivious filling strategy for the
-  variable-processor cup game on $n$ cups that achieves backlog
-  at least $\Omega(n^{1-\varepsilon})$ for any constant $\varepsilon
-  >0$ in running time $2^{O(\log^2 n)}$ with probability at least
-  $1-2^{-\Omega(n)}$ against any $\Delta$-greedy-like emptier for
-  $\Delta \le O(1)$.
+  variable-processor cup game on $N$ cups that achieves backlog
+  at least $\Omega(N^{1-\varepsilon})$ for any constant $\varepsilon
+  >0$ in running time $2^{\polylog(n)}$ with probability at least
+  $1-2^{-\polylog(n)}$ against a $\Delta$-greedy-like emptier
+  with $\Delta \le O(1)$.
 \end{theorem}
 \begin{proof}
-  We aim to achieve backlog $(n/n_b)^{1-\varepsilon}-1$ for some constant $n_b$ on $n$ cups.
+  We aim to achieve backlog $(N/n_b)^{1-\varepsilon}-1$ for some constant $n_b$ on $N$ cups.
   Let $\delta$ be a constant, chosen as a function of $\epsilon$.
 
   By \cref{prop:obliviousBase} there is an oblivious filling
@@ -26,13 +26,11 @@ Amplification Lemma.
   \cref{thm:adaptivePoly}, we obviously cannot use the base case
   with a constant number of cups: doing so would completely
   destroy our probability of success. Because the running time of
-  our algorithm will be $2^{\polylog(n)}$, we will be required to
-  take a union bound over $2^{\polylog(n)}$ events. By making the
-  size of our base case $n_b = \polylog(n)$ we get that the
+  our algorithm will be $2^{\polylog(N)}$, we will be required to
+  take a union bound over $2^{\polylog(N)}$ events. By making the
+  size of our base case $n_b = \log^8(N)$ we get that the
   probability of the algorithm failing in the base case is at
-  most $2^{-\polylog(n)}$. Then, taking a union bound over
-  $2^{\polylog(n)}$ events can give us the desired probability of
-  success. By \cref{prop:obliviousBase} $\alg{f_0}$ achieves
+  most $2^{-\log^8(N)}$. By \cref{prop:obliviousBase} $\alg{f_0}$ achieves
   backlog $f_0(k) \ge H \ge \Omega(1)$ for all $k \ge n_b$, for
   some constant $H \ge \Omega(1)$ to be determined ($H$ is a
   function of $\delta$).
@@ -105,26 +103,33 @@ Amplification Lemma.
 
   The sequence $g_i$ is $n_b$ times the sequence $g_i$ from
   the proof of \cref{thm:adaptivePoly}; we thus have that $g_{i_*}
-  \ge n$ for some $i_* \le O(\log n)$.
+  \ge N$ for some $i_* \le O(\log N)$.
   Hence $\alg{f_{i_*}}$ achieves backlog 
-  $$f_{i_*}(n) \ge (n/n_b)^{1-\varepsilon}-1.$$
-  As $n_b \le \polylog(n)$ we have
-  $$f_{i_*}(n) \ge \Omega(n^{1-\varepsilon}),$$ as desired.
+  $$f_{i_*}(N) \ge (N/n_b)^{1-\varepsilon}-1.$$
+  As $n_b \le \polylog(N)$ we have
+  $$f_{i_*}(N) \ge \Omega(N^{1-\varepsilon}),$$ as desired.
 
-  Let the running time of $f_i(n)$ be $T_i(n)$. From the Amplification Lemma we have following recurrence bounding $T_i(n)$:
+  Let the running time of $f_i(N)$ be $T_i(N)$. From the Amplification Lemma we have following recurrence bounding $T_i(N)$:
   \begin{align*}
-    T_i(n) &\le 6n^{\eta+1} \delta \cdot T_{i-1}(\floor{(1-\delta)n}) +
-  T_{i-1}(\ceil{\delta n}) \\
-  &\le 7n^{\eta+1}T_{i-1}(\floor{(1-\delta)n}).
+    T_i(n) &\le 2^{\polylog(N)} \cdot T_{i-1}(\floor{(1-\delta)n}) + T_{i-1}(\ceil{\delta n}) \\
+            &\le 2^{\polylog(N)}T_{i-1}(\floor{(1-\delta)n}).
   \end{align*}
-  It follows that $\alg{f_{i_*}}$, recalling that $i_* \le O(\log n)$, has running time
-  $$T_{i_*}(n) \le (7n^{\eta+1})^{O(\log n)} \le 2^{O(\log^2 n)}$$
+  It follows that $\alg{f_{i_*}}$, recalling that $i_* \le O(\log N)$, has running time
+  $$T_{i_*}(n) \le (2^{\polylog(N)})^{O(\log N)} \le 2^{\polylog(N)}$$
   as desired.
 
-  As noted, because the running time is $2^{\polylog(n)}$ and the
-  base case size is $n_b\ge \polylog(n)$, a union bound
-  guarantees the probability of success is at least
-  $1-2^{-\polylog(n)}$.
+  Now we analyze the probability that the construction fails. 
+  Consider the recurrence $a_{i+1} = \alpha a_i + \beta, a_0 =
+  \gamma$; the recurrence bounding failure probability is a
+  special case of this. Expanding, we see that the recurrence
+  solves to $a_k = \Theta(\alpha^{k-1})\beta + a^k \gamma$.
+
+  In our case we have 
+  $$\alpha = 3, \beta = 2^{-\lg^8 N}, \gamma = 2^{-\lg^8 N}.$$
+  Hence the recurrence solves to 
+  $$p_{i_*} \le 2^{-\polylog(N)},$$
+  as desired.
+
 \end{proof}
 
 % Im not sure this is true anymore: [remark: I'm not super
