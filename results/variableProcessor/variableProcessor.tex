@@ -1,6 +1,6 @@
 \documentclass[twocolumn]{article}[10pt]
 \usepackage[left=1in, right=1in, top=1in, bottom=1in]{geometry}
-%\usepackage[moderate, mathspacing=normal]{savetrees}
+% \usepackage[subtle, mathspacing=normal]{savetrees}
 
 \usepackage{amsthm}
 \usepackage{amssymb}
@@ -30,6 +30,7 @@
 \DeclareMathOperator{\alg}{\text{\textup{alg}}}
 \DeclareMathOperator{\randalg}{\text{\textup{randalg}}}
 \DeclareMathOperator{\flatalg}{\text{\textup{flatalg}}}
+\DeclareMathOperator{\trivalg}{\text{\textup{trivalg}}}
 
 \DeclareMathOperator{\skips}{\text{\textup{skips}}}
 
@@ -73,16 +74,17 @@
 \affil[ ]{\textit{kuszmaul@mit.edu, alek.westover@gmail.com}}
 
 \begin{document}
-\input{sec0_abstract.tex}
-\input{sec1_intro.tex}
-\input{sec2_prelims.tex}
-\input{sec3_adaptive.tex}
-\input{sec4_upperbound.tex}
-\input{sec5_obliviousFlattening.tex}
-\input{sec5_base.tex}
-\input{sec5_amplification.tex} 
-\input{sec5_obliviousThm.tex} 
-\input{sec6_conclusion.tex}
+\input{abstract.tex}
+\input{intro.tex}
+\input{prelims.tex}
+\input{technical_overview.tex}
+\input{adaptive.tex}
+\input{upperbound.tex}
+\input{obliviousFlattening.tex}
+\input{obliviousBase.tex}
+\input{obliviousAmplification.tex} 
+\input{obliviousThm.tex} 
+\input{conclusion.tex}
 
 \bibliographystyle{plain}
 \bibliography{paper}
