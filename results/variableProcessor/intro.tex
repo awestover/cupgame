@@ -2,7 +2,10 @@
 \paragraph{Definition and Motivation}
 The \defn{cup game} is a multi-round game in which the two players, the
 \defn{filler} and the \defn{emptier}, take turns adding and removing water
-from cups. On each round of the classic \defn{$p$-processor cup game} on $n$
+from cups. The \defn{backlog} at a state is the fill in the
+fullest cup; the emptier tries to minimize backlog while the
+filler tries to maximize backlog.
+On each round of the classic \defn{$p$-processor cup game} on $n$
 cups, the filler first distributes $p$ units of water among
 the $n$ cups with at most $1$ unit to any particular cup (without this
 restriction the filler can trivially achieve unbounded backlog by placing all

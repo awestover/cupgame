@@ -16,7 +16,8 @@ Amplification Lemma.
   with $\Delta \le O(1)$.
 \end{theorem}
 \begin{proof}
-  We aim to achieve backlog $(N/n_b)^{1-\varepsilon}-1$ for some constant $n_b$ on $N$ cups.
+  We aim to achieve backlog $(N/n_b)^{1-\varepsilon}-1$ for some
+  $n_b \le \polylog(N)$ on $N$ cups.
   Let $\delta$ be a constant, chosen as a function of $\epsilon$.
 
   By \cref{prop:obliviousBase} there is an oblivious filling
@@ -35,7 +36,7 @@ Amplification Lemma.
   some constant $H \ge \Omega(1)$ to be determined ($H$ is a
   function of $\delta$).
 
-  Then we construct $f_{i+1}$ as the amplification of $f_i$ using
+  We construct $f_{i+1}$ as the amplification of $f_i$ using
   \cref{lem:obliviousAmplification}.
 
   Define a sequence $g_i$ as 
@@ -106,10 +107,12 @@ Amplification Lemma.
   \ge N$ for some $i_* \le O(\log N)$.
   Hence $\alg{f_{i_*}}$ achieves backlog 
   $$f_{i_*}(N) \ge (N/n_b)^{1-\varepsilon}-1.$$
-  As $n_b \le \polylog(N)$ we have
-  $$f_{i_*}(N) \ge \Omega(N^{1-\varepsilon}),$$ as desired.
+  Let $\varepsilon' = 2\varepsilon$. Of course $\Omega(N^\varepsilon)
+  \ge \polylog(N)$, so $$(N/n_b)^{1-\varepsilon}-1 \ge
+  \Omega(N^{1-\varepsilon'}).$$
 
-  Let the running time of $f_i(N)$ be $T_i(N)$. From the Amplification Lemma we have following recurrence bounding $T_i(N)$:
+  Let the running time of $f_i(N)$ be $T_i(N)$. From the
+  Amplification Lemma we have following recurrence bounding $T_i(N)$:
   \begin{align*}
     T_i(n) &\le 2^{\polylog(N)} \cdot T_{i-1}(\floor{(1-\delta)n}) + T_{i-1}(\ceil{\delta n}) \\
             &\le 2^{\polylog(N)}T_{i-1}(\floor{(1-\delta)n}).
@@ -123,9 +126,8 @@ Amplification Lemma.
   \gamma$; the recurrence bounding failure probability is a
   special case of this. Expanding, we see that the recurrence
   solves to $a_k = \Theta(\alpha^{k-1})\beta + a^k \gamma$.
-
   In our case we have 
-  $$\alpha = 3, \beta = 2^{-\lg^8 N}, \gamma = 2^{-\lg^8 N}.$$
+  $$\alpha \le N, \beta = 2^{-\lg^8 N}, \gamma = 2^{-\lg^8 N}.$$
   Hence the recurrence solves to 
   $$p_{i_*} \le 2^{-\polylog(N)},$$
   as desired.

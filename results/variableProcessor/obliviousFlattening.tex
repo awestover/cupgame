@@ -28,26 +28,18 @@ the cup game are greedy-like \cite{mbe19, wku20}.
 
 As a tool in our analysis we define a new variant of the cup
 game: In the $p$-processor \defn{$E$-extra-emptyings}
-\defn{$S$-skip-emptyings} negative-fill cup game on $n$ cups, the filler
-distributes $p$ units of water amongst the cups, and then the
-emptier empties from $p$ \textit{or more, or less} cups. In
-particular the emptier is allowed to do $E$ extra
-emptyings---we say that the emptier does an extra emptying if
-it empties from a cup beyond the $p$ cups it typically is
-allowed to empty from---and is also allowed to skip $S$
-emptyings---we say that the emptier skips an emptying if it
-doesn't do an emptying---over the course of the
+\defn{$S$-skip-emptyings} negative-fill cup game on $n$ cups, the
+filler distributes $p$ units of water amongst the cups, and then
+the emptier empties from $p$ \textit{or more, or less} cups. In
+particular the emptier is allowed to do $E$ extra emptyings and
+is also allowed to skip $S$ emptyings over the course of the
 game. Note that the emptier still cannot empty from the same cup
-twice on a single round, and also that note
-that a $\Delta$-greedy-like emptier must take into account extra
+twice on a single round, and also that note that a
+$\Delta$-greedy-like emptier must take into account extra
 emptyings and skip emptyings to determine valid moves. Further,
 note that the emptier is allowed to skip extra emptyings,
 although skipping extra emptyings looks the same as if the
-extra-emptyings had simply not been performed.
-It may seem strange that we are limiting the number of times that
-the emptier can skip-emptyings; in the regular cup game the
-emptier is allowed to skip as many times as it wants. However,
-this will turn out to be a useful idea.
+extra-emptyings had simply not been performed. 
 
 For a $\Delta$-greedy-like emptier let $R_\Delta = 2(2+\Delta)$;
 we now prove a key property of these emptiers: there is an
@@ -64,7 +56,7 @@ fill-range.
 % n)}-flat or we're just done)
 
 \begin{lemma}
-  \label{lem:greedylikeisflat}
+  \label{lem:flatalg}
   Consider an $R$-flat cup configuration in the $p$-processor
   $E$-extra-emptyings $S$-skip-emptyings negative-fill cup game on $n =
   2p$ cups. There is an oblivious filling strategy
@@ -282,7 +274,7 @@ call \defn{$\randalg$}, that will be used as a subroutine in
 are well-known, and similar versions of it can be found in \cite{
 mbe19, mbe15, die91, wku20}.
 \begin{proposition}
-  \label{prop:obliviousTerribleProbability}
+  \label{prop:randalg}
   Consider an $R$-flat cup configuration in the single-processor
   $\infty$-extra-emptyings $\infty$-skip-emptyings negative-fill cup
   game on $n$ cups with initial average fill $\mu_0$.
@@ -334,36 +326,45 @@ mbe19, mbe15, die91, wku20}.
   least $-R+ d+\mu_0$. 
 
   Now note that regardless of if the emptier uses extra emptyings
-  $c$ has fill at most $\mu_0 + R + d$ , as $c$ starts with fill
+  $c$ has fill at most $\mu_0 + R + d$, as $c$ starts with fill
   at most $R$, and $c$ gains at most $1/(k-i+1)$ fill on the
   $i$-th round of this process. 
 
   Now we analyze this algorithm specifically for a
-  $\Delta$-greedy-like emptier. Consider a round $t$ on which
-  $\min_c \fil_{S_{t+1}}(c) < \min_c \fil_{S_{t}}(c)$, which
-  implies that a cup $c_1$ with $\fil_{S_t}(c_1) < \min_c
-  \fil_{S_t}(c) +1$ was emptied from on round $t$, and also on
-  which a cup $c_0$ that has $\fil_{S_{t+1}}(c_0) = \max_{c}
-  \fil_{S_{t+1}}(c)$ was not emptied from on round $t$. Because
-  the emptier is $\Delta$-greedy-like this
-  implies that $\fil_{I_t}(c_0) - \fil_{I_t}(c_1) \le \Delta$
-  and then $\max_c \fil_{S_{t+1}}(c) - \min_c
-  \fil_{S_{t+1}}(c) \le \Delta + 2$, i.e. the cups are $(\Delta +
-  2)$-flat. 
+  $\Delta$-greedy-like emptier. 
+  Let $\mathcal{A}_t$ be the event that the
+  anti-backlog is smaller in $S_{t+1}$ than in $S_t$, let
+  $\mathcal{B}_t$ be the event that some cup with fill equal to
+  the backlog in $S_{t+1}$ was emptied from on round $t$. If
+  $\mathcal{A}_t$ and $\mathcal{B}_t$ are both true on round $t$,
+  then by greediness the cups are quite flat. In particular, 
+  let $a$ be a cup with fill equal to the anti-backlog in state
+  $S_{t+1}$ that was emptied from on round $t$, and let $b$ be
+  a cup with fill equal to the backlog in state $S_{t+1}$ that
+  was not emptied from on round $t$. By greediness $\fil_{I_t}(a) + \Delta
+  > \fil_{I_t}(b)$. Of course $\fil_{I_t}(b) =
+  \fil_{S_{t+1}}(b)$; for $b$ to have fill equal to the backlog
+  on round $t+1$, $b$ must have fill less than $1$ below 
+  backlog on round $t$. Of course $\fil_{I_t}(a) \le
+  \fil_{S_t}(a) + 1$; for $a$ to have fill equal to the
+  anti-backlog on round $t+1$, $a$ must have fill less than $1$
+  above the anti-backlog on round $t$. Thus we have that the
+  backlog and anti-backlog differ by at most $\Delta + 3 \le
+  R_\Delta$ on round $t$, i.e. the cups are $R_\Delta$-flat.
 
-  Consider some round $t_1$ on which the cups are not $(\Delta +
-  2)$-flat; let $t_0$ be the last round on which the cups were
-  $R$-flat (note that if the cups are $(\Delta+2)$-flat they are
-  also $R$-flat as $\Delta + 2 < R$). Consider how the fill-range
-  of the cups changes during the set of rounds
-  $t$ with $t_0 < t \le t_1$. On any such round $t$ either $\min_c
-  \fil_{S_{t+1}}(c) \ge \min_c \fil_{S_{t}}(c)$ in which case the
-  fill-range increases by at most $1/(k-t+1)$ where $k-t+1$ is the
-  size of the active set on round $t$, or all cups on round $t+1$
-  with fill equal to the backlog were emptied from, meaning that
-  backlog decreased by at least $1-1/(k-t+1)$. In either case the
-  fill-range increases by at most $1/(k-t+1)$. Thus in total the
-  fill-range is at most $R + d$. That is, the cups are
-  $(R+d)$-flat on round $t_1$, as desired.
+  Consider a round $t_1$ where the cups are not $R_\Delta$-flat.
+  Let $t_0$ be the last round that the cups were $R_\Delta$-flat.
+  On all rounds $t \in (t_0, t_1)$ at least one of
+  $\mathcal{A}_t$ or $\mathcal{B}_t$ must not hold. On a round
+  where $\mathcal{A}_t$ does not hold, anti-backlog does not
+  decrease and backlog increases by at most $1/(k-t+1)$, so fill
+  range increases by at most $1/(k-t+1).$ On a round where
+  $\mathcal{B}_t$ does not hold, anti-backlog decreases by at
+  most $1$ and backlog decreases by at least $1-1/(k-t+1)$, as
+  all cups with fill equal to the backlog in state $S_{t+1}$ were
+  emptied from on round $t$, so fill-range increases by at most
+  $1/(k-t+1)$. 
+  Hence in total fill-range increases by at most $\sum_{i=2}^k
+  1/i$ from $R$, i.e. the cups are $(R+d)$-flat on round $t_1$.
 
 \end{proof}

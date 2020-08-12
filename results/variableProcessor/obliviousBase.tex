@@ -108,7 +108,7 @@ $\rep_{\Theta(1)}(\randalg(\Theta(1)))$ in \cref{lem:obliviousManyUnknownCups}.
   variable-processor cup game on $n$ cups with initial average
   fill $\mu_0$.
 
-  When applied to a $\Delta$-greedy-like emptier
+  Against a $\Delta$-greedy-like emptier,
   $\rep_{\delta}(\randalg(k))$ using $M=\Theta(N^2)$ either
   achieves mass at least $N^2$ in the cups, or with probability
   at least $1-2^{-\Omega(n)}$ makes an (unknown) set of
@@ -129,14 +129,14 @@ Similarly we assume that the emptier does not choose to skip
 more than $N^2$ emptyings; doing so clearly would result in mass
 at least mass $N^2$ in the cups.
 
-As in \cref{prop:obliviousTerribleProbability}, we define $d =
+As in \cref{prop:randalg}, we define $d =
 \sum_{i=2}^{k} 1/i$; we remark that, because harmonic numbers
 grow like $x\mapsto \ln x$, it is clear that $d=\Theta(h)$. We say that an
 application of $\randalg(k)$ to $D$ is \defn{lucky} if it
 achieves backlog at least $\mu_S(B) - R_\Delta + d$ where $S$
 denotes the state of the cups at the start of the application of
 $\randalg(k)$; note that by
-\cref{prop:obliviousTerribleProbability} if we condition on an
+\cref{prop:randalg} if we condition on an
 application of $\randalg(k)$ where $B$ started $R_\Delta$-flat
 being non-emptier-wasted then the application has at least a
 $1/k!$ chance of being lucky.
@@ -150,13 +150,13 @@ Now we prove several important bounds satisfied by $A$ and $B$.
 \begin{proof}
   Given that the application of $\flatalg$ immediately prior to an application
   of $\randalg(k)$ made $B$ be $R_\Delta$-flat, by
-  \cref{prop:obliviousTerribleProbability} we have that $B$ will
+  \cref{prop:randalg} we have that $B$ will
   stay $(R_\Delta + d)$-flat during the application of $\randalg(k)$. 
   Given that the application of $\randalg(k)$ immediately prior to an
   application of $\flatalg$ resulted in $B$ being $(R_\Delta
   + d)$-flat, we have that $B$ remains $(R_\Delta + d)$-flat
   throughout the duration of the application of $\flatalg$ by
-  \cref{lem:greedylikeisflat}. Given that $B$ is $(R_\Delta +
+  \cref{lem:flatalg}. Given that $B$ is $(R_\Delta +
   d)$-flat before a donation occurs $B$ is clearly still $(R_\Delta +
   d)$-flat after the donation, because the only change to $B$ during
   a donation is that a cup is removed from $B$ which cannot increase
@@ -384,16 +384,18 @@ donation-processes succeed with exponentially good probability.
 
 We now analyze the running time of the filling strategy.
 There are $n_A$ donation-processes. Each donation-process
-consists of $\Theta(M)$ applications of $\randalg(k)$, which each take
-constant time, and $\Theta(M)$
+consists of $O(M)$ applications of $\randalg(k)$, which each take
+time $O(1)$, and $O(M)$
 applications of $\flatalg$, which each take $\Theta(N^2)$ time.
-Thus overall the algorithm takes $n_A \cdot \Theta(M) = \poly(N)$ time, as desired.
+Thus overall the algorithm takes time
+$$n_A \cdot O(M) (O(1) + O(N^2)) = \poly(N),$$
+as desired.
   
 \end{proof}
 
 Now, using \cref{lem:obliviousManyUnknownCups} we show in
 \cref{prop:obliviousBase} that an oblivious filler can achieve
-constant backlog. 
+constant fill in a known cup. 
 \begin{proposition}
   \label{prop:obliviousBase}
   Let $H \le O(1)$, let $\Delta \le O(1)$, let $n\ll N$ be at least a

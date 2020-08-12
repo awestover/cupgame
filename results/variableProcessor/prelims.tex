@@ -19,7 +19,9 @@ of the game is now $S_{t+1}$.
 Denote the fill of a cup $c$ by $\fil(c)$. Let the \defn{mass} of
 a set of cups $X$ be $m(X) = \sum_{c\in X} \fil(c)$. Denote the
 average fill of a set of cups $X$ by $\mu(X)$. Note that $\mu(X)
-|X| = m(X)$.
+|X| = m(X)$. Let the \defn{backlog} at state $S$ be $\max_c
+\fil_S(c)$, let the \defn{anti-backlog} at state $S$ be $\min_c
+\fil_S(c).$
 
 Let the \defn{rank} of a cup at a given state be its position in
 a list of the cups sorted by fill at the given state, breaking

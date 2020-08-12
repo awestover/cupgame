@@ -17,7 +17,7 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
   $\mu_0$ that is $R_\Delta$-flat. There exists an oblivious
   filling strategy $\alg(f')$ that either achieves mass $N^2$ or
   with failure probability at most 
-  $$p' \le 3p + 2^{-\lg^8 N}$$
+  $$p' \le np + 2^{-\lg^8 N}$$
   achieves backlog $f'(n)$ satisfying 
   $$f'(n) \ge (1-\delta)^2 f(\floor{(1-\delta)n}) + f(\ceil{\delta n}) + \mu_0$$ 
   and $f'(n) \ge f(n)$, in running time 
@@ -28,6 +28,12 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
 \begin{proof}
   We use the definitions and notation given in \cref{def:rep}. 
 
+  Note that the emptier cannot neglect the anchor set more than
+  $N^2$ times per donation-process, and the emptier cannot skip
+  more than $N^2$ emptyings, without causing the mass of the cups
+  to be at least $N^2$; we assume for the rest of the proof that
+  the emptier chooses not to do this.
+
   The filler defaults to using $\alg(f)$ on all the cups if 
   $$f(n) \ge (1-\delta)^2 f(n_B) + f(n_A).$$
   In this case our strategy trivially has the desired guarantees. 
@@ -35,80 +41,98 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
   simply fall back on $\alg(f)$ to achieve the desired backlog.
 
   The filler's strategy is roughly as follows:\\
-  \textbf{Step 1:} Use $\rep_\delta(\alg(f))$ on all the cups;
-  this will get $A$ to have high average fill.\\
+  \textbf{Step 1:} Make $\mu(A) \ge (1-\delta)^2 f(n_B)$ by
+  using $\rep_\delta(\alg(f))$ on all the cups,
+  i.e. applying $\alg(f)$ repeatedly to $B$, flattening $B$ before
+  each application, and then donating a cup from $B$ to $A$.\\
   \textbf{Step 2:} Flatten $A$ using $\flatalg$, and then use
   $\alg(f)$ on $A$.
 
   Now we analyze Step 1, and show that by appropriately choosing
   parameters it can be made to succeed.
 
-  Note that, exactly as in the proof of
-  \cref{lem:obliviousManyUnknownCups}, the emptier cannot neglect
-  the anchor set more than $N^2$ times per donation-process, and
-  the emptier cannot skip more than $N^2$ emptyings, without
-  causing the mass of the cups to be at least $N^2$; we assume the
-  emptier chooses not to do this.
-
-  We choose $M = 2^{\log^{24} N}$ ---recall that $[M]$ is
-  the set from which we randomly choose how many times to apply $\alg(f)$
-  in a donation-process. 
+  For this proof we need all donation-processes to succeed, as
+  opposed to in the proof of \cref{lem:obliviousManyUnknownCups}
+  in which we only needed a constant fraction of the
+  donation-processes to succeed. This necessitates choosing $M$
+  very large. In particular we choose $M = 2^{\log^{24} N}$
+  ---recall that $[M]$ is the set from which we randomly choose
+  how many times to apply $\alg(f)$ in a donation-process. 
+  By choosing $M$ this large we cannot hope to guarantee that
+  every application of $\alg(f)$ succeeds: there are far too many
+  applications. On the other hand, having $M$ so large allows us
+  to have a very tight concentration bound on how many
+  applications of $\alg(f)$ succeed. 
   Ignoring for a moment the fact that the emptier can choose to
   neglect the anchor set, i.e. assuming that no applications of
-  $\alg(f)$ are emptier-waster, consider the probability
-  that fewer than $M\cdot (1-2p)$ applications of $\alg(f)$ succeed. By a
-  Chernoff bound this probability is at most $$e^{-2Mp^2}.$$
-  Let $1-q$ be the probability that a donation-process succeeds.
-  Obviously $1-q$ is at least
-  the probability that a donation process succeeds given that at least
-  $k$ applications of $\alg(f)$ succeed. Arguing as in
-  \cref{lem:obliviousManyUnknownCups}, we see that this
-  probability is at least $$(1-e^{-2Mp^2})\paren{\frac{M\cdot (1-2p)-N^2}{M}}.$$
+  $\alg(f)$ are emptier-wasted, the probability
+  that fewer than $M\cdot (1-2p)$ applications of $\alg(f)$
+  succeed is at most $$e^{-2Mp^2}$$ by a Chernoff bound.
+  The emptier is allowed to interfere with at most $N^2$ of the
+  applications of $\alg(f)$, thus if we condition on there being
+  at least $M(1-2p)$ applications that would succeed if the emptier
+  does not interfere, there are at least $M(1-2p)-N^2$ applications of
+  $\alg(f)$ that succeed. 
+  Let $\mathcal{W}$ be the event that the donation-process
+  succeeds, i.e. the final application of $\alg(f)$ is not
+  emptier-wasted and succeeds, and let $\mathcal{D}$ be the even
+  that the event that at least $M(1-2p)$ of the $M$ applications
+  of $\alg(f)$ would succeed without  interference by the
+  emptier.
+  Let $1-q = \Pr[\mathcal{W}]$.
+  Obviously 
+  $$\Pr[\mathcal{W}] \ge \Pr[\mathcal{W} \land \mathcal{D}] =
+  \Pr[\mathcal{D}] \cdot \Pr[\mathcal{W} | \mathcal{D}].$$
+  Because the filler chooses which application of $\alg(f)$ is the final
+  application uniformly at random from $[M]$ we thus have
+  $$1-q \ge (1-e^{-2Mp^2})\paren{\frac{M\cdot (1-2p)-N^2}{M}}.$$
   Rearranging, and over-estimating (i.e. dropping unnecessary
   terms to simplify the expression, while maintaining the truth
   of the expression), we have 
   $$q \le e^{-2Mp^2} + 2p + \frac{N^2}{M}.$$
   By assumption $p \ge 2^{-\lg^8 N}$, so $Mp^2 \ge 2^{\lg^8 N}$,
   and we have the bound
-  $$q \le 2p + 2^{-\lg^8 N},$$ (note that we also absorb the minuscule $N^2/M$
-  term).
-  We have shown that with failure probability at most $p'$ each
-  donation-process successfully achieves a cup with fill at least
-  $\mu_{t_0}(B) + f(n_B)$ where $\mu_{t_0}(B)$ refers to the
-  average fill of $B$ measured at the start of the application of
-  $\alg(f)$.
+  $$q \le 2p + 2^{-2\cdot 2^{\lg^8 N}} + \frac{N^2}{2^{\lg^{24} N}}.$$
+  We choose to loosen this to 
+  $$q \le 2p + 2^{-\lg^8 N}.$$
+
+  Taking a union bound we have that with failure probability at
+  most $q \cdot n_A$ all donation-process successfully achieve a cup
+  with fill at least $\mu_{t_0}(B) + f(n_B)$ where $\mu_{t_0}(B)$
+  refers to the average fill of $B$ measured at the start of the
+  application of $\alg(f)$; now we assume all donation-processes
+  are successful, and demonstrates that this translates into the
+  desired average fill in $A$.
 
   Let \defn{$\skips_t$} denote the number of times that the
-  emptier has skipped the anchor set by step $t$. Consider how
+  emptier has skipped the anchor set by round $t$. Consider how
   $\mu(B) - \skips/n_B$ changes over the course of the donation
-  processes. As noted above at the end of each donation-process
+  processes. As noted above, at the end of each donation-process
   $\mu(B)$ decreases due to $B$ donating a cup with fill at least
-  $\mu(B) + f(n_B)$. In particular, if $t_0$ denotes the time
-  right before a cup is donated on the $i$-th donation-process
-  and $t_1$ denotes the time right after a cup is donated, then
-  $\mu_{t_1}(B) = \mu_{t_0}(B) - f(n_B) / (n-i)$. Now we claim that
-  $\mu(B) - \skips/n_B$ is monotonically decreasing. Clearly each
-  donation decreases this quantity. If the anchor set is
-  neglected then $\mu(B)$ decreases. If a skip occurs, then
-  $\skips/n_B$ increases by more than $\mu(B)$ can possibly
-  decrease. Let $t_*$ be the time at the end of all the
+  $\mu(B) + f(n_B)$. In particular, if $S$ denotes the cup state
+  immediately before a cup is donated on the $i$-th
+  donation-process, $B_0$ denotes the set $B$ before
+  the donation and $B_1$ denotes the set $B$ after the donation,
+  then $\mu_{S}(B_1) = \mu_{S}(B_0) - f(n_B) / (n-i)$. Now we claim that
+  $t\mapsto \mu_{S_t}(B) - \skips_t/n_B$ is monotonically decreasing. 
+  Clearly donation decreases $\mu(B) - \skips/n_B$. 
+  If the anchor set is neglected then $\mu(B)$ decreases, causing
+  $\mu(B) - \skips/n_B$ to decrease. 
+  If a skip occurs, then $\skips/n_B$ increases by more than
+  $\mu(B)$ decreases, causing $\mu(B)-\skips/n_B$ to decrease. 
+  Let $t_*$ be the cup state at the end of all the
   donation-processes. We have that 
   \begin{equation}
     \label{eq:harmonic1}
-    \mu_{t_*}(B) - \frac{\skips_{t_*}}{n_B} \le \mu_0 - \sum_{i=1}^{n_A}\frac{f(n_B)}{n-i}.
+    \mu_{S_{t_*}}(B) - \frac{\skips_{t_*}}{n_B} \le \mu_0 - \sum_{i=1}^{n_A}\frac{f(n_B)}{n-i}.
   \end{equation}
   By conservation of mass we have 
-  \begin{equation}
-    \label{eq:conservationOfMass}
-    n_A\cdot \mu_{t_*}(A) + n_B\cdot \mu_{t_*}(B) = \mu_0 + \skips_{t_*}.
-  \end{equation}
-  We can use Inequalities \eqref{eq:conservationOfMass} and
-  \eqref{eq:harmonic1} to get a lower bound on $\mu_{t_*}(A)$ as
-  follows:
+  $$n_A\cdot \mu_{S_{t_*}}(A) + n_B\cdot \mu_{S_{t_*}}(B) = n\mu_0 + \skips_{t_*}.$$
+  Rearranging, 
   \begin{equation}
     \label{eq:lowerboundingAharmonic}
-    \mu_{t_*}(A) = \mu_0 + \frac{n_B}{n_A}\paren{\mu_0 +
-    \frac{\skips_{t_*}}{n_B} - \mu_{t_*}(B)}.
+    \mu_{S_{t_*}}(A) = \mu_0 + \frac{n_B}{n_A}\paren{\mu_0 +
+    \frac{\skips_{t_*}}{n_B} - \mu_{S_{t_*}}(B)}.
   \end{equation}
   Now we obtain a simpler form of
   Inequality~\eqref{eq:harmonic1}. Let $H_n$ denote the $n$-th
@@ -141,8 +165,8 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
   $$\mu_{t_*}(A) > \mu_0 + (1-\delta)^2 f(n_B).$$
 
 We have shown that in Step 1 the filler achieves average fill
-$\mu_0 + (1-\delta)f(n_B)$ in $A$ (with failure probability at
-most $q$).
+$\mu_0 + (1-\delta)f(n_B)$ in $A$ with failure probability at
+most $q\cdot n_A$.
 Now the filler flattens $A$ and uses $\alg(f)$ on $A$.
 It is clear that this is possible, and succeeds with probability
 at least $p$.
@@ -153,7 +177,7 @@ in $A$, as desired.
 Taking a union bound over the probabilities of Step 1 and Step 2
 succeeding gives that the entire procedure fails with probability
 at most 
-$$p' \le p + q = 3p + 2^{-\lg^8 N}.$$
+$$p' \le p + q \cdot n_A \le n p + 2^{-\lg^8 N}.$$
 
 The running time of Step 1 is clearly $M\cdot n\cdot
 T(\floor{(1-\delta)n})$ and the running time of Step 2 is clearly
