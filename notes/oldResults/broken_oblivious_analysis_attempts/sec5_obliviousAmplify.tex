@@ -1,0 +1,664 @@
+Next we prove the \defn{Oblivious Amplification Lemma}. The same
+idea of using a function multiple times on subsets of the cups
+drives both \cref{lem:obliviousAmplification} and
+\cref{lem:adaptiveAmplification};
+however the Oblivious Amplification Lemma is much more difficult to prove.
+\begin{lemma}[Oblivious Amplification Lemma]
+  \label{lem:obliviousAmplification} 
+  Let $M$ be very large.
+  Let $0 < \delta \ll 1/2$ be a constant
+  parameter. Let $\Delta \le O(1)$, $R, R' \ge R_\Delta$. Let
+  $\alg{f}$ be an oblivious filling strategy that, conditional on
+  the emptier not using extra-emptyings, either achieves mass $M$
+  or achieves backlog $f(n)+\mu_0$ in the $M$-skip-emptyings
+  $M$-extra-emptyings variable-processor cup game
+  on $n$ cups with probability at least
+  $1-2^{-\Omega(n)}-1/\poly(M)$ in
+  running time $T(n)$ when given a $R$-flat cup
+  configuration with average fill $\mu_0$ against a $\Delta$-greedy-like emptier.
+  Furthermore, let $\alg{f}$ guarantee that the cups are always
+  $(R_\Delta + k_\Delta f(n))$-flat throughout this process.
+
+  There exists an oblivious filling strategy $\alg{f'}$ that,
+  conditional on the emptier not using extra-emptyings,
+  either achieves mass $M$ or achieves backlog $f'(n)$
+  satisfying
+  $$f'(n) \ge (1-\delta) (f(\floor{(1-\delta)n})-R_\Delta) + f(\ceil{\delta n}) + \mu_0$$
+   and $f'(n) \ge f(n)$, in the $M$-skip-emptyings
+  $M$-extra-emptyings variable-processor cup
+  game on $n$ cups with probability at least
+  $1-2^{-\Omega(n)}-1/\poly(M)$
+  in running time $$T'(n) \le M\cdot n\cdot
+  T(\floor{(1-\delta)n}) + T(\ceil{\delta n})$$ when given a
+  $R'$-flat cup configuration against a $\Delta$-greedy-like
+  emptier.
+  Furthermore, $\alg{f'}$ guarantees that the cups are always
+  $(R_\Delta + k_\Delta f'(n))$-flat throughout this process.
+\end{lemma}
+\begin{proof}
+  First we condition on the emptier not using extra emptying
+  and show that we can achieve the desired result in this case
+  (good backlog with good probability);
+  at the end of the proof we will consider the case where the
+  emptier does use extra emptyings, and bound the fill-range in
+  that case. 
+
+  The algorithm defaults to using $\alg{f}$ on all the cups if 
+  $$f(n) \ge (1-\delta) (f(\floor{(1-\delta)n})-R_\Delta) +
+  f(\ceil{\delta n}).$$
+  In this case our strategy trivially results in the desired
+  backlog in the desired running time. In the rest of the proof we
+  consider the case where we cannot simply fall back on $\alg{f}$
+  to achieve the desired backlog.
+
+  We refer to $A$ as the \defn{anchor} set and $B$ as the
+  \defn{non-anchor} set. Let $n_A = \ceil{\delta n}$, $n_B =
+  \floor{(1-\delta)n}$. The filler initializes $A$ to
+  $\varnothing$, and $B$ to be all of the cups. Over the course
+  of $\alg{f'}$ $B$ will donate $n_A$ cups to $B$; note that 
+  we always have $|B| \ge n_B$, $|A| \le n_A$ with equality
+  achieved after $n_A$ donations.
+
+  We denote by \flatalg the oblivious filling strategy given in
+  \cref{lem:greedylikeisflat}. We say that the filler
+  \defn{applies} an algorithm \genericalg to $B$ if it uses
+  \genericalg on $B$ while placing $1$ unit of fill in each
+  anchor cup.
+
+  We now describe the filler's strategy.
+
+  At a high level the filler's strategy is as follows:\\
+  \textbf{Step 1:} Using $\alg{f}$ repeatedly on $B$, achieve a
+  cup with fill $\mu(B) + f(|B|)$ in $B$ and then donate this cup into $A$. \\
+  \textbf{Step 2:} Use $\alg{f}$ once on $A$ to obtain a cup in
+  $A$ with fill $\mu(A) + f(|A|)$.\\
+
+  We now describe in detail how to achieve Step 1, which is
+  complicated by the fact that the emptier may attempt to prevent
+  the filler from achieving high fill in a cup in $B$, and
+  further by the fact that the filler, being oblivious, cannot
+  know if the emptier has done this. However, we show that by
+  repeatedly applying $\alg{f}$ enough times, because of the
+  limit on the number of extra-emptyings we can mitigate the
+  emptier's power.
+
+  The filler starts by flattening the cups, i.e. using \flatalg
+  on all of the cups for $\poly(M)$ rounds (setting $p=n/2$).
+  After this the filling strategy always places $1$ unit of fill
+  into each anchor cup on every round. The filler performs a
+  series of $n_A$ \defn{donation-processes}, which are procedures
+  that the filler uses to get a new cup---which will sometimes
+  have high fill---in the anchor set. On each donation-process
+  the filler applies $\alg{f}$ many times to $B$. The number of
+  times that the filler applies $\alg{f}$ is chosen at the start
+  of the donation-process, chosen uniformly at random from $[m]$
+  ($m = \poly(M)$ to be specified). At the end of each
+  donation-process, the filler does a \defn{donation}: the filler
+  takes the cup given by $\alg{f}$ in $B$, evicts it from $B$ and
+  adds it to $A$. After performing a donation the filler must
+  increase $p$ by $1$ so that $p=|A|+1$. Before each application
+  of $\alg{f}$ the filler flattens $B$ by applying \flatalg to $B$
+  for $\poly(M)$ rounds.
+
+  We proceed to analyze our algorithm.
+
+Without loss of generality we assume that the emptier does not do
+this neglect the anchor set $M$ times without decreasing the
+fills of an anchor cup in between the rounds on which the anchor
+set is neglected; if the emptier chooses to neglect that much,
+then the anchor cups will have achieved mass $M$, so the claim in
+\cref{lem:obliviousManyUnknownCups} is already fulfilled. 
+
+First note that the initial flattening makes the cups
+$R_\Delta$-flat by \cref{lem:greedylikeisflat}. In particular,
+note that the flattening happens in the $(n/2)$-processor
+$M$-extra-emptyings $M$-skip-emptyings variable-processor cup
+game on $n$ cups.
+
+We say that a property of the cups has \defn{always} held if the
+property has held since the start of the first donation-process;
+i.e. from now on we only consider rounds after the initial
+flattening.
+
+We say that the emptier \defn{neglects} the anchor set on a round
+if it does not empty from each anchor cup. We say that an
+application of $\alg{f}$ to $B$ is
+\defn{non-emptier-wasted} if the emptier does not neglect the
+anchor set during any round of the application of $\alg{f}$. 
+
+Now we prove several important bounds on fills of cups in $A$ and $B$.
+\begin{clm}
+  \label{clm:allflatteningsworkbyM}
+  All applications of \flatalg make $B$ be $R_\Delta$-flat and
+  $B$ is always $(R_\Delta + f(\ceil{(1-\delta)n)})$-flat.
+\end{clm}
+\begin{proof}
+  Given that the application of \flatalg immediately prior to an application
+  of \randalg made $B$ be $R_\Delta$-flat, by
+  \cref{prop:obliviousTerribleProbability} we have that $B$ will
+  stay $(R_\Delta + d)$-flat during the application of \randalg. 
+  Given that the application of \randalg immediately prior to an
+  application of \flatalg resulted in $B$ being $(R_\Delta
+  + d)$-flat, we have that $B$ remains $(R_\Delta + d)$-flat
+  throughout the duration of the application of \flatalg by
+  \cref{lem:greedylikeisflat}. Given that $B$ is $(R_\Delta +
+  d)$-flat before a donation occurs $B$ is clearly still $(R_\Delta +
+  d)$-flat after the donation, because the only change to $B$ during
+  a donation is that a cup is removed from $B$ which cannot increase
+  the fill-range of $B$.
+  Note that $B$ started $R_\Delta$-flat at the beginning of the
+  first donation-process before of the initial flattening of all
+  the cups before the first donation-process.
+  Note that if an application of \flatalg begins with $B$ being
+  $(R_\Delta + d)$-flat, then by considering the flattening to
+  happen in the $(|B|/2)$-processor $M$-extra-emptyings
+  $M$-skip-emptyings cup game we ensure that it makes $B$ be
+  $R_\Delta$-flat.
+  Hence we have by induction that $B$ has always been $(R_\Delta
+  + d)$-flat and that all flattening processes have made $B$ be
+  $R_\Delta$-flat. 
+  % start, flatalg, randalg, flatalg, randalg, ..., flatalg
+  % randalg, donation, flatalg, randalg, flatalg, randalg, ..., donation,
+  % ..., donation, ..., right now
+\end{proof}
+
+Now we aim to show that $\mu(B)$ is never too low, which we need
+in order to establish that every non-emptier-wasted lucky
+application of \randalg gets a cup with high fill. Interestingly
+in order to lower bound $\mu(B)$ we first must upper bound
+$\mu(B)$, which by greediness and flatness of $B$ gives an upper
+bound on $\mu(A)$ which we use to get a lower bound on $\mu(B)$.
+
+\begin{clm}
+  \label{clm:muBdoesntgettoobig}
+  We have always had
+  $$\mu(B) \le 2 + \mu(A B).$$
+\end{clm}
+\begin{proof}
+  There are two ways that $\mu(B)-\mu(A B)$ can increase: \\
+  \textbf{Case 1:}
+  The emptier could empty from $0$ cups in $B$ while emptying
+  from every cup in $A$. \\
+  \textbf{Case 2:}
+  The filler could evict a cup with fill lower than $\mu(B)$ from
+  $B$ at the end of a donation-process. \\
+
+  Note that cases are exhaustive, in particular note that if the
+  emptier skips more than $1$ emptying then $\mu(B) - \mu(AB)$
+  must decrease because $|A|\approx |AB|$, in particular
+  \eqref{eq:chooseBmuchbiggerthanA}, as opposed to in Case 1
+  where $\mu(B) - \mu(AB)$ increases.
+
+  In Case 1, because the emptier is $\Delta$-greedy-like,
+  $$\min_{a\in A} \fil(a) > \max_{b\in B} \fil(b) - \Delta.$$
+  Thus $\mu(B) \le \mu(A) + \Delta$. As $|B| \gg |A|$, in
+  particular by \eqref{eq:chooseBmuchbiggerthanA}, this can be
+  loosened to $\mu(B) \le 1 + \mu(A B)$.
+
+  Consider the final round on which $B$ is skipped while $A$ is
+  not skipped (or consider the first round if there is no such
+  round).
+
+  From this round onwards the only increase to $\mu(B) - \mu(A
+  B)$ is due to $B$ evicting cups with fill well below $\mu(B)$.
+  We can upper bound the increase of $\mu(B) - \mu(A B)$ by the
+  increase of $\mu(B)$ as $\mu(A B)$ is strictly increasing.
+
+  The cup that $B$ evicts at the end of a
+  donation-process has fill at least $\mu(B) - R_\Delta -
+  (|D|-1)$, as the running time of \randalg is $|D|-1$, and
+  because $B$ starts $R_\Delta$-flat by
+  \cref{clm:allflatteningsworkbyM}. Evicting a cup
+  with fill $\mu(B) - R_\Delta - (|D| -1)$ from $B$ changes
+  $\mu(B)$ by $(R_\Delta + |D| - 1) / (|B|-1)$ where $|B|$ is the
+  size of $B$ before the cup is evicted from $B$. Even if this
+  happens on each of the $n_A$ donation-processes $\mu(B)$ cannot
+  rise higher than $n_A (R_\Delta + |D|-1) / (n-n_A)$ which by
+  design in choosing $|B| \gg |A|$, as was done in
+  \eqref{eq:chooseBmuchbiggerthanA}, is at most $1$.
+
+  Thus it always is the case that $\mu(B) \le 2 + \mu(A B).$
+
+\end{proof}
+
+The upper bound on $\mu(B)$ along with the guarantee that $B$ is
+flat allows us to bound the highest that a cup in $A$ could rise
+by greediness, which in turn upper bounds $\mu(A)$ which in turn
+lower bounds $\mu(B)$. In particular we have
+\begin{clm}
+  \label{clm:muBgreaterthanminushover2}
+  We always have
+  $$\mu(B) \ge -h/2 + \mu_{\min}.$$
+\end{clm}
+\begin{proof}
+  By \cref{clm:muBdoesntgettoobig} and \cref{clm:allflatteningsworkbyM} 
+  we have that no cup in $B$ ever has fill greater than
+  $u_B = \mu(A B) + 2 + R_\Delta + d$. 
+
+  Let $u_A = u_B + \Delta + 1$. We claim that the backlog in $A$
+  never exceeds $u_A$.
+
+  Consider how high the fill of a cup $c \in A$ could be.
+  If $c$ came from $B$ then when it is donated
+  to $A$ its fill is at most $u_B < u_A$. Otherwise, $c$
+  started with fill at most $R_\Delta < u_A$. Now consider how
+  much the fill of $c$ could increase while being in $A$. Because
+  the emptier is $\Delta$-greedy-like, if a cup $c\in A$ has fill
+  more than $\Delta$ higher than the backlog in $B$ then $c$ must
+  be emptied from, so any cup with fill at least $u_B + \Delta =
+  u_A - 1$ must be emptied from, and hence $u_A$ upper bounds the
+  backlog in $A$. 
+
+  Of course an upper bound on backlog in $A$ also serves as
+  an upper bound on the average fill of $A$ as well, i.e.
+  $\mu(A) \le u_A$. 
+  Rearranging the expression 
+  $$|B|\mu(B) + |A|\mu(A) = |AB|\mu(AB)$$
+  we have
+  \begin{align*}
+    &\mu(B) \\
+           &= -\frac{|A|}{|B|} \mu(A) + \frac{|A B|}{|B|}\mu(A B) \\
+           &\ge -(\mu(AB) + 3+R_\Delta+d+\Delta) \frac{|A|}{|B|} + \frac{|AB|}{|B|}\mu(AB)\\
+           &= -(3+R_\Delta+d + \Delta) \frac{|A|}{|B|} + \mu(AB)\\
+           &\ge -h/2 + \mu(AB)
+  \end{align*}
+  where the final inequality follows because $\mu(AB) \ge 0$, and
+  $|B|\gg |A|$, in particular by \eqref{eq:chooseBmuchbiggerthanA}.
+
+  Of course $\mu(AB) \ge \mu_{\min}$ so we have
+  $$\mu(B) \ge -h/2 + \mu_{\min}.$$
+
+\end{proof}
+
+Now we show that we can at least a constant fraction of the
+donation-processes succeed with exponentially good probability.
+\begin{clm}
+  There exists choice of $m = \poly(M)$ such that with probability at least
+  $1-2^{-\Omega(n)}$, the filler achieves fill at least
+  $h+\mu_{\min}$ in at
+  least $\Theta(n)$ of the cups in $A$. 
+\end{clm}
+\begin{proof}
+  If the emptier was not allowed to neglect the anchor set ever
+  and use extra-emptyings in $B$ then the claim would be true as
+  each application of \randalg would unconditionally succeed with
+  constant probability, so a Chernoff bound would give that
+  $\Theta(n)$ of the donation-processes donate a cup with fill at
+  least $\mu(B) - R_\Delta + d \ge h + \mu_{\min}$, where the inequality
+  follows from \cref{clm:muBgreaterthanminushover2} which asserts
+  that $\mu(B) \ge -h/2 + \mu_{\min}$, and from the facts $d\ge 2h$
+  and $h \ge 16(1+\Delta)$.
+  However, the emptier is allowed to neglect the anchor set, and
+  in fact the emptier can choose to neglect the anchor set
+  conditional on the filler's progress during \randalg. 
+
+  We can lower bound the probability of getting $\Theta(n)$ cups
+  with fills all at least $h + \mu_{\min}$ by considering an augmented emptier
+  that is allowed to interfere with $M$ applications of \randalg
+  per donation-process that only interferes with applications of
+  \randalg that would otherwise donate a cup with fill $h +
+  \mu_{\min}$ into $A$. 
+  The optimal strategy for such an emptier, given our filler's
+  strategy of randomly choosing which application to donate a cup
+  on, is to simply interfere with the first $M$ applications of
+  \randalg that without interference would have achieved a cup
+  with fill $h$. The filler sets $m = 4M|D|!$. Conditional on
+  the emptier not interfering, each of these applications of
+  \randalg has at least a $1/|D|!$ chance of getting a cup with
+  fill $h$. Hence, by a Chernoff bound with exponentially good
+  probability at least $2M$ of the applications of \randalg have
+  the potential to donate a cup with fill $h+\mu_{\min}$ to $A$, if the
+  emptier does not interfere. The filler chooses an application
+  uniformly at random from all $m$ applications on which to
+  donate a cup. With probability at least $1/|D|!$ this is on an
+  application where the filler could get a cup with fill
+  $h+\mu_{\min}$ in
+  $A$ if the emptier does not interfere, and with probability at
+  least $1/2$ the emptier does not interfere on this application
+  of \randalg, because the emptier can interfere on at most $M$
+  of the applications of \randalg. 
+
+  Against this augmented emptier whether or not 
+  donation-processes achieve a cup with fill $h+\mu_{\min}$ in $A$ are
+  independent events. As each happens with at least constant
+  probability, by a Chernoff bound there is exponentially high
+  probability that at least a constant fraction of them succeed.
+
+  Note that we used the Chernoff bound $\Theta(n)$; by a union
+  bound there is exponentially good probability that all of the
+  desired events occur.
+
+\end{proof}
+
+We now analyze the running time of the filling strategy.
+There are $|A|$ donation-processes. Each donation-process
+consists of $\poly(M)$ applications of \randalg, which each take
+constant time, and $\poly(M)$
+applications of \flatalg, which each take $\poly(M)$ time.
+Thus overall the algorithm takes $\poly(M)$ time, as desired.
+  
+\end{proof}
+
+Finally, using \cref{lem:obliviousManyUnknownCups} we can show in
+\cref{prop:obliviousBase} that an oblivious filler can achieve
+constant backlog. We remark that \cref{prop:obliviousBase} plays a
+similar role in the proof of the lower bound on backlog as
+\cref{prop:adaptiveBase} does in the adaptive case, but is vastly
+more complicated to prove (in particular,
+\cref{prop:adaptiveBase} is trivial, whereas we have already
+proved several lemmas and propositions as preparation for the
+proof of \cref{prop:obliviousBase}).
+\begin{proposition}
+  \label{prop:obliviousBase}
+  Let $H \le O(1)$, let $\Delta \le O(1)$, let $n$ be at
+  least a sufficiently large constant determined by $H$ and
+  $\Delta$, and let $R \le \poly(n)$. 
+  Let $M \gg n$ be very large.
+  Consider an $R$-flat cup configuration in the
+  $M$-skip-emptyings $M$-extra-emptyings variable-processor cup
+  game on $n$ cups with average fill $\mu_0$.
+  Given this configuration, if the emptier does not use any
+  extra-emptyings, an oblivious filler can either
+  achieve mass $M$ among the cups, or achieve fill at least $\mu_0 + H$
+  in a chosen cup in running time $\poly(M)$ against a
+  $\Delta$-greedy-like emptier with probability at least $1-2^{-\Omega(n)}.$
+  Furthermore, throughout the filling strategy the backlog never
+  exceeds the average fill by more than $R_\Delta + H\cdot
+  64(1+\Delta)$.
+\end{proposition}
+\begin{proof}
+  The filler starts by performing the procedure detailed in
+  \cref{lem:obliviousManyUnknownCups}, using $h = H\cdot
+  16(1+\Delta)$. Because by assumption the emptier is not using
+  extra-emptyings the average fill of the set of all cups is at
+  least $\mu_0$ throughout the process.
+  Let the number of cups which must now exist with
+  fill $h+\mu_0$ be of size $nc = \Theta(n)$.
+
+  The filler sets $p=1$, i.e. uses a single processor. Now the
+  filler exploits the emptier's greedy-like nature to to get fill
+  $H$ in a chosen cup $c_0$. Specifically, for $(5/8)h$ rounds
+  the filler places $1$ unit of fill into $c_0$. Because the
+  emptier is greedy-like it must empty from the $nc$ cups in $A$
+  with fill at least $h+\mu_0$ until $c_0$ has large fill. Over
+  $(5/8)h$ rounds the cups in $A$ cannot have their fill decrease
+  below $(3/8)h \ge h/8 + \Delta + \mu_0$. Hence, any cups with fills
+  less than $h/8+\mu_0$ must not be emptied from during these rounds.
+  The fill of $c_0$ started as at least $-h/2+\mu_0$ as $\mu(B) \ge
+  -h/2+\mu_0$. After $(5/8)h$ rounds $c_0$ has fill at least
+  $h/8+\mu_0$,
+  because the emptier cannot have emptied $c_0$ until it attained
+  fill $h/8+\mu_0$, and if $c_0$ is never emptied from then it achieves
+  fill $h/8+\mu_0$.
+
+  Thus the filling strategy achieves backlog $h/8 +\mu_0 \ge H +
+  \mu_0$ in $c_0$, a known cup, as desired.
+
+  Now consider how much the backlog could exceed the average fill
+  by during this process. By \cref{lem:obliviousManyUnknownCups}
+  during the process that gets many unknown cups to have high
+  fill the backlog never exceeds the average fill by more than
+  the desired quantity. Clearly during the final steps of the
+  process, where the filler is just adding fill to $c_0$ the
+  emptier, being $\Delta$-greedy-like, will not let the backlog
+  increase once $c_0$ has fill at least $\Delta$ above the
+  average fill.
+
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  \clearpage
+  \todo{
+  For each cup in $A$ the filler performs a procedure called a
+  \defn{swapping-process}. Let $A_0$ be initialized to
+  $\varnothing$; during each swapping-process the filler will get
+  some cup in $B$ to have high fill (with very good probability),
+  and then swap this cup into $A$, and place the cup in $A_0$ too.
+  We say that the filler \defn{applies}
+  $\alg{f}$ to $B$ if it follows the filling strategy $\alg{f}$ on
+  $B$ while placing $1$ unit of fill in each anchor cup; during a
+  swapping-process the filler repeatedly applies $\alg{f}$ to $B$,
+  flattening $B \cup (A\setminus A_0)$, which results in $B$
+  being $R_\Delta$-flat as well, before each application.
+  We say that the emptier \defn{neglects} the anchor set on a
+  round if the emptier does not empty from every anchor cup on
+  this round. The mass of the anchor set increases by at least
+  $1$ each round that the anchor set is neglected. An application
+  of $\alg{f}$ to $B$ is said to be \defn{successful} if $A$ is
+  never neglected during the application of $\alg{f}$ to $B$. We
+  say that a swapping-process is \defn{successful} if the application of
+  $\alg{f}$ on which the filler swaps a cup into $A$ is a
+  successful application of $\alg{f}$.
+
+  \todo{
+  Let $\mu_\Delta = 2R_\Delta + \Delta$; the emptier, being
+  $\Delta$-greedy-like, cannot neglect the anchor set more than
+  $n\delta\mu_\Delta$ times. Thus, by making each
+  swapping-process consist of $n^{\eta}$ applications of $\alg{f}$
+  to $B$ and then choosing a single application among these
+  (uniformly at random) after which to swap a cup into $A$ (and
+  we also place the cup in $A_0$; $A_0$ consists of all cups in
+  $A$ that were swapped into $A$ from $B$), we guarantee that
+  with probability at least $n\delta\mu_\Delta/n^{\eta}$ this swap
+  occurs at the end of a successful application of $\alg{f}$ to $B$. 
+}
+
+  If an application of $\alg{f}$ is successful, then with
+  probability at least $1-2^{-\Omega(n)}$ it generates a cup with
+  fill $f(|B|) + \mu(B)$ in $B$, because equal resources were put
+  into $B$ on each round while $\alg{f}$ was used, and the cup
+  state started as $R_\Delta$-flat and
+  hence also started as $M$-flat (as $M\ge R_\Delta$).
+
+  Now we aim to show that $\mu(A)$ is large; we do so by showing
+  that $\mu(B)$ is small (i.e. very negative). Because the
+  probability of an application of $\alg{f}$ being successful is
+  only $1-1/\poly(n)$, which is in particular not as good as the
+  $1-2^{-\Omega(n)}$ that we will guarantee, we will not be able
+  to actually assume that every such application of $\alg{f}$ is
+  successful. However, (as we will show later) we can guarantee
+  that at least a constant fraction $\phi$ of the
+  swapping-processes are successful with
+  exponentially good probability.
+
+  The filler swaps $|A|$ cups into $B$. 
+  Consider how $\mu(B \cup A\setminus A_0)$ changes when a new
+  cup is swapped into $A$ and placed in $A_0$. Let the initial value
+  of $\mu(B \cup A\setminus A_0)$ be $\mu_0$. Say that
+  initially $|A_0| = i$ (i.e. $i$ swapping-processes have occured
+  so far). If the swapping-process is successful then the swapped cup has
+  fill at least $\mu_0 - R_\Delta + f(|B|)$. Hence the new
+  average fill of $B \cup A\setminus A_0$ after the swap is
+  $$\frac{\mu_0\cdot (n-i) - (\mu_0 - R_\Delta + f(|B|))}{n-i-1} =
+  \mu_0 - \frac{f(|B|) - R_\Delta}{n-i-1}.$$
+  This recurrence relation allows us to find the value of
+  $\mu(B \cup A\setminus A_0) = \mu(B)$ after $|A|$ swapping
+  processes (i.e. once $A\setminus A_0 = \varnothing$):
+  $$\mu(B) \le -\sum_{i=1}^{|A|\phi} \frac{f(|B|)-R_\Delta}{n-i}.$$
+  Now we bound $H_{n-1} - H_{n-|A|\phi-1}$ where $H_i$ is the $i$-th harmonic number.
+  Using the fact that 
+  $$H_n = \ln n + \gamma + 1/(2n) - 1/(12 n^2) + 1/(120 n^4) - \ldots$$
+  we have,
+  \begin{align*}
+    &H_{n-1} - H_{n-|A|\phi-1}\\
+  &\ge \ln \frac{n-1}{n-|A|\phi-1} - \frac{1}{2(n-|A|\phi-1)}\\
+  &\ge \ln \frac{n}{n-|A|\phi} - \frac{1}{n}\\
+  &= \ln \frac{n}{n-\ceil{\delta n}\phi} - \frac{1}{n}\\
+  &\ge \ln \frac{1}{1-\delta\phi} - \frac{1}{n}\\
+  &\ge \delta\phi - \frac{1}{n}.
+  \end{align*}
+
+  Hence we have, 
+  \begin{equation}
+    \label{eq:nastyobliviousamplificationlemmastep1backlog}
+  \mu(A) \ge
+  \frac{(1-\delta)}{\delta}\paren{\delta\phi-\frac{1}{n}}(f(|B|)-R_\Delta).
+  \end{equation}
+
+  % {\color{red} 
+  % so we're going to go for a new amplification lemma here that looks something like 
+
+  % $$f'(n) \ge (1-\delta)^4 f(\floor{(1-\delta)n}) + f(\ceil{\delta n}).$$
+  % In order to get this we choose $\phi \ge 1-\delta$ and 
+  % make sure that $n\ge \delta^2$ and that $f(|B|) \ge
+  % R_\Delta/\delta$ (note: this requires getting more than $1$
+  % backlog in the base case, but still constant, so it's fine).
+
+  % The asymptotic analysis still works out; it looks basically
+  % like this: $$(1-\delta)^4c((1-\delta)n)^{1-\varepsilon} + c(\delta
+  % n)^{1-\varepsilon} \ge cn^{1-\varepsilon}(1-(5-\varepsilon)\delta +
+  % \delta^{1-\varepsilon}) \ge cn^{1-\varepsilon}$$ for sufficiently
+  % small $\delta$.
+
+  % This is pretty much what has to happen. It's not so bad.
+  % so long as $f(\floor{(1-\delta)n}) \ge R_\Delta/\delta$ and $n\ge 1/\delta^2$
+  % }
+
+  % For sake of simplicity, assume for a moment that the cups in
+  % $A$ start having $0$ fill, and that the emptier never
+  % neglects $A$. Then, each swapping-process results in a cup
+  % with fill $\mu(B)+ f(|B|)$ being swapped from $B$ with a cup
+  % in $A$ that has $0$ fill; hence here the average fill of $B$
+  % decreases from $\mu(B)$ to 
+  % $$\frac{|B|-1}{|B|} \mu(B) + f(|B|) / |B|.$$
+  % We start with $\mu(B)=0$, and list a sequence of lower bounds for $\mu(B)$ after a few swaps into $A$:
+  % $$0, -\frac{f(|B|)}{|B|}, -\frac{f(|B|)}{|B|} \left(\frac{|B|-1}{|B|} +1 \right),$$
+  % $$-\frac{f(|B|)}{|B|} \left(\left(\frac{|B|-1}{|B|}\right)^2 + \frac{|B|-1}{|B|} +1 \right).$$
+  % Continuing on for $|A|$ swaps we find that by the end of this process $\mu(B)$ is at most 
+  % $$-\frac{f(|B|)}{|B|}\left( \frac{\left(\frac{|B|-1}{|B|}\right)^{|A|}- 1}{\frac{|B|-1}{|B|} - 1} \right) \ge -\frac{|A|}{|B|}f(|B|).$$
+  % Hence every cup ever swapped into $A$ has fill at least
+  % least
+  % \begin{align*}
+  % -\frac{|A|}{|B|}f(|B|) + f(|B|) &\\
+  % &= -\frac{\ceil{\delta n}}{\floor{(1-\delta) n}} f(|B|) + f(|B|) \\
+  % &\ge (1-\delta/(1-\delta)) f(|B|) \\
+  % &= h.
+  % \end{align*}
+
+  % If, in which case the mass
+  % transfered from $B$ to $A$ would be $\delta n f((1-\delta) n)$.
+  % In order for their to be an increase in the difference of the
+  % average fills of $A$ and $B$ by this amount $B$ would have had
+  % to contribute $|A|/n = \delta$ of the difference, with $A$
+  % contributing $|B|/n=(1-\delta)$ of the difference. Hence the
+  % average fill of $A$ would have actually only increased by
+  % $(1-\delta) f((1-\delta)n)$.
+
+  Now we establish that we can guarantee that $\phi |A|$ of the
+  $|A|$ swapping-process succeed for any choice of $\phi =
+  \Theta(1)$ by sufficiently large choice of $\eta$, i.e. by performing
+  enough applications of $\alg{f}$ within each swapping-process.
+  Recall that by construction of $\mu_\Delta$ the emptier cannot
+  neglect the anchor set on more than $n\delta \mu_\Delta$
+  applications of $\alg{f}$ to $B$. 
+  %There are $n^\eta |A| \ge n^{\eta+1}\delta$ applications of $\alg{f}$ to $B$. 
+
+  Let $X_i$ be the random variable that indicates the event that
+  the $i$-th swapping-process was not successful; note that the
+  $X_i$ are independent, because the filler's random choices of
+  which applications of $\alg{f}$ within each swapping-process on
+  which to swap a cup into the anchor set are independent.
+  We have, for any constant $\phi$,
+  % {\color{red} OK, so this part is a bit messed up. It's the right idea, but as it stands it's not doing so good. Specifically, here is what's messed up with what I'm doing here: a) events aren't independent, b) emptier can force a specific swapping-process to fail with higher probability. maybe a and b are fixable by bloating $\eta$.}
+  \begin{align*}
+  \Pr\left[\left|\frac{1}{|A|}\sum_{i=1}^{|A|}X_i - \frac{n\delta\mu_\Delta}{n^{\eta}}\right| \ge 1-2\phi \right] 
+  &\le 2e^{-2|A|(1-2\phi)^2} \\
+  &\le 2^{-\Omega(n)}.
+  \end{align*}
+  By appropriately large choice for $\eta \le O(1)$, $$n\delta\mu_\Delta / n^\eta
+  \le \phi$$ no matter how small $w \ge \Omega(1)$ is chosen. In particular this
+  implies that $$\Pr\left[\sum_{i=1}^{|A|} X_i \ge |A|(1-\phi)\right] \ge 1-2^{\Omega(n)}.$$
+  That is, with exponentially good probability $|A|\phi$ of the swapping processes succeed.
+  Taking a union bound over all applications of $\alg{f}$ we have
+  that there is exponentially good probability that all
+  applications of $\alg{f}$ succeeded. Thus, with exponentially
+  good probability, by \eqref{eq:nastyobliviousamplificationlemmastep1backlog}, Step 1 achieves
+  backlog $$(1-\delta)(\phi-1/(\delta n)(f(\floor{(1-\delta)n}-R_\Delta)$$
+
+  % This is essentially the backlog that we aimed to achieve in $A$, however, 
+  % It is almost clear that the desired backlog is achieved; if every swapping
+  % process succeeded then we would achieve fill $(1-\delta)
+  % f((1-\delta)\delta^\ell n)$ in each cup in the anchor set at each level of
+  % recursion hence achieving backlog $$(1-\delta)\sum_{\ell=0}^L
+  % f(n\delta^\ell(1-\delta))$$ overall. However each swapping process has some
+  % (very small) probability of failing; we computed probability of failure this
+  % to be at most $\delta \mu_\Delta / n^\eta.$ Consider the probability that
+  % more than a constant fraction $w = \Theta(1)$ of the $s = \sum_{\ell=0}^L
+  % n\delta^{\ell+1}$ swapping-processes fail. Let $X_i$ be the random variable
+  % indicating whether the $i$-th swapping-process succeeds (note: this is
+  % swapping-processes on all levels of recursion), and let $X=\sum_{i=1}^s X_i$.
+  % Clearly $\E[X] = s(1-\delta\mu_\Delta/n^\eta)$. Success of the
+  % swapping-processes are not independent events: a swapping-process is in-fact
+  % more likely to succeed given that previous swapping-processes have failed.
+  % Hence we can upper bound the probability of more than a $w$-fraction of the
+  % swapping-processes failing by a Chernoff Bound: $$\Pr\left(\frac{1}{s}X \ge
+  % \frac{1}{s}\E[X] - w/2\right) \ge 1-2e^{-s w^2/2} \ge 1-2^{\Omega(n)}$$ By
+  % appropriately large choice for $\eta \le O(1)$, $$\delta\mu_\Delta /n^\eta
+  % \le w/2$$ no matter how small $w \ge \Omega(1)$ is chosen. In particular this
+  % implies that $\Pr[X \ge s(1-w)] \ge 1-2^{\Omega(n)}$.
+
+  % Now we will define $\phi$ such that success of $s(1-w)$ of the
+  % swapping-processes guarantees backlog $$\phi \cdot (1-\delta) \sum_{\ell=0}^L
+  % f(n\delta^\ell(1-\delta)).$$ In the worst case the failed swapping-processes
+  % bring very negative cups into the anchor-set, potentially as negative as
+  % $-\delta f((1-\delta)\delta^\ell n)$ on the $\ell$-th level of recursion.
+  % However, clearly this is equivalent to removing at most $2$ cups worth of
+  % mass from the anchor set. Overall we thus remove at most $2w$ cups worth of
+  % mass from the anchor set. Hence choosing $\phi = 1-2w$ works.
+  % Noting that the constant $w > 0$ was arbitrary we have that $\phi$ can be
+  % made any constant arbitrarily close to $1$.
+
+  % In order to achieve this backlog however, not only does the filler need to be
+  % able to swap over $s(1-w)$ cups on rounds where the emptier neglects the
+  % anchor set, but no applications of $f$ can fail; failure happens with
+  % probability $2^{-n\delta^\ell(1-\delta) q}$ for an application of $f$ to
+  % $n\delta^\ell(1-\delta)$ cups. Taking a union bound over the $\poly(n)$
+  % applications of $f$ clearly still gets probability failure at most
+  % $2^{-\Omega(n)}$.
+}
+
+  To achieve Step 2 the filler simply applies $\alg{f}$ to $A$.
+  This clearly achieves backlog 
+  $$f(|A|) = f(\ceil{\delta n})$$
+  with exponentially good probability.
+ 
+  Since both Step 1 and Step 2 succeed with exponentially good
+  probability, the entire process succeeds with exponentially
+  good probability.
+
+  We now analyze the running time of $\alg{f'}$.
+  The initial smoothing takes time $O(M')$. Step 1 entails
+  $n^{\eta}\cdot (n\delta)$ swapping-processes, each of which
+  takes time $f(|B|)$. Due to flattening at the beginning of each
+  application of $\alg{f}$ the running time may be increased by a
+  multiplicative factor of at most $3$. Step 2 takes time
+  $T(|A|)$. Adding these times we have that the running time
+  $T'(n)$ of $\alg{f'}$ is
+  $$T'(n) \le O(M') + 6 \delta n^{\eta+1} T(\floor{(1-\delta)n}) + T(\ceil{\delta n}).$$
+
+  Having proved that $\alg{f'}$ achieves the desired backlog
+  with the desired probability in the desired running time, the
+  proof is now complete.
+
+\end{proof}
+
