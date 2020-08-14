@@ -14,9 +14,11 @@ how much water can the filler force to be in the fullest cup, and what is the
 upper bound on this fill that an appropriate emptying strategy can guarantee?
 We study several variants of the problem and answer some open questions.
 
+![cup game](cupgame.png)
+
 # results
 
-- Variable-Processor cup game
+- (main results) Variable-Processor cup game
 
 We ask the natural question: "what if the number of processors is
 allowed to change?"
@@ -25,18 +27,22 @@ the game.
 
 * An adaptive filler can achieve backlog linear in the number of
 cups! Classically there is a logarithmic upper bound! Wow!
-* A greedy emptier never lets backlog exceed linear
-* An oblivious filler can still get polynomial backlog, in fact
-polynomials with any constant exponent below one! We are only
-able to prove this for "greedy-like" emptiers, but this class of
-emptiers is of great interest because all known upper bound
-constructions for cup games fall into this category!
+  * An adaptive filler can achieve backlog $\Omega(n^{1-\epsilon})$ for constant
+  $\epsilon$ in running time $2^{\log^2 n}$
+  * An adaptive filler can achieve backlog $\Omega(n)$ in running time $O(n!)$
+* A greedy emptier never lets backlog exceed $O(n)$
+* An oblivious filler can still get polynomial backlog! But only
+against "greedy-like" emptiers. 
+  * In particular, we show that an oblivious filler can achieve
+  backlog $\Omega(n^{1-\epsilon})$ against an $O(1)$-greedy-like
+  emptier with probability at least $1-2^{-\polylog(n)}$ in
+  running time $2^{\polylog(n)}$.
 
-- Multi-Processor Cup Game: Adaptive lower bound
+- (minor result) Multi-Processor Cup Game: Adaptive lower bound
 
 We provide a simple construction that an adaptive filler can use
 to get large backlog. Combined with previous work by Kuszmaul
-this implies that backlog logarithmic in the number of cups is
-tight for the adaptive case of the multi-processor cup game,
-regardless of the number of processors, which is somewhat surprising!
+this implies that backlog $\Theta(\log n)$ is tight for the
+adaptive case of the multi-processor cup game, regardless of the
+number of processors.
 
