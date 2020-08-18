@@ -66,22 +66,24 @@ where many users are all on a server, and the number of
 processors allocated to each user is variable as other users get
 some portion of the processors.
 
-A priori having variable resources offers neither player a clear advantage:
-lower values of $p$ mean that the emptier is at more of a discretization
-disadvantage but also mean that the filler can ``anchor" fewer   
-cups. \footnote{A
-useful part of many filling algorithms is maintaining an ``anchor" set of
-``anchored" cups. The filler always places $1$ unit of water in each anchored
-cup. This ensures that the fill of an anchored cup never decreases after it is
-placed in the anchor set.} Furthermore, at any fixed value of $p$ upper bounds
-have been proven. For instance, regardless of $p$ a greedy emptier prevents an
-adaptive filler from having backlog greater than $O(\log n)$. Switching between
-different values of $p$, all of which the filler cannot individually use to get
-backlog larger than $O(\log n)$ is not obviously going to help
-the filler achieve larger backlog. We hoped that the
-variable-processor cup game could be simulated in the classic
-multi-processor cup game, because the extra ability given to the
-filler does not seem very strong. 
+A priori having variable resources offers neither player a clear
+advantage: lower values of $p$ mean that the emptier is at more
+of a discretization disadvantage but also mean that the filler
+can ``anchor" fewer   cups. \footnote{A useful part of many
+  filling algorithms is maintaining an ``anchor" set of
+  ``anchored" cups. The filler always places $1$ unit of water in
+  each anchored cup. This ensures that the fill of an anchored
+cup never decreases after it is placed in the anchor set.}
+Furthermore, at any fixed value of $p$ upper bounds have been
+proven. For instance, regardless of $p$ a greedy emptier prevents
+an adaptive filler from having backlog greater than $O(\log n)$
+\cite{wku20}. Switching between different values of $p$, all of
+which the filler cannot individually use to get backlog larger
+than $O(\log n)$ is not obviously going to help the filler
+achieve larger backlog. We hoped that the variable-processor cup
+game could be simulated in the classic multi-processor cup game,
+because the extra ability given to the filler does not seem very
+strong. 
 
 However, we show that attempts at simulating the variable-processor cup
 game are futile because the variable-processor cup game
