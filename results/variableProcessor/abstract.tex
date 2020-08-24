@@ -1,38 +1,44 @@
 \maketitle
 \abstract{ 
-  In the \defn{cup game} two players, the \defn{filler} and the \defn{emptier},
-  take turns adding and removing water from cups, subject to certain
-  constraints. In the classic $p$-processor cup game the filler distributes
-  $p$ units of water among the $n$ cups with at most $1$ unit of water to any
-  particular cup, and the emptier chooses $p$ cups to remove at most one unit
-  of water from. Analysis of the cup game is important for applications in
-  processor scheduling, buffer management in networks, quality of service
-  guarantees, and deamortization.
+  In the \defn{cup game} two players, the \defn{filler} and the
+  \defn{emptier}, take turns adding and removing water from a set
+  of cups, subject to certain constraints. In the classic
+  $p$-processor cup game the filler distributes $p$ units of
+  water among the $n$ cups, giving at most $1$ unit of water to
+  any particular cup, and the emptier chooses $p$ cups to remove
+  at most $1$ unit of water from. Analysis of the cup game is
+  important for applications in processor scheduling, buffer
+  management in networks, quality of service guarantees, and
+  deamortization.
 
-  We investigate a new variant of the classic $p$-processor cup game, which
-  we call the \defn{variable-processor cup game}, in which the resources of the
-  emptier and filler are variable. In particular, in the variable-processor cup
-  game the filler is allowed to change $p$ at the beginning of each round. 
-  Although the modification to allow variable resources seems small, we
-  show that it drastically alters the game.
+  We consider a new variant of the classic $p$-processor cup game
+  in which the resources of the emptier and filler are variable:
+  in our variant of the game, the \defn{variable-processor cup
+  game}, the filler is allowed to \emph{change $p$} at the
+  beginning of each round. Surprisingly, we found that the
+  variable-processor cup game is fundamentally different from the
+  classic fixed-resources version of the game.
 
-  We construct an adaptive filling strategy that achieves backlog
-  $\Omega(n^{1-\varepsilon})$ for any constant $\varepsilon >0$ of our choice in
-  running time $2^{O(\log^2 n)}$. This is enormous compared to the upper
-  bound of $O(\log n)$ that holds in the classic $p$-processor cup game!
-  We also present a simple adaptive filling strategy that is able to
-  achieve backlog $\Omega(n)$ in extremely long games: it has running time
-  $O(n!).$
+  We give an adaptive filling strategy that achieves backlog
+  $\Omega(n^{1-\varepsilon})$ for any constant $\varepsilon >0$
+  of our choice in running time $2^{O(\log^2 n)}$. This is
+  enormous compared to in the $p$-processor cup game where an
+  emptier can prevent backlog from exceeding $O(\log n)$. We also
+  present an adaptive filling strategy that is able to
+  achieve backlog $\Omega(n)$ in running time $O(n!)$.
 
-  Furthermore, we demonstrate that this lower bound on backlog is tight: 
-  using a novel set of invariants we prove that a greedy emptier never lets
-  backlog exceed $O(n)$.
+  We demonstrate, using a novel set of invariants, that a greedy
+  emptier never lets backlog exceed $O(n)$; this
+  matches our lower bound, so our analysis is tight.
 
-  We also construct an oblivious filling strategy that achieves backlog
-  $\Omega(n^{1-\varepsilon})$ for $\varepsilon>0$ constant of our choice in time
-  $2^{O(\polylog n)}$ against any ``greedy-like" emptier with probability at least
-  $1-2^{-\polylog(n)}$. Whereas classically randomization gives the emptier a
-  large advantage, in the variable-processor cup game the lower bound is the same!
+  We also give an oblivious filling strategy that achieves
+  backlog $\Omega(n^{1-\varepsilon})$ for $\varepsilon>0$
+  constant of our choice in time $2^{O(\polylog n)}$ against any
+  ``greedy-like" emptier with probability at least
+  $1-2^{-\polylog(n)}$. Being oblivious, i.e. not being able to
+  observe the game state, seems a large disadvantage, but in the
+  variable-processor cup game the lower bound is the same as in
+  the adaptive case!
 }
 \thispagestyle{fancy} % page number to bottom right
 
