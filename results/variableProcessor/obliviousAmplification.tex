@@ -68,7 +68,8 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
   $\alg(f)$ are emptier-wasted, the probability
   that fewer than $M\cdot (1-2p)$ applications of $\alg(f)$
   succeed is at most $$e^{-2Mp^2}$$ by a Chernoff bound.
-  The emptier is allowed to interfere with at most $N^2$ of the
+  The emptier is allowed to interfere, i.e. neglect the anchor
+  set and do extra emptying in the non-anchor set, with at most $N^2$ of the
   applications of $\alg(f)$, thus if we condition on there being
   at least $M(1-2p)$ applications that would succeed if the emptier
   does not interfere, there are at least $M(1-2p)-N^2$ applications of
@@ -98,10 +99,10 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
 
   Taking a union bound we have that with failure probability at
   most $q \cdot n_A$ all donation-process successfully achieve a cup
-  with fill at least $\mu_{t_0}(B) + f(n_B)$ where $\mu_{t_0}(B)$
+  with fill at least $\mu_{S_0}(B) + f(n_B)$ where $\mu_{S_0}(B)$
   refers to the average fill of $B$ measured at the start of the
   application of $\alg(f)$; now we assume all donation-processes
-  are successful, and demonstrates that this translates into the
+  are successful, and demonstrate that this translates into the
   desired average fill in $A$.
 
   Let \defn{$\skips_t$} denote the number of times that the
@@ -119,7 +120,7 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
   If the anchor set is neglected then $\mu(B)$ decreases, causing
   $\mu(B) - \skips/n_B$ to decrease. 
   If a skip occurs, then $\skips/n_B$ increases by more than
-  $\mu(B)$ decreases, causing $\mu(B)-\skips/n_B$ to decrease. 
+  $\mu(B)$ increases, causing $\mu(B)-\skips/n_B$ to decrease. 
   Let $t_*$ be the cup state at the end of all the
   donation-processes. We have that 
   \begin{equation}

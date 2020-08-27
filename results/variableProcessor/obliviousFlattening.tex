@@ -40,6 +40,14 @@ emptyings and skip emptyings to determine valid moves. Further,
 note that the emptier is allowed to skip extra emptyings,
 although skipping extra emptyings looks the same as if the
 extra-emptyings had simply not been performed. 
+Let the \defn{regular} cup game be the $0$-extra-emptyings
+$\infty$-skip-emptyings cup game: this is the regular cup game.
+Allowing for some extra emptyings, and bounding the number of
+skip emptyings is sometimes necessary when analyzing an algorithm
+that is a subroutine of a larger algorithm however, hence it
+sometimes makes sense to consider games with different values of
+$E,S$. Unless explicitly stated otherwise however we are
+considering the regular cup game.
 
 For a $\Delta$-greedy-like emptier let $R_\Delta = 2(2+\Delta)$;
 we now prove a key property of these emptiers: there is an
@@ -275,7 +283,7 @@ are well-known, and similar versions of it can be found in \cite{
 mbe19, mbe15, die91, wku20}.
 \begin{proposition}
   \label{prop:randalg}
-  Consider an $R$-flat cup configuration in the single-processor
+  Consider an $R$-flat cup configuration in the regular single-processor
   $\infty$-extra-emptyings $\infty$-skip-emptyings negative-fill cup
   game on $n$ cups with initial average fill $\mu_0$.
   Let $k \in [n]$ be a parameter. Let $d = \sum_{i=2}^k 1/i$.

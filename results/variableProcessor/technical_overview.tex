@@ -2,7 +2,7 @@
 \label{sec:technical_overview}
 
 In this section we provide sketches of the proofs in the paper,
-omitting many details.
+omitting details.
 
 \subsection{Adaptive Lower Bound}
 In \cref{sec:adaptive} we provide filling strategies that an
@@ -13,59 +13,69 @@ First we note that there is a trivial algorithm, that we call
 \defn{$\trivalg$}, for achieving backlog at least $1/2$ on at
 least $2$ cups in time $O(1)$.
 
-The essential ingredient in the proof is the Amplification
-Lemma, which gives a way to transform a filling strategy
-$\alg(f)$ into a new filling strategy $\alg(f')$, called the
-\defn{amplification} of $\alg(f)$, that achieves backlog at
-least 
-$$f'(n) \ge (1-\delta) f(\floor{(1-\delta)n}) + f(\ceil{\delta
-n}).$$
-To achieve this the filler designates an \defn{anchor set} $A$ of size
+The essential ingredient in our polynomial lower bound proof is
+the \defn{Amplification Lemma} which gives a way to improve a
+function for achieving a certain backlog.
+\begin{lemma}
+  Let $\alg(f)$ be a filling strategy that achieves backlog
+  $f(n)$ on $n$ cups. There exists a filling strategy $\alg(f')$,
+  the \defn{amplification} of $\alg(f)$, that achieves backlog at
+  least $$f'(n) \ge (1-\delta) f(\floor{(1-\delta)n}) +
+  f(\ceil{\delta n}).$$
+\end{lemma}
+\begin{proof}[Amplification Lemma Proof Sketch]
+The filler designates an \defn{anchor set} $A$ of size
 $\ceil{\delta n}$ and a \defn{non-anchor set} $B$ of size
-$\floor{(1-\delta)n}$. The filler's strategy is roughly as follows:\\
-\textbf{Step 1:} Get $\mu(A) \ge (1-\delta) f(|B|)$ by using $\alg(f)$ repeatedly
-on $B$ to achieve cups with fill at least $f(|B|)+\mu(B)$ in $B$ and
-then swapping these into $A$. The filler always places $1$ unit
-of fill into each anchor cup while doing this.\\
+$\floor{(1-\delta)n}$. The filler's strategy is as follows:\\
+\textbf{Step 1:} 
+Make $\mu(A) \ge (1-\delta) f(|B|)$ by using $\alg(f)$ repeatedly
+on $B$ while placing $1$ unit of fill into each anchor cup each
+round; if the emptier does not place extra resources into $B$
+this results in the filler achieving a cup with large fill in $B$
+which it can swap into $A$ causing $\mu(A)$ to increase, if the
+emptier does place extra resources into $B$ to prevent a cup in
+$B$ from gaining high fill, then the emptier is correspondingly
+placing fewer resources into $A$ causing $\mu(A)$ to increase.\\
 \textbf{Step 2:} Use $\alg(f)$ once on $A$ to obtain some cup
 with fill $\mu(A)+f(|A|)$.\\
 Note that in order to use $\alg(f)$ on subsets of the cups the
 filler will need to vary $p$.
 
-Consider Step 1. We say that the emptier \defn{neglects} the
-anchor set on a round if the emptier does not empty from all
-anchor cups on that round. By neglecting the anchor set the
-emptier can place more resources into the non-anchor set than the
-filler, which can prevent the filler from getting a cup with fill
-$\mu(B) + f(|B|)$. On the other hand, neglecting the anchor set
-increases the mass of the anchor set. If the emptier neglects the
-anchor set too many times, then the filler gets high fill in the
-anchor set because the mass of the anchor set increases when the
-anchor set is neglected. If the emptier does not neglect the
-anchor set too many times, then the filler will be able to get
-cups with high fill in $B$, and swap these into $A$, which also
-results in the mass of the anchor set increasing. It can be shown
-that after at most $|A|$ applications of $\alg(f)$ to $B$ the
-anchor set will have achieved average fill at least $(1-\delta)
-f(|B|)$.
+Consider Step 1. It can be shown that by using $\alg(f)$ at most
+$|A|$ times on $B$ the average fill of $A$ will have increased to
+at least $(1-\delta)f(|B|)$ due either to the filler swapping
+many cups with high fill into $A$, or to the emptier repeatedly
+using more resources in $B$ and less in $A$ than the filler.
+Step 2 trivially succeeds. Thus the filler achieves the desired
+backlog:
+$$(1-\delta) f(|B|) + f(|A|).$$
+  
+\end{proof}
 
-Step 2 trivially succeeds.
-Thus we have achieved backlog
-$$(1-\delta) f(|B|) + f(|A|), $$
-as desired.
+We use the Amplification Lemma to give two lower bounds on
+backlog: one with reasonable running time, the other with
+slightly better backlog.
 
-Now we use the Amplification Lemma to prove two theorems.
-
-First, say we aim to achieve backlog $\Omega(n^{1-\varepsilon})$
-for constant $\epsilon \in (0, 1/2)$. We construct a sequence of
+\begin{theorem}
+  There is an adaptive filling strategy for achieving backlog
+  $\Omega(n^{1-\varepsilon})$ for constant $\varepsilon \in (0,
+  1/2)$ in running time $2^{O(\log^2 n)}$. 
+\end{theorem}
+\begin{proof}[\cref{thm:adaptivePoly} Proof Sketch]
+We construct a sequence of
 filling strategies with $\alg(f_{i+1})$ the amplification of
-$\alg(f_i)$ using $\delta = \Theta(1)$ to be determined as a
+$\alg(f_i)$ using $\delta = \Theta(1)$ determined as a
 function of $\varepsilon$, and $\alg(f_0)=\trivalg$.
 Choosing $\delta$ appropriately, we show by induction on $i$ that
 $\alg(f_{\Theta(\lg n)})$ achieves backlog
 $\Omega(n^{1-\varepsilon})$ in running time $2^{O(\log^2 n)}$.
+\end{proof}
 
-Now, say we aim to achieve backlog $\Omega(n)$.
+\begin{theorem}
+  There is an adaptive filling strategy for achieving backlog
+  $\Omega(n)$ in running time $O(n!)$.
+\end{theorem}
+\begin{proof}[\cref{prop:factorialTimeAlg} Proof Sketch]
 We construct a sequence of filling strategies with $\alg(f_{i+1})$ the
 amplification of $\alg(f_i)$ using $\delta = 1/(i+1)$, and
 $\alg(f_0)$ a filling strategy for achieving backlog $1$ on
@@ -73,18 +83,22 @@ $O(1)$ cups in $O(1)$ time (this is a slight modification of
 $\trivalg$). We show by induction on $i$ that
 $\alg(f_{\Theta(n)})$ achieves backlog $\Omega(n)$ in running
 time $O(n!)$.
+\end{proof}
 
 \subsection{Upper Bound}
 In \cref{sec:upperBound} we prove that a greedy emptier, i.e. an
 emptier that always empties from the $p$ fullest cups, never lets
 backlog exceed $O(n)$; in this subsection we sketch the proof of
 this result.
-This upper bound on backlog follows directly from a set of
-invariants that we prove are maintained: the
-average fill of the $k$ fullest cups is at most $2n-k$.
 
-We now sketch the proof that the invariants are always
-maintained. The proof is by induction on the round. Fix some
+The upper bound on backlog is derived by setting $k=1$ in
+\cref{thm:TO_invariant}.
+\begin{theorem}
+  \label{thm:TO_invariant}
+  The average fill of the $k$ fullest cups never exceeds $2n-k$.
+\end{theorem}
+\begin{proof}[\cref{thm:invariant} Proof Sketch]
+ The proof is by induction on the round. Fix some
 round $t$ and assume that all invariants hold on round $t$. Fix
 some $k$; we aim to prove that the average fill of the $k$
 fullest cups is at most $2n-k$ at the start of round $t+1$. 
@@ -100,11 +114,12 @@ once the cups in $B$ are emptied from, the cups in $B$ are not
 among the $k$ fullest cups, so cups in $C$ take their places
 among the $k$ fullest cups.
 
-We show that we may assume without loss of generality that
-$S_t(r) = I_t(r)$ for each rank $r \in [n]$, by changing the
-labels of the cups; intuitively this is true because if a cup $c$
-changes ranks from $S_t$ to $I_t$, then some other cup must have
-fill very close to $c$'s fill.
+It can be shown that we may assume without loss of generality
+that the rank $r$ cup at state $S_t$ is also the rank $r$ cup at
+state $I_t$ for all ranks $r \in [n]$, by changing the labels of
+the cups; intuitively this is true because if a cup $c$ changes
+ranks from $S_t$ to $I_t$, then some other cup must have fill
+very close to $c$'s fill.
 
 We prove the invariant by considering several cases.
 
@@ -121,18 +136,18 @@ than $2n-k$.
 \noindent\textbf{Case 2}:
 No cups in $A$ zero out in round $t$ and $b=0$.\\
 \textbf{Analysis}:
-In this case $S_{t+1}([k]) = S_t([k])$.
-During round $t$ the emptier removes $a$ units of fill from the
-cups in $S_t([k])$, specifically the cups in $A$. The filler
-cannot have added more than $k$ fill to these cups, because it
-can add at most $1$ fill to any given cup. Also, the filler
-cannot have added more than $p_t$ fill to the cups because this
-is the total amount of fill that the filler is allowed to add.
-Hence the filler adds at most $\min(p_t, k) = a+b=a+0=a$ fill to
-these cups.
-The emptier thus is removing at least as much water as the filler
-is adding to these cups, so the average fill has not increased,
-and is still at most $2n-k$.
+In this case the set of cups of ranks in $[k]$ at state $S_t$ is
+the same as the set of cups of ranks in $[k]$ at state $S_{t+1}$,
+and these are both $A$. During round $t$ the emptier removes $a$
+units of fill from the cups $A$. The filler cannot have added
+more than $k$ fill to these cups, because it can add at most $1$
+fill to any given cup. Also, the filler cannot have added more
+than $p_t$ fill to the cups because this is the total amount of
+fill that the filler is allowed to add. Hence the filler adds at
+most $\min(p_t, k) = a+b=a+0=a$ fill to these cups. The emptier
+thus is removing at least as much water as the filler is adding
+to these cups, so the average fill has not increased, and is
+still at most $2n-k$.
 
 \noindent\textbf{Case 3}:
 No cups in $A$ zero out on round $t$ and $b > 0$.\\
@@ -141,9 +156,12 @@ Consider $m_{S_{t+1}}(AC)$, which is the mass of the $k$ fullest
 cups at state $S_{t+1}$. Each cup in $A$ was emptied from. The
 filler adds at most $\min(k, p_t) = a+b$ fill to these cups.
 Hence, 
-$$m_{S_{t+1}}(AC) \le m_{S_t}(AC) + b.$$
+\begin{equation}
+  \label{eq:TO_bplusmAC}
+m_{S_{t+1}}(AC) \le m_{S_t}(AC) + b.
+\end{equation}
 
-The key insight necessary to bound $\mu_{S_{t+1}}(AC)$ is to
+The key insight necessary to bound $m_{S_{t}}(AC)$ is to
 notice that larger values for $m_{S_t}(A)$ correspond to smaller
 values for $m_{S_t}(C)$ because the invariants are satisfied at
 state $S_t$.
@@ -152,22 +170,28 @@ $$m_{S_t}(C) \le \frac{c}{b+c} m_{S_t}(BC) = \frac{c}{b+c}(m_{S_t}(ABC) - m_{S_t
 we have 
 \begin{equation}
   \label{eq:monotonicTECHOVER}
-  m_{S_{t+1}}(AC) \le \frac{c}{b+c}m_{S_t}(ABC) + \frac{b}{b+c}m_{S_t}(A).
+  m_{S_{t}}(AC) \le \frac{c}{b+c}m_{S_t}(ABC) + \frac{b}{b+c}m_{S_t}(A).
 \end{equation}
 As \eqref{eq:monotonicTECHOVER} is monotonically increasing in
 both $m_{S_t}(A)$ and $m_{S_t}(ABC)$ we can upper bound
 \eqref{eq:monotonicTECHOVER} by substituting the extremal values
-of $\mu_{S_t}(A)$ and $m_{S_t}(ABC)$ in, namely $|A|(2n-|A|)$ and
+of $m_{S_t}(A)$ and $m_{S_t}(ABC)$ in, namely $|A|(2n-|A|)$ and
 $|ABC|(2n-|ABC|)$.
 After some algebra (or via an elegant combinatorial argument) it can be shown that 
-$$\frac{c}{b+c}|ABC|(2n-|ABC|) + \frac{b}{b+c}|A|(2n-|A|) \le k(2n-k)$$
-which implies that the average fill of the $k$ fullest cups in
-state $S_{t+1}$ is at most $2n-k$, as desired.
+\begin{equation}
+  \label{eq:TO_goodsstsuffminuscb}
+  \frac{c}{b+c}|ABC|(2n-|ABC|) + \frac{b}{b+c}|A|(2n-|A|) \le k(2n-k)-cb.
+\end{equation}
+Combined with \eqref{eq:TO_bplusmAC}, and the fact $b>0$,
+\eqref{eq:TO_goodsstsuffminuscb} implies that the average fill of
+the $k$ fullest cups in state $S_{t+1}$ is at most $2n-k$, as
+desired.
 
 We have shown the invariant holds for arbitrary $k$, so given that the
 invariants all hold at state $S_t$ they also must all hold at state $S_{t+1}$.
 Thus, by induction we have the invariant for all rounds $t\in\mathbb{N}$.
-
+  
+\end{proof}
 \subsection{Oblivious Lower Bound}
 
 In \cref{sec:oblivious} we provide filling strategies that an
@@ -177,27 +201,35 @@ for $\varepsilon \in (0, 1/2)$ constant against
 $1-2^{-\polylog(n)}$ in running time $2^{\polylog(n)}$; in this
 subsection we sketch the proofs of these results. We remark that
 this proof is by far our most technically difficult result;
-however, the ideas driving the oblivious lower bound are similar
-to those driving the adaptive lower bound. 
+however, interestingly, many of the ideas driving the oblivious
+lower bound are similar to those driving the adaptive lower
+bound. 
 
-First we make some definitions.
-The \defn{fill-range} of a set of cups at state $S$ is $\max_c
-\fil_S(c) - \min_c \fil_S(c)$. A cup configuration is
-\defn{$R$-flat} if the fill-range is at most $R$. An emptier is
-called \defn{$\Delta$-greedy-like} if whenever there are two cups $c_1,
-c_2$ with $\fil_{I_t}(c_1) > \fil_{I_t}(c_2) + \Delta$ the emptier 
-doesn't empty from $c_2$ on round $t$ unless it also empties
-from $c_1$ on round $t$. For an oblivious filler we only prove lower bounds
-against $O(1)$-greedy-like emptiers; however this is a very 
-interesting class of emptiers because all known randomized
-algorithms for the cup game are $O(1)$-greedy-like \cite{mbe19, wku20}.
-We define a new variant of the cup game: In the $p$-processor
-\defn{$E$-extra-emptyings} \defn{$S$-skip-emptyings}
-negative-fill cup game on $n$ cups, the filler distributes $p$
-units of water amongst the cups, and then the emptier empties
-from $p$ \textit{or more, or less} cups. In particular the
-emptier is allowed to do $E$ extra emptyings and is also allowed
-to skip $S$ emptyings over the course of the game.
+First we make some definitions. The \defn{fill-range} of a set of
+cups at state $S$ is $\max_c \fil_S(c) - \min_c \fil_S(c)$. A cup
+configuration is \defn{$R$-flat} if the fill-range is at most
+$R$. An emptier is called \defn{$\Delta$-greedy-like} if whenever
+there are two cups $c_1, c_2$ with $\fil_{I_t}(c_1) >
+\fil_{I_t}(c_2) + \Delta$ the emptier doesn't empty from $c_2$ on
+round $t$ unless it also empties from $c_1$ on round $t$. For an
+oblivious filler we only prove lower bounds against
+$O(1)$-greedy-like emptiers; however this is a very interesting
+class of emptiers because all known randomized algorithms for the
+cup game are $O(1)$-greedy-like \cite{mbe19, wku20}. We define a
+new variant of the cup game: In the \defn{$E$-extra-emptyings}
+\defn{$S$-skip-emptyings} cup game on $n$ cups, the filler
+distributes $p$ units of water amongst the cups, and then the
+emptier empties from $p$ \textit{or more, or less} cups. In
+particular the emptier is allowed to do $E$ extra emptyings and
+is also allowed to skip $S$ emptyings over the course of the
+game. Let the \defn{regular} cup game be the $0$-extra-emptyings
+$\infty$-skip-emptyings cup game: this is the regular cup game.
+Allowing for some extra emptyings, and bounding the number of
+skip emptyings is sometimes necessary when analyzing an algorithm
+that is a subroutine of a larger algorithm however, hence it
+sometimes makes sense to consider games with different values of
+$E,S$. Unless explicitly stated otherwise however we are
+considering the regular cup game.
 
 Let $R_\Delta = 2(2+\Delta)$.
 We now prove an important fact about $\Delta$-greedy-like emptiers.
@@ -225,7 +257,7 @@ that will be used as a subroutine later.
 \begin{proposition}
   \label{prop:TO_randalg} % TO stands for technical overview 
   Consider an $R$-flat configuration of cups in the
-  single-processor negative-fill cup game on $n$ cups with
+  regular single-processor negative-fill cup game on $n$ cups with
   initial average fill $\mu_0$. Let $k \in [n]$. Let $d =
   \sum_{i=2}^k 1/i.$
 
@@ -324,11 +356,12 @@ the application of $\alg_0$.
 
 \end{definition}
 
-We use $\rep$ in two distinct places, first to get constant
+We use $\rep$ in two distinct places: first to get constant
 backlog, and second to prove the Oblivious counterpart of the
 Adaptive Amplification Lemma.
-In the following proofs our goal is eventually to get backlog
-$N^{1-\varepsilon}$ in $N$ cups. 
+For the rest of the section our goal is eventually to get backlog
+$\poly(N)$ in $N$ cups for a value of $N$ that we fix now; this
+value of $N$ will be used throughout all of the proofs.
 
 First we analyze $\rep(\randalg)$.
 \begin{lemma}
@@ -349,84 +382,74 @@ First we analyze $\rep(\randalg)$.
   the sets defined in \cref{def:TO_rep}. The running time of
   $\rep_{\delta}(\randalg(k))$ is $\poly(N)$.
 \end{lemma}
-\begin{proof}[Proof sketch of \cref{lem:TO_obliviousManyUnknownCups}] 
+\begin{proof}[\cref{lem:TO_obliviousManyUnknownCups} Proof Sketch] 
   We use the definitions given in \cref{def:TO_rep}.
 
-Without loss of generality we assume that the emptier neglects
-the anchor set at most $N^2$ times, and skips at most $N^2$
-emptyings; otherwise the filler achieves mass $N^2$ in the cups.
+  Note that if the emptier neglects the anchor set $N^2$ times,
+  or skips $N^2$ emptyings, then the mass of the cups will be at
+  least $N^2$, so the filler is done. For the rest of the proof
+  we consider the case where the emptier chooses to neglect
+  the anchor set fewer than $N^2$ times, and choose to skip fewer
+  than $N^2$ emptyings.
 
-We show that $\mu(B)$ never sinks too low. We do so by first
-establishing that $B$ is always very flat, then showing that
-$\mu(B)$ never rises too much higher than $\mu(AB)$, then
-deducing that by greediness $\mu(A)$ never rises too high, and
-finally by using the upper bound on $\mu(A)$ in the expression
-$|A|\mu(A) + |B|\mu(B) = |AB|\mu(AB)$ to derive a lower bound on
-$\mu(B)$.
-
-Let $d = \sum_{i=2}^k 1/i = \Theta(h)$.
-Because extra-emptyings and skip-emptyings of $B$ are limited,
-using \cref{lem:TO_flatalg} $\flatalg$ and
+First we show that $\mu(B)$ never sinks too low, which is one of
+the guarantees of our algorithm, and necessary to ensure that we
+get large fill in many cups in $A$. 
+Let $d = \sum_{i=2}^k 1/i =
+\Theta(h)$. Because extra-emptyings and skip-emptyings of $B$ are
+limited, using \cref{lem:TO_flatalg} and
 \cref{prop:TO_randalg}, we can inductively show that $B$ is
 always $(R_\Delta + d)$-flat, and that all applications of
-$\flatalg$ make $B$ be $R_\Delta$-flat.
-
-Now we claim that $$\mu(B) - \mu(AB) \le 2$$ always holds.
-There are two ways that $\mu(B) -\mu(AB)$ can increase:\\
+$\flatalg$ make $B$ be $R_\Delta$-flat. Now we claim that
+$\mu(B) \le \mu(AB) + 2.$ There are two ways $\mu(B) - \mu(AB)$
+can increase:\\
 \textbf{Case 1:}
 The emptier could empty from $0$ cups in $B$ while emptying
 from every cup in $A$. \\
+By greediness this means that $\mu(A) \ge \mu(B) - \Delta$. Since
+$|B| \gg |A|$, this implies $\mu(B) \le \mu(AB) + 1$.\\
 \textbf{Case 2:}
 The filler could evict a cup with fill lower than $\mu(B)$ from
 $B$ at the end of a donation-process. \\
-In Case 1, by greediness, all cups in $A$ have fill no smaller
-than $\Delta$ less than the backlog in $B$. Thus, $\mu(A) \ge
-\mu(B) - \Delta$, which, since $|B|\gg |A|$, implies that 
-$$\mu(B) \le \mu(AB) + 1.$$
-Now consider a round where this is not the case, and consider how
-much $\mu(B) - \mu(AB)$ could have grown since the last time that
-Case 1 held. This difference increases the most if $B$ donates
-cups with fill as far as possible below $\mu(B)$. Because the
-running time of $\randalg(k)$ is $k-1$ the cup that $B$ donates
-has fill at least $\mu(B) - R_\Delta - (k-1)$ where $\mu(B)$ is
-the average fill of $B$ at the start of the application of
-$\randalg$. Even if such a cup is donated on all of $n_A$
-donation processes however, by design in choosing $n_B \gg n_A$
-this would only increase $\mu(B)-\mu(AB)$ by $1$.
-Hence 
-$$\mu(B) \le \mu(AB) + 2.$$
+Because $B$ starts each application of $\randalg(k)$ being
+$(R_\Delta + d)$-flat, and the running time of the application is
+$k-1$ the cup donated from $B$ cannot have fill lower than $\mu(B) -
+R_\Delta - (k-1)$. But because $n_B \gg n_A$ even if $B$ donated
+$n_A$ cups that were maximally empty the difference
+$\mu(B)-\mu(AB)$ would only increase by at most $1$.\\
+Combining the analysis of Case 1 and Case 2 we have that $\mu(B)
+\le \mu(AB) + 2$.
 
-By flatness of $B$ and greediness of the emptier no cup in $A$
-ever has its fill rise higher than 
-$$u_A = \mu(AB) + 2 + R_\Delta + d + 1.$$
-Obviously $\mu(A)\le u_A$. Using this in the relation 
-$$\mu(B) = -\frac{|A|}{|B|}\mu(A) + \frac{|AB|}{|B|}\mu(AB),$$
-and again exploiting the choice $|B|\gg |A|$ we get
-$$\mu(B) \ge -h/2 + \mu(AB) \ge -h/2 + \mu_0$$
-as desired.
+Combining the upper bound on $\mu(B)$ with the fact that $B$ is
+always flat and that the emptier is greedy-like, we have that no
+cup in $A$ ever has its fill exceed $u_A = \mu(AB) + 2 + R_\Delta + d + 1.$
+Obviously $\mu(A)\le u_A$. Hence we have an upper bound on
+$\mu(A)-\mu(AB)$; plugging this upper bound into the relation 
+$m(A) + m(B) = m(AB)$, and using the fact that $|B| \gg |A|$ we
+get the desired bound on $\mu(B)$:
+$$\mu(B) \ge -h/2 + \mu(AB) \ge -h/2 + \mu_0.$$
 
 Now we show that we get a constant-fraction of the cups in $A$ to
 have fill $\mu_0 + h$. If the emptier were not able to neglect
-the anchor set, then by a Chernoff bound we would have that a
-constant fraction of the applications of $\randalg(k)$ in a
-donation-process succeed with exponentially good probability in
-$M$. A successful application of $\randalg(k)$ yields a cup with
-fill at least $\mu(B) - R_\Delta + d \ge h+\mu_0$ by our lower
-bound on $\mu(B)$. In order to mitigate the problem that the emptier can
-do extra-emptying we do many applications of $\randalg(k)$ and
-choose randomly how many to do before donating a cup. Because the
-emptier is limited to doing $N^2$ extra emptyings, taking
-$M=\Theta(N^2)$ suffices to guarantee that with constant
-probability each donation-process succeeds. Taking a second
+the anchor set, then by a Chernoff bound a constant fraction of
+the applications of $\randalg(k)$ in a donation-process succeed
+with exponentially good probability in $M$. A successful
+application of $\randalg(k)$ yields a cup with fill at least
+$\mu(B) - R_\Delta + d \ge h+\mu_0$ by our lower bound on
+$\mu(B)$. In order to mitigate the problem that the emptier can
+do extra-emptying we do many, in particular $M=\Theta(N^2)$,
+applications of $\randalg(k)$ and choose randomly how many to do
+before donating a cup; this guarantees that with constant
+probability each donation-process succeeds. Taking a 
 Chernoff bound over the donation-processes gives that with
 exponentially good probability in $n$ a constant fraction of the
 donation-processes succeed. Taking a union bound over all of our
 Chernoff bounds gives the desired probability of success. 
 
-The running time of the filling strategy is clearly $$n_A O(M) (
-O(N^2) + O(1)) = \poly(N),$$ as each of the $n_A$ donation
-processes consists of $O(M)$ applications of $\randalg(k)$ and
-$O(M)$ applications of $\flatalg$.
+The running time of the filling strategy is clearly $n_A O(M) (
+O(N^2) + O(1)) = \poly(N),$ as each of the $n_A$
+donation-processes consists of $O(M)$ applications of
+$\randalg(k)$ and $O(M)$ applications of $\flatalg$.
 
 \end{proof}
 
@@ -504,19 +527,21 @@ Next we prove the Oblivious Amplification Lemma.
 \begin{proof}
   We use the definitions and notation given in \cref{def:rep}. 
 
-  Note that the emptier cannot neglect the anchor set more than
-  $N^2$ times per donation-process, and the emptier cannot skip
-  more than $N^2$ emptyings, without causing the mass of the cups
-  to be at least $N^2$; we assume for the rest of the proof that
-  the emptier chooses not to do this.
+  Note that if the emptier neglects the anchor set $N^2$ times,
+  or skips $N^2$ emptyings, then the mass of the cups will be at
+  least $N^2$, so the filler is done. For the rest of the proof
+  we consider the case where the emptier chooses to neglect
+  the anchor set fewer than $N^2$ times, and choose to skip fewer
+  than $N^2$ emptyings.
 
-  The filler defaults to using $\alg(f)$ on all the cups if 
+  The filler simply uses $\alg(f)$ on all the cups if this
+  results in sufficient backlog, i.e. if
   $$f(n) \ge (1-\delta)^2 f(n_B) + f(n_A).$$
   In this case our strategy trivially has the desired guarantees. 
-  In the rest of the proof we consider the case where we cannot
-  simply fall back on $\alg(f)$ to achieve the desired backlog.
+  In the rest of the proof we consider the case where $\alg(f)$
+  does not achieve sufficient backlog.
 
-  The filler's strategy is roughly as follows:\\
+  The filler's strategy is as follows:\\
   \textbf{Step 1:} Make $\mu(A) \ge (1-\delta)^2 f(n_B)$ by
   using $\rep_\delta(\alg(f))$ on all the cups,
   i.e. applying $\alg(f)$ repeatedly to $B$, flattening $B$ before
@@ -524,39 +549,38 @@ Next we prove the Oblivious Amplification Lemma.
   \textbf{Step 2:} Flatten $A$ using $\flatalg$, and then use
   $\alg(f)$ on $A$.
 
-  Now we analyze Step 1, and show that by appropriately choosing
-  parameters it can be made to succeed.
-
+  We now analyze Step 1.
   For this proof we need all donation-processes to succeed, as
-  opposed to in the proof of \cref{lem:TO_obliviousManyUnknownCups}
-  in which we only needed a constant fraction of the
-  donation-processes to succeed. This necessitates choosing $M$
-  very large. In particular we choose $M = 2^{\log^{24} N}$
-  ---recall that $[M]$ is the set from which we randomly choose
-  how many times to apply $\alg(f)$ in a donation-process. 
-  By choosing $M$ this large we cannot hope to guarantee that
-  every application of $\alg(f)$ succeeds: there are far too many
-  applications. On the other hand, having $M$ so large allows us
-  to have a very tight concentration bound on how many
-  applications of $\alg(f)$ succeed. 
-  By a Chernoff bound with probability at least $1-e^{-2Mp^2}$ at
-  least $M(1-2p)$ of $M$ applications of $\alg(f)$ would succeed
-  if the emptier did not interfere. The emptier can interfere
+  opposed to in the proof of
+  \cref{lem:TO_obliviousManyUnknownCups} in which we only needed
+  a constant fraction of the donation-processes to succeed. This
+  necessitates choosing $M$ very large. In particular we choose
+  $M = 2^{\log^{24} N}$ ---recall that $[M]$ is the set from
+  which we randomly choose how many times to apply $\alg(f)$ in a
+  donation-process. By choosing $M$ this large we cannot hope to
+  guarantee that every application of $\alg(f)$ succeeds: there
+  are far too many applications. On the other hand, having $M$ so
+  large allows us to have a very tight concentration bound on how
+  many applications of $\alg(f)$ succeed. By a Chernoff bound
+  with probability at least $1-e^{-2Mp^2}$ at least $M(1-2p)$ of
+  $M$ applications of $\alg(f)$ would succeed if the emptier did
+  not \defn{interfere}, i.e. neglect the anchor set and do an
+  extra emptying in the non-anchor set. The emptier can interfere
   with at most $N^2$ of the $M(1-2p)$ applications that would
   otherwise be successful. Let $1-q$ be the probability that a
-  donation-process succeeds, i.e. the final application of $\alg(f)$ is not
-  emptier-wasted and succeeds. We have
-  $$1-q \ge (1-e^{-2Mp^2})\paren{\frac{M\cdot (1-2p)-N^2}{M}}.$$
+  donation-process succeeds, i.e. the final application of
+  $\alg(f)$ is not emptier-wasted and succeeds. We have $$1-q \ge
+  (1-e^{-2Mp^2})\paren{\frac{M\cdot (1-2p)-N^2}{M}}.$$
   Rearranging, simplifying by loosening the bound, and using the
-  assumption $p \ge 2^{-\lg^8 N}$, we can show
-  $$q \le 2p + 2^{-\lg^8 N}.$$
+  assumption $p \ge 2^{-\lg^8 N}$, we can show $$q \le 2p +
+  2^{-\lg^8 N}.$$
 
-  Taking a union bound we have that with failure probability at
-  most $q \cdot n_A$ all donation-process successfully achieve a cup
-  with fill at least $\mu_{t_0}(B) + f(n_B)$ where $\mu_{t_0}(B)$
+  Taking a union bound, we have that with probability at least
+  $1- q \cdot n_A$ all donation-process successfully achieve a cup
+  with fill at least $\mu_{S_0}(B) + f(n_B)$ where $\mu_{S_0}(B)$
   refers to the average fill of $B$ measured at the start of the
   application of $\alg(f)$; now we assume all donation-processes
-  are successful, and demonstrates that this translates into the
+  are successful, and demonstrate that this translates into the
   desired average fill in $A$.
 
   Let \defn{$\skips_t$} denote the number of times that the
@@ -574,7 +598,7 @@ Next we prove the Oblivious Amplification Lemma.
   If the anchor set is neglected then $\mu(B)$ decreases, causing
   $\mu(B) - \skips/n_B$ to decrease. 
   If a skip occurs, then $\skips/n_B$ increases by more than
-  $\mu(B)$ decreases, causing $\mu(B)-\skips/n_B$ to decrease. 
+  $\mu(B)$ increases, causing $\mu(B)-\skips/n_B$ to decrease. 
   Let $t_*$ be the cup state at the end of all the
   donation-processes. We have that 
   \begin{equation}
@@ -598,9 +622,8 @@ Next we prove the Oblivious Amplification Lemma.
   Equation~\ref{eq:TO_lowerboundingAharmonic} we essentially have
   $$\mu_{S_{t_*}}(A) \ge \mu_0 + \frac{n_B}{n_A} \delta f(n_B)
   \approx \mu_0 + (1-\delta) f(n_B).$$
-  Our bound here on the partial harmonic sum was not correct
-  however; using a correct bound results in a slightly worse
-  guarantee on $\mu(A)$, namely:
+  To handle the imprecisions indicated in the
+  approximations above the bound becomes slightly worse:
   $$\mu_{S_{t_*}}(A) \ge \mu_0 + (1-\delta)^2 f(n_B).$$
 
 We have shown that in Step 1 the filler achieves average fill
@@ -636,45 +659,28 @@ $N^{1-\varepsilon}$.
   with $\Delta \le O(1)$.
 \end{theorem}
 \begin{proof}
-  We aim to achieve backlog $(N/n_b)^{1-\varepsilon}-1$ for some
-  $n_b \le \polylog(N)$ on $N$ cups.
-  Let $\delta$ be a constant, chosen as a function of $\epsilon$.
+  We show how to achieve backlog $(N/n_b)^{1-\varepsilon}-1$ for
+  some $n_b \le \polylog(N)$ on $N$ cups; note that this implies
+  that the filler can achieve backlog
+  $\Omega(N^{1-\varepsilon'})$ for any constant $\varepsilon' \in
+  (0,1/2)$ on $N$ cups. Let $\delta$ be a constant, chosen as a
+  function of $\varepsilon$.
 
   By \cref{prop:obliviousBase} there is an oblivious filling
   strategy that achieves backlog $\Omega(1)$ on $n$ cups with
   exponentially good probability in $n$; we call this algorithm
   $\alg{f_0}$. Let $n_b = \log^8(N)$. We can make $\alg{f_0}$
   achieve backlog $f_0(k) \ge H \ge \Omega(1)$ for all $k \ge
-  n_b$, for constant $H \ge \Omega(1)$ to be determined ($H$ is a
-  function of $\delta$). We construct $f_{i+1}$ as the
+  n_b$, for constant $H \ge \Omega(1)$ to be determined as a
+  function of $\delta$. We construct $f_{i+1}$ as the
   amplification of $f_i$ using \cref{lem:obliviousAmplification}.
 
   One can inductively show that $f_{\Theta(\log N)}$ achieves
-  backlog $(N/n_b)^{1-\varepsilon} -1$, as desired. Let
-  $\varepsilon' = 2\varepsilon$. Of course $\Omega(N^\varepsilon)
-  \ge \polylog(N)$, so $$(N/n_b)^{1-\varepsilon}-1 \ge
-  \Omega(N^{1-\varepsilon'}).$$
-
-  Let the running time of $f_i(N)$ be $T_i(N)$. From the
-  Amplification Lemma we have following recurrence bounding $T_i(N)$:
-  \begin{align*}
-    T_i(n) &\le 2^{\polylog(N)} \cdot T_{i-1}(\floor{(1-\delta)n}) + T_{i-1}(\ceil{\delta n}) \\
-            &\le 2^{\polylog(N)}T_{i-1}(\floor{(1-\delta)n}).
-  \end{align*}
-  It follows that $\alg{f_{i_*}}$, recalling that $i_* \le O(\log N)$, has running time
-  $$T_{i_*}(n) \le (2^{\polylog(N)})^{O(\log N)} \le 2^{\polylog(N)}$$
-  as desired.
-
-  Now we analyze the probability that the construction fails. 
-  Consider the recurrence $a_{i+1} = \alpha a_i + \beta, a_0 =
-  \gamma$; the recurrence bounding failure probability is a
-  special case of this. Expanding, we see that the recurrence
-  solves to $a_k = \Theta(\alpha^{k-1})\beta + a^k \gamma$.
-  In our case we have 
-  $$\alpha \le N, \beta = 2^{-\lg^8 N}, \gamma = 2^{-\lg^8 N}.$$
-  Hence the recurrence solves to 
-  $$p_{i_*} \le 2^{-\polylog(N)},$$
-  as desired.
-
+  backlog $(N/n_b)^{1-\varepsilon} -1$, as desired. 
+  Analysis of the running time recurrence from the Oblivious Amplification
+  Lemma gives that $\alg(f_{\Theta(\log N)})$ has running time
+  $2^{\polylog(N)}$, while analysis of the probability recurrence
+  shows that $\alg(f_{\Theta(\log N)})$ succeeds with probability
+  at least $1-2^{-\polylog(N)}.$
 \end{proof}
 
