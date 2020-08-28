@@ -16,8 +16,8 @@ with $\fil_{I_t}(c_1) > \fil_{I_t}(c_2) + \Delta$, then a
 $\Delta$-greedy-like emptier doesn't empty from $c_2$ on round
 $t$ unless it also empties from $c_1$ on round $t$. Note that a
 perfectly greedy emptier is $0$-greedy-like. We call an emptier
-\defn{greedy-like} if it is $\Delta$-greedy-like for $\Delta \le
-O(1)$. 
+\defn{greedy-like} if in the cup game on $n$ cups it is
+$\Delta$-greedy-like for $\Delta \le \frac{1}{128} \log\log\log n$. 
 
 With an oblivious filler we are only able to prove lower bounds
 on backlog against greedy-like emptiers; whether or not our
@@ -278,7 +278,7 @@ fill-range.
 
 Next we describe a simple oblivious filling strategy, that we
 call \defn{$\randalg$}, that will be used as a subroutine in
-\cref{lem:obliviousManyUnknownCups}; variants of this strategy
+\cref{lem:obliviousBase}; variants of this strategy
 are well-known, and similar versions of it can be found in \cite{
 BenderFaKu19, DietzRa91, Kuszmaul20}.
 \begin{proposition}
