@@ -324,9 +324,10 @@ high fill in many cups.
   greedy-like emptiers with some probability. We construct a new
   filling strategy \defn{$\rep_\delta(\alg_0)$} as follows:
 
-  Say we have some configuration of $n$ cups.
-  Let $n_A = \ceil{\delta n}, n_B = \floor{(1-\delta)n}$. Let $N
-  \gg n$ be large, let $M=2^{\polylog(N)}$ be a chosen parameter. 
+  Say we have some configuration of $n\le N$ cups (recall that
+  eventually we aim to get large backlog in $N$ cups).
+  Let $n_A = \ceil{\delta n}, n_B = \floor{(1-\delta)n}$. Let
+  $M=2^{\polylog(N)}$ be a chosen parameter. 
   Initialize $A$ to $\varnothing$ and $B$ to
   being all of the cups. We call $A$ the \defn{anchor set} and
   $B$ the \defn{non-anchor set}. The filler always places $1$
@@ -368,7 +369,7 @@ First we analyze $\rep(\randalg)$.
   \label{lem:TO_obliviousManyUnknownCups}
   Let $\Delta \le O(1)$, let $h\le O(1)$, with $h \ge
   16(1+\Delta)$, let $k=\ceil{e^{2h+1}}$, let $\delta =
-  \Theta(e^{-2h})$, let $n\ll N$ be sufficiently large. 
+  \Theta(e^{-2h})$, let $n\le N$ be sufficiently large. 
   Consider an $R_\Delta$-flat cup configuration in the
   variable-processor cup game on $n$ cups with initial average
   fill $\mu_0$.
@@ -457,7 +458,7 @@ Using \cref{lem:TO_obliviousManyUnknownCups} we show that an
 oblivious filler can achieve constant fill in a known cup.
 \begin{proposition}
   \label{prop:TO_obliviousBase}
-  Let $H \le O(1)$, let $\Delta \le O(1)$, let $n\ll N$ be at least a
+  Let $H \le O(1)$, let $\Delta \le O(1)$, let $n\le N$ be at least a
   sufficiently large constant determined by $H$ and $\Delta$. 
   Consider an $R_\Delta$-flat cup configuration in the variable-processor cup
   game on $n$ cups with average fill $\mu_0$.

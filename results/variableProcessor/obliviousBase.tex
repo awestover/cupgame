@@ -16,9 +16,10 @@ analyze.
   filling strategy \defn{$\rep_\delta(\alg_0)$} ($\rep$ stands
   for \enquote{repetition}) as follows:
 
-  Say we have some configuration of $n$ cups.
-  Let $n_A = \ceil{\delta n}, n_B = \floor{(1-\delta)n}$. Let $N
-  \gg n$ be large, let $M=2^{\polylog(N)}$ be a chosen parameter. 
+  Say we have some configuration of $n\le N$ cups (recall that
+  eventaully we aim to get large backlog in $N$ cups).
+  Let $n_A = \ceil{\delta n}, n_B = \floor{(1-\delta)n}$. Let
+  $M=2^{\polylog(N)}$ be a chosen parameter. 
   Initialize $A$ to $\varnothing$ and $B$ to
   being all of the cups. We call $A$ the \defn{anchor set} and
   $B$ the \defn{non-anchor set}. The filler always places $1$
@@ -371,7 +372,7 @@ donation-processes succeed with exponentially good probability.
   guaranteeing that a constant fraction of the donation-processes
   succeed given that their successes are independent and all
   happen with constant probability. The Chernoff bound in (a) is
-  actually with exponentially good probability in $M \gg n$, but
+  actually with exponentially good probability in $M > N^2 > n$, but
   of course also holds with exponentially good probability in
   $n$. Then we can take a union bound over $\poly(n)$ events that
   all occur with exponentially good probability in $n$, which
@@ -398,7 +399,7 @@ Now, using \cref{lem:obliviousManyUnknownCups} we show in
 constant fill in a known cup. 
 \begin{proposition}
   \label{prop:obliviousBase}
-  Let $H \le O(1)$, let $\Delta \le O(1)$, let $n\ll N$ be at least a
+  Let $H \le O(1)$, let $\Delta \le O(1)$, let $n\le N$ be at least a
   sufficiently large constant determined by $H$ and $\Delta$. 
   Consider an $R_\Delta$-flat cup configuration in the variable-processor cup
   game on $n$ cups with average fill $\mu_0$.
