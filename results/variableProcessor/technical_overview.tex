@@ -23,7 +23,7 @@ function for achieving a certain backlog.
   least $$f'(n) \ge (1-\delta) f(\floor{(1-\delta)n}) +
   f(\ceil{\delta n}).$$
 \end{lemma}
-\begin{proof}[Amplification Lemma Proof Sketch]
+\begin{proof}[\cref{lem:adaptiveAmplification} Proof Sketch]
 The filler designates an \defn{anchor set} $A$ of size
 $\ceil{\delta n}$ and a \defn{non-anchor set} $B$ of size
 $\floor{(1-\delta)n}$. The filler's strategy is as follows:\\
@@ -215,7 +215,7 @@ round $t$ unless it also empties from $c_1$ on round $t$. For an
 oblivious filler we only prove lower bounds against
 $O(1)$-greedy-like emptiers; however this is a very interesting
 class of emptiers because all known randomized algorithms for the
-cup game are $O(1)$-greedy-like \cite{mbe19, wku20}. We define a
+cup game are $O(1)$-greedy-like \cite{BenderFaKu19, Kuszmaul20}. We define a
 new variant of the cup game: In the \defn{$E$-extra-emptyings}
 \defn{$S$-skip-emptyings} cup game on $n$ cups, the filler
 distributes $p$ units of water amongst the cups, and then the
@@ -233,7 +233,7 @@ considering the regular cup game.
 
 Let $R_\Delta = 2(2+\Delta)$.
 We now prove an important fact about $\Delta$-greedy-like emptiers.
-\begin{lemma}[Sketch of proof of \cref{lem:flatalg}]
+\begin{lemma}
   \label{lem:TO_flatalg}
   There is an oblivious filling strategy \defn{$\flatalg$} that,
   given an $R$-flat configuration of cups, achieves an
@@ -243,7 +243,7 @@ We now prove an important fact about $\Delta$-greedy-like emptiers.
   on $n=2p$ cups in running time $O(R+E+S)$. Throughout the
   duration of $\flatalg$ the cups are always $R$-flat.
 \end{lemma}
-\begin{proof}
+\begin{proof}[\cref{lem:flatalg} Proof Sketch]
   The filler's strategy is to place $1/2$ units of fill into each
   cup on every round.
   Intuitively, if the fill-range of the cups is large then by
@@ -272,7 +272,7 @@ that will be used as a subroutine later.
   $\randalg(k)$ guarantees that the cup configuration is $(R +
   d)$-flat on every round.
 \end{proposition}
-\begin{proof}
+\begin{proof}[\cref{prop:randalg} Proof Sketch]
   The filler maintains an \defn{active set}, initialized to being
   an arbitrary subset of $k$ of the cups. Every round the filler
   distributes $1$ unit of fill equally among all cups in the
@@ -408,26 +408,28 @@ can increase:\\
 The emptier could empty from $0$ cups in $B$ while emptying
 from every cup in $A$. \\
 By greediness this means that $\mu(A) \ge \mu(B) - \Delta$. Since
-$|B| \gg |A|$, this implies $\mu(B) \le \mu(AB) + 1$.\\
+$|B|$ is at least a sufficiently large constant multiple of
+$|A|$, this implies $\mu(B) \le \mu(AB) + 1$.\\
 \textbf{Case 2:}
 The filler could evict a cup with fill lower than $\mu(B)$ from
-$B$ at the end of a donation-process. \\
-Because $B$ starts each application of $\randalg(k)$ being
-$(R_\Delta + d)$-flat, and the running time of the application is
-$k-1$ the cup donated from $B$ cannot have fill lower than $\mu(B) -
-R_\Delta - (k-1)$. But because $n_B \gg n_A$ even if $B$ donated
-$n_A$ cups that were maximally empty the difference
-$\mu(B)-\mu(AB)$ would only increase by at most $1$.\\
-Combining the analysis of Case 1 and Case 2 we have that $\mu(B)
-\le \mu(AB) + 2$.
+$B$ at the end of a donation-process. \\ Because $B$ starts each
+application of $\randalg(k)$ being $(R_\Delta + d)$-flat, and the
+running time of the application is $k-1$ the cup donated from $B$
+cannot have fill lower than $\mu(B) - R_\Delta - (k-1)$. But
+because $n_B/n_A$ is a sufficiently large constant, even if $B$
+donated $n_A$ cups that were maximally empty the difference
+$\mu(B)-\mu(AB)$ would only increase by at most $1$.\\ Combining
+the analysis of Case 1 and Case 2 we have that $\mu(B) \le
+\mu(AB) + 2$.
 
 Combining the upper bound on $\mu(B)$ with the fact that $B$ is
 always flat and that the emptier is greedy-like, we have that no
-cup in $A$ ever has its fill exceed $u_A = \mu(AB) + 2 + R_\Delta + d + 1.$
-Obviously $\mu(A)\le u_A$. Hence we have an upper bound on
-$\mu(A)-\mu(AB)$; plugging this upper bound into the relation 
-$m(A) + m(B) = m(AB)$, and using the fact that $|B| \gg |A|$ we
-get the desired bound on $\mu(B)$:
+cup in $A$ ever has its fill exceed $u_A = \mu(AB) + 2 + R_\Delta
++ d + 1.$ Obviously $\mu(A)\le u_A$. Hence we have an upper bound
+on $\mu(A)-\mu(AB)$; plugging this upper bound into the relation
+$m(A) + m(B) = m(AB)$, and using the fact that $|B|$ is at least
+a sufficiently large constant multiple of $|A|$ we get the
+desired bound on $\mu(B)$:
 $$\mu(B) \ge -h/2 + \mu(AB) \ge -h/2 + \mu_0.$$
 
 Now we show that we get a constant-fraction of the cups in $A$ to
@@ -467,7 +469,7 @@ oblivious filler can achieve constant fill in a known cup.
   in a chosen cup in running time $\poly(N)$ against a
   $\Delta$-greedy-like emptier with probability at least $1-2^{-\Omega(n)}.$
 \end{proposition}
-\begin{proof}
+\begin{proof}[\cref{prop:obliviousBase} Proof Sketch]
   The filler starts by using $\rep_\delta(\randalg(k))$ with
   parameter settings as in \cref{lem:obliviousManyUnknownCups}
   where $h = H\cdot 16(1+\Delta)$, i.e. $k = \ceil{e^{2h+1}}$,
@@ -525,7 +527,7 @@ Next we prove the Oblivious Amplification Lemma.
   $$T'(n) \le Mn\cdot T(\floor{(1-\delta)n}) + T(\ceil{\delta n})$$
   against a $\Delta$-greedy-like emptier.
 \end{lemma}
-\begin{proof}
+\begin{proof}[\cref{lem:obliviousAmplification} Proof Sketch]
   We use the definitions and notation given in \cref{def:rep}. 
 
   Note that if the emptier neglects the anchor set $N^2$ times,
@@ -659,7 +661,7 @@ $N^{1-\varepsilon}$.
   $1-2^{-\polylog(n)}$ against a $\Delta$-greedy-like emptier
   with $\Delta \le O(1)$.
 \end{theorem}
-\begin{proof}
+\begin{proof}[\cref{thm:obliviousPoly} Proof Sketch]
   We show how to achieve backlog $(N/n_b)^{1-\varepsilon}-1$ for
   some $n_b \le \polylog(N)$ on $N$ cups; note that this implies
   that the filler can achieve backlog

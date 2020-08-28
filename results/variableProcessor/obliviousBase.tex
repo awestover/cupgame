@@ -237,8 +237,9 @@ use to get a lower bound on $\mu(B)$.
   size of $B$ before the cup is evicted from $B$. Even if this
   happens on each of the $n_A$ donation-processes $\mu(B)$ cannot
   rise higher than $n_A (R_\Delta + k-1) / (n-n_A)$ which by
-  design in choosing $n_B\gg n_A$, as was done in
-  choosing $\delta = \Theta(e^{-2h})$, is at most $1$.
+  design in choosing $n_B/n_A$ to be a sufficiently large
+  constant, as was done in choosing $\delta = \Theta(e^{-2h})$,
+  is at most $1$.
 
   Thus $\mu(B) \le \mu(AB) + 2$ is always true.
 
@@ -285,7 +286,8 @@ which in turn lower bounds $\mu(B)$.
            &\ge -h/2 + \mu(AB)
   \end{align*}
   where the final inequality follows because $\mu(AB) \ge 0$, and
-  $|B|\gg |A|$, in particular by our choice of $\delta = \Theta(e^{-2h})$.
+  because $|B|$ is at least a sufficiently large constant
+  multiple of $|A|$, in particular by our choice of $\delta = \Theta(e^{-2h})$.
   Of course $\mu(AB) \ge \mu_0$ so we have
   $$\mu(B) \ge -h/2 + \mu_0.$$
 
