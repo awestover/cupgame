@@ -1,21 +1,19 @@
 \section{Preliminaries}\label{sec:prelims}
-The cup game consists of a sequence of rounds. On the $t$-th
-round, the state starts as $S_t$. To start, the filler chooses the number
+The cup game consists of a sequence of rounds. Let $S_t$ denote the state of of the cups at the start of round $t$. At the beginning of the round, the filler chooses the number
 of processors $p_t$ for the round. Next, the filler distributes
 $p_t$ units of water among the cups (with at most $1$ unit of
-water to any particular cup). Now the game is in an
-intermediate state on round $t$, which we call state $I_t$.
+water to any particular cup). Now the game is at the
+\defn{intermediate state} for round $t$, which we call state $I_t$.
 Finally the emptier chooses $p_t$ cups to empty at most $1$ unit
 of water from, which marks the conclusion of round $t$. The state
 is then $S_{t+1}$.
 
-Note that if the emptier empties from a cup $c$ on round $t$ with
-fill at $I_t$ less than $1$, then $c$ now has $0$ fill (not
-negative fill); we say that the emptier \defn{zeroes out} $c$ on
-round $t$. Note that on any round where the emptier zeroes out a
-cup the emptier has removed less total fill from the cups than
-the filler has added to the cups; hence the average fill of the
-cups has increased.
+If the emptier empties from a cup $c$ on round $t$ such that the fill
+of $c$ is less than $1$ in state $I_t$, then $c$ now has $0$ fill (not
+negative fill); we say that the emptier \defn{zeroes out} $c$ on round
+$t$. Note that on any round where the emptier zeroes out a cup the
+emptier has removed less total fill from the cups than the filler has
+added to the cups; hence the average fill of the cups has increased.
 
 We denote the fill of a cup $c$ at state $S$ by $\fil_S(c)$. Let
 the \defn{mass} of a set of cups $X$ at state $S$ be $m_S(X) =
@@ -25,7 +23,7 @@ m_S(X)$. Let the \defn{backlog} at state $S$ be $\max_c
 \fil_S(c)$, let the \defn{anti-backlog} at state $S$ be $\min_c
 \fil_S(c).$
 Let the \defn{rank} of a cup at a given state be its position in
-a list of the cups sorted by fill at the given state, breaking
+the list of the cups sorted by fill at the given state, breaking
 ties arbitrarily but consistently. For example, the fullest cup
 at a state has rank $1$, and the least full cup has rank $n$. Let
 $[n] = \{1,2,\ldots, n\}$, let $i+[n] = \{i+1, i+2, \ldots,
@@ -39,14 +37,29 @@ game, when the emptier empties from a cup its fill always
 decreases by exactly $1$, i.e. there is no zeroing out. We refer
 to the standard version of the cup game where cups can zero out
 as the \defn{standard-fill} cup game when necessary for clarity.
-Negative fill can be interpreted as fill below average fill.
-Negative fill is especially useful in our recursive lower bound
-proofs in which we build on the average fill already achieved.
+
+
+The notion of negative fill will be useful in our lower-bound
+constructions, in which we want to construct a strategy for the filler
+that achieves large backlog. By analyzing a filling strategy on the
+negative-fill game, we can then reason about what happens if we apply
+the same filling strategy recursively to a set of cups $S$ whose
+average fill $\mu$ is larger than $0$; in the recursive application,
+the average fill $\mu$ acts as the ``new $0$'', and fills less than
+$\mu$ act as negative fills.
+
 Note that it is strictly easier for the filler to achieve high backlog
 in the standard-fill cup game than in the negative-fill cup game;
-hence a lower bound on backlog in the negative-fill cup game
-also serves as a lower bound on backlog in the standard-fill cup game.
-On the other hand, during the upper bound
-proof we use the standard-fill cup game: this makes it
-harder for the emptier to guarantee its upper bound.
+hence a lower bound on backlog in the negative-fill cup game also
+serves as a lower bound on backlog in the standard-fill cup game.  On
+the other hand, during the upper bound proof we use the standard-fill
+cup game: this makes it harder for the emptier to guarantee its upper
+bound.
 
+\paragraph{Other Conventions} When discussing the state of the cups
+\defn{at a round \boldmath $t$}, we will take it as given that we are
+referring to the starting state $S_t$ of the round. Also, when
+discussing sets, we will use $XY$ as a shorthand for $X \cup
+Y$. Finally, when discussing the average fill $\mu_{S_t}(X)$ of a set
+of cups, we will sometimes ommit the subscript $S_t$ when the round
+number is clear.
