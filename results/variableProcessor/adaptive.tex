@@ -91,7 +91,8 @@ $\alg(f_0), \alg(f_1), \ldots, \alg(f_{i_*})$ with
 $\alg(f_{i+1})$ the amplification of $\alg(f_i)$, we eventually
 get a filling strategy for achieving $\poly(n)$ backlog.
 
-\begin{lemma}[Adaptive Amplification Lemma]\label{lem:adaptiveAmplification}
+\begin{lemma}[Adaptive Amplification Lemma]
+  \label{lem:adaptiveAmplification}
   Let $\delta\in(0,1/2]$ be a parameter.
   Let $\alg(f)$ be an adaptive filling strategy that 
   achieves backlog $f(n) < n$ in the negative-fill variable-processor cup game
@@ -376,11 +377,11 @@ $n$ is the subproblem size; note in particular that $\delta$
 changes between levels of recursion, which was not the case in
 the proof of \cref{thm:adaptivePoly}.}
 
-\begin{proposition}
-  \label{prop:factorialTimeAlg}
+\begin{theorem}
+  \label{thm:factorialTimeAlg}
   There is an adaptive filling strategy that
   achieves backlog $\Omega(n)$ in time $O(n!)$.
-\end{proposition}
+\end{theorem}
 \begin{proof}
   First we construct a slightly stronger version of $\trivalg$
   that achieves backlog $1$ on $n \ge n_0=8$ cups, instead of

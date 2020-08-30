@@ -18,9 +18,10 @@ filling strategy that achieves some backlog curve $f$ (i.e., on $n$
 cups, the strategy achieves backlog $f(n)$), and outputs a new filling
 strategy that achieves a new amplified backlog curve $f'$.
 
-\begin{lemma}
+\begin{lemma}[\cref{lem:adaptiveAmplification}]
   Let $\alg(f)$ be a filling strategy that achieves backlog
-  $f(n)$ on $n$ cups (in the negative-fill cup game). There exists a filling strategy $\alg(f')$,
+  $f(n)$ on $n$ cups (in the negative-fill cup game). There
+  exists a filling strategy $\alg(f')$,
   the \defn{amplification} of $\alg(f)$, that achieves backlog at
   least $$f'(n) \ge (1-\delta) f(\floor{(1-\delta)n}) +
   f(\ceil{\delta n}).$$
@@ -94,7 +95,7 @@ We use the Amplification Lemma to give two lower bounds on
 backlog: one with reasonable running time, the other with
 slightly better backlog.
 
-\begin{theorem}
+\begin{theorem}[\cref{thm:adaptivePoly}]
   There is an adaptive filling strategy for achieving backlog
   $\Omega(n^{1-\varepsilon})$ for constant $\varepsilon \in (0,
   1/2)$ in running time $2^{O(\log^2 n)}$. 
@@ -110,7 +111,7 @@ slightly better backlog.
   $2^{O(\log^2 n)}$. Taking $i = \Theta(\log n)$ completes the proof.
 \end{proof}
 
-\begin{theorem}
+\begin{theorem}[\cref{thm:factorialTimeAlg}]
   There is an adaptive filling strategy for achieving backlog
   $\Omega(n)$ in running time $O(n!)$.
 \end{theorem}
@@ -131,13 +132,14 @@ backlog exceed $O(n)$; in this subsection we sketch the proof of
 this result.
 
 The next theorem proves a system of invariants on the state of the
-cups after each step. By considering the invariant at $k = 1$, we achieve a bound of $O(n)$ on the backlog.
+cups after each step. By considering the invariant at $k = 1$, we
+achieve a bound of $O(n)$ on the backlog.
 
-\begin{theorem}
+\begin{theorem}[\cref{thm:invariant}]
   \label{thm:TO_invariant}
  For all $k \le n$, the average fill of the $k$ fullest cups never exceeds $2n-k$ at the beginning of any round.
 \end{theorem}
-\begin{proof}[\cref{thm:invariant} Proof Sketch]
+\begin{proof}[Proof Sketch]
  The proof is by induction on the round. Fix some
 round $t$ and assume that the result holds for all $k$ at the beginning of round $t$. Fix
 some $k$; we aim to prove that the average fill of the $k$
@@ -198,7 +200,8 @@ still at most $2n-k$.
 \noindent\textbf{Case 3}:
 We have $b > 0$ and no cups in $A$ zero out in round $t$. \\
 \textbf{Analysis}:
-This is the most interesting of the three cases. Consider $m_{S_{t+1}}(AC)$, which is the mass of the $k$ fullest
+This is the most interesting of the three cases. Consider
+$m_{S_{t+1}}(AC)$, which is the mass of the $k$ fullest
 cups after step $t$. Each cup in $A$ was emptied from in step $t$, and the
 filler adds at most $\min(k, p_t) = a+b$ fill to cups $AC$ during the step. 
 Hence, 
@@ -214,23 +217,31 @@ Thus
   m_{S_{t}}(AC) = m_{S_t}(A) + m_{S_t}(C) \le \frac{c}{b+c}m_{S_t}(ABC) + \frac{b}{b+c}m_{S_t}(A).
   \label{eq:ACbound}
 \end{equation} 
-The system of invariants at at the beginning of step $t$ lets us bound $m_{S_t}(A)$ by $|A|(2n - |A|)$ and $m_{S_t}(ABC)$ by $|ABC|(2n - |ABC|)$, allowing for us to obtain a bound on $m_{S_{t}}(AC)$ in terms of $a, b, c$, namely, 
+The system of invariants at at the beginning of step $t$ lets us
+bound $m_{S_t}(A)$ by $|A|(2n - |A|)$ and $m_{S_t}(ABC)$ by
+$|ABC|(2n - |ABC|)$, allowing for us to obtain a bound on
+$m_{S_{t}}(AC)$ in terms of $a, b, c$, namely, 
 \begin{equation}
-  m_{S_{t}}(AC) \le \frac{ca (2n - a)}{b+c} + \frac{b (a + b + c)(2n - a - b - c)}{b+c}.
+  m_{S_{t}}(AC) \le \frac{c(a+b+c) (2n - a-b-c)}{b+c} + \frac{b
+  a(2n-a)}{b+c}.
   \label{eq:abccomplicated}
 \end{equation}
 By algebraic manipulation, \eqref{eq:abccomplicated} reduces to
-$(a + b) (2n - (a + b)) - bc$. Since $a + b \le k$ and since the function $x(2n - x)$ monotone increasing for $x \in [0, n]$, it follows that,
 \begin{equation}
   \label{eq:TO_goodsstsuffminuscb}
   m_{S_t}(AC) \le  k(2n-k)-cb.
 \end{equation}
-The transformation from \eqref{eq:ACbound} to \eqref{eq:TO_goodsstsuffminuscb} might at first seems somewhat mysterious; in the full version of the proof we also give an alternative version of the transformation that elucidates some of the underlying combinatorial structure.
+The transformation from \eqref{eq:ACbound} to
+\eqref{eq:TO_goodsstsuffminuscb} might at first seems somewhat
+mysterious; in the full version of the proof we also give an
+alternative version of the transformation that elucidates some of
+the underlying combinatorial structure.
 
-Combined with \eqref{eq:TO_bplusmAC}, and the fact $c>0$ (which follows from $b > 0$),
-\eqref{eq:TO_goodsstsuffminuscb} implies that $m_{S_{t + 1}} \le k(2n - k)$ and thus that the average fill of
-the $k$ fullest cups in state $S_{t+1}$ is at most $2n-k$, as
-desired.
+Combined with \eqref{eq:TO_bplusmAC}, and the fact $c>0$ (which
+follows from $b > 0$), \eqref{eq:TO_goodsstsuffminuscb} implies
+that $m_{S_{t + 1}}(AC) \le k(2n - k)$ and thus that the average
+fill of the $k$ fullest cups in state $S_{t+1}$ is at most
+$2n-k$, as desired.
 \end{proof}
 \subsection{Oblivious Lower Bound}
 
@@ -248,7 +259,7 @@ strategy that achieves backlog $\Omega(n^{1 - \epsilon})$ against any
 $\Delta$-greedy-like emptier for any $\Delta \in \Omega(1)$ (or, more
 precisely, any $\Delta \le \frac{1}{128} \log \log \log n$).
 
-\begin{theorem}
+\begin{theorem}[\cref{thm:obliviousPoly}]
   There is an oblivious filling strategy for the
   variable-processor cup game on $N$ cups that achieves backlog
   at least $\Omega(N^{1-\varepsilon})$ for any constant $\varepsilon
@@ -294,7 +305,7 @@ filler does not wish to ever swap a cup from $B$ with a cup from $A$
 during a phase that the emptier neglected (since, during such a phase,
 there is no guarantee on the amount of water in the cup from $B$). To
 solve this problem, we increase the total number of phases in the
-Amplification Lemma to be some very large number $M = 2^{\polylog n}$,
+Amplification Lemma to be some very large number $M = 2^{\polylog N}$,
 and we have the filler select $|A|$ random phases at the end of which
 to swap a cup from $B$ with a cup from $A$. With high probability,
 none of the $|A|$ phases that the filler selects are neglected by the
@@ -307,36 +318,34 @@ probabilistic. This makes the Amplification Lemma somewhat more
 difficult, since each application of $\alg(f)$ now has some
 probability of failure.
 
-We ensure that all of the applications of $\alg(f)$ succeed with such
-high probability that we can ignore the possibility of any of them
-ever failing. In order to do this, however, we must make sure that the
-base-case construction $\alg(f_0)$ succeeds with very high
-probability.
+We ensure that all of the applications of $\alg(f)$ succeed with
+such high probability that we can ignore the possibility of any
+of them failing on phases when we need them. In order to do this,
+however, we must make sure that the base-case construction
+$\alg(f_0)$ succeeds with very high probability.
 
-Fortunately, we can take a base-case construction $\alg(f_0)$ that
+Fortunately, we can take a base-case construction $\alg_0$ that
 succeeds with only constant (or even sub-constant) probability, and
 perform an Amplification-Lemma-like construction in order to obtain a
-new $\alg(f_0')$ that achieves slightly \emph{smaller} backlog, but
+new $\alg_1$ that achieves slightly \emph{smaller} backlog, but
 that has a very high probability of succeeding.
 
-To construct $\alg(f_0')$, we begin by performing the
-Amplification-Lemma construction on $\alg(f_0)$, but without recursing
-after the final phase. Even though a large fraction of the
-applications of $\alg(f_0)$ may fail, with high probability there will
-be some applications do not. With high probability, at the end of the
-final phase, at least $\omega(1)$ of the cups in $A$ will have large fills
-(i.e., fills roughly $f_0(|B|)$). Call these cups $L$.
-
-Unfortunately, the filler does not know which cups comprise $L$. What
-the filler can do, however, is to select some cup $c$, then decrease
-$p_t$ to $1$, and then spend a large number of steps simply placing
-$1$ unit of water into cup $c$ in each step. By the
-$\Delta$-greedyness of the emptier, the emptier is guaranteed to focus
-on emptying from cups in $L$ (rather than cup $c$) until $c$ reaches
-height roughly $f_0(|B|) - \Delta$. This allows for the filler to
-obtain a cup $c$ that the filler \emph{knows} contains a large amount
-of water (with high probability). We use this approach to construct a
-base-case filling strategy $\alg(f_0')$ that succeeds with high
+To construct $\alg_1$, we begin by performing the
+Amplification-Lemma construction on $\alg_0$, but without
+recursing after the final phase. Even though many of the
+applications of $\alg_0$ may fail, with high probability at least
+one application succeeds. This results in some cup $c_*$ in $A$
+having high fill. Unfortunately, the filler does not know which
+cup has high fill. What the filler can do, however, is select
+some cup $c$, then decrease the number of processors to $1$, and
+then spend a large number of steps simply placing $1$ unit of
+water into cup $c$ in each step. By the $\Delta$-greediness of
+the emptier, the emptier is guaranteed to focus on emptying from
+cup $c_*$ (rather than cup $c$) until $c$ attains large fill.
+This allows for the filler to obtain a cup $c$ that the filler
+\emph{knows} contains a large amount of water (with high
+probability). We use this approach to construct a base-case
+filling strategy $\alg(f_0')$ that succeeds with high
 probability.
 
 \paragraph{Problem 3: Non-flat starting states}
@@ -362,7 +371,6 @@ average fills of $A$ and $B$ do not drift apart in unpredictable
 ways), one can prove Theorem \ref{thm:oblivious-main}. In Section
 \ref{sec:oblivious}, we give the full proof, which is by far the most
 technically involved result in the paper.
-
 
 % In \cref{sec:oblivious} we provide filling strategies that an
 % oblivious filler can use to achieve backlog
