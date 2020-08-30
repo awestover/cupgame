@@ -1,53 +1,55 @@
 \section{Oblivious Filler Lower Bound}\label{sec:oblivious}
-In this section we prove that, surprisingly, an oblivious filler
-can achieve backlog $n^{1-\varepsilon}$, although only against a
-certain class of ``greedy-like" emptiers.
+In this section we prove that, surprisingly, an oblivious filler can
+achieve backlog $n^{1-\varepsilon}$ against an arbitrary
+``greedy-like" emptying algorithm.
+
+We say an emptier is \defn{$\Delta$-greedy-like} if, whenever there
+are two cups with fills that differ by at least $\Delta$, the emptier
+never empties from the less full cup without also emptying from the
+more full cup. That is, if on some round $t$, there are cups
+$c_1, c_2$ with $\fil_{I_t}(c_1) > \fil_{I_t}(c_2) + \Delta$, then a
+$\Delta$-greedy-like emptier doesn't empty from $c_2$ on round $t$
+unless it also empties from $c_1$ on round $t$. Note that a perfectly
+greedy emptier is $0$-greedy-like. We call an emptier
+\defn{greedy-like} if in the cup game on $n$ cups it is
+$\Delta$-greedy-like for $\Delta \le \frac{1}{128} \log\log\log
+n$. The main result of this section is an oblivious filling strategy
+that achieves large backlog against any (possibly randomized)
+greedy-like emptier.
+
+% With an oblivious filler we are only able to prove lower bounds
+% on backlog against greedy-like emptiers; whether or not our
+% results can be extended to a more general class of emptiers is an
+% interesting open question. Nonetheless, greedy-like emptiers are
+% of great interest because all the known randomized algorithms for
+% the cup game are greedy-like \cite{BenderFaKu19, Kuszmaul20}.
+
+As a tool in our analysis we define a new variant of the cup game: In
+the $p$-processor \defn{$E$-extra-emptyings} \defn{$S$-skip-emptyings}
+negative-fill cup game on $n$ cups, the filler distributes $p$ units
+of water amongst the cups, but the filler may empty from $p'$ cups for
+some $p' \neq p$. In particular the emptier is allowed to do $E$ extra
+emptyings and is also allowed to skip $S$ emptyings over the course of
+the game. Note that the emptier still cannot empty from the same cup
+twice on a single round, and also that note that a
+$\Delta$-greedy-like emptier must take into account extra emptyings
+and skip emptyings to determine valid moves. Further, note that the
+emptier is allowed to skip extra emptyings, although skipping extra
+emptyings looks the same as if the extra-emptyings had simply not been
+performed.  Let the \defn{regular} cup game be the $0$-extra-emptyings
+$\infty$-skip-emptyings cup game: this is the regular cup game.
+Allowing for some extra emptyings, and bounding the number of skip
+emptyings is sometimes necessary when analyzing an algorithm that is a
+subroutine of a larger algorithm however, hence it sometimes makes
+sense to consider games with different values of $E,S$. Unless
+explicitly stated otherwise however we are considering the regular cup
+game.
 
 The \defn{fill-range} of a set of cups at a state $S$ is $\max_c
 \fil_S(c) - \min_c \fil_S(c)$. We call a cup configuration
 \defn{$R$-flat} if the fill-range of the cups less than or equal to
 $R$; note that in an $R$-flat cup configuration with average fill
-$0$ all cups have fills in $[-R, R]$. We say an emptier is
-\defn{$\Delta$-greedy-like} if, whenever there are two cups with
-fills that differ by at least $\Delta$, the emptier never empties
-from the less full cup without also emptying from the more full
-cup. That is, if on some round $t$, there are cups $c_1, c_2$
-with $\fil_{I_t}(c_1) > \fil_{I_t}(c_2) + \Delta$, then a
-$\Delta$-greedy-like emptier doesn't empty from $c_2$ on round
-$t$ unless it also empties from $c_1$ on round $t$. Note that a
-perfectly greedy emptier is $0$-greedy-like. We call an emptier
-\defn{greedy-like} if in the cup game on $n$ cups it is
-$\Delta$-greedy-like for $\Delta \le \frac{1}{128} \log\log\log n$. 
-
-With an oblivious filler we are only able to prove lower bounds
-on backlog against greedy-like emptiers; whether or not our
-results can be extended to a more general class of emptiers is an
-interesting open question. Nonetheless, greedy-like emptiers are
-of great interest because all the known randomized algorithms for
-the cup game are greedy-like \cite{BenderFaKu19, Kuszmaul20}.
-
-As a tool in our analysis we define a new variant of the cup
-game: In the $p$-processor \defn{$E$-extra-emptyings}
-\defn{$S$-skip-emptyings} negative-fill cup game on $n$ cups, the
-filler distributes $p$ units of water amongst the cups, and then
-the emptier empties from $p$ \textit{or more, or less} cups. In
-particular the emptier is allowed to do $E$ extra emptyings and
-is also allowed to skip $S$ emptyings over the course of the
-game. Note that the emptier still cannot empty from the same cup
-twice on a single round, and also that note that a
-$\Delta$-greedy-like emptier must take into account extra
-emptyings and skip emptyings to determine valid moves. Further,
-note that the emptier is allowed to skip extra emptyings,
-although skipping extra emptyings looks the same as if the
-extra-emptyings had simply not been performed. 
-Let the \defn{regular} cup game be the $0$-extra-emptyings
-$\infty$-skip-emptyings cup game: this is the regular cup game.
-Allowing for some extra emptyings, and bounding the number of
-skip emptyings is sometimes necessary when analyzing an algorithm
-that is a subroutine of a larger algorithm however, hence it
-sometimes makes sense to consider games with different values of
-$E,S$. Unless explicitly stated otherwise however we are
-considering the regular cup game.
+$0$ all cups have fills in $[-R, R]$. 
 
 For a $\Delta$-greedy-like emptier let $R_\Delta = 2(2+\Delta)$;
 we now prove a key property of these emptiers: there is an
