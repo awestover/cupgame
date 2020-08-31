@@ -5,13 +5,13 @@ load balancing, that is, how to share processors among tasks in
 order to keep any one task from getting too far behind. Consider
 $n$ tasks executing in time slices on $p < n$ processors. During
 each time slice, a scheduler must select $p$ (distinct) tasks
-that will be executed during the slice, completing a total of up
-to $p$ units of work. During the same time slice, however, up to
-$p$ units of \emph{new work} may be allocated to the tasks, with
-different tasks receiving different amounts of work. The goal of
-a load-balancing scheduler is to bound the backlog of the system,
-which is defined to be the maximum amount of uncompleted work for
-any task.
+that will be executed during the slice; up to one unit of work is
+completed on each executed task.
+During the same time slice, however, up to $p$ units of \emph{new
+work} may be allocated to the tasks, with different tasks
+receiving different amounts of work. The goal of a load-balancing
+scheduler is to bound the backlog of the system, which is defined
+to be the maximum amount of uncompleted work for any task.
 
 As a convention, the load balancing problem is often described as
 a game involving water and cups. The \defn{$p$-processor cup
@@ -84,15 +84,15 @@ substantially larger backlog than would otherwise be possible.
 We begin by constructing filling strategies against deterministic
 emptying algorithms. We show that for any positive constant
 $\epsilon$, there is a filling strategy that achieves backlog
-$\Omega(n^{1 - \epsilon})$ within $\poly n$ rounds. Moreover, if
-we allow for $n!$ rounds, then there is a filling strategy that
-achieves backlog $\Omega(n)$. In contrast, for the $p$-processor
-cup game with any fixed $p$, the backlog never exceeds $O(\log
-n)$.
+$\Omega(n^{1 - \epsilon})$ within $2^{\polylog(n)}$ rounds.
+Moreover, if we allow for $n!$ rounds, then there is a filling
+strategy that achieves backlog $\Omega(n)$. In contrast, for the
+$p$-processor cup game with any fixed $p$, the backlog never
+exceeds $O(\log n)$.
 
 Our lower-bound construction is asymptotically optimal. By
 introducing a novel set of invariants, we deduce that the greedy
-emptying algorithm achieves backlog $O(n)$.
+emptying algorithm never lets backlog exceed $O(n)$.
 
 A natural question is whether \emph{randomized} emptying
 algorithms can do better. In particular, when the emptier is
@@ -129,8 +129,8 @@ to be able to be semi-clairvoyant, or making stochastic
 assumptions on the filler? We believe that all of these questions
 warrant further attention.
 
-{\color{blue}
-  TODO: add bamboo citations}
+% {\color{blue}
+%   TODO: add bamboo citations}
 
 % \paragraph{Outline}
 % In \cref{sec:prelims} we establish the conventions and
