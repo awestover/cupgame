@@ -1,23 +1,22 @@
 \section{Upper Bound}\label{sec:upperBound}
 
-In this section we analyze the \defn{greedy emptier}, which always empties
-from the $p$ fullest cups. We prove in \cref{cor:upperbound} that the
-greedy emptier prevents backlog from exceeding $O(n)$. 
+In this section we analyze the \defn{greedy emptier}, which
+always empties from the $p$ fullest cups. We prove in
+\cref{cor:upperbound} that the greedy emptier prevents backlog
+from exceeding $O(n)$. In order to analyze the greedy emptier, we
+establish a system of invariants that hold at every step of the
+game. 
 
-In order to analyze the greedy emptier, we establish a system of invariants
-that hold at every step of the game. 
-
-Let $\mu_S(X)$ and $m_S(X)$ denote the average fill and the mass, respectively,
-of a set of cups $X$ at state $S$ (where $S=S_t$ or $S=I_t$).\footnote{Note that
-in the lower bound proofs (i.e. \cref{sec:adaptive} and 
-\cref{sec:oblivious}) when we use the notation $m$ (for mass) and $\mu$ (for
-average fill), we omit the subscript indicating the state at which the
-properties are measured. In those proofs the state is implicitly clear.
-However, in this section it is necessary to make the state $S$ explicit in
-the notation.} We will use concatenation of sets to
-denote unions, i.e. $AB = A\cup B$. 
-
-The main result of the section is the following theorem.  
+The main result of the section is the following theorem\footnote{
+  Recall that we use $\mu_S(X)$ and $m_S(X)$ to denote
+  the average fill and the mass, respectively, of a set of cups
+  $X$ at state $S$. Note that in the lower bound proofs (i.e.
+  \cref{sec:adaptive} and \cref{sec:oblivious}) when we use the
+  notation $m$ (for mass) and $\mu$ (for average fill), we omit
+  the subscript indicating the state at which the properties are
+measured. In those proofs the state is implicitly clear. However,
+in \cref{sec:upperBound} it is necessary to make the state $S$ explicit in
+the notation.}.
 \begin{theorem}
   \label{thm:invariant}
   In the variable-processor cup game on $n$ cups, the greedy
@@ -42,7 +41,7 @@ We prove the invariants by induction on $t$.
 The invariants hold trivially for $t=1$ (the base case for the inductive proof): 
 the cups start empty so $\mu_{S_1}(S_1([k])) = 0 \le 2n-k$ for all $k \in [n]$.
 
-Fix a round $t \ge 1$, and any $k \in [n]$. We assume the invariants for all
+Fix a round $t \ge 1$, and any $k \in [n]$. We assume the invariant for all
 values of $k' \in[n]$ for state $S_t$ (we will only explicitly use two of the
 invariants for each $k$, but the invariants that we need depend on the
 choice of $p_t$ by the filler) and show that
