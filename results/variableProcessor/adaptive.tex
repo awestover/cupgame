@@ -122,16 +122,21 @@ get a filling strategy for achieving $\poly(n)$ backlog.
   \defn{non-anchor set} be initialized to consist of the rest of
   the cups (so $|B| = n_B$). Let $h = (1-\delta)f(n_B).$
 
-  The filler's strategy can be summarized as follows: \\
-  \textbf{Step 1:} Make $\mu(A) \ge h$ by using $\alg(f)$
+  The filler's strategy can be summarized as follows: 
+
+  \vspace{0.3cm}
+  \noindent\textbf{Step 1:} Make $\mu(A) \ge h$ by using $\alg(f)$
   repeatedly on $B$ to achieve cups with fill at least $\mu(B) +
   f(n_B)$ in $B$ and then swapping these into $A$. While doing
   this the filler always places $1$ unit of fill in each anchor
-  cup.\\
-  \textbf{Step 2:} Use $\alg(f)$ once on $A$ to obtain some cup
+  cup.
+
+  \vspace{0.3cm}
+  \noindent\textbf{Step 2:} Use $\alg(f)$ once on $A$ to obtain some cup
   with fill $\mu(A)+f(n_A)$.\\
   Note that in order to use $\alg(f)$ on subsets of the cups the
   filler will need to vary $p$.
+  \vspace{0.3cm}
 
   We now describe how to achieve Step 1, which is
   complicated by the fact that the emptier may attempt to

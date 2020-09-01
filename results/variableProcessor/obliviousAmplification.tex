@@ -77,9 +77,9 @@ probability).
   applications of $\alg(f)$ succeed. Ignoring for a moment the
   fact that the emptier can choose to neglect the anchor set,
   i.e. assuming that no applications of $\alg(f)$ are
-  emptier-wasted, the probability that fewer than $M\cdot (1-2p)$
-  of $M$ applications of $\alg(f)$ succeed is at most
-  $e^{-2Mp^2}$ by a Chernoff bound. However, the emptier is
+  emptier-wasted, the probability that fewer than
+  $M(1-p)(1-\xi)$ of $M$ applications of $\alg(f)$ succeed is at most
+  $e^{-\Theta(M(1-p)\xi^2}$ by a Chernoff bound. However, the emptier is
   allowed to \defn{interfere}, i.e. neglect the anchor set and do
   extra emptying in the non-anchor set. Fortunately the emptier
   can interfere with at most $N^2$ of the applications of
