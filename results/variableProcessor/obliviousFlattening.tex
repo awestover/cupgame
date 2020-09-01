@@ -37,7 +37,8 @@ and skip emptyings to determine valid moves. Further, note that the
 emptier is allowed to skip extra emptyings, although skipping extra
 emptyings looks the same as if the extra-emptyings had simply not been
 performed.  Let the \defn{regular} cup game be the $0$-extra-emptyings
-$\infty$-skip-emptyings cup game: this is the regular cup game.
+$\infty$-skip-emptyings cup game: this is the cup game we usually
+consider.
 Allowing for some extra emptyings, and bounding the number of skip
 emptyings is sometimes necessary when analyzing an algorithm that is a
 subroutine of a larger algorithm however, hence it sometimes makes
@@ -72,7 +73,7 @@ fill-range.
   2p$ cups. There is an oblivious filling strategy
   \defn{$\flatalg$} that achieves an $R_\Delta$-flat
   configuration of cups against a $\Delta$-greedy-like emptier in
-  running time $2(R + \ceil{(1+1/n)(E + S)})$. Furthermore,
+  running time $O(R+E+S)$. Furthermore,
   $\flatalg$ guarantees that the cup configuration is $R$-flat on every round.
 \end{lemma}
 \begin{proof}
@@ -88,58 +89,52 @@ fill-range.
   if the fill-range is very small.
   \begin{clm}
     \label{clm:fillRangeUpIFFfillRangeSmall}
-    If $u_{t+1}-\ell_{t+1} > u_t - \ell_t$ then 
-    $$u_{t+1} - \ell_{t+1} \le R_\Delta.$$
+    If the fill-range on round $t+1$ is larger than the
+    fill-range on round $t$, then $u_{t+1} - \ell_{t+1} \le R_\Delta.$
   \end{clm}
   \begin{proof}
     First we remark that the fill of any cup changes by at most
     $1/2$ from round to round, and in particular $|u_{t+1}-u_t|
     \le 1/2$, $|\ell_{t+1} - \ell_t|\le 1/2$.
-  In order for the fill-range to increase, the emptier must have
-  emptied from some cup with fill in $[\ell_t, \ell_t + 1]$ without
-  emptying from some cup with fill in $[u_t-1, u_t]$; if the emptier
-  had not emptied from every cup with fill in $[\ell_t, \ell_t+1]$
-  then we would have $\ell_{t+1} = \ell_t + 1/2$ so the
-  fill-range could not have increased, and similarly if the emptier
-  had emptied from every cup with fill in $[u_t-1, u_t]$ then we
-  would have $u_{t+1} = u_t - 1/2$ so again the fill-range could
-  not have increased. Because the emptier is $\Delta$-greedy-like
-  emptying from a cup with fill at most $\ell_t+1$ and not
-  emptying from a cup with fill at least $u_t-1$ implies that
-  $u_t-1$ and $\ell_t+1$ differ by at most $\Delta$.
-  Thus, 
-  $$u_{t+1} - \ell_{t+1} \le u_t +1/2 - (\ell_t -1/2)  \le \Delta + 3 \le R_\Delta.$$
+    In order for the fill-range to increase, the emptier must have
+    emptied from some cup with fill in $[\ell_t, \ell_t + 1]$ without
+    emptying from some cup with fill in $[u_t-1, u_t]$; if the emptier
+    had not emptied from every cup with fill in $[\ell_t, \ell_t+1]$
+    then we would have $\ell_{t+1} = \ell_t + 1/2$ so the
+    fill-range cannot have increased, and similarly if the emptier
+    had emptied from every cup with fill in $[u_t-1, u_t]$ then we
+    would have $u_{t+1} = u_t - 1/2$ so again the fill-range 
+    cannot have increased. Because the emptier is $\Delta$-greedy-like
+    emptying from a cup with fill at most $\ell_t+1$ and not
+    emptying from a cup with fill at least $u_t-1$ implies that
+    $u_t-1$ and $\ell_t+1$ differ by at most $\Delta$.
+    Thus, 
+    $$u_{t+1} - \ell_{t+1} \le u_t +1/2 - (\ell_t -1/2)  \le \Delta + 3 \le R_\Delta.$$
   \end{proof}
-  Because by
-  \cref{clm:fillRangeUpIFFfillRangeSmall}
-  whenever the fill-range of the cups increases it increases to a
-  value bounded above by $R_\Delta \le R$, we have by induction
-  that the fill-range of the cups never exceeds $R$, i.e. the
-  cups are always $R$-flat. While
-  \cref{clm:fillRangeUpIFFfillRangeSmall}
-  does imply that the fill-range must decrease until the
-  fill-range is at most $R_\Delta$, and once the fill-range is at
-  most $R_\Delta$ it is always at most $R_\Delta$,
-  \cref{clm:fillRangeUpIFFfillRangeSmall}
-  does not preclude the possibility that the fill-range doesn't
-  change for many rounds, or decreases by a very small amount.
-  For this reason we actually do not use
-  \cref{clm:fillRangeUpIFFfillRangeSmall}
-  in the remainder of the proof; we proved this result because
-  the fact that fill-range does not increase during $\flatalg$ is
-  an important property of $\flatalg$. In the rest of the proof
-  we establish that the fill-range indeed must eventually be at
-  most $R_\Delta$.
+
+  \cref{clm:fillRangeUpIFFfillRangeSmall} implies that if the
+  fill-range is at most $R_\Delta$ it will stay at most
+  $R_\Delta$, because fill-range cannot increase to a value
+  larger than $R_\Delta$. \cref{clm:fillRangeUpIFFfillRangeSmall}
+  also implies that until the fill-range is less than $R_\Delta$
+  the fill-range must not increase. However the claim does not
+  preclude fill-range from remaining constant for many rounds, or
+  decreasing, but only by very small amounts. For this reason we
+  actually do not use \cref{clm:fillRangeUpIFFfillRangeSmall} in
+  the remainder of the proof; nonetheless, the fact that the
+  fill-range cannot increase relative to initial fill-range
+  during $\flatalg$ is an important property of $\flatalg$. In
+  the rest of the proof we establish that the fill-range indeed
+  must eventually be at most $R_\Delta$.
 
   Let $L_t$ be the set of cups $c$ with $\fil_{S_t}(c) \le \ell_t+2+\Delta$, and let
   $U_t$ be the set of cups $c$ with $\fil_{S_t}(c) \ge u_t-2-\Delta$.
-
-  Now we prove a key property of the sets $U_t$ and $L_t$: if a cup is in
+  We now prove a key property of the sets $U_t$ and $L_t$: if a cup is in
   $U_t$ or $L_t$ it is also in $U_{t'}, L_{t'}$ for all $t' > t$. This
   follows immediately from \cref{clm:dontlosestuff}.
   \begin{clm}
     \label{clm:dontlosestuff}
-    $$U_{t} \subseteq U_{t+1},\quad L_t \subseteq L_{t+1}.$$
+    $U_{t} \subseteq U_{t+1}, L_t \subseteq L_{t+1}.$
   \end{clm}
   \begin{proof}
     Consider a cup $c\in U_t$.
@@ -193,77 +188,80 @@ fill-range.
     fullest cup, and the fullest cup from the previous round has
     lost $1/2$ unit of fill.
 
-    By a symmetric argument $\ell_{t+1} = \ell_{t} + 1/2$ if the
-    emptier empties at most $n/2$ cups on a round $t$ where
+    By a symmetric argument, $\ell_{t+1} = \ell_{t} + 1/2$ on a
+    round $t$ where the emptier empties at most $n/2$ cups and
     $|L_t| \le n/2$. 
   \end{proof}
 
   Now we show that eventually $L_t \cap U_t \neq \varnothing$.
   \begin{clm}
-    There is a round $t_0 \le 2(R + \ceil{(1+1/n)(E + S)})$ such that $U_{t}
+    There is a round $t_0 \le O(R + E + S)$ such that $U_{t}
     \cap L_{t} \neq \varnothing$ for all $t\ge t_0$.
   \end{clm}
   \begin{proof}
-  We call a round where the emptier doesn't use $p=n/2$
-  resources, i.e. a round where the number of skipped emptyings
-  and the number of extra emptyings are not equal, an
-  \defn{unbalanced round}; we call a round that is not unbalanced a
-  \defn{balanced} round. 
+  We call a round where the emptier empties from $p' \neq p$ cups
+  an \defn{unbalanced round}; we call a round that is not
+  unbalanced a \defn{balanced} round. 
 
   Note that there are clearly at most $E+S$ unbalanced rounds.
   We now associate some unbalanced rounds with balanced rounds;
   in particular we define what it means for a balanced round to
-  \defn{cancel} an unbalanced round. We define cancellation by a
-  sequential process. For $i = 1,2,\ldots,
-  2(R+\ceil{(1+1/n)(E+S)})$ (iterating in ascending order of $i$), if round $i$
+  \defn{cancel} an unbalanced round. 
+  Let $B = 2(R + \ceil{(1+1/n)(E+S)})$. For $i = 1,2,\ldots,B$ 
+  (iterating in ascending order of $i$), if round $i$
   is unbalanced then we say that the first balanced round $j > i$
   that hasn't already been assigned (earlier in the sequential
   process) to cancel another unbalanced round $i' < i$, if any
   such round $j$ exists, \defn{cancels} round $i$. Note that
   cancellation is a one-to-one relation: each unbalanced round is
   cancelled by at most one balanced round and each balanced round
-  cancels at most one unbalanced round.
+  cancels at most one unbalanced round. We say a balanced round
+  $j$ is \defn{cancelling} if it cancels some unbalanced round $i
+  < j$, and \defn{non-cancelling} if it does not cancel any
+  unbalanced round.
 
-  Consider rounds of the form $2(R + \ceil{(E+S)/n}) + (E+S) + i$
-  for $i \in [E+S+1]-1$. We claim that there is some such $i$
-  such that among rounds $[2(R + \ceil{(E+S)/n}) + (E+S) + i]$
-  every unbalanced round has been cancelled, and such that there
-  are $2(R+\ceil{(E+S)/n})$ balanced rounds not cancelling other
-  rounds. Assume for contradiction that such an $i$ does not
-  exist. Note that there are at least $2(R + \ceil{(E+S)/n})$
-  balanced rounds in the first $2(R + \ceil{(E+S)/n}) + (S+E)$
-  rounds. Thus every balanced round $2R+(E+S)+\ceil{(E+S)/n} +
-  i-1$ for $i \in [E+S+1]$ is necessarily a cancelling round, or
-  else there would be a round by which there are no uncancelled
-  unbalanced rounds. Hence by round $2(R + \ceil{(E+S)/n}) + 2(E +
-  S)$, there must have been $E+S$ cancelled rounds, so on round
-  $2(R + \ceil{(E+S)/n}) + 2(E+S)$ all unbalanced rounds are
-  cancelled, which leaves $2(R + \ceil{(E+S)/n})$ balanced rounds
-  that are not cancelling any rounds, as desired.
+  We claim that there is some $i \in [2(E+S)+1]$ such that among the
+  rounds $[B + 2(E+S) + i-1]$ every unbalanced round has been
+  cancelled by a balanced round in $[B + 2(E+S) + i-1]$, and such
+  that there are $B$ non-cancelling balanced rounds. Note that there
+  are at least $B + (E+S)$ balanced rounds in the first $B +
+  2(E+S)$ rounds, and thus there are at least $B$ non-cancelling
+  balanced rounds among the first $B+2(E+S)$ rounds, due to there
+  being at most $E+S$ total unbalanced rounds. Next note that
+  there must be at least $1$ non-cancelling balanced round among
+  any set of $2(E+S) + 1$ rounds, because there cannot be more
+  than $E+S$ unbalanced rounds, and hence there also cannot be
+  more than $E+S$ cancelling rounds. Thus there is some $i \in
+  [2(E+S)+1]$ such that round $B + 2(E+S) + i-1$ is balanced and
+  non-cancelling. For this $i$, we have that all unbalanced
+  rounds in $[B + 2(E+S) + i-1]$ are cancelled, and since $B +
+  2(E+S) + i-1 \ge B + 2(E+S)$, we have that there are at least
+  $B$ balanced non-cancelling rounds in $[B + 2(E+S) + i-1]$.
+  These are the desired properties.
 
-  Let $t_e$ be the first round by which there are $2(R +
-  \ceil{(E+S)/n})$ balanced non-cancelling rounds. Note that the
-  average fill of the cups cannot have decreased by more than
-  $E/n$ from its starting value; similarly the average fill of
-  the cups cannot have increased by more than $S/n$. Because the
-  cups start $R$-flat, we have that $u_t$ cannot have decreased
-  by more than $R + E/n$ or else $u_t$ would necessarily be below
-  the average fill, and identically $\ell_t$ cannot have
-  increased by more than $R + S/n$ or else it would be above the
-  average fill. Now, by \cref{clm:howDoLandUchange} we have that
-  eventually $|L_t| > n/2$: if $|L_t|\le n/2$ were always true,
-  then on every balanced round $\ell_t$ would have increased by
-  $1/2$, and since $\ell_t$ increases by at most $1/2$ on
-  unbalanced rounds, this implies that in total $\ell_t$ would
-  have increased by at least $(1/2)2(R + \ceil{(E+S)/n})$, which
-  is impossible. By a symmetric argument it is impossible that
-  $|U_t| \le n/2$ for all rounds. 
+  Let $t_e$ be the first round by which there are $B = 2(R +
+  \ceil{(E+S)/n})$ balanced non-cancelling rounds; we have shown
+  that $t_e \le O(R+E+S)$. Note that the average fill of the cups
+  cannot have decreased by more than $E/n$ from its starting
+  value; similarly the average fill of the cups cannot have
+  increased by more than $S/n$. Because the cups start $R$-flat,
+  $u_t$ cannot have decreased by more than $R + E/n$ or else
+  backlog would be less than average fill, and identically
+  $\ell_t$ cannot have increased by more than $R + S/n$ or else
+  anti-backlog would be larger than average fill. Now, by
+  \cref{clm:howDoLandUchange} we have that for some $t \le t_e$,
+  $|L_t| > n/2$: if $|L_t|\le n/2$ were always true for $t\le
+  t_e$, then on every balanced round $\ell_t$ would have
+  increased by $1/2$, and since $\ell_t$ increases by at most
+  $1/2$ on unbalanced rounds, this implies that in total $\ell_t$
+  would have increased by at least $(1/2)2(R + \ceil{(E+S)/n})$,
+  which is impossible. By a symmetric argument it is impossible
+  that $|U_t| \le n/2$ for all rounds. 
 
   Since $|U_{t+1}|\ge |U_t|$ and $|L_{t+1}| \ge |L_t|$ by
   \cref{clm:dontlosestuff}, we have that there is some round $t_0
-  \in [2(R + \ceil{(1+1/n)(E+S)})]$ such that for all $t \ge t_0$
-  we have $|U_t|> n/2$ and $|L_t|> n/2$. But then we
-  have $U_t\cap L_t \neq \varnothing$, as desired.
+  \le t_e$ such that for all $t \ge t_0$ we have $|U_t|> n/2$ and
+  $|L_t|> n/2$. But then we have $U_t\cap L_t \neq \varnothing$, as desired.
   \end{proof}
 
   If there exists a cup $c \in L_t\cap U_t$, then 
@@ -271,7 +269,7 @@ fill-range.
   \Delta].$$ Hence we have that $$\ell_t+2+\Delta \ge
   u_t-2-\Delta.$$ Rearranging, $$u_t - \ell_t \le 2(2+\Delta) =
   R_\Delta.$$ Thus the cup configuration is $R_\Delta$-flat by
-  the end of this flattening process.
+  the end of $O(R+E+S)$ rounds.
 
 \end{proof}
 
@@ -303,7 +301,7 @@ BenderFaKu19, DietzRa91, Kuszmaul20}.
   (unconditionally).
 \end{proposition}
 \begin{proof}
-  First we condition on the emptier does not using extra emptying
+  First we condition on the emptier not using extra emptying
   and show that in this case the filler has probability at least
   $1/(k-1)!$ (which we lower bound by $1/k!$ for sake of
   simplicity) of attaining a cup with fill at least $\mu_0 -R +d$.
@@ -353,10 +351,10 @@ BenderFaKu19, DietzRa91, Kuszmaul20}.
   a cup with fill equal to the backlog in state $S_{t+1}$ that
   was not emptied from on round $t$. By greediness $\fil_{I_t}(a) + \Delta
   > \fil_{I_t}(b)$. Of course $\fil_{I_t}(b) =
-  \fil_{S_{t+1}}(b)$; for $b$ to have fill equal to the backlog
+  \fil_{S_{t+1}}(b)$, and for $b$ to have fill equal to the backlog
   on round $t+1$, $b$ must have fill less than $1$ below 
   backlog on round $t$. Of course $\fil_{I_t}(a) \le
-  \fil_{S_t}(a) + 1$; for $a$ to have fill equal to the
+  \fil_{S_t}(a) + 1$, and for $a$ to have fill equal to the
   anti-backlog on round $t+1$, $a$ must have fill less than $1$
   above the anti-backlog on round $t$. Thus we have that the
   backlog and anti-backlog differ by at most $\Delta + 3 \le

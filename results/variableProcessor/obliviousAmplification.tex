@@ -1,4 +1,19 @@
-Next we prove the \defn{Oblivious Amplification Lemma}.
+Next we prove the \defn{Oblivious Amplification Lemma}. We remark
+that, like \cref{lem:obliviousBase},
+\cref{lem:obliviousAmplification} refers to filling strategies in
+the \emph{regular} cup game (no extra empties). In particular, as
+in \cref{lem:obliviousBase}, we give no guarantees on the
+behavior of the algorithms for the $E$-extra-emptyings cup game
+with $E > 0$. It is surprising that we do not need to provide
+any guarantees; for $\flatalg$ and $\randalg$ we had to prove
+that the cups have bounded fill-range regardless of
+extra-emptying. We do not need to establish guarantees on the
+algorithms when there is extra emptying because
+there cannot be very much extra emptying, and by randomly
+choosing which applications of our algorithms are
+\enquote{important} we can guarantee that all important
+applications of our algorithms succeed (with very high
+probability).
 
 \begin{lemma}[Oblivious Amplification Lemma]
   \label{lem:obliviousAmplification} 
@@ -8,16 +23,16 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
   \Omega(1/\delta^2)$ cups with average fill $\mu_0$ that is
   $R_\Delta$-flat. Let $\alg(f)$ be an oblivious filling strategy
   that either achieves mass $N^2$ or, with failure probability at
-  most $p\ge 2^{-\lg^8 N}$, achieves backlog $\mu_0 + f(n)$ on such cups
+  most $p$ satisfying $p\ge 2^{-O(\log^4 N)}$, achieves backlog $\mu_0 + f(n)$ on such cups
   in running time $T(n)$ against a $\Delta$-greedy-like emptier.
-  Let $M = 2^{\polylog(N)}$.
+  Let $M = 2^{\Theta(\log^9 (N))}$.
 
   Consider a cup configuration in the variable-processor cup game
   on $n \le N, n > \Omega(1/\delta^2)$ cups with average fill
   $\mu_0$ that is $R_\Delta$-flat. There exists an oblivious
   filling strategy $\alg(f')$ that either achieves mass $N^2$ or
   with failure probability at most 
-  $$p' \le np + 2^{-\lg^8 N}$$
+  $$p' \le np + 2^{-\log^8 N}$$
   achieves backlog $f'(n)$ satisfying 
   $$f'(n) \ge (1-\delta)^2 f(\floor{(1-\delta)n}) + f(\ceil{\delta n}) + \mu_0$$ 
   and $f'(n) \ge f(n)$, in running time 
@@ -34,70 +49,66 @@ Next we prove the \defn{Oblivious Amplification Lemma}.
   to be at least $N^2$; we assume for the rest of the proof that
   the emptier chooses not to do this.
 
-  The filler defaults to using $\alg(f)$ on all the cups if 
+  The filler simply uses $\alg(f)$ on all the cups if 
   $$f(n) \ge (1-\delta)^2 f(n_B) + f(n_A).$$
   In this case our strategy trivially has the desired guarantees. 
   In the rest of the proof we consider the case where we cannot
   simply fall back on $\alg(f)$ to achieve the desired backlog.
 
-  The filler's strategy is roughly as follows:\\
+  The filler's strategy can be summarized as follows:\\
   \textbf{Step 1:} Make $\mu(A) \ge (1-\delta)^2 f(n_B)$ by
   using $\rep_\delta(\alg(f))$ on all the cups,
   i.e. applying $\alg(f)$ repeatedly to $B$, flattening $B$ before
-  each application, and then donating a cup from $B$ to $A$.\\
+  each application, and then donating a cup from $B$ to $A$ on
+  randomly chosen applications of $\alg(f)$.\\
   \textbf{Step 2:} Flatten $A$ using $\flatalg$, and then use
   $\alg(f)$ on $A$.
 
   Now we analyze Step 1, and show that by appropriately choosing
-  parameters it can be made to succeed.
-
-  For this proof we need all donation-processes to succeed, as
-  opposed to in the proof of \cref{lem:obliviousBase}
-  in which we only needed a constant fraction of the
-  donation-processes to succeed. This necessitates choosing $M$
-  very large. In particular we choose $M = 2^{\log^{24} N}$
-  ---recall that $[M]$ is the set from which we randomly choose
-  how many times to apply $\alg(f)$ in a donation-process. 
-  By choosing $M$ this large we cannot hope to guarantee that
-  every application of $\alg(f)$ succeeds: there are far too many
+  parameters it can be made to succeed. For this proof we need
+  all donation-processes to succeed. This necessitates choosing
+  $M$ very large. In particular we choose $M = 2^{\Theta(\log^9
+  N)}$---recall that $[M]$ is the set from which we randomly choose
+  how many times to apply $\alg(f)$ in a donation-process. By
+  choosing $M$ this large we cannot hope to guarantee that every
+  application of $\alg(f)$ succeeds: there are far too many
   applications. On the other hand, having $M$ so large allows us
   to have a very tight concentration bound on how many
-  applications of $\alg(f)$ succeed. 
-  Ignoring for a moment the fact that the emptier can choose to
-  neglect the anchor set, i.e. assuming that no applications of
-  $\alg(f)$ are emptier-wasted, the probability
-  that fewer than $M\cdot (1-2p)$ applications of $\alg(f)$
-  succeed is at most $$e^{-2Mp^2}$$ by a Chernoff bound.
-  The emptier is allowed to interfere, i.e. neglect the anchor
-  set and do extra emptying in the non-anchor set, with at most $N^2$ of the
-  applications of $\alg(f)$, thus if we condition on there being
-  at least $M(1-2p)$ applications that would succeed if the emptier
-  does not interfere, there are at least $M(1-2p)-N^2$ applications of
-  $\alg(f)$ that succeed. 
-  Let $\mathcal{W}$ be the event that the donation-process
-  succeeds, i.e. the final application of $\alg(f)$ is not
-  emptier-wasted and succeeds, and let $\mathcal{D}$ be the even
-  that the event that at least $M(1-2p)$ of the $M$ applications
-  of $\alg(f)$ would succeed without  interference by the
-  emptier.
-  Let $1-q = \Pr[\mathcal{W}]$.
-  Obviously 
+  applications of $\alg(f)$ succeed. Ignoring for a moment the
+  fact that the emptier can choose to neglect the anchor set,
+  i.e. assuming that no applications of $\alg(f)$ are
+  emptier-wasted, the probability that fewer than $M\cdot (1-2p)$
+  of $M$ applications of $\alg(f)$ succeed is at most
+  $e^{-2Mp^2}$ by a Chernoff bound. However, the emptier is
+  allowed to \defn{interfere}, i.e. neglect the anchor set and do
+  extra emptying in the non-anchor set. Fortunately the emptier
+  can interfere with at most $N^2$ of the applications of
+  $\alg(f)$, which is very small compared to $M\cdot (1-2p)$.
+  Thus, if we condition on there being at least $M(1-2p)$
+  applications that would succeed if the emptier did not
+  interfere, there are at least $M(1-2p)-N^2$ applications of
+  $\alg(f)$ that succeed. Let $\mathcal{W}$ be the event that the
+  donation-process succeeds, i.e. the final application of
+  $\alg(f)$ is not emptier-wasted and succeeds, and let
+  $\mathcal{D}$ be the event that at least $M(1-2p)$ of the $M$
+  applications of $\alg(f)$ would succeed without  interference
+  by the emptier. Let $1-q = \Pr[\mathcal{W}]$. Obviously
   $$\Pr[\mathcal{W}] \ge \Pr[\mathcal{W} \land \mathcal{D}] =
   \Pr[\mathcal{D}] \cdot \Pr[\mathcal{W} | \mathcal{D}].$$
-  Because the filler chooses which application of $\alg(f)$ is the final
-  application uniformly at random from $[M]$ we thus have
-  $$1-q \ge (1-e^{-2Mp^2})\paren{\frac{M\cdot (1-2p)-N^2}{M}}.$$
-  Rearranging, and over-estimating (i.e. dropping unnecessary
-  terms to simplify the expression, while maintaining the truth
-  of the expression), we have 
-  $$q \le e^{-2Mp^2} + 2p + \frac{N^2}{M}.$$
-  By assumption $p \ge 2^{-\lg^8 N}$, so $Mp^2 \ge 2^{\lg^8 N}$,
-  and we have the bound
-  $$q \le 2p + 2^{-2\cdot 2^{\lg^8 N}} + \frac{N^2}{2^{\lg^{24} N}}.$$
-  We choose to loosen this to 
-  $$q \le 2p + 2^{-\lg^8 N}.$$
+  Because the filler chooses which application of $\alg(f)$ is
+  the final application uniformly at random from $[M]$ we thus
+  have $$1-q \ge (1-e^{-2Mp^2})\paren{\frac{M\cdot
+  (1-2p)-N^2}{M}}.$$ Rearranging, and over-estimating (i.e.
+  dropping unnecessary terms to simplify the expression, while
+  maintaining the truth of the expression), we have $$q \le
+  e^{-2Mp^2} + 2p + N^2/M.$$ By assumption $p \ge
+  2^{-O(\log^4 N)}$, so as $M \ge 2^{\Omega(\log^9 N)}$, we have
+  $Mp^2 \ge 2^{\Omega(\log^9 N)}$. Thus,
+  $$q \le 2p + 2^{-2^{\Omega(\log^9 N)}} +
+  N^2 2^{-\Omega(\log^{9} N)}.$$ 
+  For convenience we loosen this to $$q \le 2p + \frac{2^{-\log^8 N}}{N+1}.$$
 
-  Taking a union bound we have that with failure probability at
+  Taking a union bound, we have that with failure probability at
   most $q \cdot n_A$ all donation-process successfully achieve a cup
   with fill at least $\mu_{S_0}(B) + f(n_B)$ where $\mu_{S_0}(B)$
   refers to the average fill of $B$ measured at the start of the
@@ -178,7 +189,7 @@ in $A$, as desired.
 Taking a union bound over the probabilities of Step 1 and Step 2
 succeeding gives that the entire procedure fails with probability
 at most 
-$$p' \le p + q \cdot n_A \le n p + 2^{-\lg^8 N}.$$
+$$p' \le p + q \cdot n_A \le n p + 2^{-\log^8 N}.$$
 
 The running time of Step 1 is clearly $M\cdot n\cdot
 T(\floor{(1-\delta)n})$ and the running time of Step 2 is clearly

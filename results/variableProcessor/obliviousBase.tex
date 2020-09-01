@@ -1,11 +1,8 @@
-We now give a method for transforming a filling strategy for achieving
-large backlog into a filling strategy for achieving high fill in
-many cups, or high average fill in a set of cups (which of these
-we guarantee depends on the original filling strategy). The idea
-of repeating an algorithm many times is also used in the proof of
-the Adaptive Amplification Lemma; the construction is slightly more
-complicated in the randomized case however, and is much harder to
-analyze.
+We now give a general algorithm that specifies a useful
+transformation of a filling strategy into a new filling strategy
+by repeatedly applying the strategy to subsets of the cups. 
+The procedure is similar to the procedure used in the Adaptive
+Amplification Lemma, although more complicated.
 
 \begin{definition}
   \label{def:rep}
@@ -52,7 +49,7 @@ analyze.
     \State
     \State $n_A \gets \ceil{\delta n}, n_B \gets \floor{(1-\delta) n}$
     \State $A \gets \varnothing, B \gets$ all the cups
-    \State Always place $1$ fill in each cup in $A$
+    \State Always place $1$ unit of fill into each cup in $A$
     \For{$i \in [n_A]$} \Comment Donation-Processes
     \State $m_0 \gets \text{random}([M])$
       \For{$j \in [m_0]$}
@@ -73,39 +70,52 @@ the application of $\alg_0$.
 }
 \end{definition}
 
-We use the idea of repeating an algorithm in two different contexts.
-First in \cref{prop:obliviousBase} we prove a result analogous to that of
-\cref{prop:adaptiveBase}: in particular, we show that we can
-achieve constant fill in a known cup by using
-$\rep_{\Theta(1)}(\randalg(\Theta(1))$
-which achieves, by a Chernoff bound, $\Theta(n)$ unknown cups
-with constant fill, and then exploiting the emptier's greedy-like
-nature to achieve constant fill in a known cup.
-After doing this, we prove the \defn{Oblivious Amplification
-Lemma}, a result analogous to the Adaptive
-Amplification Lemma: in particular, we show how to take an
+We use the idea of repeating an algorithm in two different
+contexts. First in \cref{prop:obliviousBase} we prove a result
+analogous to that of \cref{prop:adaptiveBase}. In particular, we
+show that we can achieve $\omega(1)$ fill in a known cup (with
+good probability) by using $\rep_{\delta}(\randalg(k))$ (for
+appropriate choice of $\delta, k$) to get large fill in an
+unknown cup, and then and then exploiting the emptier's
+greedy-like nature to get (slightly smaller) fill in a known cup.
+Second, we use $\rep$ in proving the \defn{Oblivious
+Amplification Lemma}, a result analogous to the Adaptive
+Amplification Lemma. In particular, we show how to take an
 algorithm for achieving some backlog, and then achieve higher
-backlog by repeating the algorithm many times.
-Although these results have deterministic analogues, their proofs
-are different and significantly more complex than the proofs for the
-deterministic cases.
+backlog by repeating the algorithm many times. Although these
+results have deterministic analogues, their proofs are different
+and significantly more complex than the corresponding proofs for
+the deterministic results.
 
 In the rest of the section our aim is to achieve backlog
 $N^{1-\varepsilon}$ in $N$ cups. We will use this value $N$
-within all of the following proofs. Many values implicitly depend
-on $N$. Note that we implicitly consider the cups to be part of a
-larger game in these results. Also note that we are happy if
-mass $N^2$ is achieved in the cups, because then backlog is
-always at least $N$.
+within all of the following proofs. We use $N$ to refer to the
+true number of cups, and $n$ refer to the size of the current
+subproblem that we are considering, which is implicitly part of a
+larger cup game. One benefit of making the true number of cups
+explicit is that if in a subproblem we ever get mass $N^2$ in a
+set of cups, then we are done with the entire construction, as
+backlog will always be at least $N$ after this. Note that rather
+than using the negative-fill cup game we opt to explicitly make
+our results be in terms of the average fill of the cups. Another
+thing to note is that we are assuming that $N$ is sufficiently
+large for all of the results, as is standard with asymptotic
+notation.
 
 Before proving \cref{prop:obliviousBase} we analyze
-$\rep_{\Theta(1)}(\randalg(\Theta(1)))$ in
+$\rep_{\delta}(\randalg(k))$ in \cref{lem:obliviousBase}. We
+remark that although \cref{prop:obliviousBase} and
+\cref{lem:obliviousBase} do implicitly consider a small cup game
+that is part of a larger cup game, we do not allow for
+extra-emptyings in the small cup game. That is, if there are
+extra-emptyings, then we provide no guarantees on the behavior of
+the algorithms given in \cref{prop:obliviousBase} and
 \cref{lem:obliviousBase}.
 \begin{lemma}
   \label{lem:obliviousBase}
   Let $\Delta \le \frac{1}{128}\log\log\log N$, let $h =
   \frac{1}{16}\log\log\log N$, let $k=\ceil{e^{2h+1}}$, let
-  $\delta = \frac{1}{2k}$, let $n = \log^5 N$. Consider an
+  $\delta = \frac{1}{2k}$, let $n = \Theta(\log^5 N)$. Consider an
   $R_\Delta$-flat cup configuration in the variable-processor cup
   game on $n$ cups with initial average fill $\mu_0$.
 
@@ -274,8 +284,7 @@ which in turn lower bounds $\mu(B)$.
   an upper bound on the average fill of $A$ as well, i.e.
   $\mu(A) \le u_A$.  Now we have
   \begin{align*}
-    &\mu(B) \\
-           &= -\frac{|A|}{|B|} \mu(A) + \frac{|A B|}{|B|}\mu(A B) \\
+    \mu(B) &= -\frac{|A|}{|B|} \mu(A) + \frac{|A B|}{|B|}\mu(A B) \\
            &\ge -(\mu(AB) + 3+R_\Delta+d+\Delta) \frac{|A|}{|B|} + \frac{|AB|}{|B|}\mu(AB)\\
            &= -(3+R_\Delta+d + \Delta) \frac{|A|}{|B|} + \mu(AB)\\
            &\ge -h/2 + \mu(AB)
@@ -315,7 +324,7 @@ $$1-(1-1/k!)^{n_A} \ge 1-e^{- n\delta/k!}.$$
 Now we aim to show that $e^{-n \delta/k!} \le 2^{-\Omega(\log^4 N)}$.
 This is equivalent to showing $n\delta/k! \ge \Omega(\log^4 N)$.
 Using $k^k$ as an upper bound for $k!$, and recalling that
-$n=\log^5 N$, we have that it suffices to show that 
+$n=\Theta(log^5 N)$, we have that it suffices to show that 
 $$k^k \le n\delta / \Omega(\log^4 N) \le \delta O(\log N).$$
 Recalling that $\delta = 1/(2k)$ this is equivalent to showing
 that
@@ -347,7 +356,7 @@ donation process.
   $N^2$ times, the emptier has at best a $2^{-\log^4 N}$ chance
   of interfering with the final application of $\randalg(k)$. 
   Taking a union bound over all donation processes, we have that
-  with probability at least $1-2^{\Omega(\log^4 N)}$ the emptier
+  with probability at least $1-2^{-\Omega(\log^4 N)}$ the emptier
   does not interfere with the final application of $\randalg(k)$
   on any donation processes. We previously found that the
   probability of achieving the desired backlog in $A$ conditional
@@ -370,11 +379,11 @@ $\Theta(N^2)$ time. Thus overall the algorithm takes time $$n_A
 
 Now, using \cref{lem:obliviousBase} we show in
 \cref{prop:obliviousBase} that an oblivious filler can achieve
-constant fill in a known cup. 
+fill $\omega(1)$ in a known cup. 
 \begin{proposition}
   \label{prop:obliviousBase}
   Let $H = \frac{1}{128}\log\log\log N$, let $\Delta \le
-  \frac{1}{128}\log\log\log N$, let $n = \log^5 N$. 
+  \frac{1}{128}\log\log\log N$, let $n = \Theta(\log^5 N)$. 
   Consider an $R_\Delta$-flat cup configuration in the
   variable-processor cup game on $n$ cups with average fill $\mu_0$.
   There is an oblivious filling strategy that either
@@ -409,21 +418,10 @@ constant fill in a known cup.
   $c_0$ has fill at least $H+\mu_0$, because the emptier cannot
   have emptied $c_0$ until it attained fill $H+\mu_0$, and if
   $c_0$ is never emptied from then it achieves fill $H+\mu_0$.
-  Thus the filling strategy achieves backlog $H+\mu_0 \ge H$
+  Thus the filler achieves fill $H+\mu_0$
   in $c_0$, a \emph{known} cup, as desired.
 
   The running time is of course still $2^{O(\log^4 N)}$ by
   \cref{lem:obliviousBase}.
 \end{proof}
-
-
-We remark that \cref{lem:obliviousBase} and
-\cref{prop:obliviousBase} both refer to filling strategies in
-the regular cup game. In particular, we prove no guarantees on
-the behavior of the algorithms in \cref{lem:obliviousBase} and
-\cref{prop:obliviousBase} for the $E$-extra-emptyings cup game
-with $E > 0$. It is somewhat surprising that we do not need to
-provide guarantees such as a guarantee that the cups have some
-small bounded fill-range regardless of extra-emptying as we had
-to do for $\flatalg$ and $\randalg$.
 

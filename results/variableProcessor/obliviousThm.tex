@@ -1,11 +1,9 @@
 Finally we prove that an oblivious filler can achieve backlog
 $N^{1-\varepsilon}$, just like an adaptive filler despite the
 oblivious filler's disadvantage. The proof is very similar to the
-proof of \cref{thm:adaptivePoly}, but more complicated because in
-the oblivious case we must guarantee that the result holds with
-good probability, and also more complicated because the Oblivious
-Amplification Lemma is more complicated than the Adaptive
-Amplification Lemma. 
+proof of \cref{thm:adaptivePoly}, although significant care must
+be taken in the randomized case to get the desired probabilistic
+guarantees. 
 \begin{theorem}
   \label{thm:obliviousPoly}
   There is an oblivious filling strategy for the
@@ -17,26 +15,25 @@ Amplification Lemma.
 \end{theorem}
 \begin{proof}
   We aim to achieve backlog $(N/n_b)^{1-\varepsilon}-1$ for 
-  $n_b = \log^5 N$ on $N$ cups.
+  $n_b = \Theta(\log^5 N)$ on $N$ cups.
   Let $\delta$ be a constant, chosen as a function of $\varepsilon$.
 
   We call the algorithm from \cref{prop:obliviousBase}
-  $\alg(f_0)$. Note that unlike in the proof of
-  \cref{thm:adaptivePoly}, the size of the base case is not
-  constant, but rather $\polylog(N)$; this is necessary, as a
-  constant-size base case would destroy our probability of
-  success. The probability of success achieved by $\alg(f_0)$
-  will be sufficient even when we use it $2^{\polylog n}$ times.
-  We construct $\alg(f_{i+1})$ as the amplification of $\alg(f_i)$
-  using \cref{lem:obliviousAmplification}.
-
-  Define a sequence $g_i$ as 
+  $\alg(f_0)$. We remark that in the proof of
+  \cref{thm:adaptivePoly} the size of the base case is constant,
+  whereas now the size of the base case is $\polylog(N)$; the
+  larger base case is necessary, as a constant-size base case
+  would destroy our probability of success. The probability of
+  success achieved by $\alg(f_0)$ is, by construction, sufficient
+  to take a union bound over $2^{\polylog N}$ applications of
+  $\alg(f_0)$. Now we construct $\alg(f_{i+1})$ as the amplification
+  of $\alg(f_i)$ using \cref{lem:obliviousAmplification} and
+  parameter $\delta$. Define a sequence $g_i$ as 
   $$g_i =
   \begin{cases}
     n_b\ceil{16/\delta}, & i=0\\
     \floor{ g_{i-1}/(1-\delta) }, & i\ge 1 
   \end{cases}.$$
-
   We claim the following regarding our construction:
   \begin{clm}
     \label{clm:fikinductionagain}
@@ -45,32 +42,27 @@ Amplification Lemma.
     \end{equation}
   \end{clm}
   \begin{proof}
-  We prove \cref{clm:fikinductionagain} by induction on $i$. 
-
-  When $i=0$, the base case of our induction,
+  We prove \cref{clm:fikinductionagain} by induction on $i$. \\
+  For $i=0$, the base case of our induction,
   \eqref{eqn:fikinductionAGAIN} is true as
-  $(k/n_b)^{1-\epsilon} - 1 \le O(1)$ for $k\le g_0$, but
-  $\alg(f_0)$ achieves backlog $\frac{1}{128}\log\log\log N$,
-  which is larger than this constant.
-
-  Assume \eqref{eqn:fikinductionAGAIN} for $f_i$, consider $f_{i+1}$. 
-
-  Note that, by design of $g_i$, if $k \le g_{i+1}$ then $\floor{k\cdot (1-\delta)} \le g_i$.
-  Consider any $k\in [g_{i+1}]$. 
-
-  First we deal with the trivial
-  case where $k \le g_0$. In this case
+  $(k/n_b)^{1-\epsilon} - 1 \le O(1)$ for $k\le g_0$, whereas
+  $\alg(f_0)$ achieves backlog $\Omega(\log\log\log N) >
+  \omega(1)$.\\
+  Now we assume \eqref{eqn:fikinductionAGAIN} for $f_i$, and aim to
+  establish \eqref{eqn:fikinductionAGAIN} for $f_{i+1}$. 
+  Note that, by design of $g_i$, if $k \le g_{i+1}$ then
+  $\floor{k\cdot (1-\delta)} \le g_i$. Consider any $k\in
+  [g_{i+1}]$. 
+  First we deal with the trivial case where $k \le g_0$. Here, 
   $$f_{i+1}(k) \ge f_i(k) \ge \cdots \ge f_0(k) \ge (k/n_b)^{1-\varepsilon} -1.$$
-
-  Now we consider $k \ge g_0$. Note that in this case $\floor{(1-\delta)k} \ge n_b$.
-  Since $f_{i+1}$ is the amplification of $f_i$, and $k$ is sufficiently large, we have by \cref{lem:obliviousAmplification} that
+  Now we consider $k \ge g_0$. 
+  Since $f_{i+1}$ is the amplification of $f_i$ we have by \cref{lem:obliviousAmplification} that
   $$f_{i+1}(k) \ge (1-\delta)^2 f_i(\floor{(1-\delta)k}) + f_i(\ceil{\delta k}).$$
   By our inductive hypothesis, which applies as $\ceil{\delta k}\le g_i, \floor{k\cdot (1-\delta)} \le g_i$, we have
   $$f_{i+1}(k) \ge (1-\delta)^2 (\floor{(1-\delta)k/n_b}^{1-\varepsilon}-1) + \ceil{\delta k/n_b}^{1-\varepsilon} - 1. $$
   Dropping the floor and ceiling, incurring a $-1$ for dropping the floor, we have
   $$f_{i+1}(k) \ge (1-\delta)^2 (((1-\delta)k/n_b-1)^{1-\varepsilon}-1) + (\delta k/n_b)^{1-\varepsilon} - 1.$$
-  Because $(x-1)^{1-\varepsilon} \ge x^{1-\varepsilon} -1$, due to the
-  fact that $x\mapsto x^{1-\varepsilon}$ is a sub-linear
+  Because $(x-1)^{1-\varepsilon} \ge x^{1-\varepsilon} -1$, as $x\mapsto x^{1-\varepsilon}$ is a sub-linear
   sub-additive function, we have 
   $$f_{i+1}(k) \ge (1-\delta)^2 (((1-\delta)k/n_b)^{1-\varepsilon}-2) + (\delta k/n_b)^{1-\varepsilon}-1.$$
   Moving the $(k/n_b)^{1-\varepsilon}$ to the front we have
@@ -85,7 +77,6 @@ Amplification Lemma.
   $$f_{i+1}(k) \ge (k/n_b)^{1-\varepsilon} \cdot\left(1-(3-\varepsilon)\delta + \delta^{1-\varepsilon} - \delta^{1-\varepsilon}/2 \right)-1.$$
   Finally, combining terms we have
   $$f_{i+1}(k) \ge  (k/n_b)^{1-\varepsilon} \cdot\left(1-(3-\varepsilon)\delta + \delta^{1-\varepsilon}/2\right)-1. $$
-
   Because $\delta^{1-\varepsilon}$ dominates $\delta$ for
   sufficiently small $\delta$, there is a choice of
   $\delta=\Theta(1)$ such that 
@@ -95,14 +86,14 @@ Amplification Lemma.
   completing the proof. 
   \end{proof}
 
-  The sequence $g_i$ is $n_b$ times the sequence $g_i$ from
-  the proof of \cref{thm:adaptivePoly}; we thus have that $g_{i_*}
-  \ge N$ for some $i_* \le O(\log N)$.
-  Hence $\alg(f_{i_*})$ achieves backlog 
-  $$f_{i_*}(N) \ge (N/n_b)^{1-\varepsilon}-1.$$
-  Let $\varepsilon' = 2\varepsilon$. Of course $\Omega(N^\varepsilon)
-  \ge \polylog(N)$, so $$(N/n_b)^{1-\varepsilon}-1 \ge
-  \Omega(N^{1-\varepsilon'}).$$
+  The sequence $g_i$ larger the sequence $g_i$ from the proof of
+  \cref{thm:adaptivePoly} for the same value of $\delta$: it is
+  defined by the same recurrence, except that the first term is
+  $n_b$ times larger. Thus we have that $g_{i_*} \ge N$ for some
+  $i_* \le O(\log N)$. Hence $\alg(f_{i_*})$ achieves backlog
+  $$f_{i_*}(N) \ge (N/n_b)^{1-\varepsilon}-1.$$ Let $\varepsilon'
+  = 2\varepsilon$. Of course $n_b \le O(N^\varepsilon)$, so 
+  $$(N/n_b)^{1-\varepsilon}-1 \ge \Omega(N^{1-\varepsilon'}).$$
 
   Let the running time of $f_i(N)$ be $T_i(N)$. From the
   Amplification Lemma we have following recurrence bounding $T_i(N)$:
@@ -120,7 +111,7 @@ Amplification Lemma.
   special case of this. Expanding, we see that the recurrence
   solves to $a_k = \Theta(\alpha^{k-1})\beta + \alpha^k \gamma$.
   In our case we have 
-  $$\alpha \le N, \beta = 2^{-\lg^8 N}, \gamma = 2^{-O(\log^4 N)}.$$
+  $$\alpha \le N, \beta = 2^{-\log^8 N}, \gamma \le 2^{-\Omega(\log^4 N)}.$$
   Hence the recurrence solves to 
   $$p_{i_*} \le 2^{-\polylog(N)},$$
   as desired.
