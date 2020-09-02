@@ -1,15 +1,14 @@
 \maketitle 
 \begin{abstract}
-The problem of scheduling tasks on $p$ processors so that no
-task ever gets too far behind is often described as a game
-with cups and water. In the $p$-processor cup game on $n$ cups,
-there are two players, a filler and an emptier, that take turns
-adding and removing water from a set of $n$ cups. In each turn,
-the filler adds $p$ units of water to the cups, placing at most
-$1$ unit of water in each cup, and then the emptier selects $p$
-cups to remove up to $1$ unit of water from. The emptier's goal
-is to minimize the backlog, which is the height of the fullest
-cup.
+The problem of scheduling tasks on $p$ processors so that no task
+ever gets too far behind is often described as a game with cups
+and water. In the $p$-processor cup game on $n$ cups, there are
+two players, a filler and an emptier, that take turns adding and
+removing water from a set of $n$ cups. In each turn, the filler
+adds $p$ units of water to the cups, placing at most $1$ unit of
+water in each cup, and then the emptier selects $p$ cups to
+remove up to $1$ unit of water from. The emptier's goal is to
+minimize the backlog, which is the height of the fullest cup.
 
 The $p$-processor cup game has been studied in many different
 settings, dating back to the late 1960's. All of the past work
@@ -23,15 +22,15 @@ game differ dramatically from its classical counterpart. Whereas
 the $p$-processor cup has optimal backlog $\Theta(\log n)$, the
 variable-processor game has optimal backlog $\Theta(n)$.
 Moreover, there is an efficient filling strategy that yields
-backlog $\Omega(n^{1 - \epsilon})$ in quazi-polynomial time against any
-deterministic emptying strategy.
+backlog $\Omega(n^{1 - \epsilon})$ in quazi-polynomial time
+against any deterministic emptying strategy.
 
-We additionally show that straightforward uses of randomization
+We additionally show that straightforward use of randomization
 cannot be used to help the emptier. In particular, for any
-positive constant $\Delta$, and any $\Delta$-greedy-like randomized
-emptying algorithm $\mathcal{A}$, there is a filling strategy
-that achieves backlog $\Omega(n^{1 - \epsilon})$ against $\mathcal{A}$ in
-quazi-polynomial time.
+positive constant $\Delta$, and any $\Delta$-greedy-like
+randomized emptying algorithm $\mathcal{A}$, there is a filling
+strategy that achieves backlog $\Omega(n^{1 - \epsilon})$ against
+$\mathcal{A}$ in quazi-polynomial time.
 
 \end{abstract}
 
