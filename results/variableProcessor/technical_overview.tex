@@ -3,7 +3,7 @@
 
 In this section we present proof sketches and discuss the main technical ideas for our results. 
 
-\subsection{Adaptive Lower Bound}\label{sec:technicaladaptive}
+\subsection{Adaptive Filling Strategies}\label{sec:technicaladaptive}
 In \cref{sec:adaptive} we provide an adaptive filling strategy that achieves
 backlog $\Omega(n^{1 - \epsilon})$; in this subsection we sketch the
 proof of the result.
@@ -125,7 +125,7 @@ $\alg(f_{\Theta(n)})$ achieves backlog $\Omega(n)$ in running
 time $O(n!)$.
 \end{proof}
 
-\subsection{Upper Bound}
+\subsection{Analyzing Greedy Emptying}
 In \cref{sec:upperBound} we prove that a greedy emptier, i.e. an
 emptier that always empties from the $p$ fullest cups, never lets
 backlog exceed $O(n)$; in this subsection we sketch the proof of
@@ -243,7 +243,8 @@ that $m_{S_{t + 1}}(AC) \le k(2n - k)$ and thus that the average
 fill of the $k$ fullest cups in state $S_{t+1}$ is at most
 $2n-k$, as desired.
 \end{proof}
-\subsection{Oblivious Lower Bound}
+
+\subsection{Oblivious Filling Strategies}
 
 In \cref{sec:oblivious} we consider what happens if the filler is an
 \defn{oblivious} adversary, meaning that the filler cannot see what
