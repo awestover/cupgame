@@ -17,37 +17,43 @@
 \newtheorem{corollary}{Corollary}
 \newtheorem{theorem}{Theorem}
 
-\author{William Kuszmaul\textsuperscript{1}, Alek Westover\textsuperscript{1}}
-\title{ An Adaptive Filling Strategy for the Multi-Processor Cup Game}
+\author{William Kuszmaul\textsuperscript{1}, Alek
+Westover\textsuperscript{1}\\ 
+\texttt{kuszmaul@mit.edu}, \texttt{alek.westover@gmail.com} }
+\title{ An Adaptive Filling Strategy for achieving backlog
+$\Omega(\log \frac{p}{n-p})$ \\ in the $p$-processor cup game on $n$ cups}
 \date{\textsuperscript{1}Massachusetts Institute of Technology}
 
 \begin{document}
 \maketitle
-\abstract{
+\begin{abstract}
   The problem of scheduling tasks on $p$ processors so that no
-  task ever gets too far behind is often described as a game
-  with cups and water. In the $p$-processor cup game on $n$ cups,
+  task ever gets too far behind is often described as a game with
+  cups and water. In the $p$-processor cup game on $n$ cups,
   there are two players, a filler and an emptier, that take turns
   adding and removing water from a set of $n$ cups. In each turn,
   the filler adds $p$ units of water to the cups, placing at most
   $1$ unit of water in each cup, and then the emptier selects $p$
-  cups to remove up to $1$ unit of water from. The emptier's goal
-  is to minimize the backlog, which is the height of the fullest
-  cup.
+  cups to remove up to $1$ unit of water from; note that if a cup
+  with fill less than $1$ is emptied from, its fill becomes $0$
+  (not negative), and the average fill of the cups increases. The
+  emptier's goal is to minimize the backlog, which is the height
+  of the fullest cup.
 
   The $p$-processor cup game has been studied in many different
-  settings, dating back to the late 1960's. Kuszmaul established
-  that a greedy emptier never lets backlog exceed $O(\log n)$.
-  Kuszmaul also gave a construction that achieves backlog 
-  $\Omega(\log (n-p))$. For small $p$, e.g. $p< n/2$, it is
-  clear that $\Theta(\log n)$ is the optimal backlog, but for
+  settings, dating back to the late 1960's. Kuszmaul recently
+  established that a greedy emptier never lets backlog exceed
+  $O(\log n)$. Kuszmaul also gave a construction that achieves
+  backlog $\Omega(\log (n-p))$. For small $p$, e.g. $p< n/2$, it
+  is clear that $\Theta(\log n)$ is the optimal backlog, but for
   very large $p$ tight bounds are not known. 
 
-  We give an adaptive filling strategy for the $p$-processor
-  cup game on $n$ cups that achieves backlog $\Omega(\log n)$.
-  Combined with Kuszmaul's work, this implies that $\Theta(\log
-  n)$ is the optimal backlog for the multi-processor cup game.
-}
+  We give an adaptive filling strategy for the $p$-processor cup
+  game on $n$ cups that achieves backlog $\Omega(\log
+  \frac{p}{n-p})$. Combined with Kuszmaul's work, this implies
+  that $\Theta(\log n)$ is the optimal backlog for the
+  multi-processor cup game.
+\end{abstract}
 
 \section{Introduction}
 The $p$-processor cup game on $n$ cups is a multi-round game
