@@ -1,5 +1,5 @@
 \documentclass{article}[11pt]
-\usepackage[left=1in, right=1in, top=1in, bottom=1in]{geometry}
+% \usepackage[left=1in, right=1in, top=1in, bottom=1in]{geometry}
 % \usepackage[subtle, mathspacing=normal]{savetrees}
 \usepackage{fullpage}
 
@@ -19,8 +19,8 @@
 \DeclareMathOperator{\E}{\mathbb{E}}
 \DeclareMathOperator{\Var}{\text{Var}}
 \DeclareMathOperator{\img}{Im}
-\DeclareMathOperator{\polylog}{\text{polylog}}
-\DeclareMathOperator{\poly}{\text{poly}}
+\DeclareMathOperator{\polylog}{\textnormal{polylog}}
+\DeclareMathOperator{\poly}{\textnormal{poly}}
 
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
@@ -71,11 +71,12 @@
 \title{The Variable-Processor Cup Game}
 \date{\vspace{-5ex}}
 
-\author[1]{\small William Kuszmaul\thanks{Supported by a Hertz fellowship and a NSF GRFP fellowship}}
-\author[1]{\small Alek Westover\thanks{Partially supported by MIT PRIMES}}
+\author{William Kuszmaul\thanks{Supported by a Hertz fellowship
+and a NSF GRFP fellowship}, Alek Westover\thanks{Partially
+supported by MIT PRIMES}}
 
-\affil[1]{\footnotesize MIT}
-\affil[ ]{\textit{kuszmaul@mit.edu, alek.westover@gmail.com}}
+\affil{Massachusetts Institute of Technology}
+\affil{\small \texttt{kuszmaul@mit.edu, alek.westover@gmail.com}}
 
 \begin{document}
 \input{abstract.tex}
