@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+\documentclass[twocolumn,11pt]{article}
 % \usepackage[subtle]{savetrees}
 \usepackage[left=1in, right=1in, top=1in, bottom=1in]{geometry}
 
@@ -20,72 +20,77 @@
 \author{William Kuszmaul\textsuperscript{1}, Alek
 Westover\textsuperscript{1}\\ 
 \texttt{kuszmaul@mit.edu}, \texttt{alek.westover@gmail.com} }
-\title{ An Adaptive Filling Strategy for achieving backlog
+\title{An Adaptive Filling Strategy for backlog
 $\Omega(\log \frac{p}{n-p})$ \\ in the $p$-processor cup game on $n$ cups}
 \date{\textsuperscript{1}Massachusetts Institute of Technology}
 
 \begin{document}
 \maketitle
 \begin{abstract}
-  The problem of scheduling tasks on $p$ processors so that no
-  task ever gets too far behind is often described as a game with
-  cups and water. In the $p$-processor cup game on $n$ cups,
-  there are two players, a filler and an emptier, that take turns
-  adding and removing water from a set of $n$ cups. In each turn,
-  the filler adds $p$ units of water to the cups, placing at most
-  $1$ unit of water in each cup, and then the emptier selects $p$
-  cups to remove up to $1$ unit of water from; note that if a cup
-  with fill less than $1$ is emptied from, its fill becomes $0$
-  (not negative), and the average fill of the cups increases. The
-  emptier's goal is to minimize the backlog, which is the height
-  of the fullest cup.
+  The $p$-processors cup game on $n$ tasks is an extensively
+  studied model for the problem of scheduling tasks so that no
+  task ever gets too far behind. The game consists of an emptier
+  and a filler adding and removing at most $p$ units of water
+  from a set of $n$ cups each turn according to certain
+  constraints. The emptier aims to minimize the backlog, or fill
+  in the largest.
 
-  The $p$-processor cup game has been studied in many different
-  settings, dating back to the late 1960's. Kuszmaul recently
-  established that a greedy emptier never lets backlog exceed
-  $O(\log n)$. Kuszmaul also gave a construction that achieves
-  backlog $\Omega(\log (n-p))$. For small $p$, e.g. $p< n/2$, it
-  is clear that $\Theta(\log n)$ is the optimal backlog, but for
-  very large $p$ tight bounds are not known. 
+  For $p=1$ it is relatively straightforward to show that
+  $\Theta(\log n)$ is tight for backlog: a greedy strategy
+  achieves backlog $O(\log n)$ and there is a lower bound of
+  $\Omega(\log n)$.
+  Recently, in a much more complicated analysis
+  Kuszmaul\cite{ku20}
+  established that a greedy emptier achieves backlog $O(\log n)$
+  even for $p>1$. Kuszmaul also showed a $\Omega(\log (n-p))$
+  lower bound.
 
-  We give an adaptive filling strategy for the $p$-processor cup
-  game on $n$ cups that achieves backlog $\Omega(\log
-  \frac{p}{n-p})$. Combined with Kuszmaul's work, this implies
-  that $\Theta(\log n)$ is the optimal backlog for the
-  multi-processor cup game.
+  It was conjectured that for large $p$ $\Theta(\log (n-p))$ is
+  tight. However, in this work we present a filling strategy for
+  achieving backlog $\Omega(\log \frac{p}{n-p})$ for $p> n-\sqrt{n}$.
+  Combined with Kuszmaul's work, this implies that $\Theta(\log
+  n)$ is the optimal backlog for the multi-processor cup game.
+
+  % The problem of scheduling tasks on $p$ processors so that no
+  % task ever gets too far behind is often described as a game with
+  % cups and water. In the $p$-processor cup game on $n$ cups,
+  % there are two players, a filler and an emptier, that take turns
+  % adding and removing water from a set of $n$ cups. In each turn,
+  % the filler adds $p$ units of water to the cups, placing at most
+  % $1$ unit of water in each cup, and then the emptier selects $p$
+  % cups to remove up to $1$ unit of water from; note that if a cup
+  % with fill less than $1$ is emptied from, its fill becomes $0$
+  % (not negative), and the average fill of the cups increases. The
+  % emptier's goal is to minimize the backlog, which is the height
+  % of the fullest cup.
+
 \end{abstract}
 
 \section{Introduction}
-The $p$-processor cup game on $n$ cups is a multi-round game
-with two players, the \textbf{filler} and the \textbf{emptier},
-that take turns adding and removing water from the cups. 
-In particular, on each round the filler distributes $p$
-units of fill arbitrarily amongst the cups, subject only to the
+The $p$-processor cup game on $n$ cups is a multi-round game with
+two players, the \textbf{filler} and the \textbf{emptier}, that
+take turns adding and removing water from the cups. In
+particular, on each round the filler distributes $p$ units of
+fill arbitrarily amongst the cups, subject only to the
 restriction that the filler cannot place more than $1$ unit of
 fill into any given cup. Next, the emptier chooses $p$ cups and
-removes at most $1$ unit of water from each of these.
-The \textbf{backlog} is the height of the fullest cup; the emptier
-aims to minimize backlog while the filler aims to maximize
-backlog.
+removes at most $1$ unit of water from each of these. The
+\textbf{mass} of the cups is the sum the fills of all of the
+cups. The mass will increase when the emptier removes water from
+a cup with less than $1$ unit of fill, because cups must have
+non-negative fills. The \textbf{backlog} is the height of the
+fullest cup; the emptier aims to minimize backlog while the
+filler aims to maximize backlog.
 
-Kuszmaul showed that in the $p$-processor cup game on
-$n$ cups the greedy emptying strategy---i.e. empty from the $p$
-fullest cups---never lets backlog exceed $O(\log n)$. 
-Kuszmaul also provided a filling strategy that achieves
-backlog $\Omega(\log (n-p))$. 
-For small $p$, e.g. $p \le n/2$, the upper-bound and lower-bound
-match, but for large $p$ the bounds do not match. 
-
-Many suspected that the $O(\log n)$ upper bound could be reduced
-to $O(\log(n-p))$ even for large $p$; however, we show that this
-is not the case.  
-
-\section{Preliminaries}
-Let $H_n = 1/1+1/2+\cdots +1/n$ denote the $n$-th harmonic
-number. It is well known that $H_n = \Theta(\log n)$, and in fact
-$H_n = \ln n + \Theta(1)$.
-
-The \textbf{mass} of the cups is the sum the fills of all of the cups.
+Kuszmaul\cite{ku20} showed that in the $p$-processor cup game on $n$ cups
+the greedy emptying strategy---i.e. empty from the $p$ fullest
+cups---never lets backlog exceed $O(\log n)$. Kuszmaul also
+provided a filling strategy that achieves backlog $\Omega(\log
+(n-p))$. For small $p$, e.g. $p \le n/2$, the upper-bound and
+lower-bound match, but for large $p$ the optimal backlog has
+remained an open question. It was conjectured that the $O(\log
+n)$ upper bound could be reduced to $O(\log(n-p))$ even for large
+$p$; however, we show that this is not the case.  
 
 We remark that we consider only \textbf{adaptive} fillers, i.e. fillers
 that can observe the state of the cups. The emptier can achieve
@@ -117,7 +122,7 @@ of placing a unit of water in the $p$ fullest cups on each
 round). The filler's strategy either terminates before finishing,
 which only happens if it has achieved backlog $\Omega(\log n)$,
 or does not terminate early, in which case the mass of the cups
-has increased by $\Omega(n\log n)$, implying that which means
+has increased by $\Omega(n\log n)$, which means
 that average fill and also backlog have increased by at least
 $\Omega(\log n)$. We now describe IncMass.
 
@@ -130,10 +135,10 @@ each iteration of the process. $U$ is initialized to $\varnothing$.
 For each of $\lfloor(p+1) / (n-p)\rfloor$ steps the filler will:
 \begin{enumerate}
   \item Distribute $p - |U|$ water equally among the cups in
-    $S\setminus U$ (thus, each such cup receives
-    $\frac{p-|U|}{n-|U|}$ fill)
-  \item Distribute $|U|$ water equally among the cups in $U$
-    (thus, each such cup receives $1$ fill)
+    $S\setminus U$; each cup receives
+    $\frac{p-|U|}{n-|U|}$ fill
+  \item Distribute $|U|$ water equally among the cups in $U$;
+    each cup receives $1$ fill
 \end{enumerate}
 
 Then the emptier must chose $p$ cups to empty from, and hence
@@ -143,9 +148,9 @@ emptier adds all cups in $N \setminus U$ to $U$, and then
 adds the $(n-p) - |N\setminus U |$ fullest cups in $S
 \setminus U$ to $U$. 
 
-The number of cups in $S\setminus U$ decreases by $n-p$ on of the
-$\lfloor (p+1) / (n-p) \rfloor$ steps, so in the end we have
-$|S\setminus U| \ge p+1$.
+The number of cups in $S\setminus U$ decreases by $n-p$ on each
+of the $\lfloor (p+1) / (n-p) \rfloor$ steps, so in the end we
+have $|S\setminus U| \ge p+1$.
 
 \begin{clm}
   Any cup $c \in S\setminus U$ at the end of this process has $0$
@@ -169,14 +174,16 @@ imply that $c$ has fill $0$.
 
 For $p=n-1$ \eqref{eq:interesting} is simply the difference of
 harmonic numbers; this prompts the idea of lower bounding
-\eqref{eq:interesting} by a difference of harmonic numbers.
+\eqref{eq:interesting} by a difference of harmonic
+numbers\footnote{ Let $H_n = 1/1+1/2+\cdots +1/n = \ln n +
+\Theta(1)$ denote the $n$-th harmonic number.}.
 We lower bound the $i$-th term in the sum by:
 $$\frac{n-p}{n-i(n-p)} = \sum_{j=0}^{n-p-1} \frac{1}{n-i(n-p)} \ge \sum_{j=n-i(n-p)}^{n-(i-1)(n-p)-1}\frac{1}{j}.$$
 Applying this to \eqref{eq:interesting} we get a difference of
 harmonic numbers:
 $${\sum_{i=0}^{\big\lfloor\frac{p+1}{n-p}\big\rfloor -
 1}}\sum_{j=n-i(n-p)}^{n-(i-1)(n-p)-1} \frac{1}{j}.$$
-This is now a difference of harmonic numbers. When $i=0,
+When $i=0,
 j=n-(i-1)(n-p)-1$ we get the smallest term in the sum:
 $$\frac{1}{n+(n-p-1)}.$$ 
 When $i = \lfloor(p+1) / (n-p)\rfloor - 1, j=n-i(n-p)$ we get the largest
@@ -217,17 +224,12 @@ $$O\left(\frac{p}{n-p} n\log n\right) \le O(n^2 \log n).$$
 \section{Conclusion}
 Our analysis shows that $\Theta(\log n)$ is a tight bound on
 backlog in the $p$-processor cup game on $n$ cups with an
-adaptive filler.
+adaptive filler. Finding tight bounds on backlog for an oblivious
+filler remains an open question. Currently there is a lower bound
+of $\Omega(\log \log n)$, and an upper bound of $O(\log \log n +
+\log p)$.
 
-However, many open questions remain. The bounds on backlog in the
-multi-processor cup game with an oblivious filler have \emph{not}
-yet been made tight. In particular, there is a lower bound of
-$\Omega(\log \log n)$, and an upper bound of $O(\log \log n +
-\log p)$; for $p \le \log n$ the bounds are tight, but for large
-$p$ they are not.
-
-Further, analysis of the variant of the game where $p$ can
-change, potentially with resource augmentation, is also of great
-interest.
+\bibliographystyle{plain}
+\bibliography{bib}
 
 \end{document}

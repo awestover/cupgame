@@ -1,4 +1,4 @@
-# The Cup Games
+# The Cup Game
 
 The cup game is a classic problem in computer science that models work
 scheduling.  In the cup game on n cups, a filler and an emptier take turns
